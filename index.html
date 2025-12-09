@@ -100,28 +100,6 @@
             transform: translateY(-2px);
         }
 
-        .intro-panel {
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--cyan);
-        }
-
-        .intro-panel p {
-            margin-bottom: 15px;
-            color: var(--text-primary);
-        }
-
-        .intro-panel ul {
-            margin-left: 30px;
-            color: var(--text-secondary);
-        }
-
-        .intro-panel li {
-            margin-bottom: 8px;
-        }
-
         .controls-panel {
             background: var(--bg-panel);
             padding: 25px;
@@ -130,22 +108,11 @@
             border: 1px solid var(--border);
         }
 
-        .control-section {
-            margin-bottom: 25px;
-        }
-
-        .control-section:last-child {
-            margin-bottom: 0;
-        }
-
         .section-title {
             font-size: 1.2em;
             font-weight: 600;
             color: var(--gold);
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .control-group {
@@ -168,7 +135,6 @@
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 1em;
-            font-family: inherit;
             transition: border-color 0.3s;
         }
 
@@ -188,22 +154,11 @@
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 18px;
             height: 18px;
             background: var(--gold);
             cursor: pointer;
             border-radius: 50%;
-            border: 2px solid var(--bg-card);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: var(--gold);
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid var(--bg-card);
         }
 
         .checkbox-group {
@@ -261,7 +216,6 @@
             align-items: center;
             gap: 8px;
             font-size: 0.9em;
-            color: var(--text-secondary);
         }
 
         .canvas-controls {
@@ -293,7 +247,6 @@
             font-weight: 600;
             color: var(--cyan);
             margin-bottom: 12px;
-            font-size: 1.05em;
         }
 
         .legend-item {
@@ -311,129 +264,6 @@
             border: 2px solid var(--border);
         }
 
-        .stats-panel {
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--gold);
-        }
-
-        .stats-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--gold);
-            margin-bottom: 20px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-
-        .stat-card {
-            background: var(--bg-panel);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--cyan);
-            font-family: 'Courier New', monospace;
-        }
-
-        .theory-panel {
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--accent-purple);
-        }
-
-        .theory-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--accent-purple);
-            margin-bottom: 20px;
-        }
-
-        .theory-panel p {
-            margin-bottom: 15px;
-            color: var(--text-primary);
-        }
-
-        .math-formula {
-            background: var(--bg-panel);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            color: var(--cyan);
-            border: 1px solid var(--border);
-        }
-
-        .export-panel {
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-        }
-
-        .export-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--gold);
-            margin-bottom: 20px;
-        }
-
-        .export-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .resolution-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .resolution-btn {
-            flex: 1;
-            padding: 10px;
-            background: var(--bg-panel);
-            border: 2px solid var(--border);
-            color: var(--text-primary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .resolution-btn.active {
-            background: var(--gold);
-            color: var(--bg-deep);
-            border-color: var(--gold);
-        }
-
-        .resolution-btn:hover:not(.active) {
-            border-color: var(--gold);
-        }
-
         button {
             background: linear-gradient(135deg, var(--gold), var(--gold-dim));
             color: var(--bg-deep);
@@ -444,7 +274,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: inherit;
         }
 
         button:hover {
@@ -452,16 +281,8 @@
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
         }
 
-        button:active {
-            transform: translateY(0);
-        }
-
         button.secondary {
             background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
-        }
-
-        button.secondary:hover {
-            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
         }
 
         .preset-buttons {
@@ -471,35 +292,24 @@
             margin-top: 15px;
         }
 
-        .preset-btn {
-            padding: 8px 12px;
-            font-size: 0.9em;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 25px;
+        .export-panel {
             background: var(--bg-card);
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
+            margin-bottom: 30px;
         }
 
-        .footer a {
-            color: var(--cyan);
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            color: var(--gold);
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
         .slider-value {
-            display: inline-block;
             margin-left: 10px;
             color: var(--gold);
             font-weight: 600;
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
         }
 
         .control-row {
@@ -512,19 +322,6 @@
             .canvas-grid {
                 grid-template-columns: 1fr;
             }
-            .control-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
         }
     </style>
 </head>
@@ -534,380 +331,194 @@
     <div class="container">
         <div class="header">
             <h1>Primitive Lattice Directions & Modular Circles</h1>
-            <div class="subtitle">A Geometric Framework for GCD-Visibility and Gaussian Integers</div>
-        </div>
-
-        <div class="intro-panel">
-            <p><strong>Introduction:</strong> This visualization explores the deep connection between primitive lattice vectors, modular embeddings on the unit circle, and the norm structure of Gaussian integers.</p>
-            <p>Primitive lattice vectors (a,b) with gcd(a,b) = 1 determine visible rays from the origin and correspond naturally to reduced residues modulo suitable moduli. These rays, when normalized, lie on the unit circle and reveal classical symmetries.</p>
-            <p><strong>We explore the relationship between:</strong></p>
-            <ul>
-                <li>GCD-visibility in the integer lattice</li>
-                <li>Reduced residue classes modulo m</li>
-                <li>Geometric symmetries of the unit circle</li>
-                <li>The norm structure of Gaussian integers</li>
-            </ul>
+            <div class="subtitle">GCD-Visibility and Gaussian Integers</div>
         </div>
 
         <div class="controls-panel">
             <div class="section-title">⚙ Global Controls</div>
             
             <div class="control-group">
-                <label for="modulus">Modulus m: <span class="slider-value" id="modulusValue">8</span></label>
-                <input type="range" id="modulus" min="2" max="100" value="8" oninput="updateModulusDisplay()">
+                <label>Modulus m: <span class="slider-value" id="modulusValue">8</span></label>
+                <input type="range" id="modulus" min="2" max="100" value="8" oninput="updateModulus()">
                 <div class="preset-buttons">
-                    <button class="preset-btn" onclick="setModulus(6)">m=6 (ζ(2))</button>
-                    <button class="preset-btn" onclick="setModulus(12)">m=12 (φ=4)</button>
-                    <button class="preset-btn" onclick="setModulus(17)">m=17 (Prime)</button>
-                    <button class="preset-btn" onclick="setModulus(60)">m=60 (HC)</button>
+                    <button onclick="setMod(6)">m=6</button>
+                    <button onclick="setMod(12)">m=12</button>
+                    <button onclick="setMod(17)">m=17</button>
+                    <button onclick="setMod(60)">m=60</button>
                 </div>
             </div>
 
             <div class="control-group">
-                <label for="latticeRange">Lattice Range: <span class="slider-value" id="rangeValue">15</span></label>
-                <input type="range" id="latticeRange" min="5" max="50" value="15" oninput="updateRangeDisplay()">
+                <label>Lattice Range: <span class="slider-value" id="rangeValue">15</span></label>
+                <input type="range" id="latticeRange" min="5" max="50" value="15" oninput="updateRange()">
             </div>
         </div>
 
         <div class="canvas-grid">
-            <!-- Canvas 1: Modular Circle -->
+            <!-- Canvas 1 -->
             <div class="canvas-panel">
                 <div class="canvas-header">
                     <div class="canvas-title">Canvas 1: Modular Circle</div>
                     <div class="independent-toggle">
-                        <input type="checkbox" id="canvas1Independent" onchange="toggleCanvas1Independent()">
-                        <label for="canvas1Independent">Independent</label>
+                        <input type="checkbox" id="c1Ind" onchange="updateCanvas1()">
+                        <label for="c1Ind">Independent</label>
                     </div>
                 </div>
 
-                <div class="canvas-controls" id="canvas1Controls" style="display: none;">
-                    <div class="control-group">
-                        <label for="canvas1Modulus">Canvas 1 Modulus: <span class="slider-value" id="canvas1ModulusValue">8</span></label>
-                        <input type="range" id="canvas1Modulus" min="2" max="100" value="8" oninput="updateCanvas1Modulus()">
+                <div id="c1IndControls" style="display:none;">
+                    <div class="canvas-controls">
+                        <label>Canvas 1 Modulus: <span class="slider-value" id="c1ModVal">8</span></label>
+                        <input type="range" id="c1Mod" min="2" max="100" value="8" oninput="updateCanvas1()">
                     </div>
                 </div>
 
                 <div class="canvas-controls">
-                    <div class="section-title" style="font-size: 1em; margin-bottom: 10px;">Display Options</div>
-                    
                     <div class="checkbox-group">
                         <input type="checkbox" id="c1ShowCircle" checked onchange="updateCanvas1()">
                         <label for="c1ShowCircle">Show Circle</label>
                     </div>
-                    
                     <div class="checkbox-group">
                         <input type="checkbox" id="c1ShowPoints" checked onchange="updateCanvas1()">
                         <label for="c1ShowPoints">Show Points</label>
                     </div>
-                    
                     <div class="checkbox-group">
                         <input type="checkbox" id="c1ShowLabels" checked onchange="updateCanvas1()">
                         <label for="c1ShowLabels">Show Labels</label>
                     </div>
-                    
                     <div class="checkbox-group">
-                        <input type="checkbox" id="c1ShowPolygon" checked onchange="updateCanvas1()">
-                        <label for="c1ShowPolygon">Show Inscribed Polygon</label>
+                        <input type="checkbox" id="c1ShowPoly" checked onchange="updateCanvas1()">
+                        <label for="c1ShowPoly">Show Polygon</label>
                     </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c1ShowGrid" onchange="updateCanvas1()">
-                        <label for="c1ShowGrid">Show Grid</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c1ShowAxes" checked onchange="updateCanvas1()">
-                        <label for="c1ShowAxes">Show Axes</label>
-                    </div>
-
                     <div class="control-group">
-                        <label for="c1ColorScheme">Color Scheme:</label>
-                        <select id="c1ColorScheme" onchange="updateCanvas1()">
-                            <option value="default">Default (Cyan/Red)</option>
-                            <option value="rainbow">Rainbow Spectrum</option>
-                            <option value="heatmap">Heatmap (Blue-Red)</option>
-                            <option value="monochrome">Monochrome Gold</option>
-                            <option value="pastel">Pastel Colors</option>
-                            <option value="neon">Neon Bright</option>
+                        <label>Color Scheme:</label>
+                        <select id="c1Color" onchange="updateCanvas1()">
+                            <option value="default">Default</option>
+                            <option value="rainbow">Rainbow</option>
+                            <option value="heatmap">Heatmap</option>
+                            <option value="monochrome">Monochrome</option>
                         </select>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="c1PointSize">Point Size: <span class="slider-value" id="c1PointSizeValue">5</span>px</label>
-                        <input type="range" id="c1PointSize" min="2" max="15" value="5" oninput="updateC1PointSize()">
                     </div>
                 </div>
 
-                <canvas id="modularCanvas" width="700" height="700"></canvas>
+                <canvas id="canvas1" width="700" height="700"></canvas>
 
                 <div class="legend-panel">
                     <div class="legend-title">Legend</div>
-                    <div id="canvas1Legend"></div>
+                    <div id="legend1"></div>
                 </div>
             </div>
 
-            <!-- Canvas 2: Lattice Directions -->
+            <!-- Canvas 2 -->
             <div class="canvas-panel">
                 <div class="canvas-header">
                     <div class="canvas-title">Canvas 2: Lattice Directions</div>
                     <div class="independent-toggle">
-                        <input type="checkbox" id="canvas2Independent" onchange="toggleCanvas2Independent()">
-                        <label for="canvas2Independent">Independent</label>
+                        <input type="checkbox" id="c2Ind" onchange="updateCanvas2()">
+                        <label for="c2Ind">Independent</label>
                     </div>
                 </div>
 
-                <div class="canvas-controls" id="canvas2Controls" style="display: none;">
-                    <div class="control-row">
-                        <div class="control-group">
-                            <label for="canvas2Modulus">Canvas 2 Modulus: <span class="slider-value" id="canvas2ModulusValue">8</span></label>
-                            <input type="range" id="canvas2Modulus" min="2" max="100" value="8" oninput="updateCanvas2Modulus()">
-                        </div>
-                        <div class="control-group">
-                            <label for="canvas2Range">Canvas 2 Range: <span class="slider-value" id="canvas2RangeValue">15</span></label>
-                            <input type="range" id="canvas2Range" min="5" max="50" value="15" oninput="updateCanvas2Range()">
+                <div id="c2IndControls" style="display:none;">
+                    <div class="canvas-controls">
+                        <div class="control-row">
+                            <div>
+                                <label>Canvas 2 Modulus: <span class="slider-value" id="c2ModVal">8</span></label>
+                                <input type="range" id="c2Mod" min="2" max="100" value="8" oninput="updateCanvas2()">
+                            </div>
+                            <div>
+                                <label>Canvas 2 Range: <span class="slider-value" id="c2RangeVal">15</span></label>
+                                <input type="range" id="c2Range" min="5" max="50" value="15" oninput="updateCanvas2()">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="canvas-controls">
-                    <div class="section-title" style="font-size: 1em; margin-bottom: 10px;">View Mode</div>
-                    
                     <div class="checkbox-group">
-                        <input type="checkbox" id="c2Inverted" onchange="toggleCanvas2Invert()">
-                        <label for="c2Inverted">Invert to Concentric Rings</label>
+                        <input type="checkbox" id="c2Invert" onchange="toggleInvert()">
+                        <label for="c2Invert">Invert to Concentric Rings</label>
                     </div>
 
-                    <div id="c2InvertOptions" style="display: none;">
+                    <div id="invertOptions" style="display:none;">
                         <div class="control-group">
-                            <label for="c2RingMode">Ring Mode:</label>
-                            <select id="c2RingMode" onchange="updateCanvas2()">
-                                <option value="standard">Standard (small mod inner)</option>
-                                <option value="inverse">Inverse (small mod outer)</option>
+                            <label>Ring Mode:</label>
+                            <select id="ringMode" onchange="updateCanvas2()">
+                                <option value="standard">Standard (small inner)</option>
+                                <option value="inverse">Inverse (small outer)</option>
                             </select>
                         </div>
+                        <div class="control-group">
+                            <label>Max Modulus (Rings): <span class="slider-value" id="maxModVal">20</span></label>
+                            <input type="range" id="maxMod" min="5" max="100" value="20" oninput="updateMaxMod()">
+                        </div>
                     </div>
 
-                    <div class="section-title" style="font-size: 1em; margin-bottom: 10px; margin-top: 15px;">Display Options</div>
-                    
                     <div class="control-group">
-                        <label for="c2DisplayMode">Display Mode:</label>
-                        <select id="c2DisplayMode" onchange="updateCanvas2()">
-                            <option value="all">All Primitive Directions</option>
-                            <option value="primes">Prime Norms Only</option>
-                            <option value="specific">Specific Norm (m)</option>
+                        <label>Display Mode:</label>
+                        <select id="c2Display" onchange="updateCanvas2()">
+                            <option value="all">All Primitive</option>
+                            <option value="primes">Prime Norms</option>
+                            <option value="specific">Specific Norm</option>
                         </select>
                     </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2ShowLattice" checked onchange="updateCanvas2()">
-                        <label for="c2ShowLattice">Show Lattice Points</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2ShowLines" checked onchange="updateCanvas2()">
-                        <label for="c2ShowLines">Show Lines</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2ShowCircle" checked onchange="updateCanvas2()">
-                        <label for="c2ShowCircle">Show Unit Circle</label>
-                    </div>
-                    
                     <div class="checkbox-group">
                         <input type="checkbox" id="c2ShowLabels" checked onchange="updateCanvas2()">
-                        <label for="c2ShowLabels">Show All Point Labels</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2ShowGrid" onchange="updateCanvas2()">
-                        <label for="c2ShowGrid">Show Grid</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2ShowAxes" checked onchange="updateCanvas2()">
-                        <label for="c2ShowAxes">Show Axes</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="c2HighlightPrimes" checked onchange="updateCanvas2()">
-                        <label for="c2HighlightPrimes">Highlight Prime Norms</label>
+                        <label for="c2ShowLabels">Show Labels</label>
                     </div>
 
                     <div class="control-group">
-                        <label for="c2ColorScheme">Color Scheme:</label>
-                        <select id="c2ColorScheme" onchange="updateCanvas2()">
-                            <option value="default">Default (Green/Gold)</option>
-                            <option value="rainbow">Rainbow Spectrum</option>
-                            <option value="heatmap">Heatmap (Blue-Red)</option>
-                            <option value="monochrome">Monochrome Gold</option>
-                            <option value="gcdBased">GCD-Based Colors</option>
-                            <option value="normBased">Norm-Based Colors</option>
+                        <label>Zoom: <span class="slider-value" id="zoomVal">100</span>%</label>
+                        <input type="range" id="zoom" min="50" max="300" value="100" oninput="updateZoom()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Color Scheme:</label>
+                        <select id="c2Color" onchange="updateCanvas2()">
+                            <option value="default">Default</option>
+                            <option value="rainbow">Rainbow</option>
+                            <option value="gcdBased">GCD-Based</option>
+                            <option value="normBased">Norm-Based</option>
                         </select>
-                    </div>
-
-                    <div class="control-row">
-                        <div class="control-group">
-                            <label for="c2PointSize">Point Size: <span class="slider-value" id="c2PointSizeValue">5</span>px</label>
-                            <input type="range" id="c2PointSize" min="2" max="15" value="5" oninput="updateC2PointSize()">
-                        </div>
-                        <div class="control-group">
-                            <label for="c2LineThickness">Line Thickness: <span class="slider-value" id="c2LineThicknessValue">1.5</span>px</label>
-                            <input type="range" id="c2LineThickness" min="0.5" max="5" step="0.5" value="1.5" oninput="updateC2LineThickness()">
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="c2Zoom">Zoom: <span class="slider-value" id="c2ZoomValue">100</span>%</label>
-                        <input type="range" id="c2Zoom" min="50" max="300" value="100" oninput="updateC2Zoom()">
                     </div>
                 </div>
 
-                <canvas id="latticeCanvas" width="700" height="700"></canvas>
+                <canvas id="canvas2" width="700" height="700"></canvas>
 
                 <div class="legend-panel">
                     <div class="legend-title">Legend</div>
-                    <div id="canvas2Legend"></div>
+                    <div id="legend2"></div>
                 </div>
             </div>
-        </div>
-
-        <div class="stats-panel">
-            <div class="stats-title">📊 Computed Properties</div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Canvas 1 Modulus</div>
-                    <div class="stat-value" id="statModulus1">8</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Canvas 2 Modulus</div>
-                    <div class="stat-value" id="statModulus2">8</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">φ(m) - Euler's Totient</div>
-                    <div class="stat-value" id="statTotient">4</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Reduced Residues</div>
-                    <div class="stat-value" id="statResidues">1, 3, 5, 7</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Primitive Vectors Found</div>
-                    <div class="stat-value" id="statPrimitive">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Prime Norm Vectors</div>
-                    <div class="stat-value" id="statPrimeNorms">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Coprime Density (φ(m)/m)</div>
-                    <div class="stat-value" id="statDensity">0.5000</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Canvas 2 Zoom</div>
-                    <div class="stat-value" id="statZoom">100%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="theory-panel">
-            <div class="theory-title">📐 Theoretical Foundation</div>
-            
-            <p><strong>Visibility Indicator:</strong> For any lattice point (a,b), we define:</p>
-            <div class="math-formula">
-                vis(a,b) = 1 if gcd(a,b) = 1, else 0
-            </div>
-            <p>Primitive lattice vectors with vis(a,b) = 1 determine rays from the origin that hit no other lattice point before reaching (a,b).</p>
-            
-            <p><strong>Modular Embedding:</strong> Each reduced residue r with gcd(r,m) = 1 maps to the unit circle:</p>
-            <div class="math-formula">
-                r → e<sup>2πir/m</sup>
-            </div>
-            
-            <p><strong>Norm and Gaussian Integers:</strong> A primitive vector (a,b) with norm n = a² + b² corresponds to the Gaussian integer a + bi with |a + bi|² = n.</p>
-            
-            <p><strong>Prime Norm Uniqueness:</strong> If a² + b² = p where p is prime and p ≡ 1 (mod 4), the representation is unique up to signs and coordinate swap, corresponding to the eight symmetries of the square.</p>
-            
-            <p><strong>Basel Problem Connection:</strong> The limiting density of coprime pairs approaches 6/π² ≈ 0.6079, known as the Basel constant.</p>
         </div>
 
         <div class="export-panel">
-            <div class="export-title">💾 Export Visualizations</div>
-            
-            <div class="resolution-selector">
-                <button class="resolution-btn" onclick="setResolution('2k')">2K (2048px)</button>
-                <button class="resolution-btn active" onclick="setResolution('4k')">4K (3840px)</button>
-                <button class="resolution-btn" onclick="setResolution('8k')">8K (7680px)</button>
-            </div>
-            
+            <div class="section-title">💾 Export</div>
             <div class="export-grid">
-                <button onclick="exportCanvas('modularCanvas', 'Canvas 1: Modular Circle')">Export Canvas 1 PNG</button>
-                <button onclick="exportCanvas('latticeCanvas', 'Canvas 2: Lattice Directions')">Export Canvas 2 PNG</button>
-                <button class="secondary" onclick="exportBoth()">Export Both PNG</button>
-                <button class="secondary" onclick="exportWithStats()">Export with Stats PNG</button>
-                <button onclick="exportCSV('canvas1')">Export Canvas 1 CSV</button>
-                <button onclick="exportCSV('canvas2')">Export Canvas 2 CSV</button>
-                <button class="secondary" onclick="exportAllCSV()">Export All Data CSV</button>
+                <button onclick="exportPNG('canvas1')">Export Canvas 1</button>
+                <button onclick="exportPNG('canvas2')">Export Canvas 2</button>
+                <button class="secondary" onclick="exportCSV('canvas1')">CSV Canvas 1</button>
+                <button class="secondary" onclick="exportCSV('canvas2')">CSV Canvas 2</button>
             </div>
-        </div>
-
-        <div class="footer">
-            <p><strong>Primitive Lattice Directions & Modular Circles</strong></p>
-            <p>A geometric framework unifying GCD-visibility, reduced residues, and Gaussian integers</p>
-            <p style="margin-top: 15px;">Created by <a href="https://twitter.com/7dview" target="_blank">Wessen Getachew (@7dview)</a> | 
-            <a href="https://github.com/wessengetachew" target="_blank">GitHub</a></p>
         </div>
     </div>
 
     <script>
-        let currentTheme = 'dark';
-        let exportResolution = 3840;
-        let canvas1Independent = false;
-        let canvas2Independent = false;
-        let canvas2Inverted = false;
-        let canvas2Zoom = 1.0;
-
-        // Color schemes
-        const colorSchemes = {
-            default: { coprime: '#00FFFF', nonCoprime: '#e74c3c', prime: '#FFD700', primitive: '#48BB78' },
-            rainbow: (index, total) => `hsl(${(index / total) * 360}, 80%, 60%)`,
-            heatmap: (value, max) => {
-                const ratio = value / max;
-                const r = Math.floor(ratio * 255);
-                const b = Math.floor((1 - ratio) * 255);
-                return `rgb(${r}, 0, ${b})`;
-            },
-            monochrome: { coprime: '#FFD700', nonCoprime: '#B8960A', prime: '#FFD700', primitive: '#B8960A' },
-            pastel: { coprime: '#A7C7E7', nonCoprime: '#FFB6C1', prime: '#FFE4B5', primitive: '#B4E7CE' },
-            neon: { coprime: '#00FF00', nonCoprime: '#FF00FF', prime: '#00FFFF', primitive: '#FFFF00' }
-        };
+        let theme = 'dark';
+        let c2Inverted = false;
+        let c2Zoom = 1.0;
+        let legendData1 = [];
+        let legendData2 = [];
 
         function gcd(a, b) {
             a = Math.abs(a);
             b = Math.abs(b);
-            while (b !== 0) {
+            while (b) {
                 let t = b;
                 b = a % b;
                 a = t;
             }
             return a;
-        }
-
-        function eulerTotient(n) {
-            let result = 0;
-            for (let i = 1; i < n; i++) {
-                if (gcd(i, n) === 1) result++;
-            }
-            return result;
-        }
-
-        function getReducedResidues(m) {
-            const residues = [];
-            for (let r = 1; r < m; r++) {
-                if (gcd(r, m) === 1) {
-                    residues.push(r);
-                }
-            }
-            return residues;
         }
 
         function isPrime(n) {
@@ -920,817 +531,489 @@
             return true;
         }
 
-        function getPrimitiveLatticePoints(range) {
-            const points = [];
+        function getResidues(m) {
+            return Array.from({length: m}, (_, i) => i).filter(r => gcd(r, m) === 1);
+        }
+
+        function getLatticePoints(range) {
+            const pts = [];
             for (let a = -range; a <= range; a++) {
                 for (let b = -range; b <= range; b++) {
                     if (a === 0 && b === 0) continue;
                     if (gcd(a, b) === 1) {
                         const norm = a * a + b * b;
-                        const gcdVal = gcd(a, b);
-                        points.push({ a, b, norm, gcdVal, isPrime: isPrime(norm) });
+                        pts.push({a, b, norm, isPrime: isPrime(norm)});
                     }
                 }
             }
-            return points;
+            return pts;
+        }
+
+        function getColor(scheme, val, max, isReduced) {
+            if (scheme === 'rainbow') {
+                const h = (val / max) * 360;
+                return `hsl(${h}, 80%, 60%)`;
+            } else if (scheme === 'heatmap') {
+                const r = Math.floor((val / max) * 255);
+                const b = 255 - r;
+                return `rgb(${r}, 0, ${b})`;
+            } else if (scheme === 'monochrome') {
+                return theme === 'dark' ? '#FFD700' : '#d69e00';
+            } else {
+                return isReduced ? 
+                    (theme === 'dark' ? '#00FFFF' : '#0891b2') : 
+                    (theme === 'dark' ? '#e74c3c' : '#dc2626');
+            }
         }
 
         function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('theme', currentTheme);
-            updateAll();
+            theme = theme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', theme);
+            updateCanvas1();
+            updateCanvas2();
         }
 
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            currentTheme = savedTheme;
-            document.body.setAttribute('data-theme', currentTheme);
-        }
-
-        function updateModulusDisplay() {
-            const m = parseInt(document.getElementById('modulus').value);
+        function updateModulus() {
+            const m = document.getElementById('modulus').value;
             document.getElementById('modulusValue').textContent = m;
-            if (!canvas1Independent) {
-                document.getElementById('canvas1Modulus').value = m;
-                document.getElementById('canvas1ModulusValue').textContent = m;
+            if (!document.getElementById('c1Ind').checked) {
+                document.getElementById('c1Mod').value = m;
+                document.getElementById('c1ModVal').textContent = m;
             }
-            if (!canvas2Independent) {
-                document.getElementById('canvas2Modulus').value = m;
-                document.getElementById('canvas2ModulusValue').textContent = m;
+            if (!document.getElementById('c2Ind').checked) {
+                document.getElementById('c2Mod').value = m;
+                document.getElementById('c2ModVal').textContent = m;
             }
-            updateAll();
+            updateCanvas1();
+            updateCanvas2();
         }
 
-        function updateRangeDisplay() {
-            const range = parseInt(document.getElementById('latticeRange').value);
-            document.getElementById('rangeValue').textContent = range;
-            if (!canvas2Independent) {
-                document.getElementById('canvas2Range').value = range;
-                document.getElementById('canvas2RangeValue').textContent = range;
+        function updateRange() {
+            const r = document.getElementById('latticeRange').value;
+            document.getElementById('rangeValue').textContent = r;
+            if (!document.getElementById('c2Ind').checked) {
+                document.getElementById('c2Range').value = r;
+                document.getElementById('c2RangeVal').textContent = r;
             }
-            updateAll();
-        }
-
-        function toggleCanvas1Independent() {
-            canvas1Independent = document.getElementById('canvas1Independent').checked;
-            document.getElementById('canvas1Controls').style.display = canvas1Independent ? 'block' : 'none';
-            updateCanvas1();
-        }
-
-        function toggleCanvas2Independent() {
-            canvas2Independent = document.getElementById('canvas2Independent').checked;
-            document.getElementById('canvas2Controls').style.display = canvas2Independent ? 'block' : 'none';
             updateCanvas2();
         }
 
-        function toggleCanvas2Invert() {
-            canvas2Inverted = document.getElementById('c2Inverted').checked;
-            document.getElementById('c2InvertOptions').style.display = canvas2Inverted ? 'block' : 'none';
-            updateCanvas2();
-        }
-
-        function updateCanvas1Modulus() {
-            const m = parseInt(document.getElementById('canvas1Modulus').value);
-            document.getElementById('canvas1ModulusValue').textContent = m;
-            updateCanvas1();
-        }
-
-        function updateCanvas2Modulus() {
-            const m = parseInt(document.getElementById('canvas2Modulus').value);
-            document.getElementById('canvas2ModulusValue').textContent = m;
-            updateCanvas2();
-        }
-
-        function updateCanvas2Range() {
-            const range = parseInt(document.getElementById('canvas2Range').value);
-            document.getElementById('canvas2RangeValue').textContent = range;
-            updateCanvas2();
-        }
-
-        function updateC1PointSize() {
-            const size = parseFloat(document.getElementById('c1PointSize').value);
-            document.getElementById('c1PointSizeValue').textContent = size;
-            updateCanvas1();
-        }
-
-        function updateC2PointSize() {
-            const size = parseFloat(document.getElementById('c2PointSize').value);
-            document.getElementById('c2PointSizeValue').textContent = size;
-            updateCanvas2();
-        }
-
-        function updateC2LineThickness() {
-            const thickness = parseFloat(document.getElementById('c2LineThickness').value);
-            document.getElementById('c2LineThicknessValue').textContent = thickness;
-            updateCanvas2();
-        }
-
-        function updateC2Zoom() {
-            canvas2Zoom = parseFloat(document.getElementById('c2Zoom').value) / 100;
-            document.getElementById('c2ZoomValue').textContent = Math.round(canvas2Zoom * 100);
-            document.getElementById('statZoom').textContent = Math.round(canvas2Zoom * 100) + '%';
-            updateCanvas2();
-        }
-
-        function setModulus(m) {
+        function setMod(m) {
             document.getElementById('modulus').value = m;
-            updateModulusDisplay();
+            updateModulus();
         }
 
-        function setResolution(res) {
-            const buttons = document.querySelectorAll('.resolution-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        function toggleInvert() {
+            c2Inverted = document.getElementById('c2Invert').checked;
+            document.getElementById('invertOptions').style.display = c2Inverted ? 'block' : 'none';
+            updateCanvas2();
+        }
+
+        function updateMaxMod() {
+            const m = document.getElementById('maxMod').value;
+            document.getElementById('maxModVal').textContent = m;
+            updateCanvas2();
+        }
+
+        function updateZoom() {
+            c2Zoom = document.getElementById('zoom').value / 100;
+            document.getElementById('zoomVal').textContent = Math.round(c2Zoom * 100);
+            updateCanvas2();
+        }
+
+        function updateCanvas1() {
+            const isInd = document.getElementById('c1Ind').checked;
+            document.getElementById('c1IndControls').style.display = isInd ? 'block' : 'none';
             
-            switch(res) {
-                case '2k': exportResolution = 2048; break;
-                case '4k': exportResolution = 3840; break;
-                case '8k': exportResolution = 7680; break;
-            }
-        }
-
-        function getCanvas1Modulus() {
-            return canvas1Independent ? 
-                parseInt(document.getElementById('canvas1Modulus').value) :
+            const m = isInd ? 
+                parseInt(document.getElementById('c1Mod').value) :
                 parseInt(document.getElementById('modulus').value);
-        }
-
-        function getCanvas2Params() {
-            if (canvas2Independent) {
-                return {
-                    modulus: parseInt(document.getElementById('canvas2Modulus').value),
-                    range: parseInt(document.getElementById('canvas2Range').value)
-                };
-            } else {
-                return {
-                    modulus: parseInt(document.getElementById('modulus').value),
-                    range: parseInt(document.getElementById('latticeRange').value)
-                };
-            }
-        }
-
-        function getColorForScheme(scheme, value, total, isPrime, isReduced) {
-            const schemes = colorSchemes[scheme] || colorSchemes.default;
             
-            if (typeof schemes === 'function') {
-                return schemes(value, total);
-            } else if (scheme === 'heatmap') {
-                return colorSchemes.heatmap(value, total);
-            } else {
-                if (isPrime) return schemes.prime || schemes.coprime;
-                if (isReduced) return schemes.coprime;
-                return schemes.nonCoprime;
-            }
-        }
-
-        function drawCanvas1() {
-            const m = getCanvas1Modulus();
-            const canvas = document.getElementById('modularCanvas');
+            if (isInd) document.getElementById('c1ModVal').textContent = m;
+            
+            const canvas = document.getElementById('canvas1');
             const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const radius = Math.min(width, height) * 0.35;
-
+            const w = canvas.width, h = canvas.height;
+            const cx = w/2, cy = h/2;
+            const r = Math.min(w, h) * 0.35;
+            
             const showCircle = document.getElementById('c1ShowCircle').checked;
             const showPoints = document.getElementById('c1ShowPoints').checked;
             const showLabels = document.getElementById('c1ShowLabels').checked;
-            const showPolygon = document.getElementById('c1ShowPolygon').checked;
-            const showGrid = document.getElementById('c1ShowGrid').checked;
-            const showAxes = document.getElementById('c1ShowAxes').checked;
-            const pointSize = parseFloat(document.getElementById('c1PointSize').value);
-            const colorScheme = document.getElementById('c1ColorScheme').value;
-
-            ctx.clearRect(0, 0, width, height);
-
-            if (showGrid) {
-                ctx.strokeStyle = currentTheme === 'dark' ? '#2a3150' : '#cbd5e0';
-                ctx.lineWidth = 0.5;
-                for (let i = -1; i <= 1; i += 0.2) {
-                    ctx.beginPath();
-                    ctx.moveTo(centerX + i * radius, centerY - radius);
-                    ctx.lineTo(centerX + i * radius, centerY + radius);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(centerX - radius, centerY + i * radius);
-                    ctx.lineTo(centerX + radius, centerY + i * radius);
-                    ctx.stroke();
-                }
-            }
-
+            const showPoly = document.getElementById('c1ShowPoly').checked;
+            const colorScheme = document.getElementById('c1Color').value;
+            
+            ctx.clearRect(0, 0, w, h);
+            
             if (showCircle) {
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.strokeStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
+                ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+                ctx.strokeStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
                 ctx.lineWidth = 3;
                 ctx.stroke();
             }
-
-            if (showAxes) {
-                ctx.strokeStyle = currentTheme === 'dark' ? '#00FFFF' : '#0891b2';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(centerX - radius, centerY);
-                ctx.lineTo(centerX + radius, centerY);
-                ctx.moveTo(centerX, centerY - radius);
-                ctx.lineTo(centerX, centerY + radius);
-                ctx.stroke();
-            }
-
-            const residues = getReducedResidues(m);
-
+            
+            ctx.strokeStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cx - r, cy);
+            ctx.lineTo(cx + r, cy);
+            ctx.moveTo(cx, cy - r);
+            ctx.lineTo(cx, cy + r);
+            ctx.stroke();
+            
+            const residues = getResidues(m);
+            legendData1 = [];
+            
             if (showPoints) {
                 for (let i = 0; i < m; i++) {
-                    const angle = (2 * Math.PI * i / m) - Math.PI / 2;
-                    const x = centerX + radius * Math.cos(angle);
-                    const y = centerY + radius * Math.sin(angle);
-                    const isReduced = residues.includes(i);
-
+                    const isRed = residues.includes(i);
+                    const ang = (2 * Math.PI * i / m) - Math.PI / 2;
+                    const x = cx + r * Math.cos(ang);
+                    const y = cy + r * Math.sin(ang);
+                    
                     ctx.beginPath();
-                    ctx.arc(x, y, isReduced ? pointSize + 2 : pointSize, 0, 2 * Math.PI);
-                    ctx.fillStyle = getColorForScheme(colorScheme, i, m, false, isReduced);
+                    ctx.arc(x, y, isRed ? 7 : 5, 0, 2 * Math.PI);
+                    const col = getColor(colorScheme, i, m, isRed);
+                    ctx.fillStyle = col;
                     ctx.fill();
-                    ctx.strokeStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
+                    ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                     ctx.lineWidth = 2;
                     ctx.stroke();
-
+                    
                     if (showLabels) {
-                        const labelRadius = radius + 30;
-                        const labelX = centerX + labelRadius * Math.cos(angle);
-                        const labelY = centerY + labelRadius * Math.sin(angle);
-                        ctx.fillStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                        ctx.font = 'bold 12px sans-serif';
+                        ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                        ctx.font = '12px sans-serif';
                         ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(i.toString(), labelX, labelY);
+                        ctx.fillText(i.toString(), cx + (r + 25) * Math.cos(ang), cy + (r + 25) * Math.sin(ang));
                     }
                 }
             }
-
-            if (showPolygon && residues.length > 0) {
-                ctx.strokeStyle = currentTheme === 'dark' ? '#9F7AEA' : '#7c3aed';
+            
+            if (showPoly && residues.length > 0) {
+                ctx.strokeStyle = theme === 'dark' ? '#9F7AEA' : '#7c3aed';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                for (let i = 0; i < residues.length; i++) {
-                    const angle = (2 * Math.PI * residues[i] / m) - Math.PI / 2;
-                    const x = centerX + radius * Math.cos(angle);
-                    const y = centerY + radius * Math.sin(angle);
-                    if (i === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
+                residues.forEach((ri, i) => {
+                    const ang = (2 * Math.PI * ri / m) - Math.PI / 2;
+                    const x = cx + r * Math.cos(ang);
+                    const y = cy + r * Math.sin(ang);
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                });
                 ctx.closePath();
                 ctx.stroke();
             }
-
-            updateCanvas1Legend(m, residues, colorScheme);
+            
+            legendData1 = [
+                {color: getColor(colorScheme, 0, 1, true), label: `Reduced Residues (φ(${m})=${residues.length})`},
+                {color: getColor(colorScheme, 0, 1, false), label: 'Non-coprime'},
+                {color: theme === 'dark' ? '#9F7AEA' : '#7c3aed', label: 'Polygon'}
+            ];
+            
+            updateLegend(1);
         }
 
-        function drawCanvas2() {
-            const params = getCanvas2Params();
-            const canvas = document.getElementById('latticeCanvas');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            const showLattice = document.getElementById('c2ShowLattice').checked;
-            const showLines = document.getElementById('c2ShowLines').checked;
-            const showCircle = document.getElementById('c2ShowCircle').checked;
-            const showLabels = document.getElementById('c2ShowLabels').checked;
-            const showGrid = document.getElementById('c2ShowGrid').checked;
-            const showAxes = document.getElementById('c2ShowAxes').checked;
-            const highlightPrimes = document.getElementById('c2HighlightPrimes').checked;
-            const displayMode = document.getElementById('c2DisplayMode').value;
-            const colorScheme = document.getElementById('c2ColorScheme').value;
-            const pointSize = parseFloat(document.getElementById('c2PointSize').value);
-            const lineThickness = parseFloat(document.getElementById('c2LineThickness').value);
-
-            ctx.clearRect(0, 0, width, height);
-
-            if (canvas2Inverted) {
-                drawConcentricRings(ctx, params.modulus, centerX, centerY, width, height);
+        function updateCanvas2() {
+            const isInd = document.getElementById('c2Ind').checked;
+            document.getElementById('c2IndControls').style.display = isInd ? 'block' : 'none';
+            
+            const m = isInd ? 
+                parseInt(document.getElementById('c2Mod').value) :
+                parseInt(document.getElementById('modulus').value);
+            
+            const range = isInd ?
+                parseInt(document.getElementById('c2Range').value) :
+                parseInt(document.getElementById('latticeRange').value);
+            
+            if (isInd) {
+                document.getElementById('c2ModVal').textContent = m;
+                document.getElementById('c2RangeVal').textContent = range;
+            }
+            
+            if (c2Inverted) {
+                drawRings();
             } else {
-                drawStandardLattice(ctx, params, centerX, centerY, width, height, 
-                    showLattice, showLines, showCircle, showLabels, showGrid, showAxes,
-                    highlightPrimes, displayMode, colorScheme, pointSize, lineThickness);
+                drawLattice(m, range);
             }
         }
 
-        function drawStandardLattice(ctx, params, centerX, centerY, width, height,
-            showLattice, showLines, showCircle, showLabels, showGrid, showAxes,
-            highlightPrimes, displayMode, colorScheme, pointSize, lineThickness) {
+        function drawLattice(m, range) {
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const cx = w/2, cy = h/2;
+            const scale = (Math.min(w, h) / (2 * range + 4)) * c2Zoom;
             
-            const scale = (Math.min(width, height) / (2 * params.range + 4)) * canvas2Zoom;
-
-            ctx.clearRect(0, 0, width, height);
-
-            if (showGrid) {
-                ctx.strokeStyle = currentTheme === 'dark' ? '#2a3150' : '#cbd5e0';
-                ctx.lineWidth = 0.5;
-                for (let i = -params.range; i <= params.range; i++) {
-                    if (i === 0) continue;
-                    ctx.beginPath();
-                    ctx.moveTo(centerX + i * scale, centerY - params.range * scale);
-                    ctx.lineTo(centerX + i * scale, centerY + params.range * scale);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(centerX - params.range * scale, centerY - i * scale);
-                    ctx.lineTo(centerX + params.range * scale, centerY - i * scale);
-                    ctx.stroke();
-                }
-            }
-
-            if (showAxes) {
-                ctx.strokeStyle = currentTheme === 'dark' ? '#00FFFF' : '#0891b2';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(0, centerY);
-                ctx.lineTo(width, centerY);
-                ctx.moveTo(centerX, 0);
-                ctx.lineTo(centerX, height);
-                ctx.stroke();
-            }
-
-            if (showCircle) {
-                const unitRadius = scale;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, unitRadius, 0, 2 * Math.PI);
-                ctx.strokeStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 5]);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-
-            const primitivePoints = getPrimitiveLatticePoints(params.range);
-            let visibleCount = 0;
-            let primeCount = 0;
-
-            let filteredPoints = primitivePoints;
-            if (displayMode === 'primes') {
-                filteredPoints = primitivePoints.filter(p => p.isPrime);
-            } else if (displayMode === 'specific') {
-                filteredPoints = primitivePoints.filter(p => p.norm === params.modulus);
-            }
-
-            filteredPoints.forEach(point => {
-                const x = centerX + point.a * scale;
-                const y = centerY - point.b * scale;
-
-                if (showLines) {
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.lineTo(x, y);
-                    
-                    if (colorScheme === 'gcdBased') {
-                        ctx.strokeStyle = getColorForScheme('rainbow', point.gcdVal, 10);
-                    } else if (colorScheme === 'normBased') {
-                        ctx.strokeStyle = getColorForScheme('heatmap', point.norm, 500);
-                    } else if (highlightPrimes && point.isPrime) {
-                        ctx.strokeStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
-                    } else {
-                        ctx.strokeStyle = getColorForScheme(colorScheme, 0, 1, false, true);
-                    }
-                    ctx.lineWidth = lineThickness;
-                    ctx.globalAlpha = 0.4;
-                    ctx.stroke();
-                    ctx.globalAlpha = 1.0;
-                }
-
-                if (showLattice) {
-                    ctx.beginPath();
-                    ctx.arc(x, y, pointSize, 0, 2 * Math.PI);
-                    if (colorScheme === 'normBased') {
-                        ctx.fillStyle = getColorForScheme('heatmap', point.norm, 500);
-                    } else {
-                        ctx.fillStyle = highlightPrimes && point.isPrime ? 
-                            (currentTheme === 'dark' ? '#FFD700' : '#d69e00') : 
-                            getColorForScheme(colorScheme, 0, 1, false, true);
-                    }
-                    ctx.fill();
-                    ctx.strokeStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-
-                    if (showLabels) {
-                        ctx.fillStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                        ctx.font = '10px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(`(${point.a},${point.b})`, x, y - 10);
-                    }
-                }
-
-                visibleCount++;
-                if (point.isPrime) primeCount++;
-            });
-
-            // Draw normalized on unit circle
-            const unitRadius = scale;
-            filteredPoints.forEach(point => {
-                const angle = Math.atan2(point.b, point.a);
-                const x = centerX + unitRadius * Math.cos(angle);
-                const y = centerY - unitRadius * Math.sin(angle);
-
-                ctx.beginPath();
-                ctx.arc(x, y, pointSize + 1, 0, 2 * Math.PI);
-                ctx.fillStyle = currentTheme === 'dark' ? '#00FFFF' : '#0891b2';
-                ctx.fill();
-                ctx.strokeStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-
-            updateCanvas2Stats(params.modulus, visibleCount, primeCount);
-            updateCanvas2Legend(colorScheme, displayMode);
-        }
-
-        function drawConcentricRings(ctx, maxMod, centerX, centerY, width, height) {
-            const ringMode = document.getElementById('c2RingMode').value;
             const showLabels = document.getElementById('c2ShowLabels').checked;
-            const pointSize = parseFloat(document.getElementById('c2PointSize').value);
-            const colorScheme = document.getElementById('c2ColorScheme').value;
+            const displayMode = document.getElementById('c2Display').value;
+            const colorScheme = document.getElementById('c2Color').value;
             
-            const maxRadius = Math.min(width, height) * 0.4;
-            const ringSpacing = maxRadius / maxMod;
-
-            ctx.clearRect(0, 0, width, height);
-
-            // Draw axes
-            ctx.strokeStyle = currentTheme === 'dark' ? '#00FFFF' : '#0891b2';
+            ctx.clearRect(0, 0, w, h);
+            
+            ctx.strokeStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(0, centerY);
-            ctx.lineTo(width, centerY);
-            ctx.moveTo(centerX, 0);
-            ctx.lineTo(centerX, height);
+            ctx.moveTo(0, cy);
+            ctx.lineTo(w, cy);
+            ctx.moveTo(cx, 0);
+            ctx.lineTo(cx, h);
             ctx.stroke();
-
-            for (let m = 2; m <= maxMod; m++) {
-                const radius = ringMode === 'standard' ? 
-                    m * ringSpacing : 
-                    (maxMod - m + 2) * ringSpacing;
-
-                // Draw ring
+            
+            ctx.beginPath();
+            ctx.arc(cx, cy, scale, 0, 2 * Math.PI);
+            ctx.strokeStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            let pts = getLatticePoints(range);
+            if (displayMode === 'primes') pts = pts.filter(p => p.isPrime);
+            if (displayMode === 'specific') pts = pts.filter(p => p.norm === m);
+            
+            pts.forEach(p => {
+                const x = cx + p.a * scale;
+                const y = cy - p.b * scale;
+                
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.strokeStyle = currentTheme === 'dark' ? '#2a3150' : '#cbd5e0';
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = p.isPrime ? 
+                    (theme === 'dark' ? '#FFD700' : '#d69e00') :
+                    (theme === 'dark' ? '#48BB78' : '#059669');
+                ctx.lineWidth = 1.5;
+                ctx.globalAlpha = 0.4;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = p.isPrime ? 
+                    (theme === 'dark' ? '#FFD700' : '#d69e00') :
+                    (theme === 'dark' ? '#48BB78' : '#059669');
+                ctx.fill();
+                ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                
+                if (showLabels && Math.abs(p.a) <= 5 && Math.abs(p.b) <= 5) {
+                    ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`(${p.a},${p.b})`, x, y - 10);
+                }
+                
+                const ang = Math.atan2(p.b, p.a);
+                const ux = cx + scale * Math.cos(ang);
+                const uy = cy - scale * Math.sin(ang);
+                ctx.beginPath();
+                ctx.arc(ux, uy, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
+                ctx.fill();
+                ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            
+            legendData2 = [
+                {color: theme === 'dark' ? '#48BB78' : '#059669', label: 'Primitive Vectors'},
+                {color: theme === 'dark' ? '#FFD700' : '#d69e00', label: 'Prime Norms'},
+                {color: theme === 'dark' ? '#00FFFF' : '#0891b2', label: 'Unit Circle Projection'}
+            ];
+            
+            updateLegend(2);
+        }
+
+        function drawRings() {
+            const maxMod = parseInt(document.getElementById('maxMod').value);
+            const ringMode = document.getElementById('ringMode').value;
+            const showLabels = document.getElementById('c2ShowLabels').checked;
+            const colorScheme = document.getElementById('c2Color').value;
+            
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const cx = w/2, cy = h/2;
+            const maxR = Math.min(w, h) * 0.4 * c2Zoom;
+            const spacing = maxR / maxMod;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            ctx.strokeStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, cy);
+            ctx.lineTo(w, cy);
+            ctx.moveTo(cx, 0);
+            ctx.lineTo(cx, h);
+            ctx.stroke();
+            
+            for (let m = 2; m <= maxMod; m++) {
+                const r = ringMode === 'standard' ? m * spacing : (maxMod - m + 2) * spacing;
+                
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+                ctx.strokeStyle = theme === 'dark' ? '#2a3150' : '#cbd5e0';
                 ctx.lineWidth = 1;
                 ctx.setLineDash([2, 2]);
                 ctx.stroke();
                 ctx.setLineDash([]);
-
-                const residues = getReducedResidues(m);
                 
-                // Draw all m points
-                for (let r = 0; r < m; r++) {
-                    const isReduced = residues.includes(r);
-                    const angle = (2 * Math.PI * r / m) - Math.PI / 2;
-                    const x = centerX + radius * Math.cos(angle);
-                    const y = centerY + radius * Math.sin(angle);
-
+                const residues = getResidues(m);
+                
+                for (let ri = 0; ri < m; ri++) {
+                    const isRed = residues.includes(ri);
+                    const ang = (2 * Math.PI * ri / m) - Math.PI / 2;
+                    const x = cx + r * Math.cos(ang);
+                    const y = cy + r * Math.sin(ang);
+                    
                     ctx.beginPath();
-                    ctx.arc(x, y, isReduced ? pointSize + 1 : pointSize - 1, 0, 2 * Math.PI);
-                    ctx.fillStyle = getColorForScheme(colorScheme, r, m, false, isReduced);
+                    ctx.arc(x, y, isRed ? 6 : 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = getColor(colorScheme, ri, m, isRed);
                     ctx.fill();
-                    ctx.strokeStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
+                    ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                     ctx.lineWidth = 1.5;
                     ctx.stroke();
-
-                    if (showLabels && m <= 20) {
-                        ctx.fillStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
+                    
+                    if (showLabels && m <= 15) {
+                        ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                         ctx.font = '9px sans-serif';
                         ctx.textAlign = 'center';
-                        ctx.fillText(`${r}/${m}`, x, y - 8);
+                        ctx.fillText(`${ri}/${m}`, x, y - 8);
                     }
                 }
-
-                // Draw ring label
-                if (m <= 20) {
-                    ctx.fillStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
+                
+                if (m <= 15) {
+                    ctx.fillStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
                     ctx.font = 'bold 11px sans-serif';
-                    ctx.textAlign = 'left';
-                    ctx.fillText(`m=${m}`, centerX + radius + 5, centerY);
+                    ctx.fillText(`m=${m}`, cx + r + 5, cy);
                 }
             }
-
-            updateCanvas2Legend(colorScheme, 'rings');
-        }
-
-        function updateCanvas1Legend(m, residues, colorScheme) {
-            const legend = document.getElementById('canvas1Legend');
-            legend.innerHTML = `
-                <div class="legend-item">
-                    <div class="legend-color" style="background: ${getColorForScheme(colorScheme, 0, 1, false, true)};"></div>
-                    <span>Reduced Residues (φ(${m})=${residues.length})</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: ${getColorForScheme(colorScheme, 0, 1, false, false)};"></div>
-                    <span>Non-coprime Residues</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: ${currentTheme === 'dark' ? '#9F7AEA' : '#7c3aed'};"></div>
-                    <span>Inscribed Polygon</span>
-                </div>
-            `;
-        }
-
-        function updateCanvas2Legend(colorScheme, displayMode) {
-            const legend = document.getElementById('canvas2Legend');
-            let html = '';
-
-            if (canvas2Inverted) {
-                html = `
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: ${getColorForScheme(colorScheme, 0, 1, false, true)};"></div>
-                        <span>Reduced Residues (gcd=1)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: ${getColorForScheme(colorScheme, 0, 1, false, false)};"></div>
-                        <span>Non-coprime Points</span>
-                    </div>
-                `;
-            } else {
-                html = `
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: ${currentTheme === 'dark' ? '#48BB78' : '#059669'};"></div>
-                        <span>Primitive Vectors (gcd=1)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: ${currentTheme === 'dark' ? '#FFD700' : '#d69e00'};"></div>
-                        <span>Prime Norm Vectors</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: ${currentTheme === 'dark' ? '#00FFFF' : '#0891b2'};"></div>
-                        <span>Normalized on Unit Circle</span>
-                    </div>
-                `;
-            }
-
-            legend.innerHTML = html;
-        }
-
-        function updateCanvas2Stats(modulus, primitiveCount, primeCount) {
-            document.getElementById('statPrimitive').textContent = primitiveCount;
-            document.getElementById('statPrimeNorms').textContent = primeCount;
-        }
-
-        function updateStats() {
-            const m1 = getCanvas1Modulus();
-            const params2 = getCanvas2Params();
             
-            document.getElementById('statModulus1').textContent = m1;
-            document.getElementById('statModulus2').textContent = params2.modulus;
+            legendData2 = [
+                {color: getColor(colorScheme, 0, 1, true), label: 'Reduced Residues'},
+                {color: getColor(colorScheme, 0, 1, false), label: 'Non-coprime'}
+            ];
             
-            const totient = eulerTotient(params2.modulus);
-            const residues = getReducedResidues(params2.modulus);
+            updateLegend(2);
+        }
+
+        function updateLegend(canvasNum) {
+            const legend = document.getElementById(`legend${canvasNum}`);
+            const data = canvasNum === 1 ? legendData1 : legendData2;
             
-            document.getElementById('statTotient').textContent = totient;
-            document.getElementById('statResidues').textContent = residues.join(', ');
-            document.getElementById('statDensity').textContent = (totient / params2.modulus).toFixed(4);
+            legend.innerHTML = data.map(item => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${item.color};"></div>
+                    <span>${item.label}</span>
+                </div>
+            `).join('');
         }
 
-        function updateCanvas1() {
-            drawCanvas1();
-            updateStats();
-        }
-
-        function updateCanvas2() {
-            drawCanvas2();
-            updateStats();
-        }
-
-        function updateAll() {
-            updateCanvas1();
-            updateCanvas2();
-        }
-
-        function exportCanvas(canvasId, title) {
+        function exportPNG(canvasId) {
             const canvas = document.getElementById(canvasId);
-            const tempCanvas = document.createElement('canvas');
-            const padding = 200;
-            const legendHeight = 300;
-            tempCanvas.width = exportResolution + padding * 2;
-            tempCanvas.height = exportResolution + padding + legendHeight;
+            const canvasNum = canvasId === 'canvas1' ? 1 : 2;
+            const title = canvasNum === 1 ? 'Canvas 1: Modular Circle' : 'Canvas 2: Lattice Directions';
+            const legendData = canvasNum === 1 ? legendData1 : legendData2;
             
-            const ctx = tempCanvas.getContext('2d');
-            ctx.fillStyle = currentTheme === 'dark' ? '#0a0e1a' : '#ffffff';
-            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            const temp = document.createElement('canvas');
+            const res = 3840; // 4K
+            const pad = 200;
+            const legH = 100 + legendData.length * 80;
+            temp.width = res + pad * 2;
+            temp.height = res + pad + legH;
             
-            // Draw title
-            ctx.fillStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
-            ctx.font = 'bold 60px sans-serif';
+            const ctx = temp.getContext('2d');
+            ctx.fillStyle = theme === 'dark' ? '#0a0e1a' : '#ffffff';
+            ctx.fillRect(0, 0, temp.width, temp.height);
+            
+            // Title
+            ctx.fillStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
+            ctx.font = 'bold 70px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(title, tempCanvas.width / 2, padding / 2);
+            ctx.fillText(title, temp.width / 2, pad / 2 + 30);
             
-            // Draw canvas
-            const scale = exportResolution / canvas.width;
+            // Canvas
+            const scale = res / canvas.width;
             ctx.save();
-            ctx.translate(padding, padding);
+            ctx.translate(pad, pad);
             ctx.scale(scale, scale);
             ctx.drawImage(canvas, 0, 0);
             ctx.restore();
             
-            // Draw legend
-            const legendY = exportResolution + padding + 50;
-            ctx.fillStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-            ctx.font = 'bold 40px sans-serif';
+            // Legend
+            const legY = res + pad + 80;
+            ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+            ctx.font = 'bold 50px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('Legend:', padding, legendY);
+            ctx.fillText('Legend:', pad, legY);
             
-            // Get legend items
-            const legendDiv = canvasId === 'modularCanvas' ? 
-                document.getElementById('canvas1Legend') : 
-                document.getElementById('canvas2Legend');
-            const legendItems = legendDiv.querySelectorAll('.legend-item');
-            
-            let yOffset = legendY + 60;
-            legendItems.forEach((item, index) => {
-                const colorDiv = item.querySelector('.legend-color');
-                const text = item.querySelector('span').textContent;
-                const color = colorDiv.style.background;
+            let yOff = legY + 80;
+            legendData.forEach(item => {
+                ctx.fillStyle = item.color;
+                ctx.fillRect(pad + 20, yOff - 30, 50, 50);
+                ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(pad + 20, yOff - 30, 50, 50);
                 
-                // Draw color box
-                ctx.fillStyle = color;
-                ctx.fillRect(padding + 20, yOffset - 25, 40, 40);
-                ctx.strokeStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(padding + 20, yOffset - 25, 40, 40);
+                ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                ctx.font = '40px sans-serif';
+                ctx.fillText(item.label, pad + 90, yOff);
                 
-                // Draw text
-                ctx.fillStyle = currentTheme === 'dark' ? '#E8E8E8' : '#1a202c';
-                ctx.font = '30px sans-serif';
-                ctx.fillText(text, padding + 80, yOffset);
-                
-                yOffset += 60;
+                yOff += 80;
             });
             
-            // Draw footer
-            ctx.fillStyle = currentTheme === 'dark' ? '#A0A0A0' : '#4a5568';
-            ctx.font = '24px sans-serif';
+            // Footer
+            ctx.fillStyle = theme === 'dark' ? '#A0A0A0' : '#4a5568';
+            ctx.font = '30px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('Created by Wessen Getachew (@7dview)', tempCanvas.width / 2, tempCanvas.height - 40);
+            ctx.fillText('Created by Wessen Getachew (@7dview)', temp.width / 2, temp.height - 50);
             
             const link = document.createElement('a');
-            link.download = `${title.replace(/[^a-z0-9]/gi, '_')}_${exportResolution}px.png`;
-            link.href = tempCanvas.toDataURL('image/png');
+            link.download = `${title.replace(/[^a-z0-9]/gi, '_')}.png`;
+            link.href = temp.toDataURL('image/png');
             link.click();
         }
 
-        function exportBoth() {
-            exportCanvas('modularCanvas', 'Canvas 1: Modular Circle');
-            setTimeout(() => {
-                exportCanvas('latticeCanvas', 'Canvas 2: Lattice Directions');
-            }, 100);
-        }
-
-        function exportWithStats() {
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = exportResolution * 2 + 400;
-            tempCanvas.height = exportResolution + 600;
+        function exportCSV(canvasId) {
+            const canvasNum = canvasId === 'canvas1' ? 1 : 2;
+            let csv = '';
             
-            const ctx = tempCanvas.getContext('2d');
-            ctx.fillStyle = currentTheme === 'dark' ? '#0a0e1a' : '#ffffff';
-            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-            
-            // Draw title
-            ctx.fillStyle = currentTheme === 'dark' ? '#FFD700' : '#d69e00';
-            ctx.font = 'bold 80px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Primitive Lattice Directions & Modular Circles', tempCanvas.width / 2, 100);
-            
-            const modCanvas = document.getElementById('modularCanvas');
-            const latticeCanvas = document.getElementById('latticeCanvas');
-            
-            const scale = exportResolution / modCanvas.width;
-            ctx.save();
-            ctx.translate(100, 200);
-            ctx.scale(scale, scale);
-            ctx.drawImage(modCanvas, 0, 0);
-            ctx.restore();
-            
-            ctx.save();
-            ctx.translate(exportResolution + 300, 200);
-            ctx.scale(scale, scale);
-            ctx.drawImage(latticeCanvas, 0, 0);
-            ctx.restore();
-            
-            const link = document.createElement('a');
-            link.download = `complete_analysis_${exportResolution}px.png`;
-            link.href = tempCanvas.toDataURL('image/png');
-            link.click();
-        }
-
-        function exportCSV(canvasType) {
-            let csvContent = '';
-            
-            if (canvasType === 'canvas1') {
-                const m = getCanvas1Modulus();
-                const residues = getReducedResidues(m);
+            if (canvasNum === 1) {
+                const isInd = document.getElementById('c1Ind').checked;
+                const m = isInd ? 
+                    parseInt(document.getElementById('c1Mod').value) :
+                    parseInt(document.getElementById('modulus').value);
                 
-                csvContent = 'Modulus,Residue,IsReduced,GCD,Angle (radians),Angle (degrees)\n';
-                
+                csv = 'Modulus,Residue,IsReduced,GCD,Angle_rad,Angle_deg\n';
                 for (let r = 0; r < m; r++) {
-                    const isReduced = residues.includes(r);
-                    const gcdVal = gcd(r, m);
-                    const angleRad = (2 * Math.PI * r / m);
-                    const angleDeg = (angleRad * 180 / Math.PI);
-                    
-                    csvContent += `${m},${r},${isReduced},${gcdVal},${angleRad.toFixed(10)},${angleDeg.toFixed(6)}\n`;
+                    const isRed = gcd(r, m) === 1;
+                    const ang = (2 * Math.PI * r / m);
+                    csv += `${m},${r},${isRed},${gcd(r, m)},${ang.toFixed(10)},${(ang * 180 / Math.PI).toFixed(6)}\n`;
                 }
-            } else if (canvasType === 'canvas2') {
-                const params = getCanvas2Params();
-                const points = getPrimitiveLatticePoints(params.range);
+            } else {
+                const isInd = document.getElementById('c2Ind').checked;
+                const range = isInd ?
+                    parseInt(document.getElementById('c2Range').value) :
+                    parseInt(document.getElementById('latticeRange').value);
                 
-                csvContent = 'a,b,Norm,GCD,IsPrime,IsReduced,Angle (radians),Angle (degrees)\n';
-                
-                points.forEach(point => {
-                    const angle = Math.atan2(point.b, point.a);
-                    const angleDeg = angle * 180 / Math.PI;
-                    csvContent += `${point.a},${point.b},${point.norm},${point.gcdVal},${point.isPrime},${point.gcdVal === 1},${angle.toFixed(10)},${angleDeg.toFixed(6)}\n`;
+                csv = 'a,b,Norm,GCD,IsPrime,Angle_rad,Angle_deg\n';
+                const pts = getLatticePoints(range);
+                pts.forEach(p => {
+                    const ang = Math.atan2(p.b, p.a);
+                    csv += `${p.a},${p.b},${p.norm},${gcd(p.a, p.b)},${p.isPrime},${ang.toFixed(10)},${(ang * 180 / Math.PI).toFixed(6)}\n`;
                 });
             }
             
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
+            const blob = new Blob([csv], {type: 'text/csv'});
             const link = document.createElement('a');
-            link.download = `${canvasType}_data.csv`;
-            link.href = url;
+            link.download = `${canvasId}_data.csv`;
+            link.href = URL.createObjectURL(blob);
             link.click();
         }
 
-        function exportAllCSV() {
-            const m1 = getCanvas1Modulus();
-            const params2 = getCanvas2Params();
-            
-            let csvContent = '=== CANVAS 1: MODULAR CIRCLE ===\n';
-            csvContent += `Modulus: ${m1}\n`;
-            csvContent += `Euler Totient: ${eulerTotient(m1)}\n\n`;
-            csvContent += 'Residue,IsReduced,GCD,Angle (radians),Angle (degrees)\n';
-            
-            const residues = getReducedResidues(m1);
-            for (let r = 0; r < m1; r++) {
-                const isReduced = residues.includes(r);
-                const gcdVal = gcd(r, m1);
-                const angleRad = (2 * Math.PI * r / m1);
-                const angleDeg = (angleRad * 180 / Math.PI);
-                csvContent += `${r},${isReduced},${gcdVal},${angleRad.toFixed(10)},${angleDeg.toFixed(6)}\n`;
-            }
-            
-            csvContent += '\n\n=== CANVAS 2: LATTICE DIRECTIONS ===\n';
-            csvContent += `Modulus: ${params2.modulus}\n`;
-            csvContent += `Range: ${params2.range}\n\n`;
-            csvContent += 'a,b,Norm,GCD,IsPrime,Angle (radians),Angle (degrees)\n';
-            
-            const points = getPrimitiveLatticePoints(params2.range);
-            points.forEach(point => {
-                const angle = Math.atan2(point.b, point.a);
-                const angleDeg = angle * 180 / Math.PI;
-                csvContent += `${point.a},${point.b},${point.norm},${point.gcdVal},${point.isPrime},${angle.toFixed(10)},${angleDeg.toFixed(6)}\n`;
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = 'complete_data.csv';
-            link.href = url;
-            link.click();
-        }
-
-        document.addEventListener('keydown', (e) => {
-            const modInput = document.getElementById('modulus');
-            const currentValue = parseInt(modInput.value);
-            
-            switch(e.key) {
-                case 'ArrowRight':
-                    modInput.value = Math.min(100, currentValue + 1);
-                    updateModulusDisplay();
-                    break;
-                case 'ArrowLeft':
-                    modInput.value = Math.max(2, currentValue - 1);
-                    updateModulusDisplay();
-                    break;
-                case 'ArrowUp':
-                    modInput.value = Math.min(100, currentValue + 10);
-                    updateModulusDisplay();
-                    break;
-                case 'ArrowDown':
-                    modInput.value = Math.max(2, currentValue - 10);
-                    updateModulusDisplay();
-                    break;
-                case 'r':
-                case 'R':
-                    setModulus(8);
-                    break;
-            }
-        });
-
-        updateAll();
+        updateCanvas1();
+        updateCanvas2();
     </script>
 </body>
 </html>
