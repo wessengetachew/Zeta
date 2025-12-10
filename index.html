@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primitive Lattice Directions & Modular Circles - Enhanced</title>
+    <title>Primitive Lattice Directions & Modular Circles - Complete</title>
     <style>
         :root {
             --bg-deep: #0a0e1a;
@@ -18,7 +18,6 @@
             --border: #2a3150;
             --accent-purple: #9F7AEA;
             --accent-green: #48BB78;
-            --accent-red: #e74c3c;
         }
 
         [data-theme="light"] {
@@ -34,7 +33,6 @@
             --border: #cbd5e0;
             --accent-purple: #7c3aed;
             --accent-green: #059669;
-            --accent-red: #dc2626;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,7 +47,7 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        .container { max-width: 2200px; margin: 0 auto; }
+        .container { max-width: 1800px; margin: 0 auto; }
 
         .header {
             text-align: center;
@@ -88,6 +86,18 @@
 
         .theme-toggle:hover { border-color: var(--gold); transform: translateY(-2px); }
 
+        .intro-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--cyan);
+        }
+
+        .intro-panel p { margin-bottom: 15px; }
+        .intro-panel ul { margin-left: 30px; }
+        .intro-panel li { margin-bottom: 8px; }
+
         .controls-panel {
             background: var(--bg-panel);
             padding: 25px;
@@ -96,54 +106,11 @@
             border: 1px solid var(--border);
         }
 
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .canvas-section {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .canvas-panel {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .legend-sidebar {
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            position: sticky;
-            top: 20px;
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
-        }
-
         .section-title {
             font-size: 1.2em;
             font-weight: 600;
             color: var(--gold);
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .subsection-title {
-            font-size: 1em;
-            font-weight: 600;
-            color: var(--cyan);
-            margin: 20px 0 10px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border);
         }
 
         .control-group { margin-bottom: 20px; }
@@ -221,6 +188,34 @@
             font-weight: normal;
         }
 
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .canvas-panel {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .right-sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
         .canvas-header {
             display: flex;
             justify-content: space-between;
@@ -258,128 +253,200 @@
             cursor: crosshair;
         }
 
-        .legend-item-detailed {
+        .legend-panel {
             background: var(--bg-panel);
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .legend-title {
+            font-weight: 600;
+            color: var(--cyan);
             margin-bottom: 15px;
-            border-left: 4px solid var(--cyan);
+            font-size: 1.3em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .legend-color-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .color-swatch {
-            width: 40px;
-            height: 40px;
+        .legend-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-card);
             border-radius: 6px;
-            border: 2px solid var(--border);
+            border-left: 3px solid var(--cyan);
         }
 
-        .legend-label {
+        .legend-section-title {
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 12px;
             font-size: 1.1em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            padding: 8px;
+            background: var(--bg-panel);
+            border-radius: 4px;
+        }
+
+        .legend-color {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 4px;
+            border: 2px solid var(--border);
+            margin-top: 2px;
+        }
+
+        .legend-item-content {
+            flex: 1;
+        }
+
+        .legend-item-label {
             font-weight: 600;
             color: var(--text-primary);
+            margin-bottom: 5px;
         }
 
-        .legend-description {
-            color: var(--text-secondary);
+        .legend-item-description {
             font-size: 0.9em;
             line-height: 1.5;
-            margin-top: 8px;
+            color: var(--text-secondary);
         }
 
         .legend-formula {
             background: var(--bg-deep);
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
-            color: var(--gold);
+            color: var(--cyan);
+            margin-top: 8px;
+            border: 1px solid var(--border);
         }
 
-        .legend-stats {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border);
+        .analysis-section {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
         }
 
-        .stat-row {
+        .analysis-title {
+            font-weight: 600;
+            color: var(--accent-purple);
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .analysis-item {
             display: flex;
             justify-content: space-between;
-            margin: 5px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .analysis-item:last-child {
+            border-bottom: none;
+        }
+
+        .analysis-label {
+            color: var(--text-secondary);
             font-size: 0.9em;
         }
 
-        .stat-label {
-            color: var(--text-secondary);
-        }
-
-        .stat-value {
+        .analysis-value {
             color: var(--cyan);
             font-weight: 600;
             font-family: monospace;
         }
 
-        .inspection-panel {
+        .insight-box {
             background: var(--bg-panel);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            border: 2px solid var(--gold);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            border-left: 3px solid var(--accent-green);
         }
 
-        .inspection-title {
+        .insight-title {
             font-weight: 600;
-            color: var(--gold);
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            color: var(--accent-green);
+            margin-bottom: 6px;
+            font-size: 0.95em;
         }
 
-        .property-grid {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 8px 15px;
-            margin-top: 10px;
-        }
-
-        .property-label {
+        .insight-text {
+            font-size: 0.85em;
+            line-height: 1.5;
             color: var(--text-secondary);
-            font-weight: 600;
         }
 
-        .property-value {
-            color: var(--text-primary);
-            font-family: monospace;
+        .stats-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--gold);
         }
 
-        .animation-controls {
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
             background: var(--bg-panel);
             padding: 15px;
             border-radius: 8px;
-            margin-top: 15px;
             border: 1px solid var(--border);
         }
 
-        .play-button {
-            background: linear-gradient(135deg, var(--accent-green), #059669);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-right: 10px;
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
         }
 
-        .play-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--cyan);
+            font-family: monospace;
+        }
+
+        .theory-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        .theory-panel p {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .math-formula {
+            background: var(--bg-panel);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: var(--cyan);
+            border: 1px solid var(--border);
         }
 
         button {
@@ -410,6 +477,44 @@
             margin-top: 15px;
         }
 
+        .export-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .resolution-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resolution-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-panel);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .resolution-btn.active {
+            background: var(--gold);
+            color: var(--bg-deep);
+            border-color: var(--gold);
+        }
+
         .slider-value {
             margin-left: 10px;
             color: var(--gold);
@@ -423,386 +528,328 @@
             gap: 15px;
         }
 
-        .analysis-section {
-            background: var(--bg-panel);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .analysis-title {
-            font-weight: 600;
-            color: var(--accent-purple);
-            margin-bottom: 10px;
-        }
-
-        .gap-visualization {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .gap-bar {
-            height: 20px;
-            background: var(--cyan);
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-            color: var(--bg-deep);
-            font-weight: 600;
-        }
-
-        .tooltip {
-            position: absolute;
+        .footer {
+            text-align: center;
+            padding: 25px;
             background: var(--bg-card);
-            border: 2px solid var(--gold);
-            padding: 10px;
-            border-radius: 6px;
-            pointer-events: none;
-            z-index: 1000;
-            display: none;
-            max-width: 250px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
         }
 
-        .tooltip-title {
-            font-weight: 600;
+        .footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
             color: var(--gold);
-            margin-bottom: 5px;
         }
 
-        .tooltip-content {
-            font-size: 0.9em;
-            color: var(--text-primary);
-        }
-
-        @media (max-width: 1400px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-            .legend-sidebar {
-                position: relative;
-                top: 0;
-                max-height: none;
-            }
+        @media (max-width: 1200px) {
+            .canvas-grid { grid-template-columns: 1fr; }
+            .control-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
 
-    <div class="tooltip" id="tooltip">
-        <div class="tooltip-title" id="tooltipTitle"></div>
-        <div class="tooltip-content" id="tooltipContent"></div>
-    </div>
-
     <div class="container">
         <div class="header">
             <h1>Primitive Lattice Directions & Modular Circles</h1>
-            <div class="subtitle">Enhanced Interactive Framework for GCD-Visibility and Gaussian Integers</div>
+            <div class="subtitle">A Geometric Framework for GCD-Visibility and Gaussian Integers</div>
+        </div>
+
+        <div class="intro-panel">
+            <p><strong>Introduction:</strong> This visualization explores the deep connection between primitive lattice vectors, modular embeddings on the unit circle, and the norm structure of Gaussian integers.</p>
+            <p>Primitive lattice vectors (a,b) with gcd(a,b) = 1 determine visible rays from the origin and correspond naturally to reduced residues modulo suitable moduli.</p>
+            <p><strong>We explore the relationship between:</strong></p>
+            <ul>
+                <li>GCD-visibility in the integer lattice</li>
+                <li>Reduced residue classes modulo m</li>
+                <li>Geometric symmetries of the unit circle</li>
+                <li>The norm structure of Gaussian integers</li>
+            </ul>
         </div>
 
         <div class="controls-panel">
-            <div class="section-title">⚙ Global Controls & Filters</div>
+            <div class="section-title">⚙ Global Controls</div>
             
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Modulus m: <span class="slider-value" id="modulusValue">8</span></label>
-                    <input type="range" id="modulus" min="2" max="100" value="8" oninput="updateModulus()">
-                    <div class="preset-buttons">
-                        <button onclick="setMod(6)">m=6</button>
-                        <button onclick="setMod(12)">m=12</button>
-                        <button onclick="setMod(17)">m=17</button>
-                        <button onclick="setMod(60)">m=60</button>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label>Lattice Range: <span class="slider-value" id="rangeValue">15</span></label>
-                    <input type="range" id="latticeRange" min="5" max="50" value="15" oninput="updateRange()">
+            <div class="control-group">
+                <label>Modulus m: <span class="slider-value" id="modulusValue">8</span></label>
+                <input type="range" id="modulus" min="2" max="100" value="8" oninput="updateModulus()">
+                <div class="preset-buttons">
+                    <button onclick="setMod(6)">m=6 (ζ(2))</button>
+                    <button onclick="setMod(12)">m=12 (φ=4)</button>
+                    <button onclick="setMod(17)">m=17 (Prime)</button>
+                    <button onclick="setMod(60)">m=60 (HC)</button>
                 </div>
             </div>
 
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Filter by Norm Range:</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="normMin" value="0" min="0" onchange="draw2()" style="width: 48%;" placeholder="Min">
-                        <input type="number" id="normMax" value="1000" min="1" onchange="draw2()" style="width: 48%;" placeholder="Max">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label>Highlight Symmetries:</label>
-                    <select id="symmetryMode" onchange="draw2()">
-                        <option value="none">None</option>
-                        <option value="rotational">Rotational (4-fold)</option>
-                        <option value="reflection">Reflection Axes</option>
-                        <option value="both">Both</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="animation-controls">
-                <div class="subsection-title">🎬 Animation Controls</div>
-                <button class="play-button" onclick="toggleAnimation()">▶ Start Animation</button>
-                <button onclick="stepModulus(1)">Step +1</button>
-                <button onclick="stepModulus(-1)">Step -1</button>
-                <span style="margin-left: 15px; color: var(--text-secondary);">Speed:</span>
-                <input type="range" id="animSpeed" min="100" max="2000" value="500" style="width: 150px; display: inline-block; margin-left: 10px;">
+            <div class="control-group">
+                <label>Lattice Range: <span class="slider-value" id="rangeValue">15</span></label>
+                <input type="range" id="latticeRange" min="5" max="50" value="15" oninput="updateRange()">
             </div>
         </div>
 
-        <div class="main-layout">
-            <div class="canvas-section">
-                <!-- Canvas 1 -->
-                <div class="canvas-panel">
-                    <div class="canvas-header">
-                        <div class="canvas-title">Canvas 1: Modular Circle</div>
-                        <div class="independent-toggle">
-                            <input type="checkbox" id="c1Ind" onchange="toggleC1Ind()">
-                            <label for="c1Ind">Independent</label>
-                        </div>
+        <div class="canvas-grid">
+            <!-- Canvas 1: Modular Circle -->
+            <div class="canvas-panel">
+                <div class="canvas-header">
+                    <div class="canvas-title">Canvas 1: Modular Circle</div>
+                    <div class="independent-toggle">
+                        <input type="checkbox" id="c1Ind" onchange="toggleC1Ind()">
+                        <label for="c1Ind">Independent</label>
                     </div>
-
-                    <div id="c1IndControls" style="display:none;">
-                        <div class="canvas-controls">
-                            <label>Canvas 1 Modulus: <span class="slider-value" id="c1ModVal">8</span></label>
-                            <input type="range" id="c1Mod" min="2" max="100" value="8" oninput="updateC1()">
-                        </div>
-                    </div>
-
-                    <div class="canvas-controls">
-                        <div class="subsection-title">Display Options</div>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowCircle" checked onchange="draw1()">
-                                <label for="c1ShowCircle">Circle</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowPoints" checked onchange="draw1()">
-                                <label for="c1ShowPoints">Points</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowLabels" checked onchange="draw1()">
-                                <label for="c1ShowLabels">Labels</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowPoly" checked onchange="draw1()">
-                                <label for="c1ShowPoly">Polygon</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowGrid" onchange="draw1()">
-                                <label for="c1ShowGrid">Grid</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c1ShowAxes" checked onchange="draw1()">
-                                <label for="c1ShowAxes">Axes</label>
-                            </div>
-                        </div>
-
-                        <div class="control-group" style="margin-top: 15px;">
-                            <label>Color Scheme:</label>
-                            <select id="c1Color" onchange="draw1()">
-                                <option value="default">Default (Cyan/Red)</option>
-                                <option value="rainbow">Rainbow Spectrum</option>
-                                <option value="heatmap">Heatmap</option>
-                                <option value="monochrome">Monochrome Gold</option>
-                            </select>
-                        </div>
-
-                        <div class="control-group">
-                            <label>Point Size: <span class="slider-value" id="c1PSizeVal">5</span>px</label>
-                            <input type="range" id="c1PSize" min="2" max="15" value="5" oninput="updateC1PSize()">
-                        </div>
-                    </div>
-
-                    <canvas id="canvas1" width="700" height="700"></canvas>
                 </div>
 
-                <!-- Canvas 2 -->
-                <div class="canvas-panel">
-                    <div class="canvas-header">
-                        <div class="canvas-title">Canvas 2: Lattice Directions</div>
-                        <div class="independent-toggle">
-                            <input type="checkbox" id="c2Ind" onchange="toggleC2Ind()">
-                            <label for="c2Ind">Independent</label>
-                        </div>
-                    </div>
-
-                    <div id="c2IndControls" style="display:none;">
-                        <div class="canvas-controls">
-                            <div class="control-row">
-                                <div>
-                                    <label>Canvas 2 Modulus: <span class="slider-value" id="c2ModVal">8</span></label>
-                                    <input type="range" id="c2Mod" min="2" max="100" value="8" oninput="updateC2()">
-                                </div>
-                                <div>
-                                    <label>Canvas 2 Range: <span class="slider-value" id="c2RangeVal">15</span></label>
-                                    <input type="range" id="c2Range" min="5" max="50" value="15" oninput="updateC2()">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div id="c1IndControls" style="display:none;">
                     <div class="canvas-controls">
-                        <div class="subsection-title">View Mode</div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="c2Invert" onchange="toggleInvert()">
-                            <label for="c2Invert">Invert to Concentric Rings</label>
-                        </div>
+                        <label>Canvas 1 Modulus: <span class="slider-value" id="c1ModVal">8</span></label>
+                        <input type="range" id="c1Mod" min="2" max="100" value="8" oninput="updateC1()">
+                    </div>
+                </div>
 
-                        <div id="invertOptions" style="display:none;">
-                            <div class="control-group">
-                                <label>Ring Mode:</label>
-                                <select id="ringMode" onchange="draw2()">
-                                    <option value="standard">Standard (small inner)</option>
-                                    <option value="inverse">Inverse (small outer)</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label>Max Modulus: <span class="slider-value" id="maxModVal">20</span></label>
-                                <input type="range" id="maxMod" min="5" max="100" value="20" oninput="updateMaxMod()">
-                            </div>
-                        </div>
+                <div class="canvas-controls">
+                    <div class="section-title" style="font-size:1em;margin-bottom:10px;">Display Options</div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowCircle" checked onchange="draw1()">
+                        <label for="c1ShowCircle">Show Circle</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowPoints" checked onchange="draw1()">
+                        <label for="c1ShowPoints">Show Points</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowLabels" checked onchange="draw1()">
+                        <label for="c1ShowLabels">Show Labels</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowPoly" checked onchange="draw1()">
+                        <label for="c1ShowPoly">Show Polygon</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowGrid" onchange="draw1()">
+                        <label for="c1ShowGrid">Show Grid</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c1ShowAxes" checked onchange="draw1()">
+                        <label for="c1ShowAxes">Show Axes</label>
+                    </div>
 
-                        <div class="subsection-title">Display Options</div>
-                        
-                        <div class="control-group">
-                            <label>Display Mode:</label>
-                            <select id="c2Display" onchange="draw2()">
-                                <option value="all">All Primitive</option>
-                                <option value="primes">Prime Norms</option>
-                                <option value="specific">Specific Norm</option>
-                            </select>
-                        </div>
+                    <div class="control-group">
+                        <label>Color Scheme:</label>
+                        <select id="c1Color" onchange="draw1()">
+                            <option value="default">Default (Cyan/Red)</option>
+                            <option value="rainbow">Rainbow Spectrum</option>
+                            <option value="heatmap">Heatmap (Blue-Red)</option>
+                            <option value="monochrome">Monochrome Gold</option>
+                            <option value="pastel">Pastel Colors</option>
+                            <option value="neon">Neon Bright</option>
+                        </select>
+                    </div>
 
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c2ShowLattice" checked onchange="draw2()">
-                                <label for="c2ShowLattice">Points</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c2ShowLines" checked onchange="draw2()">
-                                <label for="c2ShowLines">Lines</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c2ShowCircle" checked onchange="draw2()">
-                                <label for="c2ShowCircle">Circle</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="c2ShowLabels" checked onchange="draw2()">
-                                <label for="c2ShowLabels">Labels</label>
-                            </div>
-                        </div>
+                    <div class="control-group">
+                        <label>Point Size: <span class="slider-value" id="c1PSizeVal">5</span>px</label>
+                        <input type="range" id="c1PSize" min="2" max="15" value="5" oninput="updateC1PSize()">
+                    </div>
+                </div>
 
-                        <div class="control-group">
-                            <label>Color Scheme:</label>
-                            <select id="c2Color" onchange="draw2()">
-                                <option value="default">Default</option>
-                                <option value="rainbow">Rainbow</option>
-                                <option value="normBased">Norm-Based</option>
-                                <option value="gcdBased">GCD-Based</option>
-                            </select>
-                        </div>
+                <canvas id="canvas1" width="700" height="700"></canvas>
 
+                <div class="legend-panel">
+                    <div class="legend-title">Legend</div>
+                    <div id="legend1"></div>
+                </div>
+            </div>
+
+            <!-- Canvas 2: Lattice Directions -->
+            <div class="canvas-panel">
+                <div class="canvas-header">
+                    <div class="canvas-title">Canvas 2: Lattice Directions</div>
+                    <div class="independent-toggle">
+                        <input type="checkbox" id="c2Ind" onchange="toggleC2Ind()">
+                        <label for="c2Ind">Independent</label>
+                    </div>
+                </div>
+
+                <div id="c2IndControls" style="display:none;">
+                    <div class="canvas-controls">
                         <div class="control-row">
                             <div>
-                                <label>Point: <span class="slider-value" id="c2PSizeVal">5</span>px</label>
-                                <input type="range" id="c2PSize" min="2" max="15" value="5" oninput="updateC2PSize()">
+                                <label>Canvas 2 Modulus: <span class="slider-value" id="c2ModVal">8</span></label>
+                                <input type="range" id="c2Mod" min="2" max="100" value="8" oninput="updateC2()">
                             </div>
                             <div>
-                                <label>Zoom: <span class="slider-value" id="zoomVal">100</span>%</label>
-                                <input type="range" id="zoom" min="50" max="300" value="100" oninput="updateZoom()">
+                                <label>Canvas 2 Range: <span class="slider-value" id="c2RangeVal">15</span></label>
+                                <input type="range" id="c2Range" min="5" max="50" value="15" oninput="updateC2()">
                             </div>
                         </div>
                     </div>
-
-                    <canvas id="canvas2" width="700" height="700"></canvas>
-                </div>
-            </div>
-
-            <!-- Right Sidebar - Detailed Legend & Analysis -->
-            <div class="legend-sidebar">
-                <div class="section-title">📊 Detailed Analysis & Legend</div>
-
-                <div id="inspectionPanel" class="inspection-panel" style="display:none;">
-                    <div class="inspection-title">🔍 Inspected Point</div>
-                    <div class="property-grid" id="inspectionDetails"></div>
                 </div>
 
-                <div class="subsection-title">Canvas 1: Modular Circle</div>
-                <div id="legend1Details"></div>
+                <div class="canvas-controls">
+                    <div class="section-title" style="font-size:1em;margin-bottom:10px;">View Mode</div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2Invert" onchange="toggleInvert()">
+                        <label for="c2Invert">Invert to Concentric Rings</label>
+                    </div>
 
-                <div class="subsection-title">Canvas 2: Lattice Directions</div>
-                <div id="legend2Details"></div>
+                    <div id="invertOptions" style="display:none;">
+                        <div class="control-group">
+                            <label>Ring Mode:</label>
+                            <select id="ringMode" onchange="draw2()">
+                                <option value="standard">Standard (small inner)</option>
+                                <option value="inverse">Inverse (small outer)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Max Modulus (Rings): <span class="slider-value" id="maxModVal">20</span></label>
+                            <input type="range" id="maxMod" min="5" max="100" value="20" oninput="updateMaxMod()">
+                        </div>
+                    </div>
 
-                <div class="analysis-section">
-                    <div class="analysis-title">Gap Analysis</div>
-                    <div id="gapAnalysis"></div>
+                    <div class="section-title" style="font-size:1em;margin:15px 0 10px;">Display Options</div>
+                    
+                    <div class="control-group">
+                        <label>Display Mode:</label>
+                        <select id="c2Display" onchange="draw2()">
+                            <option value="all">All Primitive Directions</option>
+                            <option value="primes">Prime Norms Only</option>
+                            <option value="specific">Specific Norm (m)</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowLattice" checked onchange="draw2()">
+                        <label for="c2ShowLattice">Show Lattice Points</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowLines" checked onchange="draw2()">
+                        <label for="c2ShowLines">Show Lines</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowCircle" checked onchange="draw2()">
+                        <label for="c2ShowCircle">Show Unit Circle</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowLabels" checked onchange="draw2()">
+                        <label for="c2ShowLabels">Show All Labels</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowGrid" onchange="draw2()">
+                        <label for="c2ShowGrid">Show Grid</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2ShowAxes" checked onchange="draw2()">
+                        <label for="c2ShowAxes">Show Axes</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="c2HighlightPrimes" checked onchange="draw2()">
+                        <label for="c2HighlightPrimes">Highlight Prime Norms</label>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Color Scheme:</label>
+                        <select id="c2Color" onchange="draw2()">
+                            <option value="default">Default (Green/Gold)</option>
+                            <option value="rainbow">Rainbow Spectrum</option>
+                            <option value="heatmap">Heatmap (Blue-Red)</option>
+                            <option value="monochrome">Monochrome Gold</option>
+                            <option value="gcdBased">GCD-Based Colors</option>
+                            <option value="normBased">Norm-Based Colors</option>
+                        </select>
+                    </div>
+
+                    <div class="control-row">
+                        <div>
+                            <label>Point Size: <span class="slider-value" id="c2PSizeVal">5</span>px</label>
+                            <input type="range" id="c2PSize" min="2" max="15" value="5" oninput="updateC2PSize()">
+                        </div>
+                        <div>
+                            <label>Line Thickness: <span class="slider-value" id="c2LThickVal">1.5</span>px</label>
+                            <input type="range" id="c2LThick" min="0.5" max="5" step="0.5" value="1.5" oninput="updateC2LThick()">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Zoom: <span class="slider-value" id="zoomVal">100</span>%</label>
+                        <input type="range" id="zoom" min="50" max="300" value="100" oninput="updateZoom()">
+                    </div>
                 </div>
 
-                <div class="analysis-section">
-                    <div class="analysis-title">Symmetry Properties</div>
-                    <div id="symmetryAnalysis"></div>
-                </div>
+                <canvas id="canvas2" width="700" height="700"></canvas>
 
-                <div class="analysis-section">
-                    <div class="analysis-title">Distribution Statistics</div>
-                    <div id="distributionStats"></div>
+                <div class="legend-panel">
+                    <div class="legend-title">Legend</div>
+                    <div id="legend2"></div>
                 </div>
             </div>
         </div>
 
-        <div class="stats-panel" style="background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid var(--gold);">
-            <div class="section-title">📊 Global Statistics</div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">Canvas 1 Modulus</div>
-                    <div style="font-size: 1.3em; font-weight: 600; color: var(--cyan); font-family: monospace;" id="statMod1">8</div>
+        <div class="stats-panel">
+            <div class="section-title">📊 Computed Properties</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Canvas 1 Modulus</div>
+                    <div class="stat-value" id="statMod1">8</div>
                 </div>
-                <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">Canvas 2 Modulus</div>
-                    <div style="font-size: 1.3em; font-weight: 600; color: var(--cyan); font-family: monospace;" id="statMod2">8</div>
+                <div class="stat-card">
+                    <div class="stat-label">Canvas 2 Modulus</div>
+                    <div class="stat-value" id="statMod2">8</div>
                 </div>
-                <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">φ(m) - Euler's Totient</div>
-                    <div style="font-size: 1.3em; font-weight: 600; color: var(--cyan); font-family: monospace;" id="statTotient">4</div>
+                <div class="stat-card">
+                    <div class="stat-label">φ(m) - Euler's Totient</div>
+                    <div class="stat-value" id="statTotient">4</div>
                 </div>
-                <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">Coprime Density</div>
-                    <div style="font-size: 1.3em; font-weight: 600; color: var(--cyan); font-family: monospace;" id="statDensity">0.5000</div>
+                <div class="stat-card">
+                    <div class="stat-label">Reduced Residues</div>
+                    <div class="stat-value" id="statResidues">1,3,5,7</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Primitive Vectors</div>
+                    <div class="stat-value" id="statPrimitive">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Prime Norm Vectors</div>
+                    <div class="stat-value" id="statPrimeNorms">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Coprime Density</div>
+                    <div class="stat-value" id="statDensity">0.5000</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Canvas 2 Zoom</div>
+                    <div class="stat-value" id="statZoom">100%</div>
                 </div>
             </div>
         </div>
 
-        <div class="theory-panel" style="background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid var(--accent-purple);">
-            <div class="section-title" style="color: var(--accent-purple);">📐 Theoretical Foundation</div>
+        <div class="theory-panel">
+            <div class="section-title">📐 Theoretical Foundation</div>
             
-            <p style="margin-bottom: 15px; color: var(--text-primary);"><strong>Visibility Indicator:</strong> For any lattice point (a,b), we define:</p>
-            <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; font-family: 'Courier New', monospace; font-size: 1.1em; color: var(--cyan); border: 1px solid var(--border);">
+            <p><strong>Visibility Indicator:</strong> For any lattice point (a,b), we define:</p>
+            <div class="math-formula">
                 vis(a,b) = 1 if gcd(a,b) = 1, else 0
             </div>
-            <p style="margin-bottom: 15px; color: var(--text-primary);">Primitive lattice vectors with vis(a,b) = 1 determine rays from the origin that hit no other lattice point before reaching (a,b).</p>
+            <p>Primitive lattice vectors with vis(a,b) = 1 determine rays from the origin that hit no other lattice point before reaching (a,b).</p>
             
-            <p style="margin-bottom: 15px; color: var(--text-primary);"><strong>Modular Embedding:</strong> Each reduced residue r with gcd(r,m) = 1 maps to the unit circle:</p>
-            <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; font-family: 'Courier New', monospace; font-size: 1.1em; color: var(--cyan); border: 1px solid var(--border);">
+            <p><strong>Modular Embedding:</strong> Each reduced residue r with gcd(r,m) = 1 maps to the unit circle:</p>
+            <div class="math-formula">
                 r → e<sup>2πir/m</sup>
             </div>
             
-            <p style="margin-bottom: 15px; color: var(--text-primary);"><strong>Norm and Gaussian Integers:</strong> A primitive vector (a,b) with norm n = a² + b² corresponds to the Gaussian integer a + bi with |a + bi|² = n.</p>
+            <p><strong>Norm and Gaussian Integers:</strong> A primitive vector (a,b) with norm n = a² + b² corresponds to the Gaussian integer a + bi with |a + bi|² = n.</p>
             
-            <p style="margin-bottom: 15px; color: var(--text-primary);"><strong>Prime Norm Uniqueness:</strong> If a² + b² = p where p is prime and p ≡ 1 (mod 4), the representation is unique up to signs and coordinate swap.</p>
+            <p><strong>Prime Norm Uniqueness:</strong> If a² + b² = p where p is prime and p ≡ 1 (mod 4), the representation is unique up to signs and coordinate swap.</p>
             
-            <p style="color: var(--text-primary);"><strong>Basel Problem Connection:</strong> The limiting density of coprime pairs approaches 6/π² ≈ 0.6079, known as the Basel constant.</p>
+            <p><strong>Basel Problem Connection:</strong> The limiting density of coprime pairs approaches 6/π² ≈ 0.6079, known as the Basel constant.</p>
         </div>
 
-        <div class="export-panel" style="background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+        <div class="export-panel">
             <div class="section-title">💾 Export Visualizations</div>
             
             <div class="resolution-selector">
@@ -811,7 +858,7 @@
                 <button class="resolution-btn" onclick="setRes('8k')">8K (7680px)</button>
             </div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+            <div class="export-grid">
                 <button onclick="exportPNG('canvas1')">Export Canvas 1 PNG</button>
                 <button onclick="exportPNG('canvas2')">Export Canvas 2 PNG</button>
                 <button class="secondary" onclick="exportBoth()">Export Both PNG</button>
@@ -821,11 +868,11 @@
             </div>
         </div>
 
-        <div style="text-align: center; padding: 25px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); color: var(--text-secondary);">
+        <div class="footer">
             <p><strong>Primitive Lattice Directions & Modular Circles</strong></p>
             <p>A geometric framework unifying GCD-visibility, reduced residues, and Gaussian integers</p>
-            <p style="margin-top: 15px;">Created by <a href="https://twitter.com/7dview" target="_blank" style="color: var(--cyan); text-decoration: none;">Wessen Getachew (@7dview)</a> | 
-            <a href="https://github.com/wessengetachew" target="_blank" style="color: var(--cyan); text-decoration: none;">GitHub</a></p>
+            <p style="margin-top: 15px;">Created by <a href="https://twitter.com/7dview" target="_blank">Wessen Getachew (@7dview)</a> | 
+            <a href="https://github.com/wessengetachew" target="_blank">GitHub</a></p>
         </div>
     </div>
 
@@ -833,9 +880,9 @@
         let theme = 'dark';
         let c2Inverted = false;
         let c2Zoom = 1.0;
-        let animating = false;
-        let animInterval = null;
-        let selectedPoint = null;
+        let exportRes = 3840;
+        let legendData1 = [];
+        let legendData2 = [];
 
         function gcd(a, b) {
             a = Math.abs(a);
@@ -884,20 +931,6 @@
             return pts;
         }
 
-        function factorize(n) {
-            const factors = [];
-            let d = 2;
-            while (d * d <= n) {
-                while (n % d === 0) {
-                    factors.push(d);
-                    n /= d;
-                }
-                d++;
-            }
-            if (n > 1) factors.push(n);
-            return factors;
-        }
-
         function getColor(scheme, val, max, isReduced, isPrime) {
             if (scheme === 'rainbow') {
                 const h = (val / max) * 360;
@@ -908,6 +941,16 @@
                 return `rgb(${r}, 0, ${b})`;
             } else if (scheme === 'monochrome') {
                 return theme === 'dark' ? '#FFD700' : '#d69e00';
+            } else if (scheme === 'pastel') {
+                return isReduced ? '#A7C7E7' : '#FFB6C1';
+            } else if (scheme === 'neon') {
+                return isReduced ? '#00FF00' : '#FF00FF';
+            } else if (scheme === 'gcdBased') {
+                const h = (val * 36) % 360;
+                return `hsl(${h}, 70%, 60%)`;
+            } else if (scheme === 'normBased') {
+                const r = Math.floor((val / max) * 255);
+                return `rgb(${r}, 100, ${255-r})`;
             } else {
                 if (isPrime) return theme === 'dark' ? '#FFD700' : '#d69e00';
                 return isReduced ? 
@@ -1001,6 +1044,7 @@
         function updateZoom() {
             c2Zoom = document.getElementById('zoom').value / 100;
             document.getElementById('zoomVal').textContent = Math.round(c2Zoom * 100);
+            document.getElementById('statZoom').textContent = Math.round(c2Zoom * 100) + '%';
             draw2();
         }
 
@@ -1014,28 +1058,9 @@
             draw2();
         }
 
-        function toggleAnimation() {
-            animating = !animating;
-            const btn = event.target;
-            if (animating) {
-                btn.textContent = '⏸ Pause';
-                const speed = parseInt(document.getElementById('animSpeed').value);
-                animInterval = setInterval(() => {
-                    stepModulus(1);
-                }, speed);
-            } else {
-                btn.textContent = '▶ Start';
-                clearInterval(animInterval);
-            }
-        }
-
-        function stepModulus(delta) {
-            const modInput = document.getElementById('modulus');
-            let val = parseInt(modInput.value) + delta;
-            if (val < 2) val = 100;
-            if (val > 100) val = 2;
-            modInput.value = val;
-            updateModulus();
+        function updateC2LThick() {
+            document.getElementById('c2LThickVal').textContent = document.getElementById('c2LThick').value;
+            draw2();
         }
 
         function draw1() {
@@ -1137,7 +1162,14 @@
                 ctx.stroke();
             }
             
-            updateLegend1(m, residues);
+            legendData1 = [
+                {color: getColor(colorScheme, 0, 1, true, false), label: `Reduced Residues (φ(${m})=${residues.length})`},
+                {color: getColor(colorScheme, 0, 1, false, false), label: 'Non-coprime'},
+                {color: theme === 'dark' ? '#9F7AEA' : '#7c3aed', label: 'Polygon'}
+            ];
+            
+            updateLegend(1);
+            updateStats();
         }
 
         function draw2() {
@@ -1146,6 +1178,7 @@
             } else {
                 drawLattice();
             }
+            updateStats();
         }
 
         function drawLattice() {
@@ -1168,37 +1201,41 @@
             const showLines = document.getElementById('c2ShowLines').checked;
             const showCircle = document.getElementById('c2ShowCircle').checked;
             const showLabels = document.getElementById('c2ShowLabels').checked;
+            const showGrid = document.getElementById('c2ShowGrid').checked;
+            const showAxes = document.getElementById('c2ShowAxes').checked;
+            const highlightPrimes = document.getElementById('c2HighlightPrimes').checked;
             const displayMode = document.getElementById('c2Display').value;
             const colorScheme = document.getElementById('c2Color').value;
             const pSize = parseFloat(document.getElementById('c2PSize').value);
-            const normMin = parseInt(document.getElementById('normMin').value) || 0;
-            const normMax = parseInt(document.getElementById('normMax').value) || 1000;
-            const symmetryMode = document.getElementById('symmetryMode').value;
+            const lThick = parseFloat(document.getElementById('c2LThick').value);
             
             ctx.clearRect(0, 0, w, h);
             
-            ctx.strokeStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, cy);
-            ctx.lineTo(w, cy);
-            ctx.moveTo(cx, 0);
-            ctx.lineTo(cx, h);
-            ctx.stroke();
+            if (showGrid) {
+                ctx.strokeStyle = theme === 'dark' ? '#2a3150' : '#cbd5e0';
+                ctx.lineWidth = 0.5;
+                for (let i = -range; i <= range; i++) {
+                    if (i === 0) continue;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + i * scale, cy - range * scale);
+                    ctx.lineTo(cx + i * scale, cy + range * scale);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(cx - range * scale, cy - i * scale);
+                    ctx.lineTo(cx + range * scale, cy - i * scale);
+                    ctx.stroke();
+                }
+            }
             
-            // Symmetry axes
-            if (symmetryMode === 'reflection' || symmetryMode === 'both') {
-                ctx.strokeStyle = theme === 'dark' ? '#9F7AEA' : '#7c3aed';
-                ctx.lineWidth = 1.5;
-                ctx.setLineDash([5, 5]);
-                // Diagonal axes
+            if (showAxes) {
+                ctx.strokeStyle = theme === 'dark' ? '#00FFFF' : '#0891b2';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(w, h);
-                ctx.moveTo(0, h);
-                ctx.lineTo(w, 0);
+                ctx.moveTo(0, cy);
+                ctx.lineTo(w, cy);
+                ctx.moveTo(cx, 0);
+                ctx.lineTo(cx, h);
                 ctx.stroke();
-                ctx.setLineDash([]);
             }
             
             if (showCircle) {
@@ -1212,8 +1249,6 @@
             }
             
             let pts = getLatticePoints(range);
-            pts = pts.filter(p => p.norm >= normMin && p.norm <= normMax);
-            
             if (displayMode === 'primes') pts = pts.filter(p => p.isPrime);
             if (displayMode === 'specific') pts = pts.filter(p => p.norm === m);
             
@@ -1229,21 +1264,25 @@
                     ctx.lineTo(x, y);
                     
                     let lineColor;
-                    if (colorScheme === 'rainbow') {
-                        const idx = pts.indexOf(p);
-                        lineColor = getColor('rainbow', idx, pts.length, false, false);
+                    if (colorScheme === 'gcdBased') {
+                        lineColor = getColor('rainbow', p.gcdVal, 10, false, false);
                     } else if (colorScheme === 'normBased') {
                         lineColor = getColor('heatmap', p.norm, 500, false, false);
-                    } else if (colorScheme === 'gcdBased') {
-                        lineColor = getColor('rainbow', p.gcdVal, 10, false, false);
-                    } else if (p.isPrime) {
+                    } else if (colorScheme === 'rainbow') {
+                        const idx = pts.indexOf(p);
+                        lineColor = getColor('rainbow', idx, pts.length, false, false);
+                    } else if (colorScheme === 'heatmap') {
+                        lineColor = getColor('heatmap', p.norm, 500, false, false);
+                    } else if (colorScheme === 'monochrome') {
+                        lineColor = theme === 'dark' ? '#FFD700' : '#d69e00';
+                    } else if (highlightPrimes && p.isPrime) {
                         lineColor = theme === 'dark' ? '#FFD700' : '#d69e00';
                     } else {
                         lineColor = theme === 'dark' ? '#48BB78' : '#059669';
                     }
                     
                     ctx.strokeStyle = lineColor;
-                    ctx.lineWidth = 1.5;
+                    ctx.lineWidth = lThick;
                     ctx.globalAlpha = 0.4;
                     ctx.stroke();
                     ctx.globalAlpha = 1;
@@ -1256,10 +1295,16 @@
                     let pointColor;
                     if (colorScheme === 'normBased') {
                         pointColor = getColor('heatmap', p.norm, 500, false, false);
+                    } else if (colorScheme === 'gcdBased') {
+                        pointColor = getColor('rainbow', p.gcdVal, 10, false, false);
                     } else if (colorScheme === 'rainbow') {
                         const idx = pts.indexOf(p);
                         pointColor = getColor('rainbow', idx, pts.length, false, false);
-                    } else if (p.isPrime) {
+                    } else if (colorScheme === 'heatmap') {
+                        pointColor = getColor('heatmap', p.norm, 500, false, false);
+                    } else if (colorScheme === 'monochrome') {
+                        pointColor = theme === 'dark' ? '#FFD700' : '#d69e00';
+                    } else if (highlightPrimes && p.isPrime) {
                         pointColor = theme === 'dark' ? '#FFD700' : '#d69e00';
                     } else {
                         pointColor = theme === 'dark' ? '#48BB78' : '#059669';
@@ -1271,7 +1316,7 @@
                     ctx.lineWidth = 1.5;
                     ctx.stroke();
                     
-                    if (showLabels && Math.abs(p.a) <= 6 && Math.abs(p.b) <= 6) {
+                    if (showLabels) {
                         ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                         ctx.font = '10px sans-serif';
                         ctx.textAlign = 'center';
@@ -1294,7 +1339,15 @@
                 if (p.isPrime) primeCount++;
             });
             
-            updateLegend2(pts, visCount, primeCount);
+            legendData2 = [
+                {color: theme === 'dark' ? '#48BB78' : '#059669', label: 'Primitive Vectors'},
+                {color: theme === 'dark' ? '#FFD700' : '#d69e00', label: 'Prime Norms'},
+                {color: theme === 'dark' ? '#00FFFF' : '#0891b2', label: 'Unit Circle'}
+            ];
+            
+            updateLegend(2);
+            document.getElementById('statPrimitive').textContent = visCount;
+            document.getElementById('statPrimeNorms').textContent = primeCount;
         }
 
         function drawRings() {
@@ -1322,9 +1375,6 @@
             ctx.lineTo(cx, h);
             ctx.stroke();
             
-            let totalPoints = 0;
-            let coprimeCount = 0;
-            
             for (let m = 2; m <= maxMod; m++) {
                 const r = ringMode === 'standard' ? m * spacing : (maxMod - m + 2) * spacing;
                 
@@ -1350,6 +1400,17 @@
                     let pointColor;
                     if (colorScheme === 'rainbow') {
                         pointColor = getColor('rainbow', ri, m, false, false);
+                    } else if (colorScheme === 'heatmap') {
+                        pointColor = getColor('heatmap', ri, m, false, false);
+                    } else if (colorScheme === 'monochrome') {
+                        pointColor = theme === 'dark' ? '#FFD700' : '#d69e00';
+                    } else if (colorScheme === 'pastel') {
+                        pointColor = isRed ? '#A7C7E7' : '#FFB6C1';
+                    } else if (colorScheme === 'neon') {
+                        pointColor = isRed ? '#00FF00' : '#FF00FF';
+                    } else if (colorScheme === 'gcdBased') {
+                        const g = gcd(ri, m);
+                        pointColor = getColor('rainbow', g, m, false, false);
                     } else if (colorScheme === 'normBased') {
                         pointColor = getColor('heatmap', ri, m, false, false);
                     } else {
@@ -1364,390 +1425,62 @@
                     ctx.lineWidth = 1.5;
                     ctx.stroke();
                     
-                    if (showLabels && m <= 20) {
+                    if (showLabels && m <= 25) {
                         ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                         ctx.font = '9px sans-serif';
                         ctx.textAlign = 'center';
                         ctx.fillText(`${ri}/${m}`, x, y - 8);
                     }
-                    
-                    totalPoints++;
-                    if (isRed) coprimeCount++;
                 }
                 
-                if (m <= 20) {
+                if (m <= 25) {
                     ctx.fillStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
                     ctx.font = 'bold 11px sans-serif';
                     ctx.fillText(`m=${m}`, cx + r + 5, cy);
                 }
             }
             
-            updateLegend2Rings(maxMod, totalPoints, coprimeCount);
-        }
-
-        function updateLegend1(m, residues) {
-            const container = document.getElementById('legend1Details');
-            const totient = residues.length;
-            const density = (totient / m).toFixed(4);
-            const gaps = [];
-            
-            for (let i = 0; i < residues.length; i++) {
-                const next = residues[(i + 1) % residues.length];
-                const gap = (next > residues[i]) ? (next - residues[i]) : (m - residues[i] + next);
-                gaps.push(gap);
-            }
-            
-            const maxGap = Math.max(...gaps);
-            const avgGap = (gaps.reduce((a, b) => a + b, 0) / gaps.length).toFixed(2);
-            
-            // Update global stats
-            const isInd = document.getElementById('c1Ind').checked;
-            const m1 = isInd ? 
-                parseInt(document.getElementById('c1Mod').value) :
-                parseInt(document.getElementById('modulus').value);
-            document.getElementById('statMod1').textContent = m1;
-            document.getElementById('statTotient').textContent = totient;
-            document.getElementById('statDensity').textContent = density;
-            
-            container.innerHTML = `
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#00FFFF' : '#0891b2'};"></div>
-                        <div class="legend-label">Reduced Residues (Coprime)</div>
-                    </div>
-                    <div class="legend-description">
-                        Points r where gcd(r, m) = 1. These are integers less than m that share no common factors with m. 
-                        They form the group of units ℤ/mℤ* under multiplication.
-                    </div>
-                    <div class="legend-formula">φ(${m}) = ${totient}</div>
-                    <div class="legend-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Density:</span>
-                            <span class="stat-value">${density} ≈ 6/π² = 0.6079</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Residues:</span>
-                            <span class="stat-value">${residues.join(', ')}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Max Gap:</span>
-                            <span class="stat-value">${maxGap}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Avg Gap:</span>
-                            <span class="stat-value">${avgGap}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#e74c3c' : '#dc2626'};"></div>
-                        <div class="legend-label">Non-coprime Residues</div>
-                    </div>
-                    <div class="legend-description">
-                        Points r where gcd(r, m) > 1. These share a common divisor with m and are not units in ℤ/mℤ.
-                        Count: ${m - totient - 1} (excluding 0)
-                    </div>
-                </div>
-
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#9F7AEA' : '#7c3aed'};"></div>
-                        <div class="legend-label">Inscribed Polygon</div>
-                    </div>
-                    <div class="legend-description">
-                        Connects all reduced residues sequentially. For prime m, forms a regular (m-1)-gon.
-                        For m = 2^k, forms a regular polygon with φ(m) = 2^(k-1) sides.
-                    </div>
-                    <div class="legend-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Vertices:</span>
-                            <span class="stat-value">${totient}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Symmetry:</span>
-                            <span class="stat-value">${isPrime(m) ? 'Cyclic' : 'Varies'}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            updateGapAnalysis(gaps);
-        }
-
-        function updateLegend2(pts, visCount, primeCount) {
-            const container = document.getElementById('legend2Details');
-            const avgNorm = (pts.reduce((sum, p) => sum + p.norm, 0) / pts.length).toFixed(2);
-            const primePercent = ((primeCount / visCount) * 100).toFixed(1);
-            
-            // Update global stats
-            const isInd = document.getElementById('c2Ind').checked;
-            const m2 = isInd ? 
-                parseInt(document.getElementById('c2Mod').value) :
-                parseInt(document.getElementById('modulus').value);
-            document.getElementById('statMod2').textContent = m2;
-            
-            container.innerHTML = `
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#48BB78' : '#059669'};"></div>
-                        <div class="legend-label">Primitive Vectors</div>
-                    </div>
-                    <div class="legend-description">
-                        Lattice vectors (a, b) where gcd(a, b) = 1. These are "visible" from the origin—no other 
-                        lattice point lies on the segment from (0,0) to (a,b).
-                    </div>
-                    <div class="legend-formula">vis(a,b) = 1 ⟺ gcd(a,b) = 1</div>
-                    <div class="legend-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Count:</span>
-                            <span class="stat-value">${visCount}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Average Norm:</span>
-                            <span class="stat-value">${avgNorm}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#FFD700' : '#d69e00'};"></div>
-                        <div class="legend-label">Prime Norm Vectors</div>
-                    </div>
-                    <div class="legend-description">
-                        Primitive vectors where a² + b² = p (prime). By Fermat's theorem, primes p ≡ 1 (mod 4) 
-                        can be uniquely expressed as a sum of two squares (up to order and signs).
-                    </div>
-                    <div class="legend-formula">|a + bi|² = a² + b² = p (prime)</div>
-                    <div class="legend-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Prime Norms:</span>
-                            <span class="stat-value">${primeCount}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Percentage:</span>
-                            <span class="stat-value">${primePercent}%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#00FFFF' : '#0891b2'};"></div>
-                        <div class="legend-label">Unit Circle Projection</div>
-                    </div>
-                    <div class="legend-description">
-                        Each primitive vector normalized to the unit circle at angle θ = atan2(b, a).
-                        Shows the directional distribution of visible lattice rays.
-                    </div>
-                    <div class="legend-formula">(a,b) → (cos θ, sin θ) where θ = atan2(b,a)</div>
-                </div>
-            `;
-            
-            updateSymmetryAnalysis(pts);
-            updateDistributionStats(pts);
-        }
-
-        function updateLegend2Rings(maxMod, totalPoints, coprimeCount) {
-            const container = document.getElementById('legend2Details');
-            const density = (coprimeCount / totalPoints).toFixed(4);
-            
-            container.innerHTML = `
-                <div class="legend-item-detailed">
-                    <div class="legend-color-box">
-                        <div class="color-swatch" style="background: ${theme === 'dark' ? '#00FFFF' : '#0891b2'};"></div>
-                        <div class="legend-label">Concentric Ring Structure</div>
-                    </div>
-                    <div class="legend-description">
-                        Displays all moduli from m=2 to m=${maxMod}. Each ring represents a different modulus, 
-                        with points at positions r⋅e^(2πik/m) for k = 0, 1, ..., m-1.
-                    </div>
-                    <div class="legend-stats">
-                        <div class="stat-row">
-                            <span class="stat-label">Total Rings:</span>
-                            <span class="stat-value">${maxMod - 1}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Total Points:</span>
-                            <span class="stat-value">${totalPoints}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Coprime Points:</span>
-                            <span class="stat-value">${coprimeCount}</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Overall Density:</span>
-                            <span class="stat-value">${density}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateGapAnalysis(gaps) {
-            const container = document.getElementById('gapAnalysis');
-            const gapCounts = {};
-            gaps.forEach(g => {
-                gapCounts[g] = (gapCounts[g] || 0) + 1;
-            });
-            
-            let html = '<div class="gap-visualization">';
-            for (const [gap, count] of Object.entries(gapCounts).sort((a, b) => a[0] - b[0])) {
-                const width = (count / gaps.length) * 100;
-                html += `<div class="gap-bar" style="width: ${Math.max(width, 15)}%; background: hsl(${180 + gap * 30}, 70%, 60%)">${gap}: ${count}</div>`;
-            }
-            html += '</div>';
-            
-            html += `<div class="legend-description" style="margin-top: 10px;">
-                Gap distribution between consecutive reduced residues. Gaps reveal arithmetic structure of the modulus.
-            </div>`;
-            
-            container.innerHTML = html;
-        }
-
-        function updateSymmetryAnalysis(pts) {
-            const container = document.getElementById('symmetryAnalysis');
-            
-            // Count quadrants
-            const quadrants = [0, 0, 0, 0];
-            pts.forEach(p => {
-                if (p.a >= 0 && p.b >= 0) quadrants[0]++;
-                else if (p.a < 0 && p.b >= 0) quadrants[1]++;
-                else if (p.a < 0 && p.b < 0) quadrants[2]++;
-                else quadrants[3]++;
-            });
-            
-            const isSymmetric = quadrants.every(q => q === quadrants[0]);
-            
-            container.innerHTML = `
-                <div class="stat-row">
-                    <span class="stat-label">4-fold Symmetry:</span>
-                    <span class="stat-value">${isSymmetric ? 'Yes' : 'Approximate'}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Q1 (++):</span>
-                    <span class="stat-value">${quadrants[0]}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Q2 (-+):</span>
-                    <span class="stat-value">${quadrants[1]}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Q3 (--):</span>
-                    <span class="stat-value">${quadrants[2]}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Q4 (+-):</span>
-                    <span class="stat-value">${quadrants[3]}</span>
-                </div>
-                <div class="legend-description" style="margin-top: 10px;">
-                    Primitive lattice points exhibit natural 4-fold rotational symmetry: if (a,b) is primitive, 
-                    so are (-b,a), (-a,-b), and (b,-a).
-                </div>
-            `;
-        }
-
-        function updateDistributionStats(pts) {
-            const container = document.getElementById('distributionStats');
-            
-            const norms = pts.map(p => p.norm);
-            const minNorm = Math.min(...norms);
-            const maxNorm = Math.max(...norms);
-            const medianNorm = norms.sort((a, b) => a - b)[Math.floor(norms.length / 2)];
-            
-            // Norm distribution by ranges
-            const ranges = [
-                {label: '0-50', count: norms.filter(n => n <= 50).length},
-                {label: '51-100', count: norms.filter(n => n > 50 && n <= 100).length},
-                {label: '101-200', count: norms.filter(n => n > 100 && n <= 200).length},
-                {label: '200+', count: norms.filter(n => n > 200).length}
+            legendData2 = [
+                {color: getColor(colorScheme, 0, 1, true, false), label: 'Reduced Residues'},
+                {color: getColor(colorScheme, 0, 1, false, false), label: 'Non-coprime'}
             ];
             
-            container.innerHTML = `
-                <div class="stat-row">
-                    <span class="stat-label">Min Norm:</span>
-                    <span class="stat-value">${minNorm}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Median Norm:</span>
-                    <span class="stat-value">${medianNorm}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Max Norm:</span>
-                    <span class="stat-value">${maxNorm}</span>
-                </div>
-                ${ranges.map(r => `
-                    <div class="stat-row">
-                        <span class="stat-label">Norm ${r.label}:</span>
-                        <span class="stat-value">${r.count}</span>
-                    </div>
-                `).join('')}
-                <div class="legend-description" style="margin-top: 10px;">
-                    Norm distribution shows how primitive vectors spread across distance ranges from origin.
-                </div>
-            `;
+            updateLegend(2);
         }
 
-        // Click inspection
-        document.getElementById('canvas1').addEventListener('click', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        function updateLegend(num) {
+            const legend = document.getElementById(`legend${num}`);
+            const data = num === 1 ? legendData1 : legendData2;
             
-            const isInd = document.getElementById('c1Ind').checked;
-            const m = isInd ? 
+            legend.innerHTML = data.map(item => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${item.color};"></div>
+                    <span>${item.label}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const isInd1 = document.getElementById('c1Ind').checked;
+            const m1 = isInd1 ? 
                 parseInt(document.getElementById('c1Mod').value) :
                 parseInt(document.getElementById('modulus').value);
             
-            const cx = this.width / 2;
-            const cy = this.height / 2;
-            const r = Math.min(this.width, this.height) * 0.35;
+            const isInd2 = document.getElementById('c2Ind').checked;
+            const m2 = isInd2 ? 
+                parseInt(document.getElementById('c2Mod').value) :
+                parseInt(document.getElementById('modulus').value);
             
-            // Find clicked point
-            for (let i = 0; i < m; i++) {
-                const ang = (2 * Math.PI * i / m) - Math.PI / 2;
-                const px = cx + r * Math.cos(ang);
-                const py = cy + r * Math.sin(ang);
-                
-                if (Math.abs(x - px) < 15 && Math.abs(y - py) < 15) {
-                    showInspection1(i, m);
-                    return;
-                }
-            }
-        });
-
-        function showInspection1(r, m) {
-            const panel = document.getElementById('inspectionPanel');
-            const details = document.getElementById('inspectionDetails');
-            const g = gcd(r, m);
-            const isCoprime = g === 1;
-            const angle = (2 * Math.PI * r / m);
+            document.getElementById('statMod1').textContent = m1;
+            document.getElementById('statMod2').textContent = m2;
             
-            details.innerHTML = `
-                <span class="property-label">Residue:</span>
-                <span class="property-value">${r}</span>
-                <span class="property-label">Modulus:</span>
-                <span class="property-value">${m}</span>
-                <span class="property-label">GCD(r, m):</span>
-                <span class="property-value">${g}</span>
-                <span class="property-label">Coprime:</span>
-                <span class="property-value">${isCoprime ? 'Yes' : 'No'}</span>
-                <span class="property-label">Angle:</span>
-                <span class="property-value">${(angle * 180 / Math.PI).toFixed(2)}°</span>
-                <span class="property-label">e^(2πir/m):</span>
-                <span class="property-value">${Math.cos(angle).toFixed(3)} + ${Math.sin(angle).toFixed(3)}i</span>
-            `;
+            const tot = eulerTotient(m2);
+            const res = getResidues(m2);
             
-            panel.style.display = 'block';
+            document.getElementById('statTotient').textContent = tot;
+            document.getElementById('statResidues').textContent = res.join(',');
+            document.getElementById('statDensity').textContent = (tot / m2).toFixed(4);
         }
-
-        draw1();
-        draw2();
-
-        // Export functions
-        let exportRes = 3840;
 
         function setRes(res) {
             const buttons = document.querySelectorAll('.resolution-btn');
@@ -1765,14 +1498,11 @@
             const canvas = document.getElementById(canvasId);
             const num = canvasId === 'canvas1' ? 1 : 2;
             const title = num === 1 ? 'Canvas 1: Modular Circle' : 'Canvas 2: Lattice Directions';
-            
-            // Get legend data
-            const legendContainer = document.getElementById(num === 1 ? 'legend1Details' : 'legend2Details');
-            const legendItems = legendContainer.querySelectorAll('.legend-item-detailed');
+            const legendData = num === 1 ? legendData1 : legendData2;
             
             const temp = document.createElement('canvas');
             const pad = 200;
-            const legH = 150 + legendItems.length * 120;
+            const legH = 100 + legendData.length * 80;
             temp.width = exportRes + pad * 2;
             temp.height = exportRes + pad + legH;
             
@@ -1796,44 +1526,21 @@
             ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
             ctx.font = 'bold 50px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('Legend & Analysis:', pad, legY);
+            ctx.fillText('Legend:', pad, legY);
             
             let yOff = legY + 80;
-            legendItems.forEach(item => {
-                const label = item.querySelector('.legend-label').textContent;
-                const desc = item.querySelector('.legend-description').textContent;
-                const colorBox = item.querySelector('.color-swatch');
-                const color = colorBox ? colorBox.style.background : (theme === 'dark' ? '#FFD700' : '#d69e00');
-                
-                ctx.fillStyle = color;
+            legendData.forEach(item => {
+                ctx.fillStyle = item.color;
                 ctx.fillRect(pad + 20, yOff - 30, 50, 50);
                 ctx.strokeStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
                 ctx.lineWidth = 3;
                 ctx.strokeRect(pad + 20, yOff - 30, 50, 50);
                 
-                ctx.fillStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
-                ctx.font = 'bold 40px sans-serif';
-                ctx.fillText(label, pad + 90, yOff);
+                ctx.fillStyle = theme === 'dark' ? '#E8E8E8' : '#1a202c';
+                ctx.font = '40px sans-serif';
+                ctx.fillText(item.label, pad + 90, yOff);
                 
-                ctx.fillStyle = theme === 'dark' ? '#A0A0A0' : '#4a5568';
-                ctx.font = '28px sans-serif';
-                const words = desc.split(' ');
-                let line = '';
-                let lineY = yOff + 40;
-                words.forEach((word, i) => {
-                    const testLine = line + word + ' ';
-                    const metrics = ctx.measureText(testLine);
-                    if (metrics.width > temp.width - pad * 2 - 120 && i > 0) {
-                        ctx.fillText(line, pad + 90, lineY);
-                        line = word + ' ';
-                        lineY += 35;
-                    } else {
-                        line = testLine;
-                    }
-                });
-                ctx.fillText(line, pad + 90, lineY);
-                
-                yOff += 120;
+                yOff += 80;
             });
             
             ctx.fillStyle = theme === 'dark' ? '#A0A0A0' : '#4a5568';
@@ -1928,7 +1635,6 @@
             link.click();
         }
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             const modInput = document.getElementById('modulus');
             const val = parseInt(modInput.value);
@@ -1950,13 +1656,11 @@
                     modInput.value = Math.max(2, val - 10);
                     updateModulus();
                     break;
-                case 'r':
-                case 'R':
-                    modInput.value = 8;
-                    updateModulus();
-                    break;
             }
         });
+
+        draw1();
+        draw2();
     </script>
 </body>
-    </html>
+                            </html>
