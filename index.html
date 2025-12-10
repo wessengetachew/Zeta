@@ -621,6 +621,115 @@
                 <span style="margin-left: 15px; color: var(--text-secondary);">Speed:</span>
                 <input type="range" id="animSpeed" min="100" max="2000" value="500" style="width: 150px; display: inline-block; margin-left: 10px;">
             </div>
+
+            <!-- Gap Analysis System -->
+            <div class="control-section" style="margin-top: 25px; padding: 20px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+                <div class="subsection-title">📊 Gap Analysis</div>
+                
+                <div id="gapControls" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px;">
+                    <!-- Dynamically generated gap checkboxes -->
+                </div>
+                
+                <div style="padding: 15px; background: rgba(255, 215, 0, 0.05); border-radius: 6px; border: 1px solid rgba(255, 215, 0, 0.2);">
+                    <label style="font-weight: 600; color: var(--gold);">Dynamic Gap Generation</label>
+                    
+                    <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                        <label style="font-size: 0.9em;">Max Gap:</label>
+                        <input type="number" id="maxGap" min="2" step="2" value="12" style="width: 70px; padding: 5px;">
+                        <button onclick="generateGaps()" style="padding: 5px 12px; font-size: 0.9em;">Generate</button>
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 0.9em; font-weight: 600;">Add Consecutive Range:</label>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                            <span style="font-size: 0.85em;">From:</span>
+                            <input type="number" id="gapStart" min="2" value="14" style="width: 60px; padding: 5px;">
+                            <span style="font-size: 0.85em;">To:</span>
+                            <input type="number" id="gapEnd" min="3" value="20" style="width: 60px; padding: 5px;">
+                            <button onclick="addConsecutiveGaps()" style="padding: 5px 10px; font-size: 0.85em;">Add Range</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <button onclick="clearAllGaps()" style="padding: 5px 15px; font-size: 0.9em; background: var(--accent-red);">Clear All Gaps</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smith Chart Transform -->
+            <div class="control-section" style="margin-top: 25px; padding: 20px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+                <div class="subsection-title">🔄 Smith Chart Transform (Cayley Map)</div>
+                
+                <div class="checkbox-group" style="margin-bottom: 15px;">
+                    <input type="checkbox" id="enableSmithChart" onchange="toggleSmithChart()">
+                    <label for="enableSmithChart">Enable Smith Chart Transform</label>
+                </div>
+                
+                <div id="smithChartControls" style="display: none;">
+                    <div class="control-group" style="margin-bottom: 12px;">
+                        <label>Global Phase Shift α: <span id="smithAlphaValue" class="slider-value">90</span>°</label>
+                        <input type="range" id="smithAlpha" min="0" max="360" value="90" oninput="updateSmithChart()">
+                    </div>
+                    
+                    <div class="control-group" style="margin-bottom: 12px;">
+                        <label>Radius Mode:</label>
+                        <select id="smithRadiusMode" onchange="updateSmithChart()">
+                            <option value="unit">Unit (R=1)</option>
+                            <option value="scaled" selected>Scaled (0.5-2.0)</option>
+                            <option value="modulus">By Modulus</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div id="smithCustomScaleGroup" class="control-group" style="display: none; margin-bottom: 12px;">
+                        <label>Custom Scale: <span id="smithScaleValue" class="slider-value">1.0</span></label>
+                        <input type="range" id="smithScale" min="0.1" max="5" step="0.1" value="1.0" oninput="updateSmithScale()">
+                    </div>
+                    
+                    <div class="checkbox-group" style="margin-bottom: 10px;">
+                        <input type="checkbox" id="smithShowGrid" checked onchange="draw1()">
+                        <label for="smithShowGrid">Show Smith Grid</label>
+                    </div>
+                    
+                    <div style="margin-top: 12px; font-size: 0.85em; padding: 12px; background: rgba(0, 255, 255, 0.05); border-radius: 6px; border: 1px solid rgba(0, 255, 255, 0.2); line-height: 1.6;">
+                        <strong style="color: var(--cyan);">Cayley/Smith Transform:</strong><br>
+                        Γ = (z - 1)/(z + 1)<br>
+                        <span style="opacity: 0.8;">
+                        • R=1: Points map to vertical line<br>
+                        • R&lt;1: Interior of circle<br>
+                        • R&gt;1: Smith chart arcs
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lift Dynamics -->
+            <div class="control-section" style="margin-top: 25px; padding: 20px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+                <div class="subsection-title">⬆️ Lift Dynamics</div>
+                
+                <div class="checkbox-group" style="margin-bottom: 10px;">
+                    <input type="checkbox" id="showDirectLifts" checked onchange="draw1()">
+                    <label for="showDirectLifts">Direct Lifts (r → r, consecutive m)</label>
+                </div>
+                
+                <div class="checkbox-group" style="margin-bottom: 15px;">
+                    <input type="checkbox" id="showModularLifts" onchange="draw1()">
+                    <label for="showModularLifts">Modular Lifts (r → r + m, consecutive m)</label>
+                </div>
+                
+                <div class="control-group" style="margin-bottom: 12px;">
+                    <label>Lift Line Thickness: <span id="liftThicknessValue" class="slider-value">2.0</span></label>
+                    <input type="range" id="liftThickness" min="0.5" max="5" step="0.5" value="2" oninput="updateLiftThickness()">
+                </div>
+                
+                <div style="margin-top: 12px; font-size: 0.85em; padding: 12px; background: rgba(72, 187, 120, 0.05); border-radius: 6px; border: 1px solid rgba(72, 187, 120, 0.2); line-height: 1.6;">
+                    <strong style="color: var(--accent-green);">Lift Types:</strong><br>
+                    <span style="opacity: 0.8;">
+                    <strong style="color: var(--gold);">Direct Lifts:</strong> How residues r connect between m and m+1<br>
+                    <strong style="color: #FF6384;">Modular Lifts:</strong> r → (r + m) mod (m+1) transformations
+                    </span>
+                </div>
+            </div>
         </div>
 
         <div class="main-layout">
@@ -1242,6 +1351,15 @@
                 ctx.closePath();
                 ctx.stroke();
             }
+            
+            // Draw Gap Analysis (after polygon, before Smith)
+            drawGapAnalysis(ctx, m, cx, cy, r, residues, currentTheme);
+            
+            // Draw Lift Dynamics (shows connections to m+1)
+            drawLifts(ctx, m, cx, cy, r, residues, currentTheme);
+            
+            // Draw Smith Chart Transform (last, so it's on top)
+            drawSmithTransform(ctx, m, cx, cy, r, residues, pSize, currentTheme);
             
             updateLegend1(m, residues);
         }
@@ -2219,6 +2337,314 @@
             link.click();
         }
 
+        // ==================== GAP ANALYSIS SYSTEM ====================
+        let selectedGaps = [2, 4, 6];
+
+        function generateGaps() {
+            const maxGap = parseInt(document.getElementById('maxGap').value) || 12;
+            const gapsContainer = document.getElementById('gapControls');
+            gapsContainer.innerHTML = '';
+            
+            for (let g = 2; g <= maxGap; g += 2) {
+                const div = document.createElement('div');
+                div.className = 'checkbox-group';
+                div.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 6px; background: var(--bg-panel); border-radius: 4px;';
+                div.innerHTML = `
+                    <input type="checkbox" id="gap${g}" ${selectedGaps.includes(g) ? 'checked' : ''} 
+                           onchange="toggleGap(${g})" style="width: 18px; height: 18px;">
+                    <label for="gap${g}" style="margin: 0; cursor: pointer; font-size: 0.9em;">Gap ${g}</label>
+                `;
+                gapsContainer.appendChild(div);
+            }
+        }
+
+        function toggleGap(g) {
+            const idx = selectedGaps.indexOf(g);
+            if (idx === -1) {
+                selectedGaps.push(g);
+            } else {
+                selectedGaps.splice(idx, 1);
+            }
+            selectedGaps.sort((a, b) => a - b);
+            draw1();
+        }
+
+        function addConsecutiveGaps() {
+            const start = parseInt(document.getElementById('gapStart').value);
+            const end = parseInt(document.getElementById('gapEnd').value);
+            if (start && end && end >= start) {
+                for (let g = start; g <= end; g++) {
+                    if (!selectedGaps.includes(g)) selectedGaps.push(g);
+                }
+                selectedGaps.sort((a, b) => a - b);
+                generateGaps();
+                draw1();
+            }
+        }
+
+        function clearAllGaps() {
+            selectedGaps = [];
+            generateGaps();
+            draw1();
+        }
+
+        function drawGapAnalysis(ctx, m, cx, cy, r, residues, theme) {
+            if (selectedGaps.length === 0 || residues.length === 0) return;
+            
+            ctx.save();
+            
+            for (let i = 0; i < residues.length; i++) {
+                const r1 = residues[i];
+                const r2 = residues[(i + 1) % residues.length];
+                const gap = (r2 - r1 + m) % m;
+                
+                if (selectedGaps.includes(gap)) {
+                    const ang1 = (2 * Math.PI * r1 / m) - Math.PI / 2;
+                    const ang2 = (2 * Math.PI * r2 / m) - Math.PI / 2;
+                    
+                    // Draw thick arc for this gap
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, ang1, ang2, false);
+                    
+                    const hue = (gap / 20) * 360;
+                    ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.6)`;
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                    
+                    // Label the gap at midpoint
+                    const midAng = ang1 + (ang2 - ang1) / 2;
+                    const labelR = r + 18;
+                    const labelX = cx + labelR * Math.cos(midAng);
+                    const labelY = cy + labelR * Math.sin(midAng);
+                    
+                    ctx.fillStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
+                    ctx.font = 'bold 13px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(gap.toString(), labelX, labelY);
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        // ==================== SMITH CHART TRANSFORM ====================
+        let smithChartEnabled = false;
+        let smithAlpha = Math.PI / 2;
+        let smithRadiusMode = 'scaled';
+        let smithCustomScale = 1.0;
+
+        function toggleSmithChart() {
+            smithChartEnabled = document.getElementById('enableSmithChart').checked;
+            const controls = document.getElementById('smithChartControls');
+            controls.style.display = smithChartEnabled ? 'block' : 'none';
+            draw1();
+        }
+
+        function updateSmithChart() {
+            const alpha = parseFloat(document.getElementById('smithAlpha').value);
+            smithAlpha = alpha * Math.PI / 180;
+            document.getElementById('smithAlphaValue').textContent = alpha;
+            
+            smithRadiusMode = document.getElementById('smithRadiusMode').value;
+            const customScaleGroup = document.getElementById('smithCustomScaleGroup');
+            customScaleGroup.style.display = smithRadiusMode === 'custom' ? 'block' : 'none';
+            
+            draw1();
+        }
+
+        function updateSmithScale() {
+            smithCustomScale = parseFloat(document.getElementById('smithScale').value);
+            document.getElementById('smithScaleValue').textContent = smithCustomScale.toFixed(1);
+            draw1();
+        }
+
+        function cayleyTransform(z) {
+            // Cayley/Möbius transform: Γ = (z - 1)/(z + 1)
+            const numeratorRe = z.re - 1;
+            const numeratorIm = z.im;
+            const denominatorRe = z.re + 1;
+            const denominatorIm = z.im;
+            
+            const denomMagSq = denominatorRe * denominatorRe + denominatorIm * denominatorIm;
+            
+            if (denomMagSq < 1e-10) {
+                return {re: 0, im: 0};
+            }
+            
+            const gammaRe = (numeratorRe * denominatorRe + numeratorIm * denominatorIm) / denomMagSq;
+            const gammaIm = (numeratorIm * denominatorRe - numeratorRe * denominatorIm) / denomMagSq;
+            
+            return {re: gammaRe, im: gammaIm};
+        }
+
+        function getSmithRadius(modulus) {
+            switch(smithRadiusMode) {
+                case 'unit':
+                    return 1.0;
+                case 'scaled':
+                    return 0.5 + (modulus / 100) * 1.5;
+                case 'modulus':
+                    return Math.min(3.0, Math.log(modulus + 1) / Math.log(10));
+                case 'custom':
+                    return smithCustomScale;
+                default:
+                    return 1.0;
+            }
+        }
+
+        function drawSmithChartGrid(ctx, cx, cy, r, theme) {
+            if (!document.getElementById('smithShowGrid')?.checked) return;
+            
+            ctx.save();
+            ctx.strokeStyle = theme === 'dark' ? 'rgba(100, 150, 200, 0.3)' : 'rgba(50, 100, 150, 0.3)';
+            ctx.lineWidth = 1;
+            
+            // Unit circle boundary
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Vertical line (R=1 image)
+            ctx.strokeStyle = theme === 'dark' ? 'rgba(0, 255, 255, 0.5)' : 'rgba(0, 145, 178, 0.5)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - r);
+            ctx.lineTo(cx, cy + r);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawSmithTransform(ctx, m, cx, cy, r, residues, pSize, theme) {
+            if (!smithChartEnabled || residues.length === 0) return;
+            
+            ctx.save();
+            
+            // Draw Smith grid
+            drawSmithChartGrid(ctx, cx, cy, r, theme);
+            
+            const R = getSmithRadius(m);
+            
+            residues.forEach(res => {
+                const theta = (2 * Math.PI * res / m) + smithAlpha;
+                const z = {
+                    re: R * Math.cos(theta),
+                    im: R * Math.sin(theta)
+                };
+                
+                const gamma = cayleyTransform(z);
+                
+                // Map to screen coordinates (scale to fit in radius)
+                const scale = r * 0.8;
+                const screenX = cx + gamma.re * scale;
+                const screenY = cy - gamma.im * scale;
+                
+                // Draw transformed point
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, pSize + 3, 0, 2 * Math.PI);
+                ctx.fillStyle = theme === 'dark' ? 'rgba(0, 255, 255, 0.7)' : 'rgba(0, 145, 178, 0.7)';
+                ctx.fill();
+                ctx.strokeStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw line from original to transformed
+                const origAng = (2 * Math.PI * res / m) - Math.PI / 2;
+                const origX = cx + r * Math.cos(origAng);
+                const origY = cy + r * Math.sin(origAng);
+                
+                ctx.beginPath();
+                ctx.moveTo(origX, origY);
+                ctx.lineTo(screenX, screenY);
+                ctx.strokeStyle = theme === 'dark' ? 'rgba(255, 215, 0, 0.2)' : 'rgba(217, 158, 0, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+            
+            ctx.restore();
+        }
+
+        // ==================== LIFT DYNAMICS ====================
+        function updateLiftThickness() {
+            const val = parseFloat(document.getElementById('liftThickness').value);
+            document.getElementById('liftThicknessValue').textContent = val.toFixed(1);
+            draw1();
+        }
+
+        function drawLifts(ctx, m, cx, cy, r, residues, theme) {
+            const showDirect = document.getElementById('showDirectLifts')?.checked;
+            const showModular = document.getElementById('showModularLifts')?.checked;
+            
+            if (!showDirect && !showModular) return;
+            if (m >= 100) return; // Skip for very large m to avoid clutter
+            
+            const thickness = parseFloat(document.getElementById('liftThickness')?.value || 2);
+            const residues1 = residues;
+            const residues2 = getResidues(m + 1);
+            
+            // Use slightly different radii to show lift
+            const r1 = r * 0.92;
+            const r2 = r * 1.08;
+            
+            ctx.save();
+            ctx.globalAlpha = 0.4;
+            
+            // Direct lifts: r → r
+            if (showDirect) {
+                ctx.strokeStyle = theme === 'dark' ? '#FFD700' : '#d69e00';
+                ctx.lineWidth = thickness;
+                
+                residues1.forEach(res => {
+                    if (residues2.includes(res)) {
+                        const ang1 = (2 * Math.PI * res / m) - Math.PI / 2;
+                        const ang2 = (2 * Math.PI * res / (m + 1)) - Math.PI / 2;
+                        
+                        const x1 = cx + r1 * Math.cos(ang1);
+                        const y1 = cy + r1 * Math.sin(ang1);
+                        const x2 = cx + r2 * Math.cos(ang2);
+                        const y2 = cy + r2 * Math.sin(ang2);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                });
+            }
+            
+            // Modular lifts: r → (r + m) mod (m+1)
+            if (showModular) {
+                ctx.strokeStyle = theme === 'dark' ? '#FF6384' : '#dc2626';
+                ctx.lineWidth = thickness * 0.8;
+                
+                residues1.forEach(res => {
+                    const liftedR = (res + m) % (m + 1);
+                    if (residues2.includes(liftedR)) {
+                        const ang1 = (2 * Math.PI * res / m) - Math.PI / 2;
+                        const ang2 = (2 * Math.PI * liftedR / (m + 1)) - Math.PI / 2;
+                        
+                        const x1 = cx + r1 * Math.cos(ang1);
+                        const y1 = cy + r1 * Math.sin(ang1);
+                        const x2 = cx + r2 * Math.cos(ang2);
+                        const y2 = cy + r2 * Math.sin(ang2);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                });
+            }
+            
+            ctx.restore();
+        }
+
+        // Initialize gap controls on load
+        document.addEventListener('DOMContentLoaded', () => {
+            generateGaps();
+        });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             const modInput = document.getElementById('modulus');
@@ -2286,4 +2712,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
