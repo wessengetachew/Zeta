@@ -1,227 +1,224 @@
 
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Boundary Cancellation Principle in Arithmetic Structures</title>
-<style>
-  body { margin: 0; font-family: "Times New Roman", serif; line-height: 1.6; background: #f9f9f9; color: #111; }
-  h1, h2, h3 { text-align: center; margin-bottom: 1rem; }
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; margin-top: 2rem; }
-  p { margin-bottom: 1rem; }
-  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  table, th, td { border: 1px solid #444; }
-  th, td { padding: 0.5rem 1rem; text-align: center; }
-  code { background: #eee; padding: 0.1rem 0.3rem; border-radius: 3px; font-family: "Courier New", monospace; }
-  .note { font-style: italic; color: #555; }
-  #explorer { width: 100%; height: 600px; display: block; background: #111; margin-top: 2rem; position: relative; }
-  #ui { position: absolute; top: 10px; left: 10px; z-index: 10; }
-  button { padding: 0.5rem; margin-right: 0.5rem; }
-  #info { color: #fff; font-family: sans-serif; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCP Explorer - Boundary Cancellation Principle</title>
+    <style>
+        body { margin: 0; background: #050505; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; display: flex; }
+        #sidebar { width: 320px; background: #111; border-right: 1px solid #333; height: 100vh; padding: 20px; box-sizing: border-box; overflow-y: auto; z-index: 10; }
+        #canvas-container { flex-grow: 1; position: relative; cursor: crosshair; }
+        canvas { display: block; image-rendering: pixelated; }
+        h2 { margin-top: 0; color: #4af; font-size: 1.2rem; }
+        .control-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #aaa; }
+        input[type="range"] { width: 100%; margin-bottom: 10px; }
+        .stats { background: #000; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; border: 1px solid #222; }
+        .stat-line { margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .stat-val { color: #4af; }
+        button { background: #4af; border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button:hover { background: #39d; }
+        .equation { font-size: 0.8rem; font-style: italic; color: #888; margin-top: 10px; border-left: 2px solid #4af; padding-left: 10px; }
+    </style>
 </head>
 <body>
 
-<h1>The Boundary Cancellation Principle in Arithmetic Structures</h1>
+<div id="sidebar">
+    <h2>BCP Explorer</h2>
+    
+    <div class="control-group">
+        <label>Radius ($R$): <span id="radius-val">200</span></label>
+        <input type="range" id="radius-slider" min="50" max="2000" value="200">
+        
+        <label>Filter Type:</label>
+        <select id="mode-select" style="width:100%; background:#222; color:white; border:1px solid #444; padding:5px;">
+            <option value="coprime">Coprime Pairs (gcd(x,y)=1)</option>
+            <option value="squarefree">Squarefree x & y</option>
+            <option value="kfree">3-free integers (projection)</option>
+        </select>
+    </div>
 
-<p>
-The study of arithmetic structures in integers reveals connections between combinatorial, analytic, and geometric properties. A unifying mechanism, termed the <strong>Boundary Cancellation Principle</strong> (BCP), provides a geometric explanation for the scaling of maximal error terms in various Möbius-filtered counting problems.
-</p>
+    <div class="stats" id="stats-box">
+        <div class="stat-line"><span>Points:</span> <span class="stat-val" id="stat-count">0</span></div>
+        <div class="stat-line"><span>Density:</span> <span class="stat-val" id="stat-density">0</span></div>
+        <div class="stat-line"><span>Theoretical:</span> <span class="stat-val" id="stat-theory">0</span></div>
+        <div class="stat-line"><span>Error $E(R)$:</span> <span class="stat-val" id="stat-error">0</span></div>
+    </div>
 
-<h2>1. Principle Statement</h2>
+    <div class="equation">
+        $E_k(R) \sim R^{k-1}$<br>
+        Main Term: $V \cdot \prod (1 - p^{-k})$
+    </div>
 
-<p>
-Let a counting problem be defined on a <em>k-dimensional lattice or lattice-like modular structure</em>, with a Möbius-type filter applied to impose arithmetic constraints. Denote the main term of the counting function as proportional to the volume of the underlying region, and the error term as the deviation from this volume. The Boundary Cancellation Principle asserts:
-</p>
+    <button id="download-png">Export PNG</button>
+    <p style="font-size: 0.7rem; color: #666; margin-top: 20px;">
+        Scroll to Zoom | Drag to Pan<br>
+        Rendering millions of points via Typed Arrays.
+    </p>
+</div>
 
-<blockquote>
-<em>
-Whenever arithmetic structure is imposed via Möbius-type filtering on a k-dimensional lattice, the maximal cancellation — that is, the error term relative to the main term — is forced to scale proportionally to the boundary of the underlying geometric region. Consequently, the exponent of the error term is determined solely by the lattice dimension.
-</em>
-</blockquote>
-
-<p class="note">
-This principle explains the inevitability of certain critical exponents in classical counting problems, including the exponent 1/2 appearing in the context of coprime lattices and the Riemann Hypothesis.
-</p>
-
-<h2>2. Examples and Applications</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>Arithmetic Object</th>
-      <th>Lattice Dimension</th>
-      <th>Main Term</th>
-      <th>Error Term (Boundary Scaling)</th>
-      <th>Classical Reference</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Coprime pairs in 2D lattices</td>
-      <td>2</td>
-      <td>R<sup>2</sup></td>
-      <td>R ≈ R<sup>2-1</sup></td>
-      <td>ζ(2), Dirichlet</td>
-    </tr>
-    <tr>
-      <td>Squarefree integers (2D curved lattice)</td>
-      <td>2</td>
-      <td>x</td>
-      <td>x<sup>1/2</sup></td>
-      <td>ζ(2)</td>
-    </tr>
-    <tr>
-      <td>k-free integers</td>
-      <td>k</td>
-      <td>x</td>
-      <td>x<sup>1/k</sup></td>
-      <td>ζ(k)</td>
-    </tr>
-    <tr>
-      <td>Coprime m-tuples</td>
-      <td>m</td>
-      <td>R<sup>m</sup></td>
-      <td>R<sup>m-1</sup></td>
-      <td>ζ(m)</td>
-    </tr>
-    <tr>
-      <td>Prime k-tuples using modular sieves</td>
-      <td>k</td>
-      <td>Volume of sieve region</td>
-      <td>Boundary of sieve region</td>
-      <td>Hardy-Littlewood heuristics</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>3. Geometric Interpretation</h2>
-
-<p>
-Arithmetic filters such as the Möbius function impose alternating inclusion-exclusion on lattice substructures. This induces cancellation along multiple axes. While the main term scales with the volume of the lattice region, the maximal possible fluctuation arises from the boundary. Therefore, the dimension of the lattice directly determines the exponent of the error term. For instance, in two-dimensional problems, the boundary is linear in R, yielding an exponent of 1/2 in the corresponding error term relative to the area.
-</p>
-
-<p class="note">
-This geometric viewpoint provides an intuitive understanding of critical exponents in the Riemann Hypothesis context and related counting problems, demonstrating that these exponents are structurally forced rather than coincidental.
-</p>
-
-<h2>4. Implications and Unification</h2>
-
-<p>
-The Boundary Cancellation Principle unifies multiple classical results by demonstrating that the same geometric mechanism governs a variety of arithmetic structures. Coprime pairs, k-free integers, coprime tuples, and prime tuples with modular sieves are all instances where the exponent of the error term is determined by lattice dimension. This framework allows for prediction of error scaling in new Möbius-filtered counting problems and provides a conceptual bridge between analytic and geometric number theory.
-</p>
-
-<h2>5. Interactive Coprime Lattice Explorer</h2>
-
-<div id="explorer">
-  <div id="ui">
-    <button id="exportBtn">Export PNG</button>
-    <span id="info"></span>
-  </div>
-  <canvas id="canvas"></canvas>
+<div id="canvas-container">
+    <canvas id="mainCanvas"></canvas>
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+/**
+ * MATHEMATICAL IMPLEMENTATION: BOUNDARY CANCELLATION PRINCIPLE
+ */
 
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = 600; // fixed height for explorer
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d', { alpha: false });
+const radiusSlider = document.getElementById('radius-slider');
+const radiusVal = document.getElementById('radius-val');
+const modeSelect = document.getElementById('mode-select');
 
-let scale = 0.5;       // zoom scale
-let offsetX = 0;     // pan
+let width, height;
+let R = 200;
+let scale = 2.0;
+let offsetX = 0;
 let offsetY = 0;
+let isDragging = false;
+let lastMouse = { x: 0, y: 0 };
 
-let radius = 20000;  // lattice radius
+// GCD Algorithm for Coprimality
+function gcd(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b) { a %= b; [a, b] = [b, a]; }
+    return a;
+}
 
-// GCD helper
-function gcd(a, b) { while(b){[a,b]=[b,a%b];} return a; }
-
-// Generate coprime points efficiently
-function generatePoints(R) {
-  const points = [];
-  for(let x=-R; x<=R; x++){
-    const yLimit = Math.floor(Math.sqrt(R*R - x*x));
-    for(let y=-yLimit; y<=yLimit; y++){
-      if(gcd(Math.abs(x),Math.abs(y))===1){
-        points.push([x,y]);
-      }
+// Check if squarefree (no d^2 divides n)
+function isSquareFree(n) {
+    if (n === 0) return false;
+    n = Math.abs(n);
+    if (n % 4 === 0) return false;
+    for (let i = 3; i * i <= n; i += 2) {
+        if (n % (i * i) === 0) return false;
     }
-  }
-  return points;
+    return true;
 }
 
-// Map lattice coordinates to canvas pixels
-function mapToCanvas(x,y){
-  const cx = width/2 + (x+offsetX)*scale;
-  const cy = height/2 - (y+offsetY)*scale;
-  return [cx,cy];
-}
-
-// Draw all points using ImageData for speed
-function drawPoints(points) {
-  ctx.clearRect(0,0,width,height);
-  const image = ctx.createImageData(width,height);
-  const data = image.data;
-  for(const [x,y] of points){
-    const [cx,cy] = mapToCanvas(x,y);
-    const px = Math.floor(cx);
-    const py = Math.floor(cy);
-    if(px>=0 && px<width && py>=0 && py<height){
-      const idx = (py*width+px)*4;
-      data[idx]=255; data[idx+1]=255; data[idx+2]=255; data[idx+3]=255;
+// Check if k-free (using k=3 here for projection)
+function isKFree(n, k) {
+    if (n === 0) return false;
+    n = Math.abs(n);
+    for (let i = 2; Math.pow(i, k) <= n; i++) {
+        if (n % Math.pow(i, k) === 0) return false;
     }
-  }
-  ctx.putImageData(image,0,0);
-  document.getElementById("info").textContent = `Points rendered: ${points.length}`;
+    return true;
 }
 
-// Zoom control
-canvas.addEventListener("wheel", e=>{
-  e.preventDefault();
-  scale *= e.deltaY<0?1.1:0.9;
-  drawPoints(points);
-});
+function resize() {
+    width = window.innerWidth - 320;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    draw();
+}
 
-// Pan control
-let isDragging=false, lastX, lastY;
-canvas.addEventListener("mousedown", e=>{isDragging=true; lastX=e.clientX; lastY=e.clientY;});
-canvas.addEventListener("mouseup", ()=>{isDragging=false;});
-canvas.addEventListener("mousemove", e=>{
-  if(isDragging){
-    offsetX += (e.clientX-lastX)/scale;
-    offsetY -= (e.clientY-lastY)/scale;
-    lastX=e.clientX; lastY=e.clientY;
-    drawPoints(points);
-  }
-});
+function draw() {
+    const imgData = ctx.createImageData(width, height);
+    const data = new Uint32Array(imgData.data.buffer);
+    data.fill(0xFF050505); // Background color (ABGR)
 
-// Export PNG
-document.getElementById("exportBtn").addEventListener("click", ()=>{
-  const url = canvas.toDataURL("image/png");
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "coprime_lattice.png";
-  a.click();
-});
+    let pointCount = 0;
+    const centerX = width / 2 + offsetX;
+    const centerY = height / 2 + offsetY;
+    const mode = modeSelect.value;
 
-// Generate and draw points
-let points = generatePoints(radius);
-drawPoints(points);
+    // Boundary Cancellation Logic: Iterate through the lattice
+    for (let x = -R; x <= R; x++) {
+        const screenX = Math.round(centerX + x * scale);
+        if (screenX < 0 || screenX >= width) continue;
 
-// Handle resize
-window.addEventListener("resize", ()=>{
-  width = canvas.width = window.innerWidth;
-  drawPoints(points);
-});
+        for (let y = -R; y <= R; y++) {
+            const screenY = Math.round(centerY - y * scale);
+            if (screenY < 0 || screenY >= height) continue;
+
+            let valid = false;
+            let color = 0xFF44AAFF; // Default Blue-ish
+
+            if (mode === 'coprime') {
+                if (gcd(x, y) === 1) {
+                    valid = true;
+                    if (Math.abs(x - y) === 2) color = 0xFF4444FF; // Highlight twin-like offsets
+                }
+            } else if (mode === 'squarefree') {
+                if (isSquareFree(x) && isSquareFree(y)) {
+                    valid = true;
+                }
+            } else if (mode === 'kfree') {
+                if (isKFree(x, 3) && isKFree(y, 3)) {
+                    valid = true;
+                    color = 0xFFAAFF44;
+                }
+            }
+
+            if (valid) {
+                data[screenY * width + screenX] = color;
+                pointCount++;
+            }
+        }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    updateStats(pointCount);
+}
+
+function updateStats(count) {
+    document.getElementById('stat-count').innerText = count.toLocaleString();
+    const totalArea = (2 * R + 1) ** 2;
+    const density = count / totalArea;
+    document.getElementById('stat-density').innerText = density.toFixed(4);
+    
+    let theoretical;
+    if (modeSelect.value === 'coprime') theoretical = 6 / (Math.PI ** 2);
+    else if (modeSelect.value === 'squarefree') theoretical = (6 / (Math.PI ** 2)) ** 2;
+    else theoretical = (1 / 1.202) ** 2; // approx 1/zeta(3)^2
+
+    document.getElementById('stat-theory').innerText = theoretical.toFixed(4);
+    const error = Math.abs(count - (theoretical * totalArea));
+    document.getElementById('stat-error').innerText = error.toFixed(1);
+}
+
+// Interaction Listeners
+window.addEventListener('resize', resize);
+radiusSlider.oninput = (e) => {
+    R = parseInt(e.target.value);
+    radiusVal.innerText = R;
+    draw();
+};
+
+modeSelect.onchange = draw;
+
+canvas.onmousedown = (e) => { isDragging = true; lastMouse = { x: e.clientX, y: e.clientY }; };
+window.onmouseup = () => isDragging = false;
+window.onmousemove = (e) => {
+    if (isDragging) {
+        offsetX += (e.clientX - lastMouse.x);
+        offsetY += (e.clientY - lastMouse.y);
+        lastMouse = { x: e.clientX, y: e.clientY };
+        draw();
+    }
+};
+
+canvas.onwheel = (e) => {
+    e.preventDefault();
+    const zoomSpeed = 0.1;
+    scale *= (e.deltaY > 0 ? (1 - zoomSpeed) : (1 + zoomSpeed));
+    draw();
+};
+
+document.getElementById('download-png').onclick = () => {
+    const link = document.createElement('a');
+    link.download = 'bcp-lattice.png';
+    link.href = canvas.toDataURL();
+    link.click();
+};
+
+// Initial Start
+resize();
 </script>
-
-<h2>6. Conclusion</h2>
-
-<p>
-The Boundary Cancellation Principle provides a formal geometric explanation for the appearance of critical exponents in arithmetic counting problems. By interpreting Möbius-type filters as geometric cancellation mechanisms on k-dimensional lattices, the exponent of the error term is inherently tied to the lattice dimension. This framework unifies classical results in number theory, including coprime density, k-free integers, and prime tuples, while offering a coherent perspective on boundary-driven error scaling. The interactive coprime lattice explorer demonstrates the principle in a visual and quantitative manner, allowing exploration of large-scale arithmetic structures.
-</p>
-
 </body>
 </html>
