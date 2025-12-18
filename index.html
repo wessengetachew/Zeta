@@ -945,39 +945,60 @@ function errorBound(R, k, str, kfK) {
 }
 
 function compute() {
-    const t0 = performance.now();
+    // Show loading state
+    document.querySelector('.compute-btn').textContent = 'Computing...';
+    document.querySelector('.compute-btn').disabled = true;
     
-    S.structure = document.getElementById('structureType').value;
-    S.dimension = parseInt(document.getElementById('dimension').value);
-    S.radius = parseInt(document.getElementById('radius').value);
-    S.kfreeK = parseInt(document.getElementById('kfreeK').value);
-    S.errorStep = parseInt(document.getElementById('errorStep').value);
-    
-    const k = S.dimension, R = S.radius;
-    
-    S.points = generatePoints(R, k);
-    S.classified = S.points.map(p => classify(p, S.structure, S.kfreeK));
-    
-    const surv = S.classified.filter(p => p.survives);
-    const removed = S.classified.filter(p => !p.survives);
-    const pred = mainTerm(R, k, S.structure, S.kfreeK);
-    const err = surv.length - pred;
-    const bnd = errorBound(R, k, S.structure, S.kfreeK);
-    
-    updateConfig(k, R);
-    updateMainTerm(pred, k);
-    updateCounting(S.classified.length, surv.length, pred, err, bnd, k);
-    computeBoundaryAnalysis(surv, R);
-    computeRadialDensity(R);
-    computeErrorSeries(k, R);
-    computeMobiusSums(k);
-    computeDimComparison(R);
-    computeGcdDist(removed);
-    updatePointLists(surv, removed);
-    
-    const elapsed = performance.now() - t0;
-    document.getElementById('computeTime').textContent = new Date().toLocaleString();
-    document.getElementById('computeDuration').textContent = `${elapsed.toFixed(0)}ms`;
+    // Use setTimeout to allow UI to update
+    setTimeout(function() {
+        try {
+            const t0 = performance.now();
+            
+            S.structure = document.getElementById('structureType').value;
+            S.dimension = parseInt(document.getElementById('dimension').value);
+            S.radius = parseInt(document.getElementById('radius').value);
+            S.kfreeK = parseInt(document.getElementById('kfreeK').value);
+            S.errorStep = parseInt(document.getElementById('errorStep').value);
+            
+            // Limit radius for higher dimensions to prevent freeze
+            let R = S.radius;
+            const k = S.dimension;
+            if (k >= 5 && R > 30) R = 30;
+            else if (k >= 4 && R > 50) R = 50;
+            S.radius = R;
+            document.getElementById('radius').value = R;
+            
+            S.points = generatePoints(R, k);
+            S.classified = S.points.map(p => classify(p, S.structure, S.kfreeK));
+            
+            const surv = S.classified.filter(p => p.survives);
+            const removed = S.classified.filter(p => !p.survives);
+            const pred = mainTerm(R, k, S.structure, S.kfreeK);
+            const err = surv.length - pred;
+            const bnd = errorBound(R, k, S.structure, S.kfreeK);
+            
+            updateConfig(k, R);
+            updateMainTerm(pred, k);
+            updateCounting(S.classified.length, surv.length, pred, err, bnd, k);
+            computeBoundaryAnalysis(surv, R);
+            computeRadialDensity(R);
+            computeErrorSeries(k, R);
+            computeMobiusSums(k);
+            computeDimComparison(Math.min(R, 25)); // Limit for dim comparison
+            computeGcdDist(removed);
+            updatePointLists(surv, removed);
+            
+            const elapsed = performance.now() - t0;
+            document.getElementById('computeTime').textContent = new Date().toLocaleString();
+            document.getElementById('computeDuration').textContent = elapsed.toFixed(0) + 'ms';
+        } catch(e) {
+            console.error('Compute error:', e);
+            document.getElementById('computeTime').textContent = 'Error: ' + e.message;
+        }
+        
+        document.querySelector('.compute-btn').textContent = 'Compute Full Analysis';
+        document.querySelector('.compute-btn').disabled = false;
+    }, 50);
 }
 
 function updateConfig(k, R) {
@@ -1046,7 +1067,7 @@ function computeBoundaryAnalysis(surv, R) {
             range: `[${thresh.toFixed(1)}, ${R}]`,
             boundaryPts: boundary.length,
             interiorPts: interior.length,
-            boundaryPct: boundary.length / surv.length * 100,
+            boundaryPct: surv.length > 0 ? boundary.length / surv.length * 100 : 0,
             boundaryDensity: bTotal > 0 ? boundary.length / bTotal : 0,
             interiorDensity: iTotal > 0 ? interior.length / iTotal : 0
         });
@@ -1096,19 +1117,32 @@ function computeRadialDensity(R) {
 
 function computeErrorSeries(k, R) {
     S.errorSeries = [];
-    const step = S.errorStep;
+    const step = Math.max(S.errorStep, k >= 4 ? 5 : 2); // Larger step for higher dims
+    const maxR = k >= 5 ? Math.min(R, 30) : R;
     
-    for (let r = 5; r <= R; r += step) {
-        const pts = generatePoints(r, k);
-        const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
-        const survC = cls.filter(p => p.survives).length;
-        const pred = mainTerm(r, k, S.structure, S.kfreeK);
-        const err = survC - pred;
-        const bnd = errorBound(r, k, S.structure, S.kfreeK);
-        S.errorSeries.push({ r, actual: survC, predicted: pred, error: err, absError: Math.abs(err), bound: bnd, ratio: Math.abs(err)/bnd });
+    for (let r = 5; r <= maxR; r += step) {
+        try {
+            const pts = generatePoints(r, k);
+            const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
+            const survC = cls.filter(p => p.survives).length;
+            const pred = mainTerm(r, k, S.structure, S.kfreeK);
+            const err = survC - pred;
+            const bnd = errorBound(r, k, S.structure, S.kfreeK);
+            S.errorSeries.push({ r, actual: survC, predicted: pred, error: err, absError: Math.abs(err), bound: bnd, ratio: bnd > 0 ? Math.abs(err)/bnd : 0 });
+        } catch(e) {
+            console.error('Error series error at r=' + r, e);
+        }
     }
     
     const ratios = S.errorSeries.map(d => d.ratio);
+    if (ratios.length === 0) {
+        document.getElementById('maxErrorRatio').textContent = '—';
+        document.getElementById('avgErrorRatio').textContent = '—';
+        document.getElementById('fittedConstant').textContent = '—';
+        document.getElementById('fitQuality').textContent = '—';
+        document.getElementById('errorSeriesBody').innerHTML = '<tr><td colspan="7">No data (radius too small)</td></tr>';
+        return;
+    }
     document.getElementById('maxErrorRatio').textContent = Math.max(...ratios).toFixed(6);
     document.getElementById('avgErrorRatio').textContent = (ratios.reduce((a,b)=>a+b,0)/ratios.length).toFixed(6);
     
@@ -1165,16 +1199,21 @@ function computeMobiusSums(k) {
 
 function computeDimComparison(R) {
     S.dimCompare = [];
-    const testR = Math.min(R, 40); // Keep manageable for higher dims
+    const testR = Math.min(R, 25); // Keep small for safety
+    const maxK = testR <= 15 ? 5 : (testR <= 20 ? 4 : 3);
     
-    for (let k = 2; k <= 5; k++) {
-        const pts = generatePoints(testR, k);
-        const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
-        const survC = cls.filter(p => p.survives).length;
-        const pred = mainTerm(testR, k, S.structure, S.kfreeK);
-        const err = survC - pred;
-        const bnd = errorBound(testR, k, S.structure, S.kfreeK);
-        S.dimCompare.push({ k, exp: (k-1)/k, total: pts.length, surviving: survC, predicted: pred, error: err, bound: bnd, ratio: Math.abs(err)/bnd });
+    for (let k = 2; k <= maxK; k++) {
+        try {
+            const pts = generatePoints(testR, k);
+            const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
+            const survC = cls.filter(p => p.survives).length;
+            const pred = mainTerm(testR, k, S.structure, S.kfreeK);
+            const err = survC - pred;
+            const bnd = errorBound(testR, k, S.structure, S.kfreeK);
+            S.dimCompare.push({ k, exp: (k-1)/k, total: pts.length, surviving: survC, predicted: pred, error: err, bound: bnd, ratio: bnd > 0 ? Math.abs(err)/bnd : 0 });
+        } catch(e) {
+            console.error('Dim compare error at k=' + k, e);
+        }
     }
     
     document.getElementById('dimCompareBody').innerHTML = S.dimCompare.map(d => `
@@ -1199,7 +1238,7 @@ function computeGcdDist(removed) {
     }
     
     S.gcdDist = [...gcdMap.entries()]
-        .map(([g, count]) => ({ gcd: g, count, pct: count/removed.length*100, mu: mobius(g) }))
+        .map(([g, count]) => ({ gcd: g, count, pct: removed.length > 0 ? count/removed.length*100 : 0, mu: mobius(g) }))
         .sort((a, b) => b.count - a.count);
     
     document.getElementById('gcdDistBody').innerHTML = S.gcdDist.slice(0, 20).map(d => `
@@ -1320,4 +1359,4 @@ $R$ & Actual & Pred & Error & Bound & Ratio \\\\\\midrule
 </script>
 
 </body>
-        </html>
+</html>
