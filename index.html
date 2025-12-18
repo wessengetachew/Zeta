@@ -3,876 +3,724 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boundary Cancellation Principle - k-Tuple Lattice Visualizer</title>
+<title>Boundary Cancellation Principle - Mathematical Analysis</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-:root {
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #12121a;
-    --bg-tertiary: #1a1a24;
-    --bg-panel: #0e0e14;
-    --border-subtle: #2a2a3a;
-    --border-accent: #3d3d52;
-    --text-primary: #e8e8f0;
-    --text-secondary: #9898a8;
-    --text-muted: #686878;
-    --accent-gold: #c9a227;
-    --accent-gold-dim: #8a7020;
-    --accent-blue: #4a7cb8;
-    --accent-cyan: #5aa8a0;
-    --accent-red: #b85a5a;
-    --accent-green: #5ab85a;
-    --point-interior: #2a5a8a;
-    --point-boundary: #c9a227;
-    --point-coprime: #5ab87a;
-    --point-removed: #5a2a2a;
-    --grid-line: #1a1a28;
-}
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro:wght@400;500&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'JetBrains Mono', monospace;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #faf9f7;
+    padding: 40px 20px;
 }
 
-.app-container {
-    display: grid;
-    grid-template-columns: 320px 1fr 300px;
-    grid-template-rows: auto 1fr auto;
-    min-height: 100vh;
-    gap: 1px;
-    background: var(--border-subtle);
+.container {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 header {
-    grid-column: 1 / -1;
-    background: var(--bg-panel);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border-subtle);
+    text-align: center;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
 }
 
-.logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
+h1 {
+    font-size: 2.2rem;
     font-weight: 600;
-    color: var(--accent-gold);
-}
-
-.logo-sub {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    margin-left: 10px;
-}
-
-.header-actions { display: flex; gap: 8px; align-items: center; }
-
-.status-indicator {
-    padding: 4px 10px;
-    font-size: 0.7rem;
-    border-radius: 3px;
-    background: var(--bg-tertiary);
-    color: var(--text-muted);
-}
-
-.status-indicator.computing {
-    background: var(--accent-gold-dim);
-    color: var(--text-primary);
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
-
-.controls-panel {
-    background: var(--bg-panel);
-    padding: 16px;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-}
-
-.main-view {
-    background: var(--bg-secondary);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.analysis-panel {
-    background: var(--bg-panel);
-    padding: 16px;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-}
-
-footer {
-    grid-column: 1 / -1;
-    background: var(--bg-panel);
-    padding: 8px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 0.65rem;
-    color: var(--text-muted);
-}
-
-.section { margin-bottom: 20px; }
-
-.section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
     margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--border-subtle);
+    letter-spacing: -0.02em;
 }
 
-.control-group { margin-bottom: 14px; }
-
-.control-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-}
-
-.control-value { color: var(--accent-gold); font-weight: 500; }
-
-input[type="range"] {
-    width: 100%;
-    height: 4px;
-    background: var(--bg-tertiary);
-    border-radius: 2px;
-    outline: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: var(--accent-gold);
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-input[type="number"], input[type="text"] {
-    width: 100%;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    padding: 6px 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    border-radius: 3px;
-    outline: none;
-}
-
-input[type="number"]:focus, input[type="text"]:focus {
-    border-color: var(--accent-gold);
-}
-
-select {
-    width: 100%;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    padding: 6px 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-}
-
-.btn {
-    padding: 6px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    border: 1px solid var(--border-subtle);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
-.btn:hover {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-}
-
-.btn-primary {
-    background: var(--accent-gold);
-    color: var(--bg-primary);
-    border-color: var(--accent-gold);
-    font-weight: 600;
-}
-
-.btn-primary:hover {
-    background: #ddb52f;
-    border-color: #ddb52f;
-    color: var(--bg-primary);
-}
-
-.btn-refresh {
-    background: var(--accent-green);
-    color: var(--bg-primary);
-    border-color: var(--accent-green);
-}
-
-.btn-refresh:hover {
-    background: #6dc86d;
-    border-color: #6dc86d;
-}
-
-.btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.btn-sm { padding: 5px 8px; font-size: 0.65rem; }
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
-.checkbox-group input[type="checkbox"] {
-    width: 14px;
-    height: 14px;
-    accent-color: var(--accent-gold);
-    cursor: pointer;
-}
-
-.checkbox-group label {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-}
-
-.canvas-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: var(--bg-primary);
-}
-
-.canvas-wrapper {
-    position: relative;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
-    border-radius: 4px;
-    overflow: hidden;
-    aspect-ratio: 1 / 1;
-    max-width: min(100%, calc(100vh - 200px));
-    max-height: calc(100vh - 200px);
-    width: 100%;
-}
-
-.canvas-wrapper canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.canvas-label {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    background: rgba(10, 10, 15, 0.9);
-    padding: 3px 6px;
-    border-radius: 2px;
-}
-
-.canvas-stats {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    background: rgba(10, 10, 15, 0.9);
-    padding: 4px 8px;
-    border-radius: 2px;
-    text-align: right;
-    line-height: 1.4;
-}
-
-.view-tabs {
-    display: flex;
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 0 10px;
-}
-
-.view-tab {
-    padding: 10px 16px;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s ease;
-}
-
-.view-tab:hover { color: var(--text-secondary); }
-
-.view-tab.active {
-    color: var(--accent-gold);
-    border-bottom-color: var(--accent-gold);
-}
-
-.stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border-subtle);
-    font-size: 0.7rem;
-}
-
-.stat-row:last-child { border-bottom: none; }
-
-.stat-label { color: var(--text-secondary); }
-
-.stat-value { color: var(--text-primary); font-weight: 500; }
-
-.stat-value.highlight { color: var(--accent-gold); }
-
-.formula-box {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    border-radius: 3px;
-    padding: 10px;
-    margin-top: 6px;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-family: 'Cormorant Garamond', serif;
+.subtitle {
+    font-size: 1.1rem;
+    color: #555;
     font-style: italic;
 }
 
-.formula-main {
-    color: var(--text-primary);
+.controls {
+    background: #f0eeeb;
+    border: 1px solid #ddd;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+}
+
+.controls-title {
     font-size: 0.9rem;
-    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 15px;
 }
 
-.legend { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.65rem;
-    color: var(--text-secondary);
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-.legend-color { width: 10px; height: 10px; border-radius: 2px; }
-
-.dimension-selector {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+.control-item label {
+    display: block;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 5px;
 }
 
-.dim-btn {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    border-radius: 3px;
-    color: var(--text-secondary);
+.control-item select,
+.control-item input {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.compute-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #2a2a2a;
+    color: #fff;
+    border: none;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
     cursor: pointer;
-    font-size: 0.75rem;
-    transition: all 0.15s ease;
+    transition: background 0.2s;
 }
 
-.dim-btn:hover {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
+.compute-btn:hover {
+    background: #444;
 }
 
-.dim-btn.active {
-    background: var(--accent-gold);
-    border-color: var(--accent-gold);
-    color: var(--bg-primary);
+section {
+    margin-bottom: 45px;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #2a2a2a;
+}
+
+h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 25px 0 12px 0;
+}
+
+p {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.theorem {
+    background: #f5f5f0;
+    border-left: 4px solid #2a2a2a;
+    padding: 20px 25px;
+    margin: 25px 0;
+}
+
+.theorem-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.definition {
+    background: #f0f5f5;
+    border-left: 4px solid #4a7a7a;
+    padding: 20px 25px;
+    margin: 25px 0;
+}
+
+.formula {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.1rem;
+    overflow-x: auto;
+}
+
+.formula-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: right;
+    margin-top: 8px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.95rem;
+}
+
+.data-table th {
+    background: #2a2a2a;
+    color: #fff;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.data-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table tr:nth-child(even) {
+    background: #f9f9f7;
+}
+
+.data-table .number {
+    font-family: 'Source Code Pro', monospace;
+    text-align: right;
+}
+
+.highlight-row {
+    background: #fffde7 !important;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #2a2a2a;
+    margin: 5px 0;
+}
+
+.stat-note {
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+}
+
+.proof {
+    margin: 20px 0;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;
+}
+
+.proof-title {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.qed {
+    text-align: right;
+    font-size: 1.2rem;
+}
+
+.code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9rem;
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
 }
 
 .export-section {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    border-radius: 3px;
-    padding: 10px;
-    margin-top: 10px;
+    background: #f0eeeb;
+    border: 1px solid #ddd;
+    padding: 20px 25px;
+    margin-top: 40px;
 }
 
 .export-title {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 15px;
 }
 
-.export-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-}
-
-.tuple-preview {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    margin-top: 6px;
-    padding: 6px;
-    background: var(--bg-tertiary);
-    border-radius: 3px;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 3px;
-    background: var(--bg-tertiary);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 6px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--accent-gold);
-    transition: width 0.2s ease;
-}
-
-.hidden-canvas {
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-
-.modal-overlay.visible { display: flex; }
-
-.modal {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 20px;
-    max-width: 450px;
-    width: 90%;
-}
-
-.modal-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    color: var(--accent-gold);
-    margin-bottom: 12px;
-}
-
-.modal-content {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-}
-
-.modal-actions {
+.export-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.loading-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(10, 10, 15, 0.8);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+.export-btn {
+    padding: 10px 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.loading-overlay.visible { display: flex; }
-
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--border-subtle);
-    border-top-color: var(--accent-gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+.export-btn:hover {
+    background: #2a2a2a;
+    color: #fff;
+    border-color: #2a2a2a;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.error-series {
+    margin: 20px 0;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-gold-dim); }
+.point-list {
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.8rem;
+    background: #fafafa;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+@media print {
+    .controls, .export-section { display: none; }
+    body { padding: 20px; }
+}
 </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="container">
     <header>
-        <div>
-            <span class="logo">Boundary Cancellation Principle</span>
-            <span class="logo-sub">k-Tuple Lattice Visualizer</span>
-        </div>
-        <div class="header-actions">
-            <span class="status-indicator" id="statusIndicator">Ready</span>
-            <button class="btn" onclick="showHelp()">Help</button>
-            <button class="btn btn-refresh" onclick="compute()">Refresh</button>
-        </div>
+        <h1>The Boundary Cancellation Principle</h1>
+        <p class="subtitle">Computational Analysis of Error Terms in Arithmetic Lattices</p>
     </header>
 
-    <aside class="controls-panel">
-        <div class="section">
-            <div class="section-title">Lattice Structure</div>
-            
-            <div class="control-group">
-                <div class="control-label"><span>Structure Type</span></div>
-                <select id="structureType" onchange="updateStructure()">
+    <div class="controls">
+        <div class="controls-title">Parameters</div>
+        <div class="controls-grid">
+            <div class="control-item">
+                <label>Structure Type</label>
+                <select id="structureType">
                     <option value="coprime">Coprime Lattice Points</option>
                     <option value="squarefree">Squarefree Integers</option>
                     <option value="kfree">k-Free Integers</option>
                     <option value="coprime-tuple">Coprime m-Tuples</option>
-                    <option value="prime-ktuple">Prime k-Tuple Sieve</option>
-                    <option value="custom">Custom Admissible Tuple</option>
                 </select>
             </div>
-
-            <div class="control-group">
-                <div class="control-label"><span>Dimension (k)</span></div>
-                <div class="dimension-selector">
-                    <button class="dim-btn active" data-dim="2" onclick="setDimension(2)">2</button>
-                    <button class="dim-btn" data-dim="3" onclick="setDimension(3)">3</button>
-                    <button class="dim-btn" data-dim="4" onclick="setDimension(4)">4</button>
-                    <button class="dim-btn" data-dim="5" onclick="setDimension(5)">5</button>
-                    <button class="dim-btn" data-dim="6" onclick="setDimension(6)">6</button>
-                </div>
+            <div class="control-item">
+                <label>Dimension (k)</label>
+                <select id="dimension">
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
             </div>
-
-            <div class="control-group">
-                <div class="control-label">
-                    <span>Radius / Bound (R)</span>
-                    <span class="control-value" id="radiusValue">30</span>
-                </div>
-                <input type="range" id="radius" min="10" max="200" value="30" oninput="updateRadius()">
+            <div class="control-item">
+                <label>Radius / Bound (R)</label>
+                <input type="number" id="radius" value="50" min="10" max="200">
             </div>
+            <div class="control-item">
+                <label>k-free parameter</label>
+                <input type="number" id="kfreeK" value="2" min="2" max="10">
+            </div>
+        </div>
+        <button class="compute-btn" onclick="compute()">Compute Full Analysis</button>
+    </div>
 
-            <div class="control-group" id="kfreeParam" style="display:none">
-                <div class="control-label">
-                    <span>k-free parameter</span>
-                    <span class="control-value" id="kfreeValue">2</span>
-                </div>
-                <input type="range" id="kfree" min="2" max="10" value="2" oninput="updateKfree()">
+    <section id="principleSection">
+        <h2>1. Statement of the Principle</h2>
+        
+        <div class="theorem">
+            <div class="theorem-title">Boundary Cancellation Principle</div>
+            <p>Let an arithmetic counting problem be defined on a <em>k</em>-dimensional lattice with arithmetic constraints imposed via Möbius-type inclusion-exclusion. If the main term scales with the volume of the supporting region, then the dominant error term scales with the boundary measure of that region.</p>
+        </div>
+
+        <p>The critical consequence is that the error exponent depends solely on dimension:</p>
+
+        <div class="formula">
+            Error exponent = (k - 1) / k
+            <div class="formula-label">where k is the lattice dimension</div>
+        </div>
+
+        <p>For squarefree counting (k = 2), this yields the classical O(x<sup>1/2</sup>) error. For cubefree counting (k = 3), we obtain O(x<sup>1/3</sup>), and so forth.</p>
+    </section>
+
+    <section id="configSection">
+        <h2>2. Current Configuration</h2>
+        
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Structure</div>
+                <div class="stat-value" id="displayStructure">Coprime Lattice</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Dimension k</div>
+                <div class="stat-value" id="displayDimension">2</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Radius R</div>
+                <div class="stat-value" id="displayRadius">50</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Critical Exponent</div>
+                <div class="stat-value" id="displayExponent">1/2</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="definitionsSection">
+        <h2>3. Definitions</h2>
+
+        <div class="definition">
+            <div class="theorem-title" id="defTitle">Definition (Coprime Lattice Points)</div>
+            <p id="defContent">A point (a₁, a₂, ..., aₖ) ∈ ℤᵏ is coprime (or primitive) if gcd(a₁, a₂, ..., aₖ) = 1. Such points are precisely those visible from the origin.</p>
+        </div>
+
+        <h3>The Möbius Function</h3>
+        <p>The Möbius function μ(n) is defined by:</p>
+        <div class="formula">
+            μ(n) = 1 if n = 1<br>
+            μ(n) = (−1)ʳ if n is squarefree with r prime factors<br>
+            μ(n) = 0 if n has a squared prime factor
+        </div>
+
+        <p>This function serves as the fundamental arithmetic filter in the inclusion-exclusion sieve.</p>
+    </section>
+
+    <section id="mainTermSection">
+        <h2>4. Main Term Analysis</h2>
+
+        <div class="theorem">
+            <div class="theorem-title" id="mainTermTitle">Theorem (Main Term for Coprime Lattice Points)</div>
+            <p id="mainTermStatement">The number of coprime lattice points in the ball of radius R in ℤᵏ satisfies:</p>
+            <div class="formula" id="mainTermFormula">
+                #{(a₁,...,aₖ) : |a|≤R, gcd=1} = Rᵏ / ζ(k) + O(Rᵏ⁻¹)
             </div>
         </div>
 
-        <div class="section" id="tupleSection" style="display:none">
-            <div class="section-title">Admissible Tuple</div>
-            <div class="control-group">
-                <div class="control-label"><span>Offsets (comma-separated)</span></div>
-                <input type="text" id="tupleOffsets" value="0,2,6,8">
-                <div class="tuple-preview" id="tuplePreview">Pattern: (n, n+2, n+6, n+8)</div>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Predicted Count (Main Term)</div>
+                <div class="stat-value" id="predictedCount">—</div>
+                <div class="stat-note" id="predictedFormula">Rᵏ / ζ(k)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Density Constant</div>
+                <div class="stat-value" id="densityConstant">—</div>
+                <div class="stat-note" id="densityFormula">1 / ζ(k)</div>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Visualization</div>
+        <h3>Zeta Values</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>k</th>
+                    <th>ζ(k)</th>
+                    <th>1/ζ(k) (density)</th>
+                    <th>Closed Form</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="number">2</td>
+                    <td class="number">1.6449340668</td>
+                    <td class="number">0.6079271019</td>
+                    <td>π²/6</td>
+                </tr>
+                <tr>
+                    <td class="number">3</td>
+                    <td class="number">1.2020569032</td>
+                    <td class="number">0.8319073725</td>
+                    <td>Apéry's constant</td>
+                </tr>
+                <tr>
+                    <td class="number">4</td>
+                    <td class="number">1.0823232337</td>
+                    <td class="number">0.9239384669</td>
+                    <td>π⁴/90</td>
+                </tr>
+                <tr>
+                    <td class="number">5</td>
+                    <td class="number">1.0369277551</td>
+                    <td class="number">0.9643895748</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td class="number">6</td>
+                    <td class="number">1.0173430620</td>
+                    <td class="number">0.9829523809</td>
+                    <td>π⁶/945</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="countingSection">
+        <h2>5. Exact Counting Results</h2>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Lattice Points</div>
+                <div class="stat-value" id="totalPoints">—</div>
+                <div class="stat-note">Points in ball of radius R</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Surviving Points</div>
+                <div class="stat-value" id="survivingPoints">—</div>
+                <div class="stat-note">Satisfying arithmetic constraint</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Removed Points</div>
+                <div class="stat-value" id="removedPoints">—</div>
+                <div class="stat-note">Filtered by Möbius sieve</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Empirical Density</div>
+                <div class="stat-value" id="empiricalDensity">—</div>
+                <div class="stat-note">Surviving / Total</div>
+            </div>
+        </div>
+
+        <h3>Comparison with Prediction</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Value</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Predicted (Main Term)</td>
+                    <td class="number" id="tablePredicted">—</td>
+                    <td id="tablePredictedNote">—</td>
+                </tr>
+                <tr>
+                    <td>Actual Count</td>
+                    <td class="number" id="tableActual">—</td>
+                    <td>Exact enumeration</td>
+                </tr>
+                <tr class="highlight-row">
+                    <td>Error (Actual − Predicted)</td>
+                    <td class="number" id="tableError">—</td>
+                    <td>Deviation from main term</td>
+                </tr>
+                <tr>
+                    <td>Theoretical Error Bound</td>
+                    <td class="number" id="tableErrorBound">—</td>
+                    <td id="tableErrorBoundNote">—</td>
+                </tr>
+                <tr>
+                    <td>Relative Error</td>
+                    <td class="number" id="tableRelError">—</td>
+                    <td>|Error| / Predicted</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="boundarySection">
+        <h2>6. Boundary Analysis</h2>
+
+        <p>The Boundary Cancellation Principle asserts that error accumulates at the geometric boundary. We verify this by examining point distribution across radial shells.</p>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Boundary Shell Points</div>
+                <div class="stat-value" id="boundaryPoints">—</div>
+                <div class="stat-note" id="boundaryNote">Shell: R − δ ≤ |x| ≤ R</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Interior Points</div>
+                <div class="stat-value" id="interiorPoints">—</div>
+                <div class="stat-note">|x| < R − δ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Boundary Ratio</div>
+                <div class="stat-value" id="boundaryRatio">—</div>
+                <div class="stat-note">Boundary / Total Surviving</div>
+            </div>
+        </div>
+
+        <h3>Radial Density Distribution</h3>
+        <p>Density of surviving points as a function of distance from origin:</p>
+        
+        <div class="error-series" id="radialDensityTable">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Radius Range</th>
+                        <th>Total Points</th>
+                        <th>Surviving</th>
+                        <th>Density</th>
+                    </tr>
+                </thead>
+                <tbody id="radialDensityBody">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="errorSection">
+        <h2>7. Error Term Scaling</h2>
+
+        <div class="theorem">
+            <div class="theorem-title">Verification of Error Scaling</div>
+            <p>If the Boundary Cancellation Principle holds, then |Error(R)| should be bounded by C · R<sup id="errorExpDisplay">k−1</sup> for some constant C.</p>
+        </div>
+
+        <p>We compute the error for increasing values of R and verify the predicted scaling:</p>
+
+        <div class="error-series" id="errorSeriesTable">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>R</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Error</th>
+                        <th>Bound (R<sup id="errorExpHeader">k−1</sup>)</th>
+                        <th>|Error|/Bound</th>
+                    </tr>
+                </thead>
+                <tbody id="errorSeriesBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Max |Error|/Bound Ratio</div>
+                <div class="stat-value" id="maxErrorRatio">—</div>
+                <div class="stat-note">Should remain bounded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average |Error|/Bound</div>
+                <div class="stat-value" id="avgErrorRatio">—</div>
+                <div class="stat-note">Typical deviation</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="proofSection">
+        <h2>8. Sketch of Proof</h2>
+
+        <div class="proof">
+            <div class="proof-title">Proof sketch (Coprime lattice case)</div>
             
-            <div class="checkbox-group">
-                <input type="checkbox" id="showGrid" checked>
-                <label for="showGrid">Show grid lines</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="showBoundary" checked>
-                <label for="showBoundary">Highlight boundary</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="showRemoved">
-                <label for="showRemoved">Show removed points</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="showAxes" checked>
-                <label for="showAxes">Show axes</label>
+            <p><strong>Step 1.</strong> Express the count via Möbius inversion:</p>
+            <div class="formula">
+                #{coprime points in B(R)} = Σ_{d=1}^{R} μ(d) · #{lattice points in B(R/d)}
             </div>
 
-            <div class="control-group">
-                <div class="control-label">
-                    <span>Point Size</span>
-                    <span class="control-value" id="pointSizeValue">4</span>
-                </div>
-                <input type="range" id="pointSize" min="1" max="12" value="4" oninput="updatePointSize()">
+            <p><strong>Step 2.</strong> The inner count satisfies:</p>
+            <div class="formula">
+                #{lattice points in B(r)} = Vol(B(r)) + O(r<sup>k−1</sup>)
+            </div>
+            <p>where the error arises from the boundary of the ball.</p>
+
+            <p><strong>Step 3.</strong> Summing with Möbius weights:</p>
+            <div class="formula">
+                Σ_{d=1}^{R} μ(d) · Vol(B(R/d)) = R<sup>k</sup> · Σ_{d=1}^{∞} μ(d)/d<sup>k</sup> + O(R<sup>k−1</sup>)
             </div>
 
-            <div class="control-group">
-                <div class="control-label">
-                    <span>Boundary Thickness</span>
-                    <span class="control-value" id="boundaryThickValue">3</span>
-                </div>
-                <input type="range" id="boundaryThick" min="1" max="15" value="3" oninput="updateBoundaryThick()">
+            <p><strong>Step 4.</strong> Recognize the Euler product:</p>
+            <div class="formula">
+                Σ_{d=1}^{∞} μ(d)/d<sup>k</sup> = 1/ζ(k)
             </div>
+
+            <p><strong>Step 5.</strong> The error terms from Step 2 do not cancel beyond the boundary measure, yielding total error O(R<sup>k−1</sup>).</p>
+
+            <p class="qed">∎</p>
         </div>
+    </section>
 
-        <div class="section">
-            <div class="section-title">3D Rotation</div>
-            
-            <div class="control-group">
-                <div class="control-label">
-                    <span>Rotation X</span>
-                    <span class="control-value" id="rotXValue">25</span>
-                </div>
-                <input type="range" id="rotX" min="0" max="360" value="25" oninput="updateRotation()">
-            </div>
+    <section id="dataSection">
+        <h2>9. Sample Point Data</h2>
 
-            <div class="control-group">
-                <div class="control-label">
-                    <span>Rotation Y</span>
-                    <span class="control-value" id="rotYValue">35</span>
-                </div>
-                <input type="range" id="rotY" min="0" max="360" value="35" oninput="updateRotation()">
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-sm" onclick="resetRotation()">Reset</button>
-                <button class="btn btn-sm" id="animateBtn" onclick="toggleAnimation()">Animate</button>
-            </div>
+        <p>First 100 surviving points (sorted by norm):</p>
+        <div class="point-list" id="pointList">
+            Computing...
         </div>
+    </section>
 
-        <div class="section">
-            <div class="section-title">Export</div>
-            
-            <div class="export-section">
-                <div class="export-title">4K PNG Export</div>
-                <div class="export-options">
-                    <button class="btn btn-sm" onclick="exportPNG('current')">Current View</button>
-                    <button class="btn btn-sm" onclick="exportPNG('all')">All Views</button>
-                </div>
-            </div>
-
-            <div class="export-section">
-                <div class="export-title">CSV Data Export</div>
-                <div class="export-options">
-                    <button class="btn btn-sm" onclick="exportCSV('points')">Lattice Points</button>
-                    <button class="btn btn-sm" onclick="exportCSV('stats')">Statistics</button>
-                    <button class="btn btn-sm" onclick="exportCSV('error')">Error Data</button>
-                    <button class="btn btn-sm" onclick="exportCSV('all')">Full Export</button>
-                </div>
-            </div>
+    <div class="export-section">
+        <div class="export-title">Export Data</div>
+        <div class="export-buttons">
+            <button class="export-btn" onclick="exportCSV('points')">All Points (CSV)</button>
+            <button class="export-btn" onclick="exportCSV('error')">Error Series (CSV)</button>
+            <button class="export-btn" onclick="exportCSV('density')">Density Data (CSV)</button>
+            <button class="export-btn" onclick="exportCSV('summary')">Summary (CSV)</button>
+            <button class="export-btn" onclick="exportLaTeX()">LaTeX Table</button>
+            <button class="export-btn" onclick="window.print()">Print / PDF</button>
         </div>
-    </aside>
-
-    <main class="main-view">
-        <div class="view-tabs">
-            <div class="view-tab active" data-view="lattice" onclick="setView('lattice')">Lattice</div>
-            <div class="view-tab" data-view="boundary" onclick="setView('boundary')">Boundary</div>
-            <div class="view-tab" data-view="density" onclick="setView('density')">Density</div>
-            <div class="view-tab" data-view="error" onclick="setView('error')">Error</div>
-        </div>
-
-        <div class="canvas-container">
-            <div class="canvas-wrapper" id="canvasWrapper">
-                <canvas id="mainCanvas"></canvas>
-                <div class="canvas-label" id="canvasLabel">Lattice Structure</div>
-                <div class="canvas-stats" id="canvasStats"></div>
-                <div class="loading-overlay" id="loadingOverlay">
-                    <div class="loading-spinner"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <aside class="analysis-panel">
-        <div class="section">
-            <div class="section-title">Configuration</div>
-            <div class="stat-row">
-                <span class="stat-label">Structure</span>
-                <span class="stat-value" id="statStructure">Coprime Lattice</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Dimension</span>
-                <span class="stat-value" id="statDimension">2</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Radius</span>
-                <span class="stat-value" id="statRadius">30</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Counting</div>
-            <div class="stat-row">
-                <span class="stat-label">Total Points</span>
-                <span class="stat-value highlight" id="statTotal">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Surviving</span>
-                <span class="stat-value highlight" id="statSurviving">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Removed</span>
-                <span class="stat-value" id="statRemoved">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Density</span>
-                <span class="stat-value" id="statDensity">0%</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Main Term</div>
-            <div class="formula-box">
-                <div class="formula-main" id="formulaMain">R^k / zeta(k)</div>
-                <div id="formulaExplain">Expected count</div>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Predicted</span>
-                <span class="stat-value highlight" id="statPredicted">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Actual</span>
-                <span class="stat-value" id="statActual">0</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Error Analysis</div>
-            <div class="formula-box">
-                <div class="formula-main" id="errorFormula">O(R^(k-1))</div>
-                <div id="errorExplain">Boundary scaling</div>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Error</span>
-                <span class="stat-value highlight" id="statError">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Error Bound</span>
-                <span class="stat-value" id="statErrorBound">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Relative Error</span>
-                <span class="stat-value" id="statRelError">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="errorProgress" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Boundary</div>
-            <div class="stat-row">
-                <span class="stat-label">Boundary Pts</span>
-                <span class="stat-value highlight" id="statBoundary">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Interior Pts</span>
-                <span class="stat-value" id="statInterior">0</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label">Critical Exp</span>
-                <span class="stat-value highlight" id="statExponent">1/2</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Legend</div>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #5ab87a"></div>
-                    <span>Surviving (coprime/k-free)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #c9a227"></div>
-                    <span>Boundary shell</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #5a2a2a"></div>
-                    <span>Removed by sieve</span>
-                </div>
-            </div>
-        </div>
-    </aside>
+    </div>
 
     <footer>
-        <span>Boundary Cancellation Principle Visualizer</span>
-        <span id="computeTime">-</span>
+        Boundary Cancellation Principle Analysis Tool<br>
+        Computed: <span id="computeTime">—</span>
     </footer>
 </div>
 
-<div class="modal-overlay" id="helpModal">
-    <div class="modal">
-        <div class="modal-title">Boundary Cancellation Principle</div>
-        <div class="modal-content">
-            <p><strong>Core Principle:</strong> In k-dimensional lattice counting with Mobius inclusion-exclusion, interior contributions cancel efficiently while incomplete cancellation accumulates at the boundary.</p>
-            <br>
-            <p><strong>Error Exponent:</strong> (k-1)/k determines error scaling. Squarefree (k=2) gives O(x^1/2), cubefree (k=3) gives O(x^1/3).</p>
-            <br>
-            <p><strong>Usage:</strong> Select structure type, set dimension and radius, then click Refresh to compute. Use tabs to switch views.</p>
-        </div>
-        <div class="modal-actions">
-            <button class="btn btn-primary" onclick="hideHelp()">Close</button>
-        </div>
-    </div>
-</div>
-
-<canvas id="exportCanvas" class="hidden-canvas"></canvas>
-
 <script>
-const S = {
-    dimension: 2,
-    radius: 30,
+const State = {
     structure: 'coprime',
-    kfreeParam: 2,
-    tupleOffsets: [0, 2, 6, 8],
-    rotation: { x: 25, y: 35 },
-    pointSize: 4,
-    boundaryThickness: 3,
-    animating: false,
-    currentView: 'lattice',
+    dimension: 2,
+    radius: 50,
+    kfreeK: 2,
     points: [],
     classified: [],
-    errorData: [],
+    errorSeries: [],
+    densityData: [],
     primes: [],
     maxPrime: 0
 };
 
 function sievePrimes(max) {
-    if (max <= S.maxPrime) return;
+    if (max <= State.maxPrime) return;
     const sieve = new Array(max + 1).fill(true);
     sieve[0] = sieve[1] = false;
     for (let i = 2; i * i <= max; i++) {
@@ -880,11 +728,11 @@ function sievePrimes(max) {
             for (let j = i * i; j <= max; j += i) sieve[j] = false;
         }
     }
-    S.primes = [];
+    State.primes = [];
     for (let i = 2; i <= max; i++) {
-        if (sieve[i]) S.primes.push(i);
+        if (sieve[i]) State.primes.push(i);
     }
-    S.maxPrime = max;
+    State.maxPrime = max;
 }
 
 function gcd(a, b) {
@@ -900,7 +748,7 @@ function gcdArr(arr) {
 function isKFree(n, k) {
     if (n <= 0) return false;
     sievePrimes(Math.ceil(Math.pow(n, 1/k)) + 10);
-    for (const p of S.primes) {
+    for (const p of State.primes) {
         const pk = Math.pow(p, k);
         if (pk > n) break;
         if (n % pk === 0) return false;
@@ -908,21 +756,7 @@ function isKFree(n, k) {
     return true;
 }
 
-function isPrime(n) {
-    if (n < 2) return false;
-    if (n === 2) return true;
-    if (n % 2 === 0) return false;
-    sievePrimes(Math.ceil(Math.sqrt(n)) + 10);
-    for (const p of S.primes) {
-        if (p * p > n) return true;
-        if (n % p === 0) return false;
-    }
-    return true;
-}
-
-function generatePoints() {
-    const R = S.radius;
-    const k = S.dimension;
+function generatePoints(R, k) {
     const points = [];
     const R2 = R * R;
     
@@ -930,13 +764,12 @@ function generatePoints() {
         for (let x = 1; x <= R; x++) {
             const maxY = Math.floor(Math.sqrt(R2 - x * x));
             for (let y = -maxY; y <= maxY; y++) {
-                if (x * x + y * y <= R2) points.push([x, y]);
+                points.push([x, y]);
             }
         }
     } else if (k === 3) {
         for (let x = 1; x <= R; x++) {
             const rem1 = R2 - x * x;
-            if (rem1 < 0) continue;
             const maxY = Math.floor(Math.sqrt(rem1));
             for (let y = -maxY; y <= maxY; y++) {
                 const rem2 = rem1 - y * y;
@@ -970,648 +803,278 @@ function generatePoints() {
     return points;
 }
 
-function filterPoints(points) {
-    return points.map(p => {
-        let survives = false;
-        
-        switch (S.structure) {
-            case 'coprime':
-            case 'coprime-tuple':
-                survives = gcdArr(p.map(Math.abs)) === 1;
-                break;
-            case 'squarefree':
-                const n2 = p.reduce((s, x) => s + x * x, 0);
-                survives = isKFree(Math.round(Math.sqrt(n2)), 2);
-                break;
-            case 'kfree':
-                const nk = p.reduce((s, x) => s + x * x, 0);
-                survives = isKFree(Math.round(Math.sqrt(nk)), S.kfreeParam);
-                break;
-            case 'prime-ktuple':
-            case 'custom':
-                const base = Math.abs(p[0]);
-                survives = S.tupleOffsets.every(off => isPrime(base + off));
-                break;
-            default:
-                survives = gcdArr(p.map(Math.abs)) === 1;
-        }
-        
-        const norm = Math.sqrt(p.reduce((s, x) => s + x * x, 0));
-        const isBoundary = norm >= S.radius - S.boundaryThickness;
-        
-        return { point: p, survives, isBoundary, norm };
-    });
+function classifyPoint(p, structure, kfreeK) {
+    let survives = false;
+    
+    switch (structure) {
+        case 'coprime':
+        case 'coprime-tuple':
+            survives = gcdArr(p.map(Math.abs)) === 1;
+            break;
+        case 'squarefree':
+            const n2 = p.reduce((s, x) => s + x * x, 0);
+            survives = isKFree(Math.round(Math.sqrt(n2)), 2);
+            break;
+        case 'kfree':
+            const nk = p.reduce((s, x) => s + x * x, 0);
+            survives = isKFree(Math.round(Math.sqrt(nk)), kfreeK);
+            break;
+        default:
+            survives = gcdArr(p.map(Math.abs)) === 1;
+    }
+    
+    const norm = Math.sqrt(p.reduce((s, x) => s + x * x, 0));
+    return { point: p, survives, norm };
 }
 
 function zeta(s) {
-    const vals = { 2: Math.PI**2/6, 3: 1.202, 4: Math.PI**4/90, 5: 1.037, 6: Math.PI**6/945 };
+    const vals = { 
+        2: Math.PI * Math.PI / 6, 
+        3: 1.2020569031595942, 
+        4: Math.pow(Math.PI, 4) / 90, 
+        5: 1.0369277551433699, 
+        6: Math.pow(Math.PI, 6) / 945 
+    };
     if (vals[s]) return vals[s];
     let sum = 0;
-    for (let n = 1; n < 5000; n++) sum += 1 / Math.pow(n, s);
+    for (let n = 1; n < 10000; n++) sum += 1 / Math.pow(n, s);
     return sum;
 }
 
-function mainTerm() {
-    const R = S.radius, k = S.dimension;
-    switch (S.structure) {
+function mainTerm(R, k, structure, kfreeK) {
+    switch (structure) {
         case 'coprime':
         case 'coprime-tuple':
             return Math.pow(R, k) / zeta(k);
         case 'squarefree':
             return R / zeta(2);
         case 'kfree':
-            return R / zeta(S.kfreeParam);
+            return R / zeta(kfreeK);
         default:
             return Math.pow(R, k) / zeta(k);
     }
 }
 
-function errorBound() {
-    const R = S.radius, k = S.dimension;
-    switch (S.structure) {
-        case 'squarefree': return Math.pow(R, 0.5);
-        case 'kfree': return Math.pow(R, 1/S.kfreeParam);
-        default: return Math.pow(R, k - 1);
+function errorBound(R, k, structure, kfreeK) {
+    switch (structure) {
+        case 'squarefree':
+            return Math.pow(R, 0.5);
+        case 'kfree':
+            return Math.pow(R, 1 / kfreeK);
+        default:
+            return Math.pow(R, k - 1);
     }
-}
-
-function computeErrorSeries() {
-    S.errorData = [];
-    const maxR = S.radius;
-    const step = Math.max(1, Math.floor(maxR / 40));
-    const origR = S.radius;
-    
-    for (let r = 5; r <= maxR; r += step) {
-        S.radius = r;
-        const pts = generatePoints();
-        const filt = filterPoints(pts);
-        const surv = filt.filter(p => p.survives).length;
-        const pred = mainTerm();
-        const err = surv - pred;
-        const bnd = errorBound();
-        
-        S.errorData.push({ r, actual: surv, predicted: pred, error: err, bound: bnd });
-    }
-    
-    S.radius = origR;
 }
 
 function compute() {
-    const status = document.getElementById('statusIndicator');
-    const loading = document.getElementById('loadingOverlay');
-    status.textContent = 'Computing...';
-    status.classList.add('computing');
-    loading.classList.add('visible');
+    const startTime = performance.now();
     
-    const start = performance.now();
+    State.structure = document.getElementById('structureType').value;
+    State.dimension = parseInt(document.getElementById('dimension').value);
+    State.radius = parseInt(document.getElementById('radius').value);
+    State.kfreeK = parseInt(document.getElementById('kfreeK').value);
     
-    requestAnimationFrame(() => {
-        setTimeout(() => {
-            try {
-                S.points = generatePoints();
-                S.classified = filterPoints(S.points);
-                
-                const surviving = S.classified.filter(p => p.survives);
-                const boundary = surviving.filter(p => p.isBoundary);
-                const pred = mainTerm();
-                const actual = surviving.length;
-                const err = actual - pred;
-                const bnd = errorBound();
-                
-                document.getElementById('statTotal').textContent = S.points.length.toLocaleString();
-                document.getElementById('statSurviving').textContent = actual.toLocaleString();
-                document.getElementById('statRemoved').textContent = (S.points.length - actual).toLocaleString();
-                document.getElementById('statDensity').textContent = (actual / S.points.length * 100).toFixed(1) + '%';
-                document.getElementById('statPredicted').textContent = pred.toFixed(1);
-                document.getElementById('statActual').textContent = actual.toLocaleString();
-                document.getElementById('statError').textContent = err.toFixed(1);
-                document.getElementById('statErrorBound').textContent = bnd.toFixed(1);
-                document.getElementById('statRelError').textContent = (Math.abs(err) / pred * 100).toFixed(2) + '%';
-                document.getElementById('errorProgress').style.width = Math.min(Math.abs(err) / bnd * 100, 100) + '%';
-                document.getElementById('statBoundary').textContent = boundary.length.toLocaleString();
-                document.getElementById('statInterior').textContent = (actual - boundary.length).toLocaleString();
-                document.getElementById('statExponent').textContent = `${S.dimension-1}/${S.dimension}`;
-                
-                updateFormulas();
-                computeErrorSeries();
-                redraw();
-                
-                const elapsed = (performance.now() - start).toFixed(0);
-                document.getElementById('computeTime').textContent = `${elapsed}ms`;
-                
-            } catch (e) {
-                console.error(e);
-            }
-            
-            status.textContent = 'Ready';
-            status.classList.remove('computing');
-            loading.classList.remove('visible');
-        }, 20);
-    });
+    const k = State.dimension;
+    const R = State.radius;
+    
+    // Generate and classify points
+    State.points = generatePoints(R, k);
+    State.classified = State.points.map(p => classifyPoint(p, State.structure, State.kfreeK));
+    
+    const surviving = State.classified.filter(p => p.survives);
+    const total = State.classified.length;
+    const survCount = surviving.length;
+    
+    // Compute main term and error
+    const predicted = mainTerm(R, k, State.structure, State.kfreeK);
+    const error = survCount - predicted;
+    const bound = errorBound(R, k, State.structure, State.kfreeK);
+    
+    // Boundary analysis
+    const delta = Math.max(1, Math.floor(R * 0.1));
+    const boundaryThreshold = R - delta;
+    const boundary = surviving.filter(p => p.norm >= boundaryThreshold);
+    const interior = surviving.filter(p => p.norm < boundaryThreshold);
+    
+    // Update display
+    updateConfigDisplay();
+    updateDefinitions();
+    updateMainTermDisplay(predicted);
+    updateCountingDisplay(total, survCount, predicted, error, bound);
+    updateBoundaryDisplay(boundary.length, interior.length, survCount, delta);
+    computeRadialDensity();
+    computeErrorSeries();
+    updatePointList(surviving);
+    
+    const elapsed = (performance.now() - startTime).toFixed(0);
+    document.getElementById('computeTime').textContent = new Date().toLocaleString() + ` (${elapsed}ms)`;
 }
 
-function updateFormulas() {
-    const k = S.dimension;
-    let main, mainEx, err, errEx;
-    
-    switch (S.structure) {
-        case 'coprime':
-        case 'coprime-tuple':
-            main = `R^${k} / zeta(${k})`;
-            mainEx = 'Coprime density';
-            err = `O(R^${k-1})`;
-            errEx = `${k}D boundary`;
-            break;
-        case 'squarefree':
-            main = '6x / pi^2';
-            mainEx = 'Squarefree density';
-            err = 'O(x^1/2)';
-            errEx = '2D boundary';
-            break;
-        case 'kfree':
-            main = `x / zeta(${S.kfreeParam})`;
-            mainEx = `${S.kfreeParam}-free density`;
-            err = `O(x^{1/${S.kfreeParam}})`;
-            errEx = `${S.kfreeParam}D boundary`;
-            break;
-        default:
-            main = `R^${k} / zeta(${k})`;
-            mainEx = 'Expected count';
-            err = `O(R^${k-1})`;
-            errEx = 'Boundary scaling';
-    }
-    
-    document.getElementById('formulaMain').textContent = main;
-    document.getElementById('formulaExplain').textContent = mainEx;
-    document.getElementById('errorFormula').textContent = err;
-    document.getElementById('errorExplain').textContent = errEx;
-}
-
-function project(p, w, h) {
-    const k = p.length;
-    let x = p[0], y = p[1], z = k > 2 ? p[2] : 0;
-    for (let i = 3; i < k; i++) z += p[i] * 0.3;
-    
-    const rx = S.rotation.x * Math.PI / 180;
-    const ry = S.rotation.y * Math.PI / 180;
-    
-    let y1 = y * Math.cos(rx) - z * Math.sin(rx);
-    let z1 = y * Math.sin(rx) + z * Math.cos(rx);
-    let x1 = x * Math.cos(ry) + z1 * Math.sin(ry);
-    let z2 = -x * Math.sin(ry) + z1 * Math.cos(ry);
-    
-    const scale = Math.min(w, h) / (S.radius * 2.8);
-    const persp = 1 + z2 / (S.radius * 5);
-    
-    return {
-        x: w/2 + x1 * scale * persp,
-        y: h/2 - y1 * scale * persp,
-        z: z2
-    };
-}
-
-function drawLattice(canvas, ctx) {
-    const w = canvas.width, h = canvas.height;
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, w, h);
-    
-    if (document.getElementById('showGrid').checked) drawGrid(ctx, w, h);
-    if (document.getElementById('showAxes').checked) drawAxes(ctx, w, h);
-    
-    const showRem = document.getElementById('showRemoved').checked;
-    const showBnd = document.getElementById('showBoundary').checked;
-    
-    const sorted = [...S.classified].sort((a, b) => project(a.point, w, h).z - project(b.point, w, h).z);
-    
-    for (const item of sorted) {
-        if (!item.survives && !showRem) continue;
-        
-        const proj = project(item.point, w, h);
-        const size = S.pointSize * (0.7 + proj.z / (S.radius * 3) * 0.5);
-        
-        let color;
-        if (!item.survives) color = '#5a2a2a';
-        else if (showBnd && item.isBoundary) color = '#c9a227';
-        else color = '#5ab87a';
-        
-        ctx.beginPath();
-        ctx.arc(proj.x, proj.y, Math.max(1, size), 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
-    
-    const surv = S.classified.filter(p => p.survives).length;
-    document.getElementById('canvasStats').innerHTML = `Points: ${surv.toLocaleString()}<br>Dim: ${S.dimension}`;
-}
-
-function drawBoundary(canvas, ctx) {
-    const w = canvas.width, h = canvas.height;
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, w, h);
-    
-    if (document.getElementById('showAxes').checked) drawAxes(ctx, w, h);
-    
-    const scale = Math.min(w, h) / (S.radius * 2.8);
-    ctx.strokeStyle = 'rgba(201, 162, 39, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(w/2, h/2, S.radius * scale, 0, Math.PI * 2);
-    ctx.stroke();
-    
-    ctx.strokeStyle = 'rgba(201, 162, 39, 0.12)';
-    ctx.beginPath();
-    ctx.arc(w/2, h/2, (S.radius - S.boundaryThickness) * scale, 0, Math.PI * 2);
-    ctx.stroke();
-    
-    const bndPts = S.classified.filter(p => p.survives && p.isBoundary);
-    const sorted = bndPts.sort((a, b) => project(a.point, w, h).z - project(b.point, w, h).z);
-    
-    for (const item of sorted) {
-        const proj = project(item.point, w, h);
-        const size = S.pointSize * (0.7 + proj.z / (S.radius * 3) * 0.5);
-        
-        ctx.beginPath();
-        ctx.arc(proj.x, proj.y, Math.max(1, size), 0, Math.PI * 2);
-        ctx.fillStyle = '#c9a227';
-        ctx.fill();
-    }
-    
-    document.getElementById('canvasStats').innerHTML = `Boundary: ${bndPts.length.toLocaleString()}<br>Shell: ${S.boundaryThickness}`;
-}
-
-function drawDensity(canvas, ctx) {
-    const w = canvas.width, h = canvas.height;
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, w, h);
-    
-    const bins = 40;
-    const binW = S.radius / bins;
-    const counts = new Array(bins).fill(0);
-    const surviving = new Array(bins).fill(0);
-    
-    for (const item of S.classified) {
-        const bin = Math.min(bins - 1, Math.floor(item.norm / binW));
-        counts[bin]++;
-        if (item.survives) surviving[bin]++;
-    }
-    
-    const densities = counts.map((c, i) => c > 0 ? surviving[i] / c : 0);
-    const maxD = Math.max(...densities, 0.01);
-    
-    const margin = 50;
-    const chartW = w - 2 * margin;
-    const chartH = h - 2 * margin;
-    
-    ctx.strokeStyle = '#3a3a4a';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(margin, margin);
-    ctx.lineTo(margin, h - margin);
-    ctx.lineTo(w - margin, h - margin);
-    ctx.stroke();
-    
-    const barW = chartW / bins;
-    for (let i = 0; i < bins; i++) {
-        const barH = (densities[i] / maxD) * chartH * 0.9;
-        const isBnd = i >= bins - Math.ceil(S.boundaryThickness / binW);
-        
-        ctx.fillStyle = isBnd ? '#c9a227' : '#5ab87a';
-        ctx.fillRect(margin + i * barW + 1, h - margin - barH, barW - 2, barH);
-    }
-    
-    ctx.fillStyle = '#9898a8';
-    ctx.font = '11px JetBrains Mono';
-    ctx.textAlign = 'center';
-    ctx.fillText('Radius', w/2, h - margin + 25);
-    ctx.fillText('0', margin, h - margin + 15);
-    ctx.fillText(S.radius.toString(), w - margin, h - margin + 15);
-    
-    ctx.save();
-    ctx.translate(18, h/2);
-    ctx.rotate(-Math.PI/2);
-    ctx.fillText('Density', 0, 0);
-    ctx.restore();
-    
-    document.getElementById('canvasStats').innerHTML = `Bins: ${bins}<br>Max: ${maxD.toFixed(3)}`;
-}
-
-function drawError(canvas, ctx) {
-    const w = canvas.width, h = canvas.height;
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, w, h);
-    
-    if (S.errorData.length === 0) {
-        ctx.fillStyle = '#9898a8';
-        ctx.font = '12px JetBrains Mono';
-        ctx.textAlign = 'center';
-        ctx.fillText('No error data', w/2, h/2);
-        return;
-    }
-    
-    const margin = 55;
-    const chartW = w - 2 * margin;
-    const chartH = h - 2 * margin;
-    
-    ctx.strokeStyle = '#3a3a4a';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(margin, margin);
-    ctx.lineTo(margin, h - margin);
-    ctx.lineTo(w - margin, h - margin);
-    ctx.stroke();
-    
-    const maxR = Math.max(...S.errorData.map(d => d.r));
-    const maxE = Math.max(...S.errorData.map(d => Math.abs(d.error)));
-    const maxB = Math.max(...S.errorData.map(d => d.bound));
-    const yMax = Math.max(maxE, maxB) * 1.1;
-    
-    ctx.strokeStyle = '#5ab87a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    S.errorData.forEach((d, i) => {
-        const x = margin + (d.r / maxR) * chartW;
-        const y = h - margin - (Math.abs(d.error) / yMax) * chartH;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-    
-    ctx.strokeStyle = '#c9a227';
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    S.errorData.forEach((d, i) => {
-        const x = margin + (d.r / maxR) * chartW;
-        const y = h - margin - (d.bound / yMax) * chartH;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-    ctx.setLineDash([]);
-    
-    ctx.fillStyle = '#9898a8';
-    ctx.font = '11px JetBrains Mono';
-    ctx.textAlign = 'center';
-    ctx.fillText('R', w/2, h - margin + 25);
-    
-    ctx.save();
-    ctx.translate(20, h/2);
-    ctx.rotate(-Math.PI/2);
-    ctx.fillText('|Error|', 0, 0);
-    ctx.restore();
-    
-    ctx.fillStyle = '#5ab87a';
-    ctx.fillRect(w - margin - 70, margin + 10, 10, 10);
-    ctx.fillStyle = '#9898a8';
-    ctx.textAlign = 'left';
-    ctx.fillText('Actual', w - margin - 55, margin + 18);
-    
-    ctx.fillStyle = '#c9a227';
-    ctx.fillRect(w - margin - 70, margin + 26, 10, 10);
-    ctx.fillStyle = '#9898a8';
-    ctx.fillText('Bound', w - margin - 55, margin + 34);
-    
-    const last = S.errorData[S.errorData.length - 1];
-    document.getElementById('canvasStats').innerHTML = `Err: ${last.error.toFixed(1)}<br>Bnd: ${last.bound.toFixed(1)}`;
-}
-
-function drawGrid(ctx, w, h) {
-    const scale = Math.min(w, h) / (S.radius * 2.8);
-    const step = Math.max(1, Math.floor(S.radius / 8));
-    
-    ctx.strokeStyle = '#1a1a28';
-    ctx.lineWidth = 0.5;
-    
-    for (let i = -S.radius; i <= S.radius; i += step) {
-        const p1 = project([i, -S.radius, 0], w, h);
-        const p2 = project([i, S.radius, 0], w, h);
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-        
-        const p3 = project([-S.radius, i, 0], w, h);
-        const p4 = project([S.radius, i, 0], w, h);
-        ctx.beginPath();
-        ctx.moveTo(p3.x, p3.y);
-        ctx.lineTo(p4.x, p4.y);
-        ctx.stroke();
-    }
-}
-
-function drawAxes(ctx, w, h) {
-    const len = S.radius * 0.85;
-    const o = project([0, 0, 0], w, h);
-    const xEnd = project([len, 0, 0], w, h);
-    const yEnd = project([0, len, 0], w, h);
-    const zEnd = project([0, 0, len], w, h);
-    
-    ctx.lineWidth = 1.5;
-    
-    ctx.strokeStyle = '#b85a5a';
-    ctx.beginPath();
-    ctx.moveTo(o.x, o.y);
-    ctx.lineTo(xEnd.x, xEnd.y);
-    ctx.stroke();
-    
-    ctx.strokeStyle = '#5ab85a';
-    ctx.beginPath();
-    ctx.moveTo(o.x, o.y);
-    ctx.lineTo(yEnd.x, yEnd.y);
-    ctx.stroke();
-    
-    if (S.dimension > 2) {
-        ctx.strokeStyle = '#5a5ab8';
-        ctx.beginPath();
-        ctx.moveTo(o.x, o.y);
-        ctx.lineTo(zEnd.x, zEnd.y);
-        ctx.stroke();
-    }
-    
-    ctx.font = '10px JetBrains Mono';
-    ctx.fillStyle = '#b85a5a';
-    ctx.fillText('x', xEnd.x + 4, xEnd.y);
-    ctx.fillStyle = '#5ab85a';
-    ctx.fillText('y', yEnd.x + 4, yEnd.y);
-    if (S.dimension > 2) {
-        ctx.fillStyle = '#5a5ab8';
-        ctx.fillText('z', zEnd.x + 4, zEnd.y);
-    }
-}
-
-function redraw() {
-    const canvas = document.getElementById('mainCanvas');
-    const wrapper = document.getElementById('canvasWrapper');
-    const rect = wrapper.getBoundingClientRect();
-    const size = Math.min(rect.width, rect.height);
-    
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = size + 'px';
-    canvas.style.height = size + 'px';
-    
-    const ctx = canvas.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    
-    const labels = { lattice: 'Lattice Structure', boundary: 'Boundary Shell', density: 'Radial Density', error: 'Error Analysis' };
-    document.getElementById('canvasLabel').textContent = labels[S.currentView];
-    
-    switch (S.currentView) {
-        case 'lattice': drawLattice(canvas, ctx); break;
-        case 'boundary': drawBoundary(canvas, ctx); break;
-        case 'density': drawDensity(canvas, ctx); break;
-        case 'error': drawError(canvas, ctx); break;
-    }
-}
-
-function setView(view) {
-    S.currentView = view;
-    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
-    redraw();
-}
-
-function setDimension(k) {
-    k = parseInt(k);
-    if (k < 2 || k > 6) return;
-    
-    S.dimension = k;
-    document.querySelectorAll('.dim-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.dim) === k));
-    document.getElementById('statDimension').textContent = k;
-    
-    if (k >= 4 && S.radius > 40) {
-        S.radius = 25;
-        document.getElementById('radius').value = 25;
-        document.getElementById('radiusValue').textContent = '25';
-        document.getElementById('statRadius').textContent = '25';
-    }
-    
-    compute();
-}
-
-function updateRadius() {
-    const v = parseInt(document.getElementById('radius').value);
-    S.radius = v;
-    document.getElementById('radiusValue').textContent = v;
-    document.getElementById('statRadius').textContent = v;
-}
-
-function updateKfree() {
-    const v = parseInt(document.getElementById('kfree').value);
-    S.kfreeParam = v;
-    document.getElementById('kfreeValue').textContent = v;
-}
-
-function updatePointSize() {
-    const v = parseInt(document.getElementById('pointSize').value);
-    S.pointSize = v;
-    document.getElementById('pointSizeValue').textContent = v;
-    redraw();
-}
-
-function updateBoundaryThick() {
-    const v = parseInt(document.getElementById('boundaryThick').value);
-    S.boundaryThickness = v;
-    document.getElementById('boundaryThickValue').textContent = v;
-    redraw();
-}
-
-function updateRotation() {
-    S.rotation.x = parseInt(document.getElementById('rotX').value);
-    S.rotation.y = parseInt(document.getElementById('rotY').value);
-    document.getElementById('rotXValue').textContent = S.rotation.x;
-    document.getElementById('rotYValue').textContent = S.rotation.y;
-    redraw();
-}
-
-function resetRotation() {
-    S.rotation = { x: 25, y: 35 };
-    document.getElementById('rotX').value = 25;
-    document.getElementById('rotY').value = 35;
-    updateRotation();
-}
-
-let animId = null;
-function toggleAnimation() {
-    S.animating = !S.animating;
-    document.getElementById('animateBtn').textContent = S.animating ? 'Stop' : 'Animate';
-    
-    if (S.animating) {
-        const animate = () => {
-            if (!S.animating) return;
-            S.rotation.y = (S.rotation.y + 0.8) % 360;
-            document.getElementById('rotY').value = S.rotation.y;
-            document.getElementById('rotYValue').textContent = Math.round(S.rotation.y);
-            redraw();
-            animId = requestAnimationFrame(animate);
-        };
-        animate();
-    } else if (animId) {
-        cancelAnimationFrame(animId);
-    }
-}
-
-function updateStructure() {
-    const type = document.getElementById('structureType').value;
-    S.structure = type;
+function updateConfigDisplay() {
+    const k = State.dimension;
+    const R = State.radius;
     
     const names = {
         'coprime': 'Coprime Lattice',
-        'squarefree': 'Squarefree',
-        'kfree': 'k-Free',
-        'coprime-tuple': 'Coprime Tuples',
-        'prime-ktuple': 'Prime k-Tuple',
-        'custom': 'Custom Tuple'
+        'squarefree': 'Squarefree Integers',
+        'kfree': `${State.kfreeK}-Free Integers`,
+        'coprime-tuple': 'Coprime m-Tuples'
     };
-    document.getElementById('statStructure').textContent = names[type];
     
-    document.getElementById('kfreeParam').style.display = type === 'kfree' ? 'block' : 'none';
-    document.getElementById('tupleSection').style.display = (type === 'prime-ktuple' || type === 'custom') ? 'block' : 'none';
+    document.getElementById('displayStructure').textContent = names[State.structure];
+    document.getElementById('displayDimension').textContent = k;
+    document.getElementById('displayRadius').textContent = R;
+    document.getElementById('displayExponent').textContent = `${k-1}/${k} = ${((k-1)/k).toFixed(4)}`;
+    
+    document.getElementById('errorExpDisplay').textContent = k - 1;
+    document.getElementById('errorExpHeader').textContent = k - 1;
 }
 
-function exportPNG(type) {
-    const exp = document.getElementById('exportCanvas');
-    exp.width = 3840;
-    exp.height = 3840;
-    const ctx = exp.getContext('2d');
+function updateDefinitions() {
+    const titles = {
+        'coprime': 'Definition (Coprime Lattice Points)',
+        'squarefree': 'Definition (Squarefree Integers)',
+        'kfree': `Definition (${State.kfreeK}-Free Integers)`,
+        'coprime-tuple': 'Definition (Coprime m-Tuples)'
+    };
     
-    const origView = S.currentView;
+    const contents = {
+        'coprime': `A point (a₁, a₂, ..., a${State.dimension}) ∈ ℤ${State.dimension} is coprime if gcd(a₁, a₂, ..., a${State.dimension}) = 1. Such points are visible from the origin.`,
+        'squarefree': 'An integer n is squarefree if it is not divisible by p² for any prime p. Equivalently, μ(n) ≠ 0.',
+        'kfree': `An integer n is ${State.kfreeK}-free if it is not divisible by p${State.kfreeK} for any prime p.`,
+        'coprime-tuple': `An m-tuple (a₁, ..., a${State.dimension}) is coprime if gcd(a₁, ..., a${State.dimension}) = 1.`
+    };
     
-    if (type === 'all') {
-        const views = ['lattice', 'boundary', 'density', 'error'];
-        const positions = [[0, 0], [1920, 0], [0, 1920], [1920, 1920]];
+    document.getElementById('defTitle').textContent = titles[State.structure];
+    document.getElementById('defContent').textContent = contents[State.structure];
+}
+
+function updateMainTermDisplay(predicted) {
+    const k = State.dimension;
+    const z = zeta(k);
+    
+    document.getElementById('predictedCount').textContent = predicted.toFixed(2);
+    document.getElementById('densityConstant').textContent = (1/z).toFixed(10);
+    
+    const formulas = {
+        'coprime': [`R${k} / ζ(${k})`, `1 / ζ(${k})`],
+        'squarefree': ['R / ζ(2) = 6R/π²', '6/π²'],
+        'kfree': [`R / ζ(${State.kfreeK})`, `1 / ζ(${State.kfreeK})`],
+        'coprime-tuple': [`R${k} / ζ(${k})`, `1 / ζ(${k})`]
+    };
+    
+    document.getElementById('predictedFormula').textContent = formulas[State.structure][0];
+    document.getElementById('densityFormula').textContent = formulas[State.structure][1];
+    
+    // Update theorem
+    const theorems = {
+        'coprime': `The number of coprime lattice points in the ball of radius R in ℤ${k} satisfies:`,
+        'squarefree': 'The count of squarefree integers up to x satisfies:',
+        'kfree': `The count of ${State.kfreeK}-free integers up to x satisfies:`,
+        'coprime-tuple': `The number of coprime ${k}-tuples in [1,R]${k} satisfies:`
+    };
+    
+    document.getElementById('mainTermTitle').textContent = `Theorem (Main Term for ${document.getElementById('displayStructure').textContent})`;
+    document.getElementById('mainTermStatement').textContent = theorems[State.structure];
+}
+
+function updateCountingDisplay(total, survCount, predicted, error, bound) {
+    document.getElementById('totalPoints').textContent = total.toLocaleString();
+    document.getElementById('survivingPoints').textContent = survCount.toLocaleString();
+    document.getElementById('removedPoints').textContent = (total - survCount).toLocaleString();
+    document.getElementById('empiricalDensity').textContent = (survCount / total * 100).toFixed(4) + '%';
+    
+    document.getElementById('tablePredicted').textContent = predicted.toFixed(4);
+    document.getElementById('tablePredictedNote').textContent = `Using ζ(${State.dimension}) = ${zeta(State.dimension).toFixed(10)}`;
+    document.getElementById('tableActual').textContent = survCount.toLocaleString();
+    document.getElementById('tableError').textContent = error.toFixed(4);
+    document.getElementById('tableErrorBound').textContent = bound.toFixed(4);
+    document.getElementById('tableErrorBoundNote').textContent = `O(R${State.dimension - 1}) bound`;
+    document.getElementById('tableRelError').textContent = (Math.abs(error) / predicted * 100).toFixed(6) + '%';
+}
+
+function updateBoundaryDisplay(boundaryCount, interiorCount, totalSurv, delta) {
+    document.getElementById('boundaryPoints').textContent = boundaryCount.toLocaleString();
+    document.getElementById('boundaryNote').textContent = `Shell width δ = ${delta}`;
+    document.getElementById('interiorPoints').textContent = interiorCount.toLocaleString();
+    document.getElementById('boundaryRatio').textContent = (boundaryCount / totalSurv * 100).toFixed(2) + '%';
+}
+
+function computeRadialDensity() {
+    const R = State.radius;
+    const bins = 10;
+    const binWidth = R / bins;
+    
+    State.densityData = [];
+    
+    for (let i = 0; i < bins; i++) {
+        const rMin = i * binWidth;
+        const rMax = (i + 1) * binWidth;
         
-        const temp = document.createElement('canvas');
-        temp.width = 1920;
-        temp.height = 1920;
-        const tCtx = temp.getContext('2d');
+        const inBin = State.classified.filter(p => p.norm >= rMin && p.norm < rMax);
+        const surviving = inBin.filter(p => p.survives).length;
+        const total = inBin.length;
+        const density = total > 0 ? surviving / total : 0;
         
-        views.forEach((v, i) => {
-            S.currentView = v;
-            switch (v) {
-                case 'lattice': drawLattice(temp, tCtx); break;
-                case 'boundary': drawBoundary(temp, tCtx); break;
-                case 'density': drawDensity(temp, tCtx); break;
-                case 'error': drawError(temp, tCtx); break;
-            }
-            ctx.drawImage(temp, positions[i][0], positions[i][1]);
-        });
-        
-        S.currentView = origView;
-    } else {
-        switch (S.currentView) {
-            case 'lattice': drawLattice(exp, ctx); break;
-            case 'boundary': drawBoundary(exp, ctx); break;
-            case 'density': drawDensity(exp, ctx); break;
-            case 'error': drawError(exp, ctx); break;
-        }
+        State.densityData.push({ rMin, rMax, total, surviving, density });
     }
     
-    ctx.fillStyle = '#9898a8';
-    ctx.font = '28px JetBrains Mono';
-    ctx.fillText(`BCP - ${S.structure} - k=${S.dimension} - R=${S.radius}`, 20, 50);
+    const tbody = document.getElementById('radialDensityBody');
+    tbody.innerHTML = State.densityData.map(d => `
+        <tr>
+            <td>[${d.rMin.toFixed(1)}, ${d.rMax.toFixed(1)})</td>
+            <td class="number">${d.total.toLocaleString()}</td>
+            <td class="number">${d.surviving.toLocaleString()}</td>
+            <td class="number">${(d.density * 100).toFixed(4)}%</td>
+        </tr>
+    `).join('');
+}
+
+function computeErrorSeries() {
+    const R = State.radius;
+    const k = State.dimension;
+    const step = Math.max(1, Math.floor(R / 20));
     
-    const link = document.createElement('a');
-    link.download = `bcp-${type}-${Date.now()}.png`;
-    link.href = exp.toDataURL('image/png');
-    link.click();
+    State.errorSeries = [];
+    
+    for (let r = 5; r <= R; r += step) {
+        const pts = generatePoints(r, k);
+        const classified = pts.map(p => classifyPoint(p, State.structure, State.kfreeK));
+        const survCount = classified.filter(p => p.survives).length;
+        const pred = mainTerm(r, k, State.structure, State.kfreeK);
+        const err = survCount - pred;
+        const bnd = errorBound(r, k, State.structure, State.kfreeK);
+        
+        State.errorSeries.push({
+            r, actual: survCount, predicted: pred, error: err, bound: bnd,
+            ratio: Math.abs(err) / bnd
+        });
+    }
+    
+    const tbody = document.getElementById('errorSeriesBody');
+    tbody.innerHTML = State.errorSeries.map(d => `
+        <tr>
+            <td class="number">${d.r}</td>
+            <td class="number">${d.actual.toLocaleString()}</td>
+            <td class="number">${d.predicted.toFixed(2)}</td>
+            <td class="number">${d.error.toFixed(2)}</td>
+            <td class="number">${d.bound.toFixed(2)}</td>
+            <td class="number">${d.ratio.toFixed(4)}</td>
+        </tr>
+    `).join('');
+    
+    const ratios = State.errorSeries.map(d => d.ratio);
+    document.getElementById('maxErrorRatio').textContent = Math.max(...ratios).toFixed(4);
+    document.getElementById('avgErrorRatio').textContent = (ratios.reduce((a,b) => a+b, 0) / ratios.length).toFixed(4);
+}
+
+function updatePointList(surviving) {
+    const sorted = surviving.sort((a, b) => a.norm - b.norm).slice(0, 100);
+    const list = sorted.map((p, i) => 
+        `${(i+1).toString().padStart(3)}. (${p.point.join(', ')})  |x| = ${p.norm.toFixed(4)}`
+    ).join('\n');
+    
+    document.getElementById('pointList').textContent = list || 'No points';
 }
 
 function exportCSV(type) {
@@ -1619,63 +1082,111 @@ function exportCSV(type) {
     
     switch (type) {
         case 'points':
-            csv = 'idx,' + Array.from({length: S.dimension}, (_, i) => `x${i+1}`).join(',') + ',survives,boundary,norm\n';
-            S.classified.forEach((item, i) => {
-                csv += `${i},${item.point.join(',')},${item.survives?1:0},${item.isBoundary?1:0},${item.norm.toFixed(4)}\n`;
+            csv = 'index,' + Array.from({length: State.dimension}, (_, i) => `x${i+1}`).join(',') + ',survives,norm\n';
+            State.classified.forEach((item, i) => {
+                csv += `${i},${item.point.join(',')},${item.survives?1:0},${item.norm.toFixed(6)}\n`;
             });
             filename = 'lattice-points';
             break;
             
-        case 'stats':
-            csv = 'metric,value\n';
-            csv += `structure,${S.structure}\n`;
-            csv += `dimension,${S.dimension}\n`;
-            csv += `radius,${S.radius}\n`;
-            csv += `total,${S.points.length}\n`;
-            csv += `surviving,${S.classified.filter(p=>p.survives).length}\n`;
-            csv += `boundary,${S.classified.filter(p=>p.survives&&p.isBoundary).length}\n`;
-            csv += `predicted,${mainTerm()}\n`;
-            csv += `error,${S.classified.filter(p=>p.survives).length - mainTerm()}\n`;
-            csv += `error_bound,${errorBound()}\n`;
-            csv += `critical_exponent,${(S.dimension-1)/S.dimension}\n`;
-            filename = 'statistics';
-            break;
-            
         case 'error':
-            csv = 'radius,actual,predicted,error,bound\n';
-            S.errorData.forEach(d => {
-                csv += `${d.r},${d.actual},${d.predicted.toFixed(4)},${d.error.toFixed(4)},${d.bound.toFixed(4)}\n`;
+            csv = 'radius,actual,predicted,error,bound,ratio\n';
+            State.errorSeries.forEach(d => {
+                csv += `${d.r},${d.actual},${d.predicted.toFixed(6)},${d.error.toFixed(6)},${d.bound.toFixed(6)},${d.ratio.toFixed(6)}\n`;
             });
-            filename = 'error-analysis';
+            filename = 'error-series';
             break;
             
-        case 'all':
-            exportCSV('points');
-            exportCSV('stats');
-            exportCSV('error');
-            return;
+        case 'density':
+            csv = 'r_min,r_max,total,surviving,density\n';
+            State.densityData.forEach(d => {
+                csv += `${d.rMin.toFixed(2)},${d.rMax.toFixed(2)},${d.total},${d.surviving},${d.density.toFixed(6)}\n`;
+            });
+            filename = 'radial-density';
+            break;
+            
+        case 'summary':
+            const surv = State.classified.filter(p => p.survives).length;
+            const pred = mainTerm(State.radius, State.dimension, State.structure, State.kfreeK);
+            csv = 'parameter,value\n';
+            csv += `structure,${State.structure}\n`;
+            csv += `dimension,${State.dimension}\n`;
+            csv += `radius,${State.radius}\n`;
+            csv += `total_points,${State.classified.length}\n`;
+            csv += `surviving_points,${surv}\n`;
+            csv += `predicted,${pred.toFixed(6)}\n`;
+            csv += `error,${(surv - pred).toFixed(6)}\n`;
+            csv += `error_bound,${errorBound(State.radius, State.dimension, State.structure, State.kfreeK).toFixed(6)}\n`;
+            csv += `critical_exponent,${((State.dimension-1)/State.dimension).toFixed(6)}\n`;
+            csv += `zeta_k,${zeta(State.dimension).toFixed(10)}\n`;
+            filename = 'summary';
+            break;
     }
     
     const blob = new Blob([csv], { type: 'text/csv' });
     const link = document.createElement('a');
-    link.download = `${filename}-${Date.now()}.csv`;
+    link.download = `bcp-${filename}-${Date.now()}.csv`;
     link.href = URL.createObjectURL(blob);
     link.click();
 }
 
-function showHelp() { document.getElementById('helpModal').classList.add('visible'); }
-function hideHelp() { document.getElementById('helpModal').classList.remove('visible'); }
+function exportLaTeX() {
+    const k = State.dimension;
+    const surv = State.classified.filter(p => p.survives).length;
+    const pred = mainTerm(State.radius, k, State.structure, State.kfreeK);
+    const err = surv - pred;
+    const bnd = errorBound(State.radius, k, State.structure, State.kfreeK);
+    
+    let latex = `% Boundary Cancellation Principle - Computed Results
+% Structure: ${State.structure}, k = ${k}, R = ${State.radius}
 
-window.addEventListener('resize', () => setTimeout(redraw, 50));
+\\begin{table}[h]
+\\centering
+\\begin{tabular}{lrr}
+\\toprule
+Quantity & Value & Notes \\\\
+\\midrule
+Dimension $k$ & ${k} & \\\\
+Radius $R$ & ${State.radius} & \\\\
+Total points & ${State.classified.length.toLocaleString()} & In ball $B(R)$ \\\\
+Surviving points & ${surv.toLocaleString()} & Exact count \\\\
+Predicted & ${pred.toFixed(4)} & $R^k/\\zeta(k)$ \\\\
+Error & ${err.toFixed(4)} & Actual $-$ Predicted \\\\
+Error bound & ${bnd.toFixed(4)} & $O(R^{${k-1}})$ \\\\
+Relative error & ${(Math.abs(err)/pred*100).toFixed(4)}\\% & \\\\
+\\bottomrule
+\\end{tabular}
+\\caption{Boundary Cancellation Principle verification for ${State.structure} with $k=${k}$, $R=${State.radius}$.}
+\\end{table}
 
-document.getElementById('helpModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('helpModal')) hideHelp();
-});
+% Error series
+\\begin{table}[h]
+\\centering
+\\begin{tabular}{rrrrrr}
+\\toprule
+$R$ & Actual & Predicted & Error & Bound & Ratio \\\\
+\\midrule
+`;
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateStructure();
-    compute();
-});
+    State.errorSeries.forEach(d => {
+        latex += `${d.r} & ${d.actual} & ${d.predicted.toFixed(2)} & ${d.error.toFixed(2)} & ${d.bound.toFixed(2)} & ${d.ratio.toFixed(4)} \\\\\n`;
+    });
+
+    latex += `\\bottomrule
+\\end{tabular}
+\\caption{Error scaling verification.}
+\\end{table}
+`;
+
+    const blob = new Blob([latex], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.download = `bcp-latex-${Date.now()}.tex`;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', compute);
 </script>
 
 </body>
