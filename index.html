@@ -67,10 +67,7 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-}
+.container { max-width: 1000px; margin: 0 auto; }
 
 header {
     text-align: center;
@@ -91,27 +88,12 @@ header {
     font-family: 'Source Code Pro', monospace;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
-.theme-toggle:hover {
-    background: var(--accent);
-    color: var(--table-header-text);
-    border-color: var(--accent);
-}
+.theme-toggle:hover { background: var(--accent); color: var(--table-header-text); }
 
-h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: -0.02em;
-}
-
-.subtitle {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    font-style: italic;
-}
+h1 { font-size: 2rem; font-weight: 600; margin-bottom: 8px; }
+.subtitle { font-size: 1.05rem; color: var(--text-secondary); font-style: italic; }
 
 .controls {
     background: var(--bg-secondary);
@@ -142,8 +124,7 @@ h1 {
     margin-bottom: 4px;
 }
 
-.control-item select,
-.control-item input {
+.control-item select, .control-item input {
     width: 100%;
     padding: 7px 10px;
     font-family: 'Source Code Pro', monospace;
@@ -163,16 +144,12 @@ h1 {
     font-family: 'Crimson Pro', serif;
     font-size: 0.95rem;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
-.compute-btn:hover {
-    background: var(--accent-light);
-}
+.compute-btn:hover { background: var(--accent-light); }
+.compute-btn:disabled { opacity: 0.6; cursor: wait; }
 
-section {
-    margin-bottom: 40px;
-}
+section { margin-bottom: 40px; }
 
 h2 {
     font-size: 1.3rem;
@@ -182,17 +159,9 @@ h2 {
     border-bottom: 2px solid var(--accent);
 }
 
-h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 20px 0 10px 0;
-    color: var(--text-primary);
-}
+h3 { font-size: 1.1rem; font-weight: 600; margin: 20px 0 10px 0; }
 
-p {
-    margin-bottom: 12px;
-    text-align: justify;
-}
+p { margin-bottom: 12px; text-align: justify; }
 
 .theorem {
     background: var(--theorem-bg);
@@ -201,10 +170,7 @@ p {
     margin: 20px 0;
 }
 
-.theorem-title {
-    font-weight: 600;
-    margin-bottom: 8px;
-}
+.theorem-title { font-weight: 600; margin-bottom: 8px; }
 
 .definition {
     background: var(--definition-bg);
@@ -222,13 +188,6 @@ p {
     font-family: 'Source Code Pro', monospace;
     font-size: 1rem;
     overflow-x: auto;
-}
-
-.formula-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-align: right;
-    margin-top: 6px;
 }
 
 .data-table {
@@ -252,18 +211,9 @@ p {
     border-bottom: 1px solid var(--border);
 }
 
-.data-table tr:nth-child(even) {
-    background: var(--table-alt);
-}
-
-.data-table .number {
-    font-family: 'Source Code Pro', monospace;
-    text-align: right;
-}
-
-.highlight-row {
-    background: var(--highlight) !important;
-}
+.data-table tr:nth-child(even) { background: var(--table-alt); }
+.data-table .num { font-family: 'Source Code Pro', monospace; text-align: right; }
+.highlight-row { background: var(--highlight) !important; }
 
 .stat-grid {
     display: grid;
@@ -289,15 +239,10 @@ p {
     font-family: 'Source Code Pro', monospace;
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--text-primary);
     margin: 4px 0;
 }
 
-.stat-note {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-style: italic;
-}
+.stat-note { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
 
 .scrollable-table {
     max-height: 350px;
@@ -305,9 +250,7 @@ p {
     border: 1px solid var(--border);
 }
 
-.scrollable-table table {
-    margin: 0;
-}
+.scrollable-table table { margin: 0; }
 
 .proof {
     margin: 15px 0;
@@ -315,24 +258,8 @@ p {
     border-left: 2px solid var(--border-dark);
 }
 
-.proof-title {
-    font-style: italic;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.qed {
-    text-align: right;
-    font-size: 1.1rem;
-}
-
-.code {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 0.85rem;
-    background: var(--code-bg);
-    padding: 2px 5px;
-    border-radius: 2px;
-}
+.proof-title { font-style: italic; color: var(--text-secondary); margin-bottom: 8px; }
+.qed { text-align: right; font-size: 1.1rem; }
 
 .export-section {
     background: var(--bg-secondary);
@@ -349,11 +276,7 @@ p {
     margin-bottom: 12px;
 }
 
-.export-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+.export-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .export-btn {
     padding: 8px 14px;
@@ -363,14 +286,9 @@ p {
     font-family: 'Crimson Pro', serif;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
-.export-btn:hover {
-    background: var(--accent);
-    color: var(--table-header-text);
-    border-color: var(--accent);
-}
+.export-btn:hover { background: var(--accent); color: var(--table-header-text); }
 
 .point-list {
     max-height: 250px;
@@ -383,27 +301,12 @@ p {
     white-space: pre;
 }
 
-.status-good { color: var(--success); }
-.status-warn { color: var(--warning); }
-.status-bad { color: var(--error); }
+.good { color: var(--success); }
+.warn { color: var(--warning); }
+.bad { color: var(--error); }
 
-.two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-@media (max-width: 700px) {
-    .two-col { grid-template-columns: 1fr; }
-}
-
-.mini-table {
-    font-size: 0.85rem;
-}
-
-.mini-table td, .mini-table th {
-    padding: 6px 10px;
-}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 
 footer {
     margin-top: 50px;
@@ -425,7 +328,7 @@ footer {
 
 <div class="container">
     <header>
-        <button class="theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+        <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">Dark Mode</button>
         <h1>The Boundary Cancellation Principle</h1>
         <p class="subtitle">Complete Computational Analysis of Error Terms in Arithmetic Lattices</p>
     </header>
@@ -454,7 +357,7 @@ footer {
             </div>
             <div class="control-item">
                 <label>Radius / Bound (R)</label>
-                <input type="number" id="radius" value="60" min="10" max="200">
+                <input type="number" id="radius" value="50" min="5" max="200">
             </div>
             <div class="control-item">
                 <label>k-free parameter</label>
@@ -465,43 +368,60 @@ footer {
                 <input type="number" id="errorStep" value="2" min="1" max="10">
             </div>
         </div>
-        <button class="compute-btn" onclick="compute()">Compute Full Analysis</button>
+        <button class="compute-btn" id="computeBtn" onclick="runCompute()">Compute Full Analysis</button>
     </div>
 
-    <!-- Section 1: Principle -->
+    <!-- Section 1: Principle Statement -->
     <section>
         <h2>1. Statement of the Principle</h2>
         
         <div class="theorem">
             <div class="theorem-title">Boundary Cancellation Principle</div>
-            <p>Let an arithmetic counting problem be defined on a <em>k</em>-dimensional lattice with constraints imposed via Möbius inclusion-exclusion. If the main term scales with volume, then the dominant error scales with boundary measure. The error exponent is (k−1)/k.</p>
+            <p>Let N(R) denote a counting function associated with a k-dimensional lattice problem subject to Möbius-filtered arithmetic constraints (such as coprimality or k-free conditions). Then</p>
+            <div class="formula">N(R) = R<sup>k</sup> / ζ(k) + O(R<sup>k−1</sup>)</div>
+            <p>where the error term is controlled by the (k−1)-dimensional boundary measure of the region.</p>
         </div>
 
-        <div class="formula">
-            Error(R) = O(R<sup>k−1</sup>) where k = lattice dimension
-        </div>
+        <p>Equivalently, when translating from lattice radius R to an integer counting parameter x ~ R<sup>k</sup>, the error term becomes:</p>
+        <div class="formula">N(x) = x / ζ(k) + O(x<sup>(k−1)/k</sup>)</div>
+        <p>Thus, the critical error exponent is <strong>(k−1)/k</strong>.</p>
     </section>
 
-    <!-- Section 2: Configuration -->
+    <!-- Section 2: Geometric Interpretation -->
     <section>
-        <h2>2. Current Configuration</h2>
+        <h2>2. Geometric Interpretation</h2>
+        
+        <p>The origin of the error term can be understood geometrically:</p>
+        
+        <div class="definition">
+            <p><strong>1. Interior Cancellation.</strong> Möbius inversion produces near-complete cancellation in the interior of the lattice region.</p>
+            <p><strong>2. Boundary Truncation.</strong> Near the boundary, arithmetic divisibility constraints are only partially represented due to truncation effects.</p>
+            <p><strong>3. Boundary Dominance.</strong> Since the boundary of a k-dimensional region scales as R<sup>k−1</sup>, the surviving error contribution is necessarily of that order.</p>
+        </div>
+        
+        <p>The error term is therefore not an analytic anomaly, but a <em>geometric inevitability</em>.</p>
+    </section>
+
+    <!-- Section 3: Configuration -->
+    <section>
+        <h2>3. Current Configuration</h2>
         
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-label">Structure</div>
-                <div class="stat-value" id="displayStructure">—</div>
+                <div class="stat-value" id="dispStructure">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Dimension k</div>
-                <div class="stat-value" id="displayDimension">—</div>
+                <div class="stat-value" id="dispDim">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Radius R</div>
-                <div class="stat-value" id="displayRadius">—</div>
+                <div class="stat-value" id="dispRadius">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Critical Exponent</div>
-                <div class="stat-value" id="displayExponent">—</div>
+                <div class="stat-value" id="dispExp">—</div>
             </div>
         </div>
 
@@ -511,210 +431,186 @@ footer {
         </div>
     </section>
 
-    <!-- Section 3: Main Term -->
+    <!-- Section 4: Möbius Density -->
     <section>
-        <h2>3. Main Term Analysis</h2>
-
-        <div class="two-col">
-            <div>
-                <h3>Predicted Count</h3>
-                <div class="stat-card">
-                    <div class="stat-label">Main Term Value</div>
-                    <div class="stat-value" id="predictedCount">—</div>
-                    <div class="stat-note" id="predictedFormula">—</div>
-                </div>
-            </div>
-            <div>
-                <h3>Density Constant</h3>
-                <div class="stat-card">
-                    <div class="stat-label">1/ζ(k)</div>
-                    <div class="stat-value" id="densityConstant">—</div>
-                    <div class="stat-note" id="densityNote">—</div>
-                </div>
-            </div>
+        <h2>4. Möbius Density</h2>
+        
+        <p>The main term constant is determined by the classical identity:</p>
+        <div class="formula">
+            Σ<sub>d=1</sub><sup>∞</sup> μ(d)/d<sup>k</sup> = 1/ζ(k) = Π<sub>p</sub> (1 − 1/p<sup>k</sup>)
         </div>
+        <p>which gives the asymptotic density of admissible points.</p>
 
-        <h3>Riemann Zeta Reference Table</h3>
-        <table class="data-table mini-table">
-            <thead>
-                <tr><th>k</th><th>ζ(k)</th><th>1/ζ(k)</th><th>Closed Form</th></tr>
-            </thead>
+        <h3>Riemann Zeta Reference</h3>
+        <table class="data-table">
+            <thead><tr><th>k</th><th>ζ(k)</th><th>1/ζ(k)</th><th>Closed Form</th></tr></thead>
             <tbody>
-                <tr><td>2</td><td class="number">1.6449340668</td><td class="number">0.6079271019</td><td>π²/6</td></tr>
-                <tr><td>3</td><td class="number">1.2020569032</td><td class="number">0.8319073725</td><td>Apéry's ζ(3)</td></tr>
-                <tr><td>4</td><td class="number">1.0823232337</td><td class="number">0.9239384669</td><td>π⁴/90</td></tr>
-                <tr><td>5</td><td class="number">1.0369277551</td><td class="number">0.9643895748</td><td>—</td></tr>
-                <tr><td>6</td><td class="number">1.0173430620</td><td class="number">0.9829523809</td><td>π⁶/945</td></tr>
+                <tr><td>2</td><td class="num">1.6449340668</td><td class="num">0.6079271019</td><td>π²/6</td></tr>
+                <tr><td>3</td><td class="num">1.2020569032</td><td class="num">0.8319073725</td><td>Apéry's constant</td></tr>
+                <tr><td>4</td><td class="num">1.0823232337</td><td class="num">0.9239384669</td><td>π⁴/90</td></tr>
+                <tr><td>5</td><td class="num">1.0369277551</td><td class="num">0.9643895748</td><td>—</td></tr>
+                <tr><td>6</td><td class="num">1.0173430620</td><td class="num">0.9829523809</td><td>π⁶/945</td></tr>
             </tbody>
         </table>
     </section>
 
-    <!-- Section 4: Counting -->
+    <!-- Section 5: Classical Examples -->
     <section>
-        <h2>4. Exact Counting Results</h2>
+        <h2>5. Classical Examples</h2>
+        
+        <p>This framework explains several well-known results:</p>
+        
+        <table class="data-table">
+            <thead><tr><th>Structure</th><th>Dimension</th><th>Main Term</th><th>Error Term</th></tr></thead>
+            <tbody>
+                <tr><td>Squarefree integers</td><td class="num">k = 2</td><td>6x/π²</td><td>O(x<sup>1/2</sup>)</td></tr>
+                <tr><td>Cubefree integers</td><td class="num">k = 3</td><td>x/ζ(3)</td><td>O(x<sup>1/3</sup>)</td></tr>
+                <tr><td>k-free integers</td><td class="num">k</td><td>x/ζ(k)</td><td>O(x<sup>1/k</sup>)</td></tr>
+                <tr><td>Coprime pairs</td><td class="num">k = 2</td><td>6R²/π²</td><td>O(R)</td></tr>
+                <tr><td>Coprime m-tuples</td><td class="num">m</td><td>R<sup>m</sup>/ζ(m)</td><td>O(R<sup>m−1</sup>)</td></tr>
+            </tbody>
+        </table>
+        
+        <p>In each case, the exponent arises from the codimension-one boundary of the associated Möbius-filtered lattice.</p>
+    </section>
+
+    <!-- Section 6: Exact Counting -->
+    <section>
+        <h2>6. Exact Counting Results</h2>
 
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Lattice Points</div>
-                <div class="stat-value" id="totalPoints">—</div>
+                <div class="stat-value" id="statTotal">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Surviving Points</div>
-                <div class="stat-value" id="survivingPoints">—</div>
+                <div class="stat-value" id="statSurv">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Removed Points</div>
-                <div class="stat-value" id="removedPoints">—</div>
+                <div class="stat-value" id="statRem">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Empirical Density</div>
-                <div class="stat-value" id="empiricalDensity">—</div>
+                <div class="stat-value" id="statDens">—</div>
             </div>
         </div>
 
         <h3>Prediction vs Reality</h3>
         <table class="data-table">
-            <thead>
-                <tr><th>Quantity</th><th>Value</th><th>Notes</th></tr>
-            </thead>
+            <thead><tr><th>Quantity</th><th>Value</th><th>Notes</th></tr></thead>
             <tbody>
-                <tr><td>Predicted (Main Term)</td><td class="number" id="tablePredicted">—</td><td id="tablePredictedNote">—</td></tr>
-                <tr><td>Actual Count</td><td class="number" id="tableActual">—</td><td>Exact enumeration</td></tr>
-                <tr class="highlight-row"><td>Error</td><td class="number" id="tableError">—</td><td>Actual − Predicted</td></tr>
-                <tr><td>Error Bound O(R<sup id="expInTable">k−1</sup>)</td><td class="number" id="tableErrorBound">—</td><td id="tableErrorBoundNote">—</td></tr>
-                <tr><td>Relative Error</td><td class="number" id="tableRelError">—</td><td>|Error|/Predicted</td></tr>
-                <tr><td>Error/Bound Ratio</td><td class="number" id="tableErrorRatio">—</td><td id="tableErrorRatioStatus">—</td></tr>
+                <tr><td>Predicted (Main Term)</td><td class="num" id="tblPred">—</td><td id="tblPredNote">—</td></tr>
+                <tr><td>Actual Count</td><td class="num" id="tblActual">—</td><td>Exact enumeration</td></tr>
+                <tr class="highlight-row"><td>Error</td><td class="num" id="tblError">—</td><td>Actual − Predicted</td></tr>
+                <tr><td>Error Bound O(R<sup id="tblExpSpan">k−1</sup>)</td><td class="num" id="tblBound">—</td><td id="tblBoundNote">—</td></tr>
+                <tr><td>Relative Error</td><td class="num" id="tblRelErr">—</td><td>|Error|/Predicted</td></tr>
+                <tr><td>|Error|/Bound Ratio</td><td class="num" id="tblRatio">—</td><td id="tblRatioNote">—</td></tr>
             </tbody>
         </table>
     </section>
 
-    <!-- Section 5: Boundary Analysis -->
+    <!-- Section 7: Boundary Analysis -->
     <section>
-        <h2>5. Boundary Shell Analysis</h2>
+        <h2>7. Boundary Shell Analysis</h2>
 
         <p>Testing multiple shell thicknesses to verify error concentration at boundary:</p>
 
         <div class="scrollable-table">
-            <table class="data-table" id="boundaryTable">
-                <thead>
-                    <tr>
-                        <th>Shell δ</th>
-                        <th>Range</th>
-                        <th>Boundary Pts</th>
-                        <th>Interior Pts</th>
-                        <th>Boundary %</th>
-                        <th>Boundary Density</th>
-                        <th>Interior Density</th>
-                    </tr>
-                </thead>
+            <table class="data-table">
+                <thead><tr><th>Shell δ</th><th>Range</th><th>Boundary Pts</th><th>Interior Pts</th><th>Boundary %</th><th>Bnd Density</th><th>Int Density</th></tr></thead>
                 <tbody id="boundaryBody"></tbody>
             </table>
         </div>
 
         <h3>Radial Density Distribution</h3>
         <div class="scrollable-table">
-            <table class="data-table" id="radialTable">
-                <thead>
-                    <tr><th>Radius Range</th><th>Total</th><th>Surviving</th><th>Density</th><th>Deviation from Mean</th></tr>
-                </thead>
+            <table class="data-table">
+                <thead><tr><th>Radius Range</th><th>Total</th><th>Surviving</th><th>Density</th><th>Deviation</th></tr></thead>
                 <tbody id="radialBody"></tbody>
             </table>
         </div>
     </section>
 
-    <!-- Section 6: Error Series -->
+    <!-- Section 8: Error Series -->
     <section>
-        <h2>6. Error Term Scaling Analysis</h2>
+        <h2>8. Error Term Scaling Analysis</h2>
 
-        <p>Full range computation of error vs theoretical bound O(R<sup id="errorExpText">k−1</sup>):</p>
+        <p>Full range computation of error vs theoretical bound O(R<sup id="errExpSpan">k−1</sup>):</p>
 
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-label">Max |Error|/Bound</div>
-                <div class="stat-value" id="maxErrorRatio">—</div>
-                <div class="stat-note">Should stay bounded</div>
+                <div class="stat-value" id="maxRatio">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Avg |Error|/Bound</div>
-                <div class="stat-value" id="avgErrorRatio">—</div>
-                <div class="stat-note">Typical ratio</div>
+                <div class="stat-value" id="avgRatio">—</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Estimated Constant C</div>
-                <div class="stat-value" id="fittedConstant">—</div>
-                <div class="stat-note">From least squares fit</div>
+                <div class="stat-label">Fitted Constant C</div>
+                <div class="stat-value" id="fittedC">—</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Fit Quality R²</div>
-                <div class="stat-value" id="fitQuality">—</div>
-                <div class="stat-note">Coefficient of determination</div>
+                <div class="stat-value" id="fitR2">—</div>
             </div>
         </div>
 
         <div class="scrollable-table">
             <table class="data-table">
-                <thead>
-                    <tr><th>R</th><th>Actual</th><th>Predicted</th><th>Error</th><th>|Error|</th><th>Bound</th><th>|Err|/Bound</th></tr>
-                </thead>
-                <tbody id="errorSeriesBody"></tbody>
+                <thead><tr><th>R</th><th>Actual</th><th>Predicted</th><th>Error</th><th>|Error|</th><th>Bound</th><th>Ratio</th></tr></thead>
+                <tbody id="errorBody"></tbody>
             </table>
         </div>
     </section>
 
-    <!-- Section 7: Möbius Verification -->
+    <!-- Section 9: Möbius Convergence -->
     <section>
-        <h2>7. Möbius Sum Verification</h2>
+        <h2>9. Möbius Sum Convergence</h2>
 
-        <p>The identity Σ μ(d)/d<sup>k</sup> = 1/ζ(k) underlies the main term. We verify convergence:</p>
+        <p>Verifying Σ μ(d)/d<sup>k</sup> → 1/ζ(k):</p>
 
         <div class="scrollable-table">
             <table class="data-table">
-                <thead>
-                    <tr><th>Truncation N</th><th>Partial Sum</th><th>Target 1/ζ(k)</th><th>Error</th><th>Relative Error</th></tr>
-                </thead>
-                <tbody id="mobiusSumBody"></tbody>
+                <thead><tr><th>Truncation N</th><th>Partial Sum</th><th>Target</th><th>Error</th><th>Rel Error</th></tr></thead>
+                <tbody id="mobiusBody"></tbody>
             </table>
         </div>
     </section>
 
-    <!-- Section 8: Dimensional Comparison -->
+    <!-- Section 10: Dimensional Comparison -->
     <section>
-        <h2>8. Dimensional Comparison</h2>
+        <h2>10. Dimensional Comparison</h2>
 
-        <p>Same radius R across different dimensions to verify exponent dependence:</p>
+        <p>Same radius across dimensions to verify exponent dependence:</p>
 
         <div class="scrollable-table">
             <table class="data-table">
-                <thead>
-                    <tr><th>Dim k</th><th>Exponent (k−1)/k</th><th>Total Pts</th><th>Surviving</th><th>Predicted</th><th>Error</th><th>Bound</th><th>|Err|/Bound</th></tr>
-                </thead>
-                <tbody id="dimCompareBody"></tbody>
+                <thead><tr><th>k</th><th>Exponent</th><th>Total</th><th>Surviving</th><th>Predicted</th><th>Error</th><th>Bound</th><th>Ratio</th></tr></thead>
+                <tbody id="dimBody"></tbody>
             </table>
         </div>
     </section>
 
-    <!-- Section 9: GCD Distribution -->
+    <!-- Section 11: GCD Distribution -->
     <section>
-        <h2>9. GCD Distribution of Removed Points</h2>
-
-        <p>For non-coprime points, distribution of gcd values:</p>
+        <h2>11. GCD Distribution of Removed Points</h2>
 
         <div class="two-col">
             <div class="scrollable-table">
                 <table class="data-table">
-                    <thead>
-                        <tr><th>gcd</th><th>Count</th><th>Percentage</th><th>μ(gcd)</th></tr>
-                    </thead>
-                    <tbody id="gcdDistBody"></tbody>
+                    <thead><tr><th>gcd</th><th>Count</th><th>Percentage</th><th>μ(gcd)</th></tr></thead>
+                    <tbody id="gcdBody"></tbody>
                 </table>
             </div>
             <div>
-                <h3>Summary</h3>
                 <div class="stat-card">
                     <div class="stat-label">Distinct GCD Values</div>
-                    <div class="stat-value" id="distinctGcds">—</div>
+                    <div class="stat-value" id="distinctGcd">—</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="margin-top:15px">
                     <div class="stat-label">Most Common GCD</div>
                     <div class="stat-value" id="commonGcd">—</div>
                 </div>
@@ -722,34 +618,24 @@ footer {
         </div>
     </section>
 
-    <!-- Section 10: Proof -->
+    <!-- Section 12: Scope -->
     <section>
-        <h2>10. Proof Sketch</h2>
-
-        <div class="proof">
-            <div class="proof-title">Proof (Coprime lattice case)</div>
-            
-            <p><strong>1.</strong> Möbius inversion: #{coprime in B(R)} = Σ<sub>d≤R</sub> μ(d) · #{lattice in B(R/d)}</p>
-            
-            <p><strong>2.</strong> Lattice count: #{lattice in B(r)} = Vol(B(r)) + O(r<sup>k−1</sup>)</p>
-            
-            <p><strong>3.</strong> Main term extraction: Σ<sub>d</sub> μ(d)·Vol(B(R/d)) = R<sup>k</sup>·Σ<sub>d</sub> μ(d)/d<sup>k</sup> = R<sup>k</sup>/ζ(k)</p>
-            
-            <p><strong>4.</strong> Error accumulation: Boundary errors from each sublattice sum to O(R<sup>k−1</sup>)</p>
-            
-            <p class="qed">∎</p>
-        </div>
+        <h2>12. Scope and Limitations</h2>
+        
+        <p>This principle does not assert new analytic bounds, nor does it rely on conjectures such as the Riemann Hypothesis. Rather, it provides a geometric explanation for why known error exponents take their observed values across a wide class of arithmetic counting problems.</p>
+        
+        <p>The Boundary Cancellation Principle should therefore be viewed as an <em>interpretive framework</em>, unifying classical sieve results through boundary geometry.</p>
     </section>
 
-    <!-- Section 11: Sample Points -->
+    <!-- Section 13: Sample Data -->
     <section>
-        <h2>11. Sample Data</h2>
+        <h2>13. Sample Data</h2>
 
         <h3>First 50 Surviving Points (by norm)</h3>
-        <div class="point-list" id="pointListSurviving">—</div>
+        <div class="point-list" id="survList">—</div>
 
         <h3>First 30 Removed Points (by norm)</h3>
-        <div class="point-list" id="pointListRemoved">—</div>
+        <div class="point-list" id="remList">—</div>
     </section>
 
     <!-- Exports -->
@@ -757,606 +643,780 @@ footer {
         <div class="export-title">Export All Data (CSV)</div>
         <div class="export-buttons">
             <button class="export-btn" onclick="exportCSV('points')">All Points</button>
-            <button class="export-btn" onclick="exportCSV('surviving')">Surviving Only</button>
+            <button class="export-btn" onclick="exportCSV('surviving')">Surviving</button>
             <button class="export-btn" onclick="exportCSV('error')">Error Series</button>
-            <button class="export-btn" onclick="exportCSV('boundary')">Boundary Analysis</button>
-            <button class="export-btn" onclick="exportCSV('density')">Radial Density</button>
-            <button class="export-btn" onclick="exportCSV('mobius')">Möbius Sums</button>
-            <button class="export-btn" onclick="exportCSV('dimensional')">Dim Comparison</button>
-            <button class="export-btn" onclick="exportCSV('gcd')">GCD Distribution</button>
+            <button class="export-btn" onclick="exportCSV('boundary')">Boundary</button>
+            <button class="export-btn" onclick="exportCSV('density')">Density</button>
+            <button class="export-btn" onclick="exportCSV('mobius')">Möbius</button>
+            <button class="export-btn" onclick="exportCSV('dim')">Dimensional</button>
+            <button class="export-btn" onclick="exportCSV('gcd')">GCD</button>
             <button class="export-btn" onclick="exportCSV('summary')">Summary</button>
-            <button class="export-btn" onclick="exportLaTeX()">LaTeX Tables</button>
-            <button class="export-btn" onclick="window.print()">Print / PDF</button>
+            <button class="export-btn" onclick="window.print()">Print/PDF</button>
         </div>
     </div>
 
     <footer>
         Boundary Cancellation Principle — Complete Analysis<br>
-        Computed: <span id="computeTime">—</span> | <span id="computeDuration">—</span>
+        Computed: <span id="compTime">—</span> | <span id="compDur">—</span>
     </footer>
 </div>
 
 <script>
-const S = {
+// State
+var S = {
     structure: 'coprime',
-    dimension: 2,
-    radius: 60,
+    dim: 2,
+    radius: 50,
     kfreeK: 2,
-    errorStep: 2,
+    step: 2,
     points: [],
     classified: [],
-    errorSeries: [],
+    errorData: [],
     densityData: [],
     boundaryData: [],
     mobiusData: [],
-    dimCompare: [],
-    gcdDist: [],
+    dimData: [],
+    gcdData: [],
     primes: [],
     maxPrime: 0
 };
 
+// Theme toggle
 function toggleTheme() {
-    const body = document.body;
-    const btn = document.querySelector('.theme-toggle');
-    body.classList.toggle('dark');
-    const isDark = body.classList.contains('dark');
-    btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch(e) {}
+    document.body.classList.toggle('dark');
+    var isDark = document.body.classList.contains('dark');
+    document.getElementById('themeBtn').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    try { localStorage.setItem('bcpTheme', isDark ? 'dark' : 'light'); } catch(e) {}
 }
 
-// Load saved theme
-try {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark');
-    }
-} catch(e) {}
+// Load theme on start
+(function() {
+    try {
+        if (localStorage.getItem('bcpTheme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+    } catch(e) {}
+})();
 
-document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.querySelector('.theme-toggle');
-    if (document.body.classList.contains('dark')) {
-        btn.textContent = 'Light Mode';
-    }
-    compute();
-});
-
+// Prime sieve
 function sievePrimes(max) {
     if (max <= S.maxPrime) return;
-    const sieve = new Array(max + 1).fill(true);
+    var sieve = [];
+    for (var i = 0; i <= max; i++) sieve[i] = true;
     sieve[0] = sieve[1] = false;
-    for (let i = 2; i * i <= max; i++) {
-        if (sieve[i]) for (let j = i * i; j <= max; j += i) sieve[j] = false;
+    for (var i = 2; i * i <= max; i++) {
+        if (sieve[i]) {
+            for (var j = i * i; j <= max; j += i) sieve[j] = false;
+        }
     }
     S.primes = [];
-    for (let i = 2; i <= max; i++) if (sieve[i]) S.primes.push(i);
+    for (var i = 2; i <= max; i++) {
+        if (sieve[i]) S.primes.push(i);
+    }
     S.maxPrime = max;
 }
 
+// GCD
 function gcd(a, b) {
-    a = Math.abs(a); b = Math.abs(b);
-    while (b) [a, b] = [b, a % b];
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b) {
+        var t = b;
+        b = a % b;
+        a = t;
+    }
     return a;
 }
 
-function gcdArr(arr) { return arr.reduce((a, b) => gcd(a, b)); }
-
-function mobius(n) {
-    if (n === 1) return 1;
-    sievePrimes(Math.ceil(Math.sqrt(n)) + 10);
-    let result = 1, temp = n;
-    for (const p of S.primes) {
-        if (p * p > temp) break;
-        if (temp % p === 0) {
-            temp /= p;
-            result *= -1;
-            if (temp % p === 0) return 0;
-        }
+function gcdArr(arr) {
+    if (!arr || arr.length === 0) return 1;
+    var result = arr[0];
+    for (var i = 1; i < arr.length; i++) {
+        result = gcd(result, arr[i]);
     }
-    if (temp > 1) result *= -1;
     return result;
 }
 
+// Möbius function
+function mobius(n) {
+    if (n === 1) return 1;
+    sievePrimes(Math.ceil(Math.sqrt(n)) + 10);
+    var result = 1;
+    var temp = n;
+    for (var i = 0; i < S.primes.length; i++) {
+        var p = S.primes[i];
+        if (p * p > temp) break;
+        if (temp % p === 0) {
+            temp = temp / p;
+            result = -result;
+            if (temp % p === 0) return 0;
+        }
+    }
+    if (temp > 1) result = -result;
+    return result;
+}
+
+// k-free test
 function isKFree(n, k) {
     if (n <= 0) return false;
     sievePrimes(Math.ceil(Math.pow(n, 1/k)) + 10);
-    for (const p of S.primes) {
-        const pk = Math.pow(p, k);
+    for (var i = 0; i < S.primes.length; i++) {
+        var p = S.primes[i];
+        var pk = Math.pow(p, k);
         if (pk > n) break;
         if (n % pk === 0) return false;
     }
     return true;
 }
 
-function generatePoints(R, k) {
-    const points = [], R2 = R * R;
-    if (k === 2) {
-        for (let x = 1; x <= R; x++) {
-            const maxY = Math.floor(Math.sqrt(R2 - x * x));
-            for (let y = -maxY; y <= maxY; y++) points.push([x, y]);
-        }
-    } else if (k === 3) {
-        for (let x = 1; x <= R; x++) {
-            const rem1 = R2 - x * x;
-            const maxY = Math.floor(Math.sqrt(rem1));
-            for (let y = -maxY; y <= maxY; y++) {
-                const rem2 = rem1 - y * y;
-                if (rem2 < 0) continue;
-                const maxZ = Math.floor(Math.sqrt(rem2));
-                for (let z = -maxZ; z <= maxZ; z++) points.push([x, y, z]);
-            }
-        }
-    } else {
-        const gen = (cur, d, rem) => {
-            if (d === k) { points.push([...cur]); return; }
-            const max = Math.floor(Math.sqrt(rem));
-            for (let v = (d === 0 ? 1 : -max); v <= max; v++) {
-                const nr = rem - v * v;
-                if (nr >= 0) { cur.push(v); gen(cur, d + 1, nr); cur.pop(); }
-            }
-        };
-        gen([], 0, R2);
-    }
-    return points;
-}
-
-function classify(p, structure, kfreeK) {
-    let survives = false, g = 1;
-    switch (structure) {
-        case 'coprime':
-        case 'coprime-tuple':
-            g = gcdArr(p.map(Math.abs));
-            survives = g === 1;
-            break;
-        case 'squarefree':
-            survives = isKFree(Math.round(Math.sqrt(p.reduce((s, x) => s + x*x, 0))), 2);
-            break;
-        case 'kfree':
-            survives = isKFree(Math.round(Math.sqrt(p.reduce((s, x) => s + x*x, 0))), kfreeK);
-            break;
-        default:
-            g = gcdArr(p.map(Math.abs));
-            survives = g === 1;
-    }
-    return { point: p, survives, gcd: g, norm: Math.sqrt(p.reduce((s, x) => s + x*x, 0)) };
-}
-
+// Zeta values
 function zeta(s) {
-    const v = { 2: Math.PI**2/6, 3: 1.2020569031595942, 4: Math.PI**4/90, 5: 1.0369277551433699, 6: Math.PI**6/945 };
-    if (v[s]) return v[s];
-    let sum = 0;
-    for (let n = 1; n < 10000; n++) sum += 1/Math.pow(n, s);
+    if (s === 2) return Math.PI * Math.PI / 6;
+    if (s === 3) return 1.2020569031595942;
+    if (s === 4) return Math.pow(Math.PI, 4) / 90;
+    if (s === 5) return 1.0369277551433699;
+    if (s === 6) return Math.pow(Math.PI, 6) / 945;
+    var sum = 0;
+    for (var n = 1; n < 10000; n++) sum += 1 / Math.pow(n, s);
     return sum;
 }
 
-function mainTerm(R, k, str, kfK) {
-    switch (str) {
-        case 'coprime': case 'coprime-tuple': return Math.pow(R, k) / zeta(k);
-        case 'squarefree': return R / zeta(2);
-        case 'kfree': return R / zeta(kfK);
-        default: return Math.pow(R, k) / zeta(k);
-    }
-}
-
-function errorBound(R, k, str, kfK) {
-    switch (str) {
-        case 'squarefree': return Math.pow(R, 0.5);
-        case 'kfree': return Math.pow(R, 1/kfK);
-        default: return Math.pow(R, k - 1);
-    }
-}
-
-function compute() {
-    // Show loading state
-    document.querySelector('.compute-btn').textContent = 'Computing...';
-    document.querySelector('.compute-btn').disabled = true;
+// Generate lattice points
+function generatePoints(R, k) {
+    var points = [];
+    var R2 = R * R;
     
-    // Use setTimeout to allow UI to update
+    if (k === 2) {
+        for (var x = 1; x <= R; x++) {
+            var maxY = Math.floor(Math.sqrt(R2 - x * x));
+            for (var y = -maxY; y <= maxY; y++) {
+                points.push([x, y]);
+            }
+        }
+    } else if (k === 3) {
+        for (var x = 1; x <= R; x++) {
+            var rem1 = R2 - x * x;
+            if (rem1 < 0) continue;
+            var maxY = Math.floor(Math.sqrt(rem1));
+            for (var y = -maxY; y <= maxY; y++) {
+                var rem2 = rem1 - y * y;
+                if (rem2 < 0) continue;
+                var maxZ = Math.floor(Math.sqrt(rem2));
+                for (var z = -maxZ; z <= maxZ; z++) {
+                    points.push([x, y, z]);
+                }
+            }
+        }
+    } else {
+        // Generic recursive for k >= 4
+        function gen(cur, depth, rem) {
+            if (depth === k) {
+                points.push(cur.slice());
+                return;
+            }
+            var max = Math.floor(Math.sqrt(rem));
+            var start = (depth === 0) ? 1 : -max;
+            for (var v = start; v <= max; v++) {
+                var newRem = rem - v * v;
+                if (newRem >= 0) {
+                    cur.push(v);
+                    gen(cur, depth + 1, newRem);
+                    cur.pop();
+                }
+            }
+        }
+        gen([], 0, R2);
+    }
+    
+    return points;
+}
+
+// Classify a point
+function classify(p, structure, kfreeK) {
+    var survives = false;
+    var g = 1;
+    var absP = [];
+    for (var i = 0; i < p.length; i++) absP.push(Math.abs(p[i]));
+    
+    if (structure === 'coprime' || structure === 'coprime-tuple') {
+        g = gcdArr(absP);
+        survives = (g === 1);
+    } else if (structure === 'squarefree') {
+        var sum = 0;
+        for (var i = 0; i < p.length; i++) sum += p[i] * p[i];
+        var n = Math.round(Math.sqrt(sum));
+        survives = isKFree(n, 2);
+    } else if (structure === 'kfree') {
+        var sum = 0;
+        for (var i = 0; i < p.length; i++) sum += p[i] * p[i];
+        var n = Math.round(Math.sqrt(sum));
+        survives = isKFree(n, kfreeK);
+    } else {
+        g = gcdArr(absP);
+        survives = (g === 1);
+    }
+    
+    var normSq = 0;
+    for (var i = 0; i < p.length; i++) normSq += p[i] * p[i];
+    
+    return {
+        point: p,
+        survives: survives,
+        gcd: g,
+        norm: Math.sqrt(normSq)
+    };
+}
+
+// Main term
+function mainTerm(R, k, str, kfK) {
+    if (str === 'squarefree') return R / zeta(2);
+    if (str === 'kfree') return R / zeta(kfK);
+    return Math.pow(R, k) / zeta(k);
+}
+
+// Error bound
+function errorBound(R, k, str, kfK) {
+    if (str === 'squarefree') return Math.pow(R, 0.5);
+    if (str === 'kfree') return Math.pow(R, 1 / kfK);
+    return Math.pow(R, k - 1);
+}
+
+// Safe division
+function safeDiv(a, b) {
+    if (b === 0) return 0;
+    return a / b;
+}
+
+// Main compute
+function runCompute() {
+    var btn = document.getElementById('computeBtn');
+    btn.textContent = 'Computing...';
+    btn.disabled = true;
+    
     setTimeout(function() {
         try {
-            const t0 = performance.now();
-            
-            S.structure = document.getElementById('structureType').value;
-            S.dimension = parseInt(document.getElementById('dimension').value);
-            S.radius = parseInt(document.getElementById('radius').value);
-            S.kfreeK = parseInt(document.getElementById('kfreeK').value);
-            S.errorStep = parseInt(document.getElementById('errorStep').value);
-            
-            // Limit radius for higher dimensions to prevent freeze
-            let R = S.radius;
-            const k = S.dimension;
-            if (k >= 5 && R > 30) R = 30;
-            else if (k >= 4 && R > 50) R = 50;
-            S.radius = R;
-            document.getElementById('radius').value = R;
-            
-            S.points = generatePoints(R, k);
-            S.classified = S.points.map(p => classify(p, S.structure, S.kfreeK));
-            
-            const surv = S.classified.filter(p => p.survives);
-            const removed = S.classified.filter(p => !p.survives);
-            const pred = mainTerm(R, k, S.structure, S.kfreeK);
-            const err = surv.length - pred;
-            const bnd = errorBound(R, k, S.structure, S.kfreeK);
-            
-            updateConfig(k, R);
-            updateMainTerm(pred, k);
-            updateCounting(S.classified.length, surv.length, pred, err, bnd, k);
-            computeBoundaryAnalysis(surv, R);
-            computeRadialDensity(R);
-            computeErrorSeries(k, R);
-            computeMobiusSums(k);
-            computeDimComparison(Math.min(R, 25)); // Limit for dim comparison
-            computeGcdDist(removed);
-            updatePointLists(surv, removed);
-            
-            const elapsed = performance.now() - t0;
-            document.getElementById('computeTime').textContent = new Date().toLocaleString();
-            document.getElementById('computeDuration').textContent = elapsed.toFixed(0) + 'ms';
+            doCompute();
         } catch(e) {
             console.error('Compute error:', e);
-            document.getElementById('computeTime').textContent = 'Error: ' + e.message;
+            document.getElementById('compTime').textContent = 'Error: ' + e.message;
         }
-        
-        document.querySelector('.compute-btn').textContent = 'Compute Full Analysis';
-        document.querySelector('.compute-btn').disabled = false;
+        btn.textContent = 'Compute Full Analysis';
+        btn.disabled = false;
     }, 50);
 }
 
-function updateConfig(k, R) {
-    const names = { 'coprime': 'Coprime Lattice', 'squarefree': 'Squarefree', 'kfree': `${S.kfreeK}-Free`, 'coprime-tuple': 'Coprime Tuples' };
-    document.getElementById('displayStructure').textContent = names[S.structure];
-    document.getElementById('displayDimension').textContent = k;
-    document.getElementById('displayRadius').textContent = R;
-    document.getElementById('displayExponent').textContent = `${k-1}/${k}`;
-    document.getElementById('expInTable').textContent = k - 1;
-    document.getElementById('errorExpText').textContent = k - 1;
+function doCompute() {
+    var t0 = performance.now();
     
-    const defs = {
-        'coprime': `A point (a₁,...,a${k}) ∈ ℤ${k} is coprime if gcd(a₁,...,a${k}) = 1.`,
-        'squarefree': 'An integer n is squarefree if not divisible by p² for any prime p.',
-        'kfree': `An integer n is ${S.kfreeK}-free if not divisible by p^${S.kfreeK} for any prime p.`,
-        'coprime-tuple': `A ${k}-tuple is coprime if gcd of all components is 1.`
-    };
-    document.getElementById('defTitle').textContent = `Definition (${names[S.structure]})`;
-    document.getElementById('defContent').textContent = defs[S.structure];
+    // Read params
+    S.structure = document.getElementById('structureType').value;
+    S.dim = parseInt(document.getElementById('dimension').value) || 2;
+    S.radius = parseInt(document.getElementById('radius').value) || 50;
+    S.kfreeK = parseInt(document.getElementById('kfreeK').value) || 2;
+    S.step = parseInt(document.getElementById('errorStep').value) || 2;
+    
+    var k = S.dim;
+    var R = S.radius;
+    
+    // Limit for high dimensions
+    if (k >= 5 && R > 25) { R = 25; S.radius = R; document.getElementById('radius').value = R; }
+    else if (k >= 4 && R > 40) { R = 40; S.radius = R; document.getElementById('radius').value = R; }
+    
+    // Generate and classify
+    S.points = generatePoints(R, k);
+    S.classified = [];
+    for (var i = 0; i < S.points.length; i++) {
+        S.classified.push(classify(S.points[i], S.structure, S.kfreeK));
+    }
+    
+    // Separate surviving and removed
+    var surv = [];
+    var removed = [];
+    for (var i = 0; i < S.classified.length; i++) {
+        if (S.classified[i].survives) surv.push(S.classified[i]);
+        else removed.push(S.classified[i]);
+    }
+    
+    var pred = mainTerm(R, k, S.structure, S.kfreeK);
+    var err = surv.length - pred;
+    var bnd = errorBound(R, k, S.structure, S.kfreeK);
+    
+    // Update displays
+    updateConfig(k, R);
+    updateCounting(S.classified.length, surv.length, pred, err, bnd, k);
+    computeBoundary(surv, R);
+    computeRadial(R);
+    computeError(k, R);
+    computeMobius(k);
+    computeDim(Math.min(R, 20));
+    computeGcd(removed);
+    updateLists(surv, removed);
+    
+    var elapsed = performance.now() - t0;
+    document.getElementById('compTime').textContent = new Date().toLocaleString();
+    document.getElementById('compDur').textContent = elapsed.toFixed(0) + 'ms';
 }
 
-function updateMainTerm(pred, k) {
-    document.getElementById('predictedCount').textContent = pred.toFixed(4);
-    document.getElementById('predictedFormula').textContent = S.structure === 'squarefree' ? '6R/π²' : `R^${k}/ζ(${k})`;
-    document.getElementById('densityConstant').textContent = (1/zeta(k)).toFixed(10);
-    document.getElementById('densityNote').textContent = `ζ(${k}) = ${zeta(k).toFixed(10)}`;
+function updateConfig(k, R) {
+    var names = {
+        'coprime': 'Coprime Lattice',
+        'squarefree': 'Squarefree',
+        'kfree': S.kfreeK + '-Free',
+        'coprime-tuple': 'Coprime Tuples'
+    };
+    document.getElementById('dispStructure').textContent = names[S.structure] || S.structure;
+    document.getElementById('dispDim').textContent = k;
+    document.getElementById('dispRadius').textContent = R;
+    document.getElementById('dispExp').textContent = (k-1) + '/' + k;
+    document.getElementById('tblExpSpan').textContent = k - 1;
+    document.getElementById('errExpSpan').textContent = k - 1;
+    
+    // Update theme button text
+    var isDark = document.body.classList.contains('dark');
+    document.getElementById('themeBtn').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    
+    // Definition
+    var defs = {
+        'coprime': 'A point (a₁,...,a' + k + ') ∈ ℤ' + k + ' is coprime if gcd(a₁,...,a' + k + ') = 1.',
+        'squarefree': 'An integer n is squarefree if not divisible by p² for any prime p.',
+        'kfree': 'An integer n is ' + S.kfreeK + '-free if not divisible by p^' + S.kfreeK + ' for any prime p.',
+        'coprime-tuple': 'A ' + k + '-tuple is coprime if gcd of all components is 1.'
+    };
+    document.getElementById('defTitle').textContent = 'Definition (' + (names[S.structure] || S.structure) + ')';
+    document.getElementById('defContent').textContent = defs[S.structure] || '';
 }
 
 function updateCounting(total, survCount, pred, err, bnd, k) {
-    document.getElementById('totalPoints').textContent = total.toLocaleString();
-    document.getElementById('survivingPoints').textContent = survCount.toLocaleString();
-    document.getElementById('removedPoints').textContent = (total - survCount).toLocaleString();
-    document.getElementById('empiricalDensity').textContent = total > 0 ? (survCount/total*100).toFixed(4) + '%' : '—';
+    document.getElementById('statTotal').textContent = total.toLocaleString();
+    document.getElementById('statSurv').textContent = survCount.toLocaleString();
+    document.getElementById('statRem').textContent = (total - survCount).toLocaleString();
+    document.getElementById('statDens').textContent = (safeDiv(survCount, total) * 100).toFixed(4) + '%';
     
-    document.getElementById('tablePredicted').textContent = pred.toFixed(6);
-    document.getElementById('tablePredictedNote').textContent = `ζ(${k})=${zeta(k).toFixed(8)}`;
-    document.getElementById('tableActual').textContent = survCount.toLocaleString();
-    document.getElementById('tableError').textContent = err.toFixed(4);
-    document.getElementById('tableErrorBound').textContent = bnd.toFixed(4);
-    document.getElementById('tableErrorBoundNote').textContent = `R^${k-1}=${bnd.toFixed(4)}`;
-    document.getElementById('tableRelError').textContent = pred > 0 ? (Math.abs(err)/pred*100).toFixed(6) + '%' : '—';
+    document.getElementById('tblPred').textContent = pred.toFixed(4);
+    document.getElementById('tblPredNote').textContent = 'ζ(' + k + ')=' + zeta(k).toFixed(8);
+    document.getElementById('tblActual').textContent = survCount.toLocaleString();
+    document.getElementById('tblError').textContent = err.toFixed(4);
+    document.getElementById('tblBound').textContent = bnd.toFixed(4);
+    document.getElementById('tblBoundNote').textContent = 'R^' + (k-1) + '=' + bnd.toFixed(4);
+    document.getElementById('tblRelErr').textContent = (safeDiv(Math.abs(err), pred) * 100).toFixed(6) + '%';
     
-    const ratio = bnd > 0 ? Math.abs(err)/bnd : 0;
-    document.getElementById('tableErrorRatio').textContent = ratio.toFixed(6);
-    const status = document.getElementById('tableErrorRatioStatus');
-    if (ratio < 1) { status.textContent = 'Within bound'; status.className = 'status-good'; }
-    else if (ratio < 2) { status.textContent = 'Near bound'; status.className = 'status-warn'; }
-    else { status.textContent = 'Exceeds bound'; status.className = 'status-bad'; }
+    var ratio = safeDiv(Math.abs(err), bnd);
+    document.getElementById('tblRatio').textContent = ratio.toFixed(6);
+    var note = document.getElementById('tblRatioNote');
+    if (ratio < 1) { note.textContent = 'Within bound'; note.className = 'good'; }
+    else if (ratio < 2) { note.textContent = 'Near bound'; note.className = 'warn'; }
+    else { note.textContent = 'Exceeds bound'; note.className = 'bad'; }
 }
 
-function computeBoundaryAnalysis(surv, R) {
+function computeBoundary(surv, R) {
     S.boundaryData = [];
-    const deltas = [1, 2, 3, 5, Math.floor(R*0.05), Math.floor(R*0.1), Math.floor(R*0.15), Math.floor(R*0.2)];
-    const unique = [...new Set(deltas.filter(d => d > 0 && d < R))].sort((a,b) => a-b);
+    var deltas = [1, 2, 3, 5, Math.floor(R*0.05), Math.floor(R*0.1), Math.floor(R*0.15), Math.floor(R*0.2)];
+    var unique = [];
+    var seen = {};
+    for (var i = 0; i < deltas.length; i++) {
+        var d = deltas[i];
+        if (d > 0 && d < R && !seen[d]) {
+            unique.push(d);
+            seen[d] = true;
+        }
+    }
+    unique.sort(function(a,b) { return a - b; });
     
-    for (const delta of unique) {
-        const thresh = R - delta;
-        const boundary = surv.filter(p => p.norm >= thresh);
-        const interior = surv.filter(p => p.norm < thresh);
+    for (var i = 0; i < unique.length; i++) {
+        var delta = unique[i];
+        var thresh = R - delta;
+        var bndPts = 0, intPts = 0;
+        for (var j = 0; j < surv.length; j++) {
+            if (surv[j].norm >= thresh) bndPts++;
+            else intPts++;
+        }
         
-        const bTotal = S.classified.filter(p => p.norm >= thresh).length;
-        const iTotal = S.classified.filter(p => p.norm < thresh).length;
+        var bTotal = 0, iTotal = 0;
+        for (var j = 0; j < S.classified.length; j++) {
+            if (S.classified[j].norm >= thresh) bTotal++;
+            else iTotal++;
+        }
         
         S.boundaryData.push({
-            delta,
-            range: `[${thresh.toFixed(1)}, ${R}]`,
-            boundaryPts: boundary.length,
-            interiorPts: interior.length,
-            boundaryPct: surv.length > 0 ? boundary.length / surv.length * 100 : 0,
-            boundaryDensity: bTotal > 0 ? boundary.length / bTotal : 0,
-            interiorDensity: iTotal > 0 ? interior.length / iTotal : 0
+            delta: delta,
+            range: '[' + thresh.toFixed(1) + ', ' + R + ']',
+            bndPts: bndPts,
+            intPts: intPts,
+            bndPct: safeDiv(bndPts, surv.length) * 100,
+            bndDens: safeDiv(bndPts, bTotal),
+            intDens: safeDiv(intPts, iTotal)
         });
     }
     
-    document.getElementById('boundaryBody').innerHTML = S.boundaryData.map(d => `
-        <tr>
-            <td class="number">${d.delta}</td>
-            <td>${d.range}</td>
-            <td class="number">${d.boundaryPts.toLocaleString()}</td>
-            <td class="number">${d.interiorPts.toLocaleString()}</td>
-            <td class="number">${d.boundaryPct.toFixed(2)}%</td>
-            <td class="number">${(d.boundaryDensity*100).toFixed(4)}%</td>
-            <td class="number">${(d.interiorDensity*100).toFixed(4)}%</td>
-        </tr>
-    `).join('');
+    var html = '';
+    for (var i = 0; i < S.boundaryData.length; i++) {
+        var d = S.boundaryData[i];
+        html += '<tr><td class="num">' + d.delta + '</td><td>' + d.range + '</td>';
+        html += '<td class="num">' + d.bndPts.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.intPts.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.bndPct.toFixed(2) + '%</td>';
+        html += '<td class="num">' + (d.bndDens*100).toFixed(4) + '%</td>';
+        html += '<td class="num">' + (d.intDens*100).toFixed(4) + '%</td></tr>';
+    }
+    document.getElementById('boundaryBody').innerHTML = html || '<tr><td colspan="7">No data</td></tr>';
 }
 
-function computeRadialDensity(R) {
-    const bins = 15;
-    const binW = R / bins;
+function computeRadial(R) {
+    var bins = 12;
+    var binW = R / bins;
     S.densityData = [];
+    var totalDens = 0;
     
-    let totalDensity = 0;
-    for (let i = 0; i < bins; i++) {
-        const rMin = i * binW, rMax = (i+1) * binW;
-        const inBin = S.classified.filter(p => p.norm >= rMin && p.norm < rMax);
-        const survInBin = inBin.filter(p => p.survives).length;
-        const density = inBin.length > 0 ? survInBin / inBin.length : 0;
-        totalDensity += density;
-        S.densityData.push({ rMin, rMax, total: inBin.length, surviving: survInBin, density });
+    for (var i = 0; i < bins; i++) {
+        var rMin = i * binW;
+        var rMax = (i + 1) * binW;
+        var total = 0, survCount = 0;
+        
+        for (var j = 0; j < S.classified.length; j++) {
+            var n = S.classified[j].norm;
+            if (n >= rMin && n < rMax) {
+                total++;
+                if (S.classified[j].survives) survCount++;
+            }
+        }
+        
+        var dens = safeDiv(survCount, total);
+        totalDens += dens;
+        S.densityData.push({ rMin: rMin, rMax: rMax, total: total, surv: survCount, dens: dens });
     }
     
-    const meanDensity = totalDensity / bins;
-    S.densityData.forEach(d => d.deviation = d.density - meanDensity);
+    var meanDens = totalDens / bins;
+    for (var i = 0; i < S.densityData.length; i++) {
+        S.densityData[i].dev = S.densityData[i].dens - meanDens;
+    }
     
-    document.getElementById('radialBody').innerHTML = S.densityData.map(d => `
-        <tr>
-            <td>[${d.rMin.toFixed(1)}, ${d.rMax.toFixed(1)})</td>
-            <td class="number">${d.total.toLocaleString()}</td>
-            <td class="number">${d.surviving.toLocaleString()}</td>
-            <td class="number">${(d.density*100).toFixed(4)}%</td>
-            <td class="number ${d.deviation >= 0 ? 'status-good' : 'status-bad'}">${(d.deviation*100).toFixed(4)}%</td>
-        </tr>
-    `).join('');
+    var html = '';
+    for (var i = 0; i < S.densityData.length; i++) {
+        var d = S.densityData[i];
+        var devClass = d.dev >= 0 ? 'good' : 'bad';
+        html += '<tr><td>[' + d.rMin.toFixed(1) + ', ' + d.rMax.toFixed(1) + ')</td>';
+        html += '<td class="num">' + d.total.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.surv.toLocaleString() + '</td>';
+        html += '<td class="num">' + (d.dens*100).toFixed(4) + '%</td>';
+        html += '<td class="num ' + devClass + '">' + (d.dev*100).toFixed(4) + '%</td></tr>';
+    }
+    document.getElementById('radialBody').innerHTML = html || '<tr><td colspan="5">No data</td></tr>';
 }
 
-function computeErrorSeries(k, R) {
-    S.errorSeries = [];
-    const step = Math.max(S.errorStep, k >= 4 ? 5 : 2); // Larger step for higher dims
-    const maxR = k >= 5 ? Math.min(R, 30) : R;
+function computeError(k, R) {
+    S.errorData = [];
+    var step = Math.max(S.step, k >= 4 ? 4 : 2);
+    var maxR = k >= 5 ? Math.min(R, 25) : R;
     
-    for (let r = 5; r <= maxR; r += step) {
-        try {
-            const pts = generatePoints(r, k);
-            const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
-            const survC = cls.filter(p => p.survives).length;
-            const pred = mainTerm(r, k, S.structure, S.kfreeK);
-            const err = survC - pred;
-            const bnd = errorBound(r, k, S.structure, S.kfreeK);
-            S.errorSeries.push({ r, actual: survC, predicted: pred, error: err, absError: Math.abs(err), bound: bnd, ratio: bnd > 0 ? Math.abs(err)/bnd : 0 });
-        } catch(e) {
-            console.error('Error series error at r=' + r, e);
+    for (var r = 5; r <= maxR; r += step) {
+        var pts = generatePoints(r, k);
+        var survC = 0;
+        for (var i = 0; i < pts.length; i++) {
+            var c = classify(pts[i], S.structure, S.kfreeK);
+            if (c.survives) survC++;
         }
+        var pred = mainTerm(r, k, S.structure, S.kfreeK);
+        var err = survC - pred;
+        var bnd = errorBound(r, k, S.structure, S.kfreeK);
+        S.errorData.push({
+            r: r,
+            actual: survC,
+            pred: pred,
+            err: err,
+            absErr: Math.abs(err),
+            bnd: bnd,
+            ratio: safeDiv(Math.abs(err), bnd)
+        });
     }
     
-    const ratios = S.errorSeries.map(d => d.ratio);
-    if (ratios.length === 0) {
-        document.getElementById('maxErrorRatio').textContent = '—';
-        document.getElementById('avgErrorRatio').textContent = '—';
-        document.getElementById('fittedConstant').textContent = '—';
-        document.getElementById('fitQuality').textContent = '—';
-        document.getElementById('errorSeriesBody').innerHTML = '<tr><td colspan="7">No data (radius too small)</td></tr>';
+    if (S.errorData.length === 0) {
+        document.getElementById('maxRatio').textContent = '—';
+        document.getElementById('avgRatio').textContent = '—';
+        document.getElementById('fittedC').textContent = '—';
+        document.getElementById('fitR2').textContent = '—';
+        document.getElementById('errorBody').innerHTML = '<tr><td colspan="7">No data</td></tr>';
         return;
     }
-    document.getElementById('maxErrorRatio').textContent = Math.max(...ratios).toFixed(6);
-    document.getElementById('avgErrorRatio').textContent = (ratios.reduce((a,b)=>a+b,0)/ratios.length).toFixed(6);
     
-    // Least squares fit for constant C
-    const absErrs = S.errorSeries.map(d => d.absError);
-    const bounds = S.errorSeries.map(d => d.bound);
-    const sumXY = absErrs.reduce((s, e, i) => s + e * bounds[i], 0);
-    const sumX2 = bounds.reduce((s, b) => s + b * b, 0);
-    const C = sumXY / sumX2;
-    document.getElementById('fittedConstant').textContent = C.toFixed(6);
+    var maxR = 0, sumR = 0;
+    for (var i = 0; i < S.errorData.length; i++) {
+        if (S.errorData[i].ratio > maxR) maxR = S.errorData[i].ratio;
+        sumR += S.errorData[i].ratio;
+    }
+    document.getElementById('maxRatio').textContent = maxR.toFixed(6);
+    document.getElementById('avgRatio').textContent = (sumR / S.errorData.length).toFixed(6);
+    
+    // Least squares fit
+    var sumXY = 0, sumX2 = 0;
+    for (var i = 0; i < S.errorData.length; i++) {
+        sumXY += S.errorData[i].absErr * S.errorData[i].bnd;
+        sumX2 += S.errorData[i].bnd * S.errorData[i].bnd;
+    }
+    var C = safeDiv(sumXY, sumX2);
+    document.getElementById('fittedC').textContent = C.toFixed(6);
     
     // R² calculation
-    const meanErr = absErrs.reduce((a,b)=>a+b,0) / absErrs.length;
-    const ssTot = absErrs.reduce((s, e) => s + (e - meanErr)**2, 0);
-    const ssRes = absErrs.reduce((s, e, i) => s + (e - C * bounds[i])**2, 0);
-    const r2 = 1 - ssRes / ssTot;
-    document.getElementById('fitQuality').textContent = r2.toFixed(6);
+    var meanErr = 0;
+    for (var i = 0; i < S.errorData.length; i++) meanErr += S.errorData[i].absErr;
+    meanErr = meanErr / S.errorData.length;
     
-    document.getElementById('errorSeriesBody').innerHTML = S.errorSeries.map(d => `
-        <tr>
-            <td class="number">${d.r}</td>
-            <td class="number">${d.actual.toLocaleString()}</td>
-            <td class="number">${d.predicted.toFixed(2)}</td>
-            <td class="number">${d.error.toFixed(2)}</td>
-            <td class="number">${d.absError.toFixed(2)}</td>
-            <td class="number">${d.bound.toFixed(2)}</td>
-            <td class="number">${d.ratio.toFixed(4)}</td>
-        </tr>
-    `).join('');
+    var ssTot = 0, ssRes = 0;
+    for (var i = 0; i < S.errorData.length; i++) {
+        ssTot += Math.pow(S.errorData[i].absErr - meanErr, 2);
+        ssRes += Math.pow(S.errorData[i].absErr - C * S.errorData[i].bnd, 2);
+    }
+    var r2 = 1 - safeDiv(ssRes, ssTot);
+    document.getElementById('fitR2').textContent = r2.toFixed(6);
+    
+    var html = '';
+    for (var i = 0; i < S.errorData.length; i++) {
+        var d = S.errorData[i];
+        html += '<tr><td class="num">' + d.r + '</td>';
+        html += '<td class="num">' + d.actual.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.pred.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.err.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.absErr.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.bnd.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.ratio.toFixed(4) + '</td></tr>';
+    }
+    document.getElementById('errorBody').innerHTML = html;
 }
 
-function computeMobiusSums(k) {
+function computeMobius(k) {
     S.mobiusData = [];
-    const target = 1 / zeta(k);
-    const truncations = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000];
+    var target = 1 / zeta(k);
+    var truncs = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000];
     
-    for (const N of truncations) {
-        let sum = 0;
-        for (let d = 1; d <= N; d++) sum += mobius(d) / Math.pow(d, k);
-        const err = sum - target;
-        S.mobiusData.push({ N, sum, target, error: err, relError: Math.abs(err)/Math.abs(target)*100 });
+    for (var i = 0; i < truncs.length; i++) {
+        var N = truncs[i];
+        var sum = 0;
+        for (var d = 1; d <= N; d++) {
+            sum += mobius(d) / Math.pow(d, k);
+        }
+        var err = sum - target;
+        S.mobiusData.push({
+            N: N,
+            sum: sum,
+            target: target,
+            err: err,
+            relErr: safeDiv(Math.abs(err), Math.abs(target)) * 100
+        });
     }
     
-    document.getElementById('mobiusSumBody').innerHTML = S.mobiusData.map(d => `
-        <tr>
-            <td class="number">${d.N.toLocaleString()}</td>
-            <td class="number">${d.sum.toFixed(10)}</td>
-            <td class="number">${d.target.toFixed(10)}</td>
-            <td class="number">${d.error.toFixed(10)}</td>
-            <td class="number">${d.relError.toFixed(6)}%</td>
-        </tr>
-    `).join('');
+    var html = '';
+    for (var i = 0; i < S.mobiusData.length; i++) {
+        var d = S.mobiusData[i];
+        html += '<tr><td class="num">' + d.N.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.sum.toFixed(10) + '</td>';
+        html += '<td class="num">' + d.target.toFixed(10) + '</td>';
+        html += '<td class="num">' + d.err.toFixed(10) + '</td>';
+        html += '<td class="num">' + d.relErr.toFixed(6) + '%</td></tr>';
+    }
+    document.getElementById('mobiusBody').innerHTML = html || '<tr><td colspan="5">No data</td></tr>';
 }
 
-function computeDimComparison(R) {
-    S.dimCompare = [];
-    const testR = Math.min(R, 25); // Keep small for safety
-    const maxK = testR <= 15 ? 5 : (testR <= 20 ? 4 : 3);
+function computeDim(R) {
+    S.dimData = [];
+    var testR = Math.min(R, 18);
+    var maxK = testR <= 12 ? 5 : (testR <= 15 ? 4 : 3);
     
-    for (let k = 2; k <= maxK; k++) {
-        try {
-            const pts = generatePoints(testR, k);
-            const cls = pts.map(p => classify(p, S.structure, S.kfreeK));
-            const survC = cls.filter(p => p.survives).length;
-            const pred = mainTerm(testR, k, S.structure, S.kfreeK);
-            const err = survC - pred;
-            const bnd = errorBound(testR, k, S.structure, S.kfreeK);
-            S.dimCompare.push({ k, exp: (k-1)/k, total: pts.length, surviving: survC, predicted: pred, error: err, bound: bnd, ratio: bnd > 0 ? Math.abs(err)/bnd : 0 });
-        } catch(e) {
-            console.error('Dim compare error at k=' + k, e);
+    for (var kk = 2; kk <= maxK; kk++) {
+        var pts = generatePoints(testR, kk);
+        var survC = 0;
+        for (var i = 0; i < pts.length; i++) {
+            var c = classify(pts[i], S.structure, S.kfreeK);
+            if (c.survives) survC++;
+        }
+        var pred = mainTerm(testR, kk, S.structure, S.kfreeK);
+        var err = survC - pred;
+        var bnd = errorBound(testR, kk, S.structure, S.kfreeK);
+        S.dimData.push({
+            k: kk,
+            exp: (kk-1)/kk,
+            total: pts.length,
+            surv: survC,
+            pred: pred,
+            err: err,
+            bnd: bnd,
+            ratio: safeDiv(Math.abs(err), bnd)
+        });
+    }
+    
+    var html = '';
+    for (var i = 0; i < S.dimData.length; i++) {
+        var d = S.dimData[i];
+        html += '<tr><td class="num">' + d.k + '</td>';
+        html += '<td class="num">' + d.exp.toFixed(4) + '</td>';
+        html += '<td class="num">' + d.total.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.surv.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.pred.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.err.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.bnd.toFixed(2) + '</td>';
+        html += '<td class="num">' + d.ratio.toFixed(4) + '</td></tr>';
+    }
+    document.getElementById('dimBody').innerHTML = html || '<tr><td colspan="8">No data</td></tr>';
+}
+
+function computeGcd(removed) {
+    var gcdMap = {};
+    for (var i = 0; i < removed.length; i++) {
+        var g = removed[i].gcd;
+        gcdMap[g] = (gcdMap[g] || 0) + 1;
+    }
+    
+    S.gcdData = [];
+    for (var g in gcdMap) {
+        if (gcdMap.hasOwnProperty(g)) {
+            S.gcdData.push({
+                gcd: parseInt(g),
+                count: gcdMap[g],
+                pct: safeDiv(gcdMap[g], removed.length) * 100,
+                mu: mobius(parseInt(g))
+            });
         }
     }
+    S.gcdData.sort(function(a, b) { return b.count - a.count; });
     
-    document.getElementById('dimCompareBody').innerHTML = S.dimCompare.map(d => `
-        <tr>
-            <td class="number">${d.k}</td>
-            <td class="number">${d.exp.toFixed(4)}</td>
-            <td class="number">${d.total.toLocaleString()}</td>
-            <td class="number">${d.surviving.toLocaleString()}</td>
-            <td class="number">${d.predicted.toFixed(2)}</td>
-            <td class="number">${d.error.toFixed(2)}</td>
-            <td class="number">${d.bound.toFixed(2)}</td>
-            <td class="number">${d.ratio.toFixed(4)}</td>
-        </tr>
-    `).join('');
-}
-
-function computeGcdDist(removed) {
-    const gcdMap = new Map();
-    for (const p of removed) {
-        const g = p.gcd;
-        gcdMap.set(g, (gcdMap.get(g) || 0) + 1);
+    var html = '';
+    var limit = Math.min(S.gcdData.length, 20);
+    for (var i = 0; i < limit; i++) {
+        var d = S.gcdData[i];
+        html += '<tr><td class="num">' + d.gcd + '</td>';
+        html += '<td class="num">' + d.count.toLocaleString() + '</td>';
+        html += '<td class="num">' + d.pct.toFixed(2) + '%</td>';
+        html += '<td class="num">' + d.mu + '</td></tr>';
     }
-    
-    S.gcdDist = [...gcdMap.entries()]
-        .map(([g, count]) => ({ gcd: g, count, pct: removed.length > 0 ? count/removed.length*100 : 0, mu: mobius(g) }))
-        .sort((a, b) => b.count - a.count);
-    
-    document.getElementById('gcdDistBody').innerHTML = S.gcdDist.slice(0, 20).map(d => `
-        <tr>
-            <td class="number">${d.gcd}</td>
-            <td class="number">${d.count.toLocaleString()}</td>
-            <td class="number">${d.pct.toFixed(2)}%</td>
-            <td class="number">${d.mu}</td>
-        </tr>
-    `).join('');
-    
-    document.getElementById('distinctGcds').textContent = S.gcdDist.length;
-    document.getElementById('commonGcd').textContent = S.gcdDist.length > 0 ? S.gcdDist[0].gcd : '—';
+    document.getElementById('gcdBody').innerHTML = html || '<tr><td colspan="4">No data</td></tr>';
+    document.getElementById('distinctGcd').textContent = S.gcdData.length;
+    document.getElementById('commonGcd').textContent = S.gcdData.length > 0 ? S.gcdData[0].gcd : '—';
 }
 
-function updatePointLists(surv, removed) {
-    const sortedSurv = surv.sort((a, b) => a.norm - b.norm).slice(0, 50);
-    document.getElementById('pointListSurviving').textContent = sortedSurv
-        .map((p, i) => `${String(i+1).padStart(3)}. (${p.point.join(', ')})  |x|=${p.norm.toFixed(4)}`)
-        .join('\n') || '—';
+function updateLists(surv, removed) {
+    // Sort by norm
+    surv.sort(function(a, b) { return a.norm - b.norm; });
+    removed.sort(function(a, b) { return a.norm - b.norm; });
     
-    const sortedRem = removed.sort((a, b) => a.norm - b.norm).slice(0, 30);
-    document.getElementById('pointListRemoved').textContent = sortedRem
-        .map((p, i) => `${String(i+1).padStart(3)}. (${p.point.join(', ')})  gcd=${p.gcd}  |x|=${p.norm.toFixed(4)}`)
-        .join('\n') || '—';
+    var survText = '';
+    var limit = Math.min(surv.length, 50);
+    for (var i = 0; i < limit; i++) {
+        var p = surv[i];
+        survText += String(i+1).padStart(3) + '. (' + p.point.join(', ') + ')  |x|=' + p.norm.toFixed(4) + '\n';
+    }
+    document.getElementById('survList').textContent = survText || 'No points';
+    
+    var remText = '';
+    limit = Math.min(removed.length, 30);
+    for (var i = 0; i < limit; i++) {
+        var p = removed[i];
+        remText += String(i+1).padStart(3) + '. (' + p.point.join(', ') + ')  gcd=' + p.gcd + '  |x|=' + p.norm.toFixed(4) + '\n';
+    }
+    document.getElementById('remList').textContent = remText || 'No points';
 }
 
+// CSV Export
 function exportCSV(type) {
-    let csv = '', fn = '';
-    const k = S.dimension;
+    var csv = '';
+    var fn = '';
+    var k = S.dim;
     
-    switch (type) {
-        case 'points':
-            csv = 'idx,' + Array.from({length:k},(_,i)=>`x${i+1}`).join(',') + ',survives,gcd,norm\n';
-            S.classified.forEach((p, i) => { csv += `${i},${p.point.join(',')},${p.survives?1:0},${p.gcd},${p.norm.toFixed(6)}\n`; });
-            fn = 'all-points'; break;
-        case 'surviving':
-            csv = 'idx,' + Array.from({length:k},(_,i)=>`x${i+1}`).join(',') + ',norm\n';
-            S.classified.filter(p=>p.survives).forEach((p, i) => { csv += `${i},${p.point.join(',')},${p.norm.toFixed(6)}\n`; });
-            fn = 'surviving-points'; break;
-        case 'error':
-            csv = 'R,actual,predicted,error,abs_error,bound,ratio\n';
-            S.errorSeries.forEach(d => { csv += `${d.r},${d.actual},${d.predicted.toFixed(6)},${d.error.toFixed(6)},${d.absError.toFixed(6)},${d.bound.toFixed(6)},${d.ratio.toFixed(6)}\n`; });
-            fn = 'error-series'; break;
-        case 'boundary':
-            csv = 'delta,boundary_pts,interior_pts,boundary_pct,boundary_density,interior_density\n';
-            S.boundaryData.forEach(d => { csv += `${d.delta},${d.boundaryPts},${d.interiorPts},${d.boundaryPct.toFixed(4)},${d.boundaryDensity.toFixed(6)},${d.interiorDensity.toFixed(6)}\n`; });
-            fn = 'boundary-analysis'; break;
-        case 'density':
-            csv = 'r_min,r_max,total,surviving,density,deviation\n';
-            S.densityData.forEach(d => { csv += `${d.rMin.toFixed(2)},${d.rMax.toFixed(2)},${d.total},${d.surviving},${d.density.toFixed(6)},${d.deviation.toFixed(6)}\n`; });
-            fn = 'radial-density'; break;
-        case 'mobius':
-            csv = 'N,partial_sum,target,error,rel_error_pct\n';
-            S.mobiusData.forEach(d => { csv += `${d.N},${d.sum.toFixed(10)},${d.target.toFixed(10)},${d.error.toFixed(10)},${d.relError.toFixed(6)}\n`; });
-            fn = 'mobius-sums'; break;
-        case 'dimensional':
-            csv = 'k,exponent,total,surviving,predicted,error,bound,ratio\n';
-            S.dimCompare.forEach(d => { csv += `${d.k},${d.exp.toFixed(4)},${d.total},${d.surviving},${d.predicted.toFixed(4)},${d.error.toFixed(4)},${d.bound.toFixed(4)},${d.ratio.toFixed(4)}\n`; });
-            fn = 'dim-comparison'; break;
-        case 'gcd':
-            csv = 'gcd,count,percentage,mobius\n';
-            S.gcdDist.forEach(d => { csv += `${d.gcd},${d.count},${d.pct.toFixed(4)},${d.mu}\n`; });
-            fn = 'gcd-distribution'; break;
-        case 'summary':
-            const surv = S.classified.filter(p=>p.survives).length;
-            const pred = mainTerm(S.radius, k, S.structure, S.kfreeK);
-            csv = 'parameter,value\n';
-            csv += `structure,${S.structure}\ndimension,${k}\nradius,${S.radius}\n`;
-            csv += `total_points,${S.classified.length}\nsurviving,${surv}\npredicted,${pred.toFixed(6)}\n`;
-            csv += `error,${(surv-pred).toFixed(6)}\nerror_bound,${errorBound(S.radius,k,S.structure,S.kfreeK).toFixed(6)}\n`;
-            csv += `critical_exponent,${((k-1)/k).toFixed(6)}\nzeta_k,${zeta(k).toFixed(10)}\n`;
-            fn = 'summary'; break;
+    if (type === 'points') {
+        csv = 'idx';
+        for (var i = 0; i < k; i++) csv += ',x' + (i+1);
+        csv += ',survives,gcd,norm\n';
+        for (var i = 0; i < S.classified.length; i++) {
+            var p = S.classified[i];
+            csv += i + ',' + p.point.join(',') + ',' + (p.survives?1:0) + ',' + p.gcd + ',' + p.norm.toFixed(6) + '\n';
+        }
+        fn = 'all-points';
+    } else if (type === 'surviving') {
+        csv = 'idx';
+        for (var i = 0; i < k; i++) csv += ',x' + (i+1);
+        csv += ',norm\n';
+        var idx = 0;
+        for (var i = 0; i < S.classified.length; i++) {
+            if (S.classified[i].survives) {
+                var p = S.classified[i];
+                csv += idx + ',' + p.point.join(',') + ',' + p.norm.toFixed(6) + '\n';
+                idx++;
+            }
+        }
+        fn = 'surviving';
+    } else if (type === 'error') {
+        csv = 'R,actual,predicted,error,abs_error,bound,ratio\n';
+        for (var i = 0; i < S.errorData.length; i++) {
+            var d = S.errorData[i];
+            csv += d.r + ',' + d.actual + ',' + d.pred.toFixed(6) + ',' + d.err.toFixed(6) + ',' + d.absErr.toFixed(6) + ',' + d.bnd.toFixed(6) + ',' + d.ratio.toFixed(6) + '\n';
+        }
+        fn = 'error-series';
+    } else if (type === 'boundary') {
+        csv = 'delta,boundary_pts,interior_pts,boundary_pct,boundary_density,interior_density\n';
+        for (var i = 0; i < S.boundaryData.length; i++) {
+            var d = S.boundaryData[i];
+            csv += d.delta + ',' + d.bndPts + ',' + d.intPts + ',' + d.bndPct.toFixed(4) + ',' + d.bndDens.toFixed(6) + ',' + d.intDens.toFixed(6) + '\n';
+        }
+        fn = 'boundary';
+    } else if (type === 'density') {
+        csv = 'r_min,r_max,total,surviving,density,deviation\n';
+        for (var i = 0; i < S.densityData.length; i++) {
+            var d = S.densityData[i];
+            csv += d.rMin.toFixed(2) + ',' + d.rMax.toFixed(2) + ',' + d.total + ',' + d.surv + ',' + d.dens.toFixed(6) + ',' + d.dev.toFixed(6) + '\n';
+        }
+        fn = 'density';
+    } else if (type === 'mobius') {
+        csv = 'N,partial_sum,target,error,rel_error_pct\n';
+        for (var i = 0; i < S.mobiusData.length; i++) {
+            var d = S.mobiusData[i];
+            csv += d.N + ',' + d.sum.toFixed(10) + ',' + d.target.toFixed(10) + ',' + d.err.toFixed(10) + ',' + d.relErr.toFixed(6) + '\n';
+        }
+        fn = 'mobius';
+    } else if (type === 'dim') {
+        csv = 'k,exponent,total,surviving,predicted,error,bound,ratio\n';
+        for (var i = 0; i < S.dimData.length; i++) {
+            var d = S.dimData[i];
+            csv += d.k + ',' + d.exp.toFixed(4) + ',' + d.total + ',' + d.surv + ',' + d.pred.toFixed(4) + ',' + d.err.toFixed(4) + ',' + d.bnd.toFixed(4) + ',' + d.ratio.toFixed(4) + '\n';
+        }
+        fn = 'dimensional';
+    } else if (type === 'gcd') {
+        csv = 'gcd,count,percentage,mobius\n';
+        for (var i = 0; i < S.gcdData.length; i++) {
+            var d = S.gcdData[i];
+            csv += d.gcd + ',' + d.count + ',' + d.pct.toFixed(4) + ',' + d.mu + '\n';
+        }
+        fn = 'gcd';
+    } else if (type === 'summary') {
+        var survC = 0;
+        for (var i = 0; i < S.classified.length; i++) {
+            if (S.classified[i].survives) survC++;
+        }
+        var pred = mainTerm(S.radius, k, S.structure, S.kfreeK);
+        csv = 'parameter,value\n';
+        csv += 'structure,' + S.structure + '\n';
+        csv += 'dimension,' + k + '\n';
+        csv += 'radius,' + S.radius + '\n';
+        csv += 'total_points,' + S.classified.length + '\n';
+        csv += 'surviving,' + survC + '\n';
+        csv += 'predicted,' + pred.toFixed(6) + '\n';
+        csv += 'error,' + (survC - pred).toFixed(6) + '\n';
+        csv += 'error_bound,' + errorBound(S.radius, k, S.structure, S.kfreeK).toFixed(6) + '\n';
+        csv += 'critical_exponent,' + ((k-1)/k).toFixed(6) + '\n';
+        csv += 'zeta_k,' + zeta(k).toFixed(10) + '\n';
+        fn = 'summary';
     }
     
-    const blob = new Blob([csv], {type:'text/csv'});
-    const link = document.createElement('a');
-    link.download = `bcp-${fn}-${Date.now()}.csv`;
+    var blob = new Blob([csv], {type: 'text/csv'});
+    var link = document.createElement('a');
+    link.download = 'bcp-' + fn + '-' + Date.now() + '.csv';
     link.href = URL.createObjectURL(blob);
     link.click();
 }
 
-function exportLaTeX() {
-    const k = S.dimension, R = S.radius;
-    const surv = S.classified.filter(p=>p.survives).length;
-    const pred = mainTerm(R, k, S.structure, S.kfreeK);
-    
-    let tex = `% BCP Analysis - ${S.structure}, k=${k}, R=${R}
-\\begin{table}[h]\\centering
-\\begin{tabular}{lrr}\\toprule
-Quantity & Value & Notes \\\\\\midrule
-Dimension $k$ & ${k} & \\\\
-Radius $R$ & ${R} & \\\\
-Surviving & ${surv.toLocaleString()} & Exact \\\\
-Predicted & ${pred.toFixed(4)} & $R^k/\\zeta(k)$ \\\\
-Error & ${(surv-pred).toFixed(4)} & \\\\
-Bound & ${errorBound(R,k,S.structure,S.kfreeK).toFixed(4)} & $O(R^{${k-1}})$ \\\\
-\\bottomrule\\end{tabular}
-\\caption{BCP verification}\\end{table}
-
-\\begin{table}[h]\\centering
-\\begin{tabular}{rrrrrrr}\\toprule
-$R$ & Actual & Pred & Error & Bound & Ratio \\\\\\midrule
-`;
-    S.errorSeries.slice(0, 15).forEach(d => {
-        tex += `${d.r} & ${d.actual} & ${d.predicted.toFixed(1)} & ${d.error.toFixed(1)} & ${d.bound.toFixed(1)} & ${d.ratio.toFixed(3)} \\\\\n`;
-    });
-    tex += `\\bottomrule\\end{tabular}\\caption{Error scaling}\\end{table}`;
-    
-    const blob = new Blob([tex], {type:'text/plain'});
-    const link = document.createElement('a');
-    link.download = `bcp-latex-${Date.now()}.tex`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-}
-
-// compute() is called in DOMContentLoaded above
+// Run on load
+window.onload = function() {
+    var isDark = document.body.classList.contains('dark');
+    document.getElementById('themeBtn').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    runCompute();
+};
 </script>
 
 </body>
-</html>
+    </html>
