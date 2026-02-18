@@ -2262,13 +2262,15 @@ function applyPreset(p, btn, isGap){
 // ═══════════════════════════════════════════════════════════════
 //  GAP DECOMPOSITION MODULE
 // ═══════════════════════════════════════════════════════════════
-document.getElementById('gapHeader').addEventListener('click',()=>{
+// Gap panel toggle (still collapsible inside right sidebar)
+const _gapHdr = document.getElementById('gapHeader');
+if(_gapHdr) _gapHdr.addEventListener('click',()=>{
   const body = document.getElementById('gapBody');
   const chev = document.getElementById('gapChevron');
   const hdr  = document.getElementById('gapHeader');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
-  hdr.classList.toggle('open');
+  if(body) body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open');
+  if(hdr)  hdr.classList.toggle('open');
 });
 
 document.getElementById('gdN').addEventListener('input', function(){
@@ -3243,15 +3245,7 @@ function toSphereWarped(t, r){
 // Patch toSphere globally
 // (call toSphereWarped from precompute instead of toSphere)
 
-// Harmonic color panel toggle
-document.getElementById('harmHeader').addEventListener('click',()=>{
-  const body=document.getElementById('harmBody');
-  const chev=document.getElementById('harmChevron');
-  const hdr=document.getElementById('harmHeader');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
-  hdr.classList.toggle('open');
-});
+// Harmonic color panel — always open in dashboard layout (no toggle needed)
 
 document.getElementById('harmColorMode').addEventListener('change',function(){
   harmColorMode=this.checked;
@@ -3497,11 +3491,7 @@ let smithOpacity = 0.4;
 let smithRadiusMode = 'index';
 let smithShowGrid = true, smithShowR = true, smithShowX = true;
 
-document.getElementById('smithHeader').addEventListener('click',()=>{
-  document.getElementById('smithBody').classList.toggle('open');
-  document.getElementById('smithChevron').classList.toggle('open');
-  document.getElementById('smithHeader').classList.toggle('open');
-});
+// Smith Chart panel — always open in dashboard layout
 document.getElementById('smithEnable').addEventListener('change',function(){
   smithEnabled=this.checked;
   document.getElementById('smithState').textContent=smithEnabled?'on':'off';
@@ -3622,11 +3612,7 @@ const COORD_DESCS = {
   poincare:    'Poincaré Disk (hyperbolic): maps sphere points through the unit-disk model. Distances compress toward the boundary.'
 };
 
-document.getElementById('coordHeader').addEventListener('click',()=>{
-  document.getElementById('coordBody').classList.toggle('open');
-  document.getElementById('coordChevron').classList.toggle('open');
-  document.getElementById('coordHeader').classList.toggle('open');
-});
+// Coord mode panel — always open in dashboard layout
 
 document.getElementById('coordModeGrid').addEventListener('click', e=>{
   const btn=e.target.closest('.coord-mode-btn');
@@ -3767,9 +3753,9 @@ function autoRunZeta(callback){
   const body = document.getElementById('gapBody');
   const chev = document.getElementById('gapChevron');
   const hdr  = document.getElementById('gapHeader');
-  body.classList.add('open');
-  chev.classList.add('open');
-  hdr.classList.add('open');
+  if(body) body.classList.add('open');
+  if(chev) chev.classList.add('open');
+  if(hdr)  hdr.classList.add('open');
 
   setTimeout(()=>{
     try {
