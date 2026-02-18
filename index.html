@@ -485,24 +485,171 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
 .arnold-row { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
 .arnold-val { font-size:.65rem; color:#e879f9; min-width:32px; text-align:right; }
 
+
+/* ── Zoom & Pan overlay controls ─── */
+.zoom-bar {
+  display:flex; align-items:center; gap:8px; margin-top:6px;
+  justify-content:center; flex-wrap:wrap;
+}
+.zoom-btn {
+  font-family:'JetBrains Mono',monospace; font-size:.75rem;
+  width:32px; height:32px; border-radius:50%; cursor:pointer;
+  border:1px solid rgba(255,61,180,.35); background:rgba(255,61,180,.07);
+  color:var(--pink); display:flex; align-items:center; justify-content:center;
+  transition:all .15s; flex-shrink:0; font-weight:700;
+}
+.zoom-btn:hover { background:var(--pink); color:#000; box-shadow:0 0 10px rgba(255,61,180,.5); }
+.zoom-level-lbl {
+  font-size:.6rem; color:rgba(255,215,0,.7); min-width:44px; text-align:center;
+  letter-spacing:.08em;
+}
+.zoom-reset-btn {
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  padding:4px 10px; border-radius:12px; cursor:pointer;
+  border:1px solid rgba(255,215,0,.3); background:transparent;
+  color:rgba(255,215,0,.7); transition:all .15s;
+}
+.zoom-reset-btn:hover { background:var(--gold); color:#000; }
+
+/* canvas pan cursor */
+#polarCanvas.panning { cursor:move !important; }
+
+/* ── Smith / Cayley panel ─────────── */
+.smith-panel {
+  max-width:560px; width:100%; margin-top:0;
+  background:var(--surface); border:1px solid rgba(96,165,250,.22);
+  border-radius:12px; overflow:hidden;
+}
+.smith-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px; cursor:pointer; user-select:none;
+  border-bottom:1px solid transparent; transition:border-color .2s;
+}
+.smith-header.open { border-bottom-color:rgba(96,165,250,.22); }
+.smith-header-title { font-size:.59rem; text-transform:uppercase; letter-spacing:.18em; color:#60a5fa; }
+.smith-chevron { font-size:.75rem; color:#60a5fa; transition:transform .25s; }
+.smith-chevron.open { transform:rotate(180deg); }
+.smith-body { display:none; padding:14px 18px 18px; }
+.smith-body.open { display:block; }
+.smith-info {
+  font-size:.6rem; color:rgba(96,165,250,.6); line-height:1.8;
+  background:rgba(96,165,250,.04); border:1px solid rgba(96,165,250,.12);
+  border-radius:6px; padding:10px 12px; margin-top:10px;
+}
+.smith-info strong { color:#60a5fa; }
+
+/* ── Coord Mode panel ─────────────── */
+.coord-panel {
+  max-width:560px; width:100%; margin-top:0;
+  background:var(--surface); border:1px solid rgba(163,230,53,.18);
+  border-radius:12px; overflow:hidden;
+}
+.coord-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px; cursor:pointer; user-select:none;
+  border-bottom:1px solid transparent; transition:border-color .2s;
+}
+.coord-header.open { border-bottom-color:rgba(163,230,53,.2); }
+.coord-header-title { font-size:.59rem; text-transform:uppercase; letter-spacing:.18em; color:#a3e635; }
+.coord-chevron { font-size:.75rem; color:#a3e635; transition:transform .25s; }
+.coord-chevron.open { transform:rotate(180deg); }
+.coord-body { display:none; padding:14px 18px 18px; }
+.coord-body.open { display:block; }
+.coord-mode-grid { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.coord-mode-btn {
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.06em;
+  text-transform:uppercase; padding:5px 12px; border-radius:14px; cursor:pointer;
+  border:1px solid rgba(163,230,53,.25); background:rgba(163,230,53,.04);
+  color:#a3e635aa; transition:all .14s;
+}
+.coord-mode-btn:hover { border-color:#a3e635; color:#a3e635; }
+.coord-mode-btn.active { background:#a3e635; color:#000; border-color:#a3e635; box-shadow:0 0 10px rgba(163,230,53,.35); }
+
+/* ── Keyboard shortcuts hint ──────── */
+.kb-hint {
+  font-size:.52rem; color:rgba(255,61,180,.35); text-align:center;
+  letter-spacing:.1em; margin-top:4px;
+}
+
+
+.intro {
+  max-width:560px; width:100%; margin-bottom:22px;
+  border-left:2px solid rgba(255,61,180,.25);
+  padding-left:18px;
+}
+.intro-subtitle {
+  font-size:.6rem; text-transform:uppercase; letter-spacing:.22em;
+  color:rgba(255,215,0,.5); margin-bottom:10px;
+}
+.intro-body {
+  font-size:.72rem; line-height:1.75; color:rgba(216,240,216,.55);
+  font-family:'JetBrains Mono',monospace;
+}
+.intro-body p { margin-bottom:.6em; }
+.intro-body p:last-child { margin-bottom:0; }
+
+/* ── Preset dropdown ────────────────── */
+.preset-drop-wrap {
+  max-width:560px; width:100%; margin-bottom:14px;
+}
+.preset-drop-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 16px; cursor:pointer; user-select:none;
+  background:rgba(255,61,180,.04); border:1px solid rgba(255,61,180,.18);
+  border-radius:10px; transition:border-color .2s;
+}
+.preset-drop-header.open {
+  border-radius:10px 10px 0 0; border-color:rgba(255,61,180,.32);
+}
+.preset-drop-title {
+  font-size:.58rem; text-transform:uppercase; letter-spacing:.2em; color:var(--pink);
+}
+.preset-active-name {
+  font-size:.58rem; color:rgba(255,215,0,.7); letter-spacing:.06em;
+}
+.preset-drop-chevron { font-size:.75rem; color:var(--pink); transition:transform .22s; }
+.preset-drop-chevron.open { transform:rotate(180deg); }
+.preset-drop-body {
+  display:none; padding:14px 16px 16px;
+  background:rgba(255,61,180,.02); border:1px solid rgba(255,61,180,.18);
+  border-top:none; border-radius:0 0 10px 10px;
+}
+.preset-drop-body.open { display:block; }
+
 </style>
 </head>
 <body>
 
-<h1>Polar vs Cartesian</h1>
+<!-- Introduction -->
+<div class="intro">
+  <div class="intro-subtitle">Wessen Getachew</div>
+  <h1 style="font-size:clamp(1.4rem,4.5vw,2.4rem);margin-bottom:12px">Polar vs Cartesian</h1>
+  <div class="intro-body">
+    <p>f(θ) = A + sin(Bθ)·sin(Cθ/D) drawn in polar and Cartesian at the same time — the polar trace wraps onto a rotatable 3D sphere, the Cartesian version runs below it. A, B, C, D change the shape. θ range and trail length change how much of the curve stays visible.</p>
+    <p>The gap decomposition sieves primes up to N, groups them by the gap between consecutive primes, and shows how each gap family contributes to ζ(s). Select any gap — it gets its own color on the sphere and its own waveform lane on the Cartesian canvas.</p>
+    <p>The harmonics panel plays Farey-sequence intervals in sync with the animation. All 16 intervals are on by default and color the sphere by consonance. The Smith Chart overlay maps the curve through the Cayley transform Γ = (z−1)/(z+1) onto the unit disk. Four coordinate modes — polar, log-cylinder, log-spiral, Poincaré disk — reshape how the curve sits in space.</p>
+  </div>
+</div>
 
-<!-- Preset groups -->
-<div class="presets-wrap">
-  <div class="pg-label">Classics</div>
-  <div class="presets" id="pgClassic"></div>
-  <div class="pg-label">Complex</div>
-  <div class="presets" id="pgComplex"></div>
-  <div class="pg-label">Organic</div>
-  <div class="presets" id="pgOrganic"></div>
-  <div class="pg-label">Geometric</div>
-  <div class="presets" id="pgGeo"></div>
-  <div class="pg-label">Ethereal</div>
-  <div class="presets" id="pgEth"></div>
+<!-- Preset dropdown -->
+<div class="preset-drop-wrap">
+  <div class="preset-drop-header" id="presetDropHeader">
+    <div class="preset-drop-title">Presets</div>
+    <span class="preset-active-name" id="presetActiveName">Original</span>
+    <span class="preset-drop-chevron" id="presetDropChev">▼</span>
+  </div>
+  <div class="preset-drop-body" id="presetDropBody">
+    <div class="pg-label">Classics</div>
+    <div class="presets" id="pgClassic"></div>
+    <div class="pg-label">Complex</div>
+    <div class="presets" id="pgComplex"></div>
+    <div class="pg-label">Organic</div>
+    <div class="presets" id="pgOrganic"></div>
+    <div class="pg-label">Geometric</div>
+    <div class="presets" id="pgGeo"></div>
+    <div class="pg-label">Ethereal</div>
+    <div class="presets" id="pgEth"></div>
+  </div>
 </div>
 
 <!-- Sphere + formula + cart -->
@@ -510,10 +657,19 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
   <canvas id="polarCanvas"></canvas>
 
   <div class="rot-controls">
-    <span class="rot-hint">⟳ drag sphere to rotate</span>
+    <span class="rot-hint">⟳ drag to rotate · shift+drag to pan</span>
     <button class="ctrl" id="btnAutoRot">⟳ Auto-Rotate</button>
     <button class="ctrl" id="btnResetRot" style="font-size:.63rem;padding:6px 11px">↺ Reset View</button>
   </div>
+
+  <!-- Zoom bar -->
+  <div class="zoom-bar">
+    <button class="zoom-btn" id="btnZoomOut" title="Zoom Out (scroll down)">−</button>
+    <span class="zoom-level-lbl" id="zoomLbl">1.0×</span>
+    <button class="zoom-btn" id="btnZoomIn" title="Zoom In (scroll up)">+</button>
+    <button class="zoom-reset-btn" id="btnZoomReset">Reset Zoom</button>
+  </div>
+  <div class="kb-hint">Space=Play · R=Rotate · S=Screenshot · ↑↓=Zoom · ←→=Spin</div>
 
   <div class="formula-box">
     f(θ) = <em id="fA">1.9</em> + sin(<em id="fB">3</em>θ) · sin(<em id="fC">3</em>θ / <em id="fD">32</em>)
@@ -636,7 +792,7 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
       </div>
       <div class="cg" style="flex:1;min-width:100px">
         <label style="font-size:.58rem;color:#88bb88">Volume</label>
-        <input type="range" id="harmVol" min="0" max="1" step="0.05" value="0.35" style="background:rgba(96,165,250,.2)">
+        <input type="range" id="harmVol" min="0" max="5" step="0.05" value="0.35" style="background:rgba(96,165,250,.2)">
         <div class="vd" id="harmVolVal" style="color:#60a5fa">35%</div>
       </div>
       <div class="cg" style="flex:1;min-width:100px">
@@ -661,6 +817,97 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
     </div>
     <div style="font-size:.52rem;color:rgba(96,165,250,.4);margin-top:-4px">
       Warp sphere with K·sin(2π·f(θ)) perturbation from Arnold circle map
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ Smith Chart Transform (Cayley Map) Panel ═════════════════ -->
+<div class="smith-panel panels" style="margin-top:11px" id="smithPanel">
+  <div class="smith-header" id="smithHeader">
+    <div class="smith-header-title">◎ Smith Chart Transform · Cayley Map</div>
+    <span class="smith-chevron" id="smithChevron">▼</span>
+  </div>
+  <div class="smith-body" id="smithBody">
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <input type="checkbox" class="harm-toggle" id="smithEnable">
+      <span class="harm-lbl">Enable Smith Chart Overlay</span>
+      <span class="harm-state" id="smithState">off</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="cg">
+        <label style="color:#88bb88">Global Phase Shift α</label>
+        <input type="range" id="smithAlpha" min="0" max="360" step="1" value="0" style="background:rgba(96,165,250,.2)">
+        <div class="vd" id="smithAlphaVal" style="color:#60a5fa">0°</div>
+      </div>
+      <div class="cg">
+        <label style="color:#88bb88">Overlay Opacity</label>
+        <input type="range" id="smithOpacity" min="0.05" max="1" step="0.05" value="0.4" style="background:rgba(96,165,250,.2)">
+        <div class="vd" id="smithOpacityVal" style="color:#60a5fa">40%</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;margin-bottom:8px">
+      <label style="color:#88bb88;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em">Radius Scaling Mode</label>
+      <select id="smithRadiusMode" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;background:#0a0c0a;border:1px solid rgba(96,165,250,.25);color:#60a5fa;padding:4px 6px;border-radius:4px;width:100%;margin-top:6px">
+        <option value="unit">Unit Radius (R=1)</option>
+        <option value="index" selected>Scaled by Index</option>
+        <option value="modulus">By Modulus Value</option>
+      </select>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.6rem;color:#88cc88;cursor:pointer">
+        <input type="checkbox" id="smithShowGrid" checked style="width:13px;height:13px"> Show Smith Grid
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.6rem;color:#88cc88;cursor:pointer">
+        <input type="checkbox" id="smithShowR" checked style="width:13px;height:13px"> Constant-R Circles
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.6rem;color:#88cc88;cursor:pointer">
+        <input type="checkbox" id="smithShowX" checked style="width:13px;height:13px"> Constant-X Arcs
+      </label>
+    </div>
+
+    <div class="smith-info">
+      <strong>Γ = (z − 1)/(z + 1)</strong> · Cayley/Smith Transform<br>
+      · Maps z = R·e^(iθ) → unit disk<br>
+      · θ = 2π·t/θ_total + α (phase offset)<br>
+      · R=1 → pure imaginary axis · R&gt;1 → Smith arcs<br>
+      · Conformal mapping preserves angles<br><br>
+      <strong>Re(Γ)</strong> = (AC + B²)/(C² + B²) &nbsp; <strong>Im(Γ)</strong> = B(C−A)/(C²+B²)<br>
+      A = R·cos(θ)−1, B = R·sin(θ), C = R·cos(θ)+1
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ Coordinate System Mode Panel ════════════════════════════ -->
+<div class="coord-panel panels" style="margin-top:11px" id="coordPanel">
+  <div class="coord-header" id="coordHeader">
+    <div class="coord-header-title">⌖ Coordinate System Mode</div>
+    <span class="coord-chevron" id="coordChevron">▼</span>
+  </div>
+  <div class="coord-body" id="coordBody">
+
+    <div class="coord-mode-grid" id="coordModeGrid">
+      <button class="coord-mode-btn active" data-mode="polar">⊙ Polar (default)</button>
+      <button class="coord-mode-btn" data-mode="logcylinder">⌇ Log-Cylinder</button>
+      <button class="coord-mode-btn" data-mode="logspiral">🌀 Log Spiral</button>
+      <button class="coord-mode-btn" data-mode="poincare">⬤ Poincaré Disk</button>
+    </div>
+
+    <div style="font-size:.6rem;color:rgba(163,230,53,.5);line-height:1.75;background:rgba(163,230,53,.04);border:1px solid rgba(163,230,53,.1);border-radius:6px;padding:10px 12px">
+      <span id="coordModeDesc">Traditional polar/spherical coordinates — default view mapping f(θ) onto the sphere surface.</span>
+    </div>
+
+    <div style="margin-top:10px">
+      <div class="cg">
+        <label style="color:#88cc88">Mode Blend (0=original · 1=full transform)</label>
+        <input type="range" id="coordBlend" min="0" max="1" step="0.01" value="1" style="background:rgba(163,230,53,.2)">
+        <div style="font-size:.7rem;color:#a3e635;text-align:right" id="coordBlendVal">100%</div>
+      </div>
     </div>
 
   </div>
@@ -1471,11 +1718,14 @@ function loop() {
   if(!paused){
     drawProgress += speed;
     if(drawProgress >= TOTAL_PTS){
-      if(looping){ drawProgress = 0; }
-      else {
+      if(looping){
+        drawProgress = 0;
+        harmSyncStart(); // restart harmonics on loop
+      } else {
         drawProgress = TOTAL_PTS; paused = true;
         const btn = document.getElementById('btnPlay');
         btn.textContent = '▶ Play'; btn.classList.remove('on');
+        harmSyncStop();
       }
     }
   }
@@ -1489,6 +1739,7 @@ function loop() {
 // ═══════════════════════════════════════════════════════════════
 function hardReset() {
   drawProgress=0; lastCartProg=0;
+  harmSyncStop();
   precompute(); makeCartBuf(); updateFormula();
 }
 
@@ -1580,14 +1831,17 @@ bind('sC','dC',v=>C=v);
 bind('sD','dD',v=>D=v);
 bind('sTheta','dTheta',v=>thetaTotal=v*Math.PI,v=>v+'π');
 bind('sTrail','dTrail',v=>trailFade=v,null,true);
-bind('sSpeed','dSpeed',v=>{speed=v;updateSpeedDesc(v);},v=>v.toFixed(2),true);
+bind('sSpeed','dSpeed',v=>{speed=v;updateSpeedDesc(v); if(!paused) harmSyncStart(); },v=>v.toFixed(2),true);
 
 document.getElementById('btnPlay').addEventListener('click',function(){
+  onUserInteraction(); // switches to loop mode after intro
   paused=!paused;
   this.textContent=paused?'▶ Play':'⏸ Pause';
   this.classList.toggle('on',!paused);
+  if(!paused){ harmSyncStart(); }
+  else { harmSyncPause(); }
 });
-document.getElementById('btnReset').addEventListener('click',()=>{ hardReset(); });
+document.getElementById('btnReset').addEventListener('click',()=>{ harmSyncStop(); hardReset(); });
 
 // ═══════════════════════════════════════════════════════════════
 //  4K SPHERE EXPORT
@@ -1677,6 +1931,13 @@ function exportSphere4K() {
 // ═══════════════════════════════════════════════════════════════
 let activePresetBtn = null;
 
+// Preset dropdown toggle
+document.getElementById('presetDropHeader').addEventListener('click',()=>{
+  document.getElementById('presetDropBody').classList.toggle('open');
+  document.getElementById('presetDropChev').classList.toggle('open');
+  document.getElementById('presetDropHeader').classList.toggle('open');
+});
+
 function buildPresets(){
   Object.entries(PRESET_GROUPS).forEach(([gid, list])=>{
     const row = document.getElementById(gid);
@@ -1693,6 +1954,7 @@ function buildPresets(){
 }
 
 function applyPreset(p, btn, isGap){
+  onUserInteraction(); // first preset click switches to loop mode
   A=p.A; B=p.B; C=p.C; D=p.D; thetaTotal=p.theta*Math.PI; trailFade=p.trail||6;
   const sl=(id,v,fmt)=>{ document.getElementById(id).value=v; document.getElementById('d'+id.slice(1)).textContent=fmt?fmt(v):v; };
   sl('sA',A); sl('sB',B); sl('sC',C); sl('sD',D);
@@ -1700,7 +1962,32 @@ function applyPreset(p, btn, isGap){
   sl('sTrail',trailFade);
   if(activePresetBtn) activePresetBtn.classList.remove('active','gap-active');
   if(btn){ btn.classList.add(isGap?'gap-active':'active'); activePresetBtn=btn; }
+
+  // Update active name in dropdown header
+  const nameEl=document.getElementById('presetActiveName');
+  if(nameEl) nameEl.textContent=p.name;
+
+  // Loop ON (user has interacted)
+  looping=true;
+  const cbLoop=document.getElementById('cbLoop');
+  if(cbLoop){ cbLoop.checked=true; }
+  document.getElementById('loopState').textContent='on — loops forever';
+
+  // Fast speed
+  setSpeed(20);
+
+  // Auto-rotate on
+  autoRotate=true;
+  const rotBtn=document.getElementById('btnAutoRot');
+  if(rotBtn){ rotBtn.classList.add('on'); rotBtn.textContent='⟳ Rotating...'; }
+
+  // Reset then play
   hardReset();
+  paused=false;
+  const playBtn=document.getElementById('btnPlay');
+  if(playBtn){ playBtn.textContent='⏸ Pause'; playBtn.classList.add('on'); }
+  // Sync harmonics with wave
+  harmSyncStart();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1974,6 +2261,7 @@ function buildGapChips(){
 
 // Toggle all chips with matching gap value across both containers
 function toggleGapChipAll(g, idx, col){
+  onUserInteraction();
   const isSelected = selectedGaps.has(g);
   if(isSelected){
     selectedGaps.delete(g);
@@ -2519,6 +2807,7 @@ function harmGetCtx(){
 }
 
 function harmStop(){
+  harmSyncStop();
   harmOscillators.forEach(o=>{ try{o.stop();}catch(e){} });
   harmOscillators=[];
   ['harmPlayBtn','harmChordBtn','harmArpBtn'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
@@ -2714,14 +3003,592 @@ document.getElementById('harmArnold').addEventListener('input',function(){
   document.getElementById('harmArnoldVal').textContent=parseFloat(this.value).toFixed(2);
 });
 
+// ═══════════════════════════════════════════════════════════════
+//  HARMONIC SYNC ENGINE
+//  Plays harmonics in sync with the wave animation.
+//  - Schedules an arpeggio sweep that spans the full wave draw duration
+//  - Loops if looping is on, stops cleanly at wave end
+//  - Gap class presence modulates note intensity/timing when gdData exists
+// ═══════════════════════════════════════════════════════════════
+
+let harmSyncNodes = [];      // all running oscillator/gain nodes
+let harmSyncLoopId = null;   // setInterval for scheduling next batch
+let harmSyncPaused = false;
+let harmSyncStartCtxTime = 0;
+let harmSyncStartDrawProg = 0;
+let harmSyncWaveDuration = 0; // seconds the wave takes at current speed
+
+function harmSyncStop(){
+  if(harmSyncLoopId){ clearInterval(harmSyncLoopId); harmSyncLoopId=null; }
+  harmSyncNodes.forEach(n=>{ try{n.stop();}catch(e){} });
+  harmSyncNodes=[];
+  harmSyncPaused=false;
+  ['harmPlayBtn','harmChordBtn','harmArpBtn'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.remove('on');
+  });
+}
+
+function harmSyncPause(){
+  // When paused, stop all audio. Resume via harmSyncStart when unpaused.
+  harmSyncStop();
+}
+
+function harmSyncStart(){
+  harmSyncStop(); // clean slate
+
+  const ctx = harmGetCtx();
+  if(ctx.state==='suspended') ctx.resume();
+
+  const base = harmGetBaseHz();
+  const vol  = harmGetVol();
+  const wave = harmGetWave();
+  const sel  = [...harmSelectedIntervals];
+
+  // Build frequency list: always include base + all selected intervals (no octave doubling yet)
+  const freqs = [base];
+  sel.forEach(idx=>{
+    const iv = HARM_INTERVALS[idx];
+    freqs.push(base * iv.p / iv.q);
+  });
+
+  // Add gap-aware freqs if gap data & selections exist
+  if(gdData && selectedGaps.size > 0){
+    selectedGaps.forEach((col, gv) => {
+      const ratio = Math.max(1, Math.min(8, gv / 2));
+      freqs.push(base * ratio);
+    });
+  }
+
+  // Unique, in-range freqs
+  const allFreqs = [...new Set(freqs.map(f => Math.round(f * 10) / 10))]
+    .filter(f => f >= 40 && f <= 8000);
+  if(!allFreqs.length) allFreqs.push(base);
+
+  // How long the FULL wave takes at current speed (seconds)
+  // drawProgress advances by `speed` pts per frame at ~60fps
+  const estFPS = 60;
+  const remainingPts = TOTAL_PTS - drawProgress; // pts left to draw
+  const waveSec = Math.max(0.5, remainingPts / (speed * estFPS));
+  harmSyncWaveDuration = waveSec;
+
+  // Note spacing: aim for one note every ~0.35s, cycling through allFreqs
+  // This guarantees notes play continuously for the entire wave duration
+  const noteSpacing = 0.35; // seconds between note onsets
+  const noteDur     = 0.55; // each note duration (overlaps slightly for legato feel)
+  const totalNotes  = Math.ceil(waveSec / noteSpacing) + 1;
+
+  const now = ctx.currentTime;
+  harmSyncStartCtxTime = now;
+
+  // Schedule all notes across full wave duration
+  for(let i = 0; i < totalNotes; i++){
+    const t = now + i * noteSpacing;
+    if(t > now + waveSec + noteDur) break; // don't schedule past wave end
+
+    const freq = allFreqs[i % allFreqs.length];
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = wave;
+    osc.frequency.setValueAtTime(freq, t);
+
+    // Progress fraction: notes near end of wave are softer
+    const frac = i / totalNotes;
+    const vPeak = vol * (0.7 + 0.3 * Math.sin(Math.PI * frac)); // bell curve volume
+
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(vPeak, t + noteDur * 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + noteDur);
+
+    osc.start(t);
+    osc.stop(t + noteDur + 0.05);
+    harmSyncNodes.push(osc);
+  }
+
+  // Sustained sub-octave drone for the full wave duration
+  const droneOsc  = ctx.createOscillator();
+  const droneGain = ctx.createGain();
+  droneOsc.connect(droneGain); droneGain.connect(ctx.destination);
+  droneOsc.type = 'sine';
+  droneOsc.frequency.value = allFreqs[0] * 0.5;
+  droneGain.gain.setValueAtTime(0.0001, now);
+  droneGain.gain.linearRampToValueAtTime(vol * 0.07, now + 0.5);
+  droneGain.gain.setValueAtTime(vol * 0.07, now + waveSec - 0.4);
+  droneGain.gain.exponentialRampToValueAtTime(0.0001, now + waveSec + 0.1);
+  droneOsc.start(now);
+  droneOsc.stop(now + waveSec + 0.2);
+  harmSyncNodes.push(droneOsc);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ZOOM & PAN
+// ═══════════════════════════════════════════════════════════════
+let zoomLevel = 1.0;
+let panX = 0, panY = 0;
+let isPan = false, panStartX=0, panStartY=0, panStartPX=0, panStartPY=0;
+
+function setZoom(z){
+  zoomLevel = Math.max(0.15, Math.min(10, z));
+  document.getElementById('zoomLbl').textContent = zoomLevel.toFixed(1)+'×';
+}
+
+document.getElementById('btnZoomIn').addEventListener('click', ()=>{ onUserInteraction(); setZoom(zoomLevel*1.25); });
+document.getElementById('btnZoomOut').addEventListener('click', ()=>{ onUserInteraction(); setZoom(zoomLevel/1.25); });
+document.getElementById('btnZoomReset').addEventListener('click', ()=>{ setZoom(1); panX=0; panY=0; });
+
+// Mouse-wheel zoom on canvas
+pCv.addEventListener('wheel', e=>{
+  e.preventDefault();
+  setZoom(zoomLevel * (e.deltaY < 0 ? 1.12 : 1/1.12));
+}, { passive:false });
+
+// Pinch-to-zoom
+let lastPinchDist = null;
+pCv.addEventListener('touchstart', e=>{
+  if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    lastPinchDist=Math.sqrt(dx*dx+dy*dy);
+  }
+},{passive:true});
+pCv.addEventListener('touchmove', e=>{
+  if(e.touches.length===2 && lastPinchDist!==null){
+    e.preventDefault();
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    setZoom(zoomLevel*(d/lastPinchDist));
+    lastPinchDist=d;
+  }
+},{passive:false});
+pCv.addEventListener('touchend',()=>{ lastPinchDist=null; });
+
+// Shift+drag = pan
+pCv.addEventListener('mousedown', e=>{
+  if(e.shiftKey){
+    isPan=true; pCv.style.cursor='move';
+    panStartX=e.clientX; panStartY=e.clientY;
+    panStartPX=panX; panStartPY=panY;
+    e.stopImmediatePropagation();
+  }
+}, true);
+window.addEventListener('mousemove', e=>{
+  if(isPan){ panX=panStartPX+(e.clientX-panStartX); panY=panStartPY+(e.clientY-panStartY); }
+});
+window.addEventListener('mouseup', ()=>{ isPan=false; pCv.style.cursor=''; });
+
+// Override proj() to incorporate zoom + pan
+function proj(rx, ry, rz){
+  const fov=2.8, scale=fov/(fov-rz);
+  const R=pCv.width*0.37*zoomLevel;
+  return [pCv.width/2 + rx*R*scale + panX, pCv.height/2 - ry*R*scale + panY];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e=>{
+  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  switch(e.code){
+    case 'Space':
+      e.preventDefault();
+      document.getElementById('btnPlay').click();
+      break;
+    case 'KeyR':
+      autoRotate=!autoRotate;
+      document.getElementById('btnAutoRot').classList.toggle('on',autoRotate);
+      document.getElementById('btnAutoRot').textContent=autoRotate?'⟳ Rotating...':'⟳ Auto-Rotate';
+      break;
+    case 'KeyS':
+      exportSphere4K();
+      break;
+    case 'ArrowUp':
+      e.preventDefault(); setZoom(zoomLevel*1.1); break;
+    case 'ArrowDown':
+      e.preventDefault(); setZoom(zoomLevel/1.1); break;
+    case 'ArrowLeft':
+      rotMat=mmul(mrotY(-0.08),rotMat); break;
+    case 'ArrowRight':
+      rotMat=mmul(mrotY(0.08),rotMat); break;
+    case 'Escape':
+      setZoom(1); panX=0; panY=0;
+      rotMat=[1,0,0,0,1,0,0,0,1];
+      break;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  SMITH CHART / CAYLEY MAP OVERLAY
+// ═══════════════════════════════════════════════════════════════
+let smithEnabled = false;
+let smithAlpha   = 0;
+let smithOpacity = 0.4;
+let smithRadiusMode = 'index';
+let smithShowGrid = true, smithShowR = true, smithShowX = true;
+
+document.getElementById('smithHeader').addEventListener('click',()=>{
+  document.getElementById('smithBody').classList.toggle('open');
+  document.getElementById('smithChevron').classList.toggle('open');
+  document.getElementById('smithHeader').classList.toggle('open');
+});
+document.getElementById('smithEnable').addEventListener('change',function(){
+  smithEnabled=this.checked;
+  document.getElementById('smithState').textContent=smithEnabled?'on':'off';
+});
+document.getElementById('smithAlpha').addEventListener('input',function(){
+  smithAlpha=parseFloat(this.value);
+  document.getElementById('smithAlphaVal').textContent=smithAlpha+'°';
+});
+document.getElementById('smithOpacity').addEventListener('input',function(){
+  smithOpacity=parseFloat(this.value);
+  document.getElementById('smithOpacityVal').textContent=Math.round(smithOpacity*100)+'%';
+});
+document.getElementById('smithRadiusMode').addEventListener('change',function(){ smithRadiusMode=this.value; });
+document.getElementById('smithShowGrid').addEventListener('change',function(){ smithShowGrid=this.checked; });
+document.getElementById('smithShowR').addEventListener('change',function(){ smithShowR=this.checked; });
+document.getElementById('smithShowX').addEventListener('change',function(){ smithShowX=this.checked; });
+
+function drawSmithOverlay(){
+  if(!smithEnabled) return;
+  const ctx=pCtx, w=pCv.width, h=pCv.height;
+  const cx=w/2+panX, cy=h/2+panY;
+  const R=Math.min(w,h)*0.37*zoomLevel;
+  ctx.save();
+
+  // Unit-circle boundary
+  ctx.globalAlpha=smithOpacity; ctx.lineWidth=1.5;
+  ctx.strokeStyle='#60a5fa';
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+
+  // Constant-R circles (resistance)
+  if(smithShowR){
+    [0.2,0.5,1,2,5].forEach((rv,i)=>{
+      const rcx=cx+R*rv/(rv+1), rcr=R/(rv+1);
+      ctx.strokeStyle=`hsl(${190+i*22},80%,60%)`;
+      ctx.lineWidth=0.8; ctx.globalAlpha=smithOpacity*0.75;
+      ctx.beginPath(); ctx.arc(rcx,cy,rcr,0,Math.PI*2); ctx.stroke();
+      // label
+      ctx.fillStyle=`hsl(${190+i*22},80%,70%)`;
+      ctx.font=`${Math.max(8,w*0.017)}px JetBrains Mono,monospace`;
+      ctx.textAlign='center'; ctx.globalAlpha=smithOpacity;
+      ctx.fillText('R='+rv, rcx-rcr*0.5, cy-4);
+    });
+  }
+
+  // Constant-X arcs (reactance)
+  if(smithShowX){
+    [0.5,1,2,5].forEach((xv,i)=>{
+      ctx.lineWidth=0.8; ctx.globalAlpha=smithOpacity*0.7;
+      [-1,1].forEach(sign=>{
+        const arcCx=cx+R, arcCy=cy-sign*R/xv, arcR=R/xv;
+        ctx.strokeStyle=`hsl(${280+i*18},80%,65%)`;
+        ctx.beginPath(); ctx.arc(arcCx,arcCy,arcR,0,Math.PI*2); ctx.stroke();
+      });
+    });
+  }
+
+  // Smith grid (radial + concentric rings)
+  if(smithShowGrid){
+    ctx.globalAlpha=smithOpacity*0.3; ctx.lineWidth=0.4;
+    ctx.strokeStyle='rgba(96,165,250,0.5)';
+    for(let i=0;i<12;i++){
+      const a=(i/12)*Math.PI*2;
+      ctx.beginPath(); ctx.moveTo(cx,cy);
+      ctx.lineTo(cx+R*Math.cos(a), cy+R*Math.sin(a)); ctx.stroke();
+    }
+    [0.25,0.5,0.75,1].forEach(ri=>{
+      ctx.beginPath(); ctx.arc(cx,cy,R*ri,0,Math.PI*2); ctx.stroke();
+    });
+  }
+
+  // Plot Cayley-transformed wave curve
+  const end=Math.floor(drawProgress);
+  if(end>2){
+    const aRad=(smithAlpha*Math.PI/180);
+    ctx.lineWidth=Math.max(1,traceThickness*0.9);
+    ctx.shadowColor='#60a5fa'; ctx.shadowBlur=6;
+    ctx.beginPath(); let penDown=false;
+    for(let i=1;i<end;i++){
+      const t=(i/TOTAL_PTS)*thetaTotal;
+      const rv=f(t);
+      // Radius: scale by mode
+      let Rv;
+      if(smithRadiusMode==='unit') Rv=1;
+      else if(smithRadiusMode==='modulus') Rv=Math.max(0.1,rv);
+      else Rv=0.5+0.5*(i/TOTAL_PTS); // index
+      const theta=t+aRad;
+      const re=Rv*Math.cos(theta), im=Rv*Math.sin(theta);
+      // Cayley: Γ = (z-1)/(z+1)
+      const A2=re-1, B2=im, C2=re+1;
+      const denom=C2*C2+B2*B2;
+      if(denom<1e-9){ penDown=false; continue; }
+      const gre=(A2*C2+B2*B2)/denom;
+      const gim=(B2*(C2-A2))/denom;
+      // Map Γ ∈ unit disk → canvas
+      const px=cx+gre*R, py=cy-gim*R;
+      const frac=i/TOTAL_PTS;
+      ctx.strokeStyle=harmColorMode?(harmColorForProgress(frac)||`hsl(${200+frac*100},90%,60%)`): `hsl(${200+frac*80},90%,${55+frac*10}%)`;
+      ctx.globalAlpha=smithOpacity*0.9;
+      if(!penDown){ ctx.beginPath(); ctx.moveTo(px,py); penDown=true; }
+      else{ ctx.lineTo(px,py); ctx.stroke(); ctx.beginPath(); ctx.moveTo(px,py); }
+    }
+    ctx.shadowBlur=0;
+  }
+  ctx.globalAlpha=1;
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COORDINATE SYSTEM MODES
+// ═══════════════════════════════════════════════════════════════
+let coordMode = 'polar';
+let coordBlend = 1.0;
+
+const COORD_DESCS = {
+  polar:       'Traditional polar/spherical — f(θ) mapped onto sphere surface.',
+  logcylinder: 'Log-Cylinder: u = ln(θ+1), v = f(θ). Compresses the θ axis logarithmically, revealing fine structure near origin.',
+  logspiral:   'Logarithmic Spiral: radius grows as e^(f(θ)/A), angle = θ. Creates an outward unwinding helix on the sphere.',
+  poincare:    'Poincaré Disk (hyperbolic): maps sphere points through the unit-disk model. Distances compress toward the boundary.'
+};
+
+document.getElementById('coordHeader').addEventListener('click',()=>{
+  document.getElementById('coordBody').classList.toggle('open');
+  document.getElementById('coordChevron').classList.toggle('open');
+  document.getElementById('coordHeader').classList.toggle('open');
+});
+
+document.getElementById('coordModeGrid').addEventListener('click', e=>{
+  const btn=e.target.closest('.coord-mode-btn');
+  if(!btn) return;
+  onUserInteraction();
+  coordMode=btn.dataset.mode;
+  document.querySelectorAll('.coord-mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('coordModeDesc').textContent=COORD_DESCS[coordMode];
+  precompute();
+});
+
+document.getElementById('coordBlend').addEventListener('input',function(){
+  coordBlend=parseFloat(this.value);
+  document.getElementById('coordBlendVal').textContent=Math.round(coordBlend*100)+'%';
+  precompute();
+});
+
+// Override toSphere to apply coordinate mode transform
+function toSphere(t, r){
+  // Default polar
+  const lon=t;
+  const polar=(t/thetaTotal)*Math.PI;
+  const rn=r/(A+1.2);
+  const px=rn*Math.sin(polar)*Math.cos(lon);
+  const py=rn*Math.cos(polar);
+  const pz=rn*Math.sin(polar)*Math.sin(lon);
+  if(coordMode==='polar' || coordBlend===0) return [px,py,pz];
+
+  let tx=px, ty=py, tz=pz;
+
+  if(coordMode==='logcylinder'){
+    const u=Math.log(t+1)/Math.log(thetaTotal+1); // 0→1
+    const v=r/(A+1.2);
+    const lon2=u*Math.PI*2;
+    tx=v*Math.cos(lon2); ty=(u*2-1); tz=v*Math.sin(lon2);
+  } else if(coordMode==='logspiral'){
+    const spiralR=Math.exp(r/A - 1)*0.6;
+    const polar2=(t/thetaTotal)*Math.PI;
+    const lon2=t*0.5;
+    tx=spiralR*Math.sin(polar2)*Math.cos(lon2);
+    ty=spiralR*Math.cos(polar2);
+    tz=spiralR*Math.sin(polar2)*Math.sin(lon2);
+    // clamp
+    const mag=Math.sqrt(tx*tx+ty*ty+tz*tz)||1;
+    if(mag>1.2){tx/=mag*0.85;ty/=mag*0.85;tz/=mag*0.85;}
+  } else if(coordMode==='poincare'){
+    // Project sphere point through Poincaré disk: disk coords from (px,py,pz)
+    const denom=1-pz*0.8;
+    const dx=(denom>0.01)?px/denom:px;
+    const dy=(denom>0.01)?py/denom:py;
+    const dr=Math.sqrt(dx*dx+dy*dy)||1;
+    const clamp=Math.min(1,dr)/Math.max(dr,0.001);
+    tx=dx*clamp; ty=dy*clamp; tz=pz*0.3;
+  }
+
+  // Blend between polar and transformed
+  return [
+    px*(1-coordBlend)+tx*coordBlend,
+    py*(1-coordBlend)+ty*coordBlend,
+    pz*(1-coordBlend)+tz*coordBlend
+  ];
+}
+
+// Hook Smith overlay into renderSphere — append after each frame
+const _rsOrig = renderSphere;
+renderSphere = function(){
+  _rsOrig();
+  drawSmithOverlay();
+};
+
 buildHarmIntervalGrid();
 
 // ═══════════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════════
+
+// Track whether user has interacted yet (for intro→loop behavior)
+let introPlayed = false;
+let userHasInteracted = false;
+
+// Call this on any meaningful user interaction to switch to loop mode
+function onUserInteraction(){
+  if(userHasInteracted) return;
+  userHasInteracted = true;
+  // Enable loop mode
+  looping = true;
+  const cbLoop = document.getElementById('cbLoop');
+  if(cbLoop){ cbLoop.checked = true; }
+  document.getElementById('loopState').textContent = 'on — loops forever';
+}
+
+// Patch preset buttons, play btn, gap chips, etc. to trigger interaction
+(function patchInteractionListeners(){
+  // We'll intercept at a high level — any click on the page after intro triggers loop
+  document.addEventListener('click', function onFirstClick(e){
+    // Only activate after intro has started, and ignore the very first auto-play clicks
+    if(introPlayed){ onUserInteraction(); }
+  }, true);
+})();
+
 buildPresets();
 hardReset();
 loop();
+
+// ── Select ALL harmonic intervals by default ──────────────────
+function selectAllHarmIntervals(){
+  const grid = document.getElementById('harmIntervalGrid');
+  HARM_INTERVALS.forEach((iv, i) => {
+    harmSelectedIntervals.add(i);
+    const btn = grid.children[i];
+    if(btn){
+      const col = harmConsonanceColor(iv.p, iv.q);
+      btn.classList.add('active');
+      btn.style.background = col;
+      btn.style.color = '#000';
+    }
+  });
+  updateHarmDisplay();
+}
+selectAllHarmIntervals();
+
+// ── Harmonic Color Mode ON by default ────────────────────────
+harmColorMode = true;
+document.getElementById('harmColorMode').checked = true;
+document.getElementById('harmModeState').textContent = 'on — sphere colored by harmonic consonance';
+precompute();
+
+// ── Auto-run zeta decomposition with default N=10M ──────────────
+function autoRunZeta(callback){
+  const maxN = 500000; // lighter default so it loads fast
+  document.getElementById('gdStatus').textContent = 'Auto-computing prime gaps…';
+  document.getElementById('gdRunBtn').disabled = true;
+  document.getElementById('gdProgress').style.display = 'block';
+  document.getElementById('gdProgressFill').style.width = '0%';
+
+  // Open the gap panel so user sees it
+  const body = document.getElementById('gapBody');
+  const chev = document.getElementById('gapChevron');
+  const hdr  = document.getElementById('gapHeader');
+  body.classList.add('open');
+  chev.classList.add('open');
+  hdr.classList.add('open');
+
+  setTimeout(()=>{
+    try {
+      const s = parseFloat(document.getElementById('gdS').value);
+      const progressCb = (cur, max)=>{
+        const pct = Math.min(99,(cur/max*100)).toFixed(0);
+        document.getElementById('gdProgressFill').style.width = pct+'%';
+        document.getElementById('gdStatus').textContent = `Sieving… ${pct}%`;
+      };
+
+      gdData = gdCompute(maxN, s, 'all', progressCb);
+
+      document.getElementById('gdProgressFill').style.width = '100%';
+      setTimeout(()=>document.getElementById('gdProgress').style.display='none', 400);
+      document.getElementById('gdStatus').textContent =
+        `✓ Auto-loaded: ${gdData.primes.length.toLocaleString()} primes · ${gdData.gaps.length} gap families`;
+
+      updateGdStats();
+      ['gdExportPNG','gdExportCSV','gdExportTXT'].forEach(id=>document.getElementById(id).style.display='inline-block');
+      document.getElementById('gdTabs').style.display='flex';
+      document.getElementById('gdStatsGrid').style.display='grid';
+      buildGapChips();
+      gdBuildTable();
+      gdBuildConvTable();
+      document.getElementById('gdTableSection').style.display='block';
+      document.getElementById('gdConvSection').style.display='block';
+      precompute();
+      invalidateCartBuf();
+      gdResizeCanvas();
+      gdDraw();
+
+      // Auto-select gap=2
+      if(gdData.gaps.includes(2)){
+        const idx = gdData.gaps.indexOf(2);
+        const col = gapColor(2, idx);
+        selectedGaps.set(2, col);
+        document.querySelectorAll('.gap-chip[data-gap="2"]').forEach(chip=>{
+          chip.classList.add('selected');
+          chip.style.background = col;
+          chip.style.borderColor = col;
+          chip.style.color = '#000';
+        });
+        invalidateCartBuf();
+      }
+
+    } catch(e){
+      document.getElementById('gdStatus').textContent = 'Auto-compute failed: '+e.message;
+      console.error(e);
+    }
+    document.getElementById('gdRunBtn').disabled = false;
+    if(callback) callback();
+  }, 50);
+}
+
+// ── Welcome / intro sequence ──────────────────────────────────
+// 1. Play the wave once (no loop) as a welcoming animation + sound
+// 2. After wave finishes, mark intro done → next user action enables loop
+function startIntro(){
+  // Ensure NOT looping for intro
+  looping = false;
+  const cbLoop = document.getElementById('cbLoop');
+  if(cbLoop) cbLoop.checked = false;
+  document.getElementById('loopState').textContent = 'off — stops at end';
+
+  // Set a welcoming speed (not too fast, not too slow)
+  setSpeed(12);
+
+  // Auto-rotate for visual drama
+  autoRotate = true;
+  const rotBtn = document.getElementById('btnAutoRot');
+  if(rotBtn){ rotBtn.classList.add('on'); rotBtn.textContent = '⟳ Rotating…'; }
+
+  // Run zeta first, then play
+  autoRunZeta(()=>{
+    introPlayed = true;
+    // Start playback
+    hardReset();
+    paused = false;
+    const playBtn = document.getElementById('btnPlay');
+    if(playBtn){ playBtn.textContent = '⏸ Pause'; playBtn.classList.add('on'); }
+
+    // Play the welcome harmonic sweep (single pass)
+    harmSyncStart();
+  });
+}
+
+// Small delay so DOM is fully ready
+setTimeout(startIntro, 300);
 </script>
 </body>
 </html>
