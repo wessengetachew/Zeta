@@ -7,7 +7,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;700&family=DM+Sans:wght@300;400;500&display=swap');
 
-
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+   Mathematical clarity · Educational depth
+   ═══════════════════════════════════════════ */
 :root {
   /* Core palette */
   --bg:        #0e1119;
@@ -15,13 +18,13 @@
   --surface:   rgba(255,255,255,0.028);
   --surface2:  rgba(255,255,255,0.045);
 
-  /* Blue — primary (like 3b1b's signature blue) */
+  /* Blue — primary */
   --blue:      #5b9cf6;
   --blue-dim:  rgba(91,156,246,0.18);
   --blue-faint:rgba(91,156,246,0.07);
   --border:    rgba(91,156,246,0.18);
 
-  /* Gold — secondary (mathematical notation, Euler's e, etc.) */
+  /* Gold — secondary */
   --gold:      #e8c547;
   --gold-dim:  rgba(232,197,71,0.18);
   --gold-faint:rgba(232,197,71,0.06);
@@ -51,7 +54,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Subtle grid-paper background — the 3b1b chalkboard feel */
+  /* Subtle grid-paper background */
   background-image:
     linear-gradient(rgba(91,156,246,0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(91,156,246,0.025) 1px, transparent 1px);
@@ -1105,18 +1108,32 @@ select {
       </div>
       
       <!-- Manual Rotation Controls -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;margin-bottom:8px;">
-        <div>
-          <label style="font-size:.48rem;color:var(--text-dim);display:block;margin-bottom:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">X°</label>
-          <input type="number" class="rotation-input" id="rotX" value="90" min="-180" max="180" step="1" style="width:100%;padding:6px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.75rem;">
+      <div style="margin-top:12px;margin-bottom:8px;">
+        <!-- X Rotation -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <label style="font-size:.48rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">X°</label>
+            <input type="number" class="rotation-input-small" id="rotX" value="90" min="0" max="360" step="1" style="width:60px;padding:4px 6px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;text-align:center;">
+          </div>
+          <input type="range" class="slider" id="rotXSlider" min="0" max="360" step="1" value="90" style="width:100%;">
         </div>
-        <div>
-          <label style="font-size:.48rem;color:var(--text-dim);display:block;margin-bottom:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">Y°</label>
-          <input type="number" class="rotation-input" id="rotY" value="0" min="-180" max="180" step="1" style="width:100%;padding:6px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.75rem;">
+        
+        <!-- Y Rotation -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <label style="font-size:.48rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">Y°</label>
+            <input type="number" class="rotation-input-small" id="rotY" value="0" min="0" max="360" step="1" style="width:60px;padding:4px 6px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;text-align:center;">
+          </div>
+          <input type="range" class="slider" id="rotYSlider" min="0" max="360" step="1" value="0" style="width:100%;">
         </div>
-        <div>
-          <label style="font-size:.48rem;color:var(--text-dim);display:block;margin-bottom:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">Z°</label>
-          <input type="number" class="rotation-input" id="rotZ" value="0" min="-180" max="180" step="1" style="width:100%;padding:6px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.75rem;">
+        
+        <!-- Z Rotation -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <label style="font-size:.48rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;">Z°</label>
+            <input type="number" class="rotation-input-small" id="rotZ" value="0" min="0" max="360" step="1" style="width:60px;padding:4px 6px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;text-align:center;">
+          </div>
+          <input type="range" class="slider" id="rotZSlider" min="0" max="360" step="1" value="0" style="width:100%;">
         </div>
       </div>
       
@@ -1508,6 +1525,13 @@ let manualRotX = 90;
 let manualRotY = 0;
 let manualRotZ = 0;
 
+// Wrap angle to 0-360 range
+function wrapAngle(angle) {
+  angle = angle % 360;
+  if (angle < 0) angle += 360;
+  return angle;
+}
+
 // Function to build rotation matrix from manual angles
 function updateManualRotation() {
   const rx = manualRotX * Math.PI / 180;
@@ -1536,22 +1560,30 @@ function extractEulerAngles() {
   }
   
   return {
-    x: x * 180 / Math.PI,
-    y: y * 180 / Math.PI,
-    z: z * 180 / Math.PI
+    x: wrapAngle(x * 180 / Math.PI),
+    y: wrapAngle(y * 180 / Math.PI),
+    z: wrapAngle(z * 180 / Math.PI)
   };
 }
 
-// Function to update input fields from rotation matrix
+// Function to update input fields and sliders from rotation matrix
 function updateRotationInputs() {
   const angles = extractEulerAngles();
   manualRotX = angles.x;
   manualRotY = angles.y;
   manualRotZ = angles.z;
   
-  document.getElementById('rotX').value = Math.round(angles.x);
-  document.getElementById('rotY').value = Math.round(angles.y);
-  document.getElementById('rotZ').value = Math.round(angles.z);
+  const roundedX = Math.round(angles.x);
+  const roundedY = Math.round(angles.y);
+  const roundedZ = Math.round(angles.z);
+  
+  document.getElementById('rotX').value = roundedX;
+  document.getElementById('rotY').value = roundedY;
+  document.getElementById('rotZ').value = roundedZ;
+  
+  document.getElementById('rotXSlider').value = roundedX;
+  document.getElementById('rotYSlider').value = roundedY;
+  document.getElementById('rotZSlider').value = roundedZ;
 }
 
 // Initialize rotation matrix with default angles
@@ -2201,31 +2233,78 @@ document.getElementById('btnResetRot').addEventListener('click',()=>{
   document.getElementById('rotX').value = 90;
   document.getElementById('rotY').value = 0;
   document.getElementById('rotZ').value = 0;
+  document.getElementById('rotXSlider').value = 90;
+  document.getElementById('rotYSlider').value = 0;
+  document.getElementById('rotZSlider').value = 0;
   updateManualRotation();
   autoRotate=false;
   const b=document.getElementById('btnAutoRot');
   b.classList.remove('on'); b.textContent='⟳ Auto-Rotate';
 });
 
-// Manual rotation input handlers
+// Manual rotation X - slider
+document.getElementById('rotXSlider').addEventListener('input', function() {
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotX = val;
+  document.getElementById('rotX').value = Math.round(val);
+  updateManualRotation();
+  autoRotate = false;
+  const b = document.getElementById('btnAutoRot');
+  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
+});
+
+// Manual rotation X - input (with wrapping)
 document.getElementById('rotX').addEventListener('input', function() {
-  manualRotX = parseFloat(this.value) || 0;
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotX = val;
+  this.value = Math.round(val);
+  document.getElementById('rotXSlider').value = Math.round(val);
   updateManualRotation();
   autoRotate = false;
   const b = document.getElementById('btnAutoRot');
   b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
+// Manual rotation Y - slider
+document.getElementById('rotYSlider').addEventListener('input', function() {
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotY = val;
+  document.getElementById('rotY').value = Math.round(val);
+  updateManualRotation();
+  autoRotate = false;
+  const b = document.getElementById('btnAutoRot');
+  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
+});
+
+// Manual rotation Y - input (with wrapping)
 document.getElementById('rotY').addEventListener('input', function() {
-  manualRotY = parseFloat(this.value) || 0;
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotY = val;
+  this.value = Math.round(val);
+  document.getElementById('rotYSlider').value = Math.round(val);
   updateManualRotation();
   autoRotate = false;
   const b = document.getElementById('btnAutoRot');
   b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
+// Manual rotation Z - slider
+document.getElementById('rotZSlider').addEventListener('input', function() {
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotZ = val;
+  document.getElementById('rotZ').value = Math.round(val);
+  updateManualRotation();
+  autoRotate = false;
+  const b = document.getElementById('btnAutoRot');
+  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
+});
+
+// Manual rotation Z - input (with wrapping)
 document.getElementById('rotZ').addEventListener('input', function() {
-  manualRotZ = parseFloat(this.value) || 0;
+  const val = wrapAngle(parseFloat(this.value) || 0);
+  manualRotZ = val;
+  this.value = Math.round(val);
+  document.getElementById('rotZSlider').value = Math.round(val);
   updateManualRotation();
   autoRotate = false;
   const b = document.getElementById('btnAutoRot');
@@ -3382,6 +3461,7 @@ function harmConsonanceColor(p, q){
 }
 
 let harmSelectedIntervals = new Set(); // indices into HARM_INTERVALS
+let harmCurrentIntervalIndex = 0; // Current interval being played in sequence
 let harmColorMode = false;
 let harmArnoldK = 0;
 let harmBaseArnold = 0; // store original to reset
@@ -3687,23 +3767,22 @@ function harmSyncTick(){
     let freq, waveType, noteVol, noteDur;
 
     if(!gapOn){
-      // ── MODE A: pure wave ──────────────────────────────────────
+      // ── MODE A: pure wave with isolated harmonic intervals ────────
       // Map f(θ) to pitch: base * 2^(fNorm * octaves)
-      // Gives a melodic contour that literally follows the wave shape
       const octaveRange = 1.5; // ±1.5 octaves around base
       freq = base * Math.pow(2, (fNorm - 0.5) * octaveRange);
 
-      // If intervals are selected, snap to nearest selected interval ratio
+      // If intervals are selected, cycle through them one at a time
       if(sel.length > 0){
-        const selRatios = sel.map(i => HARM_INTERVALS[i].p / HARM_INTERVALS[i].q);
-        const targetRatio = Math.pow(2, (fNorm - 0.5) * octaveRange);
-        // find closest selected ratio
-        let best = selRatios[0], bestDist = Infinity;
-        selRatios.forEach(r => {
-          const dist = Math.abs(Math.log2(r) - Math.log2(targetRatio));
-          if(dist < bestDist){ bestDist = dist; best = r; }
-        });
-        freq = base * best;
+        // Determine which interval to use based on current point
+        // Cycle through selected intervals every N points
+        const cycleLength = Math.floor(TOTAL_PTS / sel.length);
+        const intervalIdx = Math.floor(pi / cycleLength) % sel.length;
+        const currentInterval = HARM_INTERVALS[sel[intervalIdx]];
+        const ratio = currentInterval.p / currentInterval.q;
+        
+        // Use only this one interval for this section of the wave
+        freq = base * ratio;
       }
 
       waveType = harmGetWave();
@@ -4107,22 +4186,28 @@ buildPresets();
 hardReset();
 loop();
 
-// ── Select ALL harmonic intervals by default ──────────────────
-function selectAllHarmIntervals(){
+// ── Select initial harmonic intervals (octave, fifth, fourth, major third) ──
+function selectInitialHarmIntervals(){
   const grid = document.getElementById('harmIntervalGrid');
-  HARM_INTERVALS.forEach((iv, i) => {
-    harmSelectedIntervals.add(i);
-    const btn = grid.children[i];
-    if(btn){
-      const col = harmConsonanceColor(iv.p, iv.q);
-      btn.classList.add('active');
-      btn.style.background = col;
-      btn.style.color = '#000';
+  // Select indices: 0 (2:1 octave), 1 (3:2 fifth), 2 (4:3 fourth), 3 (5:4 major third)
+  const initialIndices = [0, 1, 2, 3];
+  
+  initialIndices.forEach(i => {
+    if(i < HARM_INTERVALS.length){
+      harmSelectedIntervals.add(i);
+      const btn = grid.children[i];
+      if(btn){
+        const iv = HARM_INTERVALS[i];
+        const col = harmConsonanceColor(iv.p, iv.q);
+        btn.classList.add('active');
+        btn.style.background = col;
+        btn.style.color = '#000';
+      }
     }
   });
   updateHarmDisplay();
 }
-selectAllHarmIntervals();
+selectInitialHarmIntervals();
 
 // ── Harmonic Color Mode ON by default ────────────────────────
 harmColorMode = true;
