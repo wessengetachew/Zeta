@@ -159,7 +159,6 @@ body {
 /* Remove old max-width constraints from panels inside sidebars */
 .col-left .panel,
 .col-left .harm-panel,
-.col-left .smith-panel,
 .col-left .coord-panel,
 .col-right .panel,
 .col-right .gap-panel,
@@ -703,30 +702,6 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
 /* canvas pan cursor */
 #polarCanvas.panning { cursor:move !important; }
 
-/* ── Smith / Cayley panel ─────────── */
-.smith-panel {
-  max-width:560px; width:100%; margin-top:0;
-  background:var(--surface); border:1px solid rgba(91,156,246,.16);
-  border-radius:8px; overflow:hidden;
-}
-.smith-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 16px; cursor:pointer; user-select:none;
-  border-bottom:1px solid transparent; transition:border-color .2s;
-}
-.smith-header.open { border-bottom-color:rgba(91,156,246,.16); }
-.smith-header-title { font-size:.54rem; text-transform:uppercase; letter-spacing:.2em; color:var(--blue); font-family:'JetBrains Mono',monospace; }
-.smith-chevron { font-size:.7rem; color:var(--blue); transition:transform .25s; }
-.smith-chevron.open { transform:rotate(180deg); }
-.smith-body { display:none; padding:12px 16px 16px; }
-.smith-body.open { display:block; }
-.smith-info {
-  font-size:.57rem; color:rgba(91,156,246,.55); line-height:1.8;
-  background:rgba(91,156,246,.04); border:1px solid rgba(91,156,246,.1);
-  border-radius:5px; padding:9px 11px; margin-top:9px;
-  font-family:'JetBrains Mono',monospace;
-}
-.smith-info strong { color:var(--blue); }
 
 /* ── Coord Mode panel ─────────────── */
 .coord-panel {
@@ -974,7 +949,7 @@ select {
       <div class="intro-body">
         <p>f(θ) = A + sin(Bθ)·sin(Cθ/D) drawn polar and Cartesian simultaneously. Polar trace wraps onto a 3D sphere; Cartesian runs in the center panel.</p>
         <p>Gap decomposition sieves primes up to N, groups by consecutive gap, shows each family's contribution to ζ(s) — select any gap to highlight it across both views.</p>
-        <p>Harmonics play Farey intervals in sync with the animation, coloring the sphere by consonance. Smith Chart maps the curve through Γ = (z−1)/(z+1) onto the unit disk.</p>
+        <p>Harmonics play Farey intervals in sync with the animation, coloring the sphere by consonance.</p>
       </div>
     </div>
 
@@ -1053,38 +1028,6 @@ select {
       </div>
     </div>
 
-    <!-- Smith Chart -->
-    <div class="sidebar-label">Smith Chart · Cayley Map</div>
-    <div class="side-card" id="smithPanel">
-      <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px">
-        <input type="checkbox" class="harm-toggle" id="smithEnable">
-        <span class="harm-lbl">Enable Overlay</span>
-        <span class="harm-state" id="smithState">off</span>
-      </div>
-      <div class="grid-2">
-        <div class="cg">
-          <label style="color:rgba(150,175,200,.65)">Phase Shift α</label>
-          <input type="range" id="smithAlpha" min="0" max="360" step="1" value="0" style="background:rgba(91,156,246,.18)">
-          <div class="vd" id="smithAlphaVal" style="color:var(--blue)">0°</div>
-        </div>
-        <div class="cg">
-          <label style="color:rgba(150,175,200,.65)">Opacity</label>
-          <input type="range" id="smithOpacity" min="0.05" max="1" step="0.05" value="0.4" style="background:rgba(91,156,246,.18)">
-          <div class="vd" id="smithOpacityVal" style="color:var(--blue)">40%</div>
-        </div>
-      </div>
-      <select id="smithRadiusMode" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;background:#0e1119;border:1px solid rgba(91,156,246,.2);color:var(--blue);padding:3px 5px;border-radius:4px;width:100%;margin:7px 0">
-        <option value="unit">Unit Radius (R=1)</option>
-        <option value="index" selected>Scaled by Index</option>
-        <option value="modulus">By Modulus Value</option>
-      </select>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <label style="display:flex;align-items:center;gap:5px;font-size:.55rem;color:rgba(150,180,150,.7);cursor:pointer"><input type="checkbox" id="smithShowGrid" checked> Grid</label>
-        <label style="display:flex;align-items:center;gap:5px;font-size:.55rem;color:rgba(150,180,150,.7);cursor:pointer"><input type="checkbox" id="smithShowR" checked> R-Circles</label>
-        <label style="display:flex;align-items:center;gap:5px;font-size:.55rem;color:rgba(150,180,150,.7);cursor:pointer"><input type="checkbox" id="smithShowX" checked> X-Arcs</label>
-      </div>
-      <div style="font-size:.52rem;color:rgba(91,156,246,.4);margin-top:7px;line-height:1.6;font-family:'JetBrains Mono',monospace">Γ = (z−1)/(z+1) · conformal map to unit disk</div>
-    </div>
 
   </aside>
 
@@ -3767,26 +3710,37 @@ function harmSyncTick(){
     let freq, waveType, noteVol, noteDur;
 
     if(!gapOn){
-      // ── MODE A: pure wave with isolated harmonic intervals ────────
-      // Map f(θ) to pitch: base * 2^(fNorm * octaves)
-      const octaveRange = 1.5; // ±1.5 octaves around base
-      freq = base * Math.pow(2, (fNorm - 0.5) * octaveRange);
-
-      // If intervals are selected, cycle through them one at a time
+      // ── MODE A: Musical harmonic intervals following wave contour ──
+      // Each selected interval gets its own "zone" in the wave
+      // Within each zone, pitch modulates with f(θ) for expressiveness
+      
       if(sel.length > 0){
-        // Determine which interval to use based on current point
-        // Cycle through selected intervals every N points
-        const cycleLength = Math.floor(TOTAL_PTS / sel.length);
-        const intervalIdx = Math.floor(pi / cycleLength) % sel.length;
-        const currentInterval = HARM_INTERVALS[sel[intervalIdx]];
-        const ratio = currentInterval.p / currentInterval.q;
+        // Determine which interval zone we're in
+        const zoneSize = TOTAL_PTS / sel.length;
+        const zoneIndex = Math.floor(pi / zoneSize) % sel.length;
+        const intervalIdx = sel[zoneIndex];
+        const interval = HARM_INTERVALS[intervalIdx];
         
-        // Use only this one interval for this section of the wave
-        freq = base * ratio;
+        // Base frequency for this interval
+        const intervalFreq = base * (interval.p / interval.q);
+        
+        // Modulate slightly with f(θ) value for musical expression
+        // ±12% range (about ±2 semitones) for subtle pitch bending
+        const bendRange = 0.12;
+        const bend = 1 + (fNorm - 0.5) * bendRange;
+        freq = intervalFreq * bend;
+        
+        // Volume follows wave amplitude for dynamics
+        noteVol = vol * (0.5 + 0.5 * fNorm);
+        
+      } else {
+        // No intervals selected - play base frequency with wide range
+        const octaveRange = 1.5;
+        freq = base * Math.pow(2, (fNorm - 0.5) * octaveRange);
+        noteVol = vol * (0.4 + 0.6 * fNorm);
       }
 
       waveType = harmGetWave();
-      noteVol  = vol * (0.4 + 0.6 * fNorm); // louder at peaks
       noteDur  = NOTE_DUR_BASE;
 
     } else {
@@ -3954,122 +3908,6 @@ document.addEventListener('keydown', e=>{
   }
 });
 
-// ═══════════════════════════════════════════════════════════════
-//  SMITH CHART / CAYLEY MAP OVERLAY
-// ═══════════════════════════════════════════════════════════════
-let smithEnabled = false;
-let smithAlpha   = 0;
-let smithOpacity = 0.4;
-let smithRadiusMode = 'index';
-let smithShowGrid = true, smithShowR = true, smithShowX = true;
-
-// Smith Chart panel — always open in dashboard layout
-document.getElementById('smithEnable').addEventListener('change',function(){
-  smithEnabled=this.checked;
-  document.getElementById('smithState').textContent=smithEnabled?'on':'off';
-});
-document.getElementById('smithAlpha').addEventListener('input',function(){
-  smithAlpha=parseFloat(this.value);
-  document.getElementById('smithAlphaVal').textContent=smithAlpha+'°';
-});
-document.getElementById('smithOpacity').addEventListener('input',function(){
-  smithOpacity=parseFloat(this.value);
-  document.getElementById('smithOpacityVal').textContent=Math.round(smithOpacity*100)+'%';
-});
-document.getElementById('smithRadiusMode').addEventListener('change',function(){ smithRadiusMode=this.value; });
-document.getElementById('smithShowGrid').addEventListener('change',function(){ smithShowGrid=this.checked; });
-document.getElementById('smithShowR').addEventListener('change',function(){ smithShowR=this.checked; });
-document.getElementById('smithShowX').addEventListener('change',function(){ smithShowX=this.checked; });
-
-function drawSmithOverlay(){
-  if(!smithEnabled) return;
-  const ctx=pCtx, w=pCv.width, h=pCv.height;
-  const cx=w/2+panX, cy=h/2+panY;
-  const R=Math.min(w,h)*0.37*zoomLevel;
-  ctx.save();
-
-  // Unit-circle boundary
-  ctx.globalAlpha=smithOpacity; ctx.lineWidth=1.5;
-  ctx.strokeStyle='#60a5fa';
-  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
-
-  // Constant-R circles (resistance)
-  if(smithShowR){
-    [0.2,0.5,1,2,5].forEach((rv,i)=>{
-      const rcx=cx+R*rv/(rv+1), rcr=R/(rv+1);
-      ctx.strokeStyle=`hsl(${190+i*22},80%,60%)`;
-      ctx.lineWidth=0.8; ctx.globalAlpha=smithOpacity*0.75;
-      ctx.beginPath(); ctx.arc(rcx,cy,rcr,0,Math.PI*2); ctx.stroke();
-      // label
-      ctx.fillStyle=`hsl(${190+i*22},80%,70%)`;
-      ctx.font=`${Math.max(8,w*0.017)}px JetBrains Mono,monospace`;
-      ctx.textAlign='center'; ctx.globalAlpha=smithOpacity;
-      ctx.fillText('R='+rv, rcx-rcr*0.5, cy-4);
-    });
-  }
-
-  // Constant-X arcs (reactance)
-  if(smithShowX){
-    [0.5,1,2,5].forEach((xv,i)=>{
-      ctx.lineWidth=0.8; ctx.globalAlpha=smithOpacity*0.7;
-      [-1,1].forEach(sign=>{
-        const arcCx=cx+R, arcCy=cy-sign*R/xv, arcR=R/xv;
-        ctx.strokeStyle=`hsl(${280+i*18},80%,65%)`;
-        ctx.beginPath(); ctx.arc(arcCx,arcCy,arcR,0,Math.PI*2); ctx.stroke();
-      });
-    });
-  }
-
-  // Smith grid (radial + concentric rings)
-  if(smithShowGrid){
-    ctx.globalAlpha=smithOpacity*0.3; ctx.lineWidth=0.4;
-    ctx.strokeStyle='rgba(96,165,250,0.5)';
-    for(let i=0;i<12;i++){
-      const a=(i/12)*Math.PI*2;
-      ctx.beginPath(); ctx.moveTo(cx,cy);
-      ctx.lineTo(cx+R*Math.cos(a), cy+R*Math.sin(a)); ctx.stroke();
-    }
-    [0.25,0.5,0.75,1].forEach(ri=>{
-      ctx.beginPath(); ctx.arc(cx,cy,R*ri,0,Math.PI*2); ctx.stroke();
-    });
-  }
-
-  // Plot Cayley-transformed wave curve
-  const end=Math.floor(drawProgress);
-  if(end>2){
-    const aRad=(smithAlpha*Math.PI/180);
-    ctx.lineWidth=Math.max(1,traceThickness*0.9);
-    ctx.shadowColor='#60a5fa'; ctx.shadowBlur=6;
-    ctx.beginPath(); let penDown=false;
-    for(let i=1;i<end;i++){
-      const t=(i/TOTAL_PTS)*thetaTotal;
-      const rv=f(t);
-      // Radius: scale by mode
-      let Rv;
-      if(smithRadiusMode==='unit') Rv=1;
-      else if(smithRadiusMode==='modulus') Rv=Math.max(0.1,rv);
-      else Rv=0.5+0.5*(i/TOTAL_PTS); // index
-      const theta=t+aRad;
-      const re=Rv*Math.cos(theta), im=Rv*Math.sin(theta);
-      // Cayley: Γ = (z-1)/(z+1)
-      const A2=re-1, B2=im, C2=re+1;
-      const denom=C2*C2+B2*B2;
-      if(denom<1e-9){ penDown=false; continue; }
-      const gre=(A2*C2+B2*B2)/denom;
-      const gim=(B2*(C2-A2))/denom;
-      // Map Γ ∈ unit disk → canvas
-      const px=cx+gre*R, py=cy-gim*R;
-      const frac=i/TOTAL_PTS;
-      ctx.strokeStyle=harmColorMode?(harmColorForProgress(frac)||`hsl(${200+frac*100},90%,60%)`): `hsl(${200+frac*80},90%,${55+frac*10}%)`;
-      ctx.globalAlpha=smithOpacity*0.9;
-      if(!penDown){ ctx.beginPath(); ctx.moveTo(px,py); penDown=true; }
-      else{ ctx.lineTo(px,py); ctx.stroke(); ctx.beginPath(); ctx.moveTo(px,py); }
-    }
-    ctx.shadowBlur=0;
-  }
-  ctx.globalAlpha=1;
-  ctx.restore();
-}
 
 // ═══════════════════════════════════════════════════════════════
 //  COORDINATE SYSTEM MODES
@@ -4148,13 +3986,6 @@ function toSphere(t, r){
     pz*(1-coordBlend)+tz*coordBlend
   ];
 }
-
-// Hook Smith overlay into renderSphere — append after each frame
-const _rsOrig = renderSphere;
-renderSphere = function(){
-  _rsOrig();
-  drawSmithOverlay();
-};
 
 buildHarmIntervalGrid();
 
