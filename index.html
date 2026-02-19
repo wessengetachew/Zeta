@@ -1506,6 +1506,7 @@ let fMin=Infinity, fMax=-Infinity, fSum=0;
 // 3D rotation
 let rotMat = [1,0,0, 0,1,0, 0,0,1];
 let autoRotate = false;
+let seqRotateOnComplete = false; // true when preset triggers auto-rotate on finish
 let isDrag=false, lastMX=0, lastMY=0;
 
 // Manual rotation angles (in degrees)
@@ -1747,7 +1748,7 @@ function makeCartBuf() {
 }
 
 // Whether to show negative extent (toggled by #cbNegA)
-let cartNegA = false;
+let cartNegA = true;
 
 function getCartYRange() {
   const yMax = Math.ceil(A + 1.2);
@@ -2200,15 +2201,28 @@ function startSeqRotate() {
   seqRotate = true;
   seqAxis   = 0;
   seqAngle  = 0;
-  autoRotate = false;        // don't double-rotate
-  const btn = document.getElementById('btnAutoRot');
-  if (btn) { btn.classList.add('on'); btn.textContent = '⟳ Rotating…'; }
+  // seqRotate and autoRotate are independent — seqRotate pauses when autoRotate is on
+  // Show active state on Complete button
+  const cBtn = document.getElementById('btnSkipComplete');
+  if (cBtn) cBtn.classList.add('on');
+  // Sync autoRotate button label if it's on
+  const rBtn = document.getElementById('btnAutoRot');
+  if (rBtn) {
+    rBtn.classList.toggle('on', autoRotate);
+    rBtn.textContent = autoRotate ? '⟳ Rotating...' : '⟳ Rotate';
+  }
 }
 
 function stopSeqRotate() {
   seqRotate = false;
-  const btn = document.getElementById('btnAutoRot');
-  if (btn) { btn.classList.remove('on'); btn.textContent = '⟳ Auto-Rotate'; }
+  const cBtn = document.getElementById('btnSkipComplete');
+  if (cBtn) cBtn.classList.remove('on');
+  // Restore Auto-Rotate button to reflect actual autoRotate state
+  const rBtn = document.getElementById('btnAutoRot');
+  if (rBtn) {
+    rBtn.classList.toggle('on', autoRotate);
+    rBtn.textContent = autoRotate ? '⟳ Rotating...' : '⟳ Rotate';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2246,8 +2260,8 @@ function loop() {
         const btn = document.getElementById('btnPlay');
         btn.textContent = '▶ Play'; btn.classList.remove('on');
         harmSyncStop();
-        // Sequential rotation only fires when user explicitly clicks Complete
-        // (not on natural wave end)
+        // Start sequential X→Y→Z rotation after preset finishes drawing
+        if (seqRotateOnComplete) { startSeqRotate(); }
       }
     }
     harmSyncTick();
@@ -2262,24 +2276,30 @@ function loop() {
 // ═══════════════════════════════════════════════════════════════
 function hardReset() {
   drawProgress=0; lastCartProg=0;
+  seqRotateOnComplete=false;
   harmSyncStop();
   seqRotate = false; seqAxis = 0; seqAngle = 0;
+  // Clear Complete button active state
+  const cBtn=document.getElementById('btnSkipComplete');
+  if(cBtn) cBtn.classList.remove('on');
+  // Preserve autoRotate — it's a persistent toggle
   precompute(); makeCartBuf(); updateFormula();
 }
 
 // ═══════════════════════════════════════════════════════════════
 //  DRAG ROTATION
 // ═══════════════════════════════════════════════════════════════
+let _autoRotateBeforeDrag = false;
+let _seqRotateBeforeDrag  = false;
 function onDragStart(ex,ey){ 
   isDrag=true; 
   lastMX=ex; 
   lastMY=ey; 
-  // Disable auto-rotate when dragging
+  // Pause rotation during drag — resume on drag end
+  _autoRotateBeforeDrag = autoRotate;
+  _seqRotateBeforeDrag  = seqRotate;
   autoRotate = false;
-  seqRotate = false; seqAxis = 0; seqAngle = 0;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); 
-  b.textContent = '⟳ Auto-Rotate';
+  seqRotate  = false;
 }
 function onDragMove(ex,ey){
   if(!isDrag) return;
@@ -2288,12 +2308,13 @@ function onDragMove(ex,ey){
   const s=0.012;
   rotMat=mmul(mrotY(dx*s), rotMat);
   rotMat=mmul(mrotX(dy*s), rotMat);
-  // Update input fields to reflect the new rotation
   updateRotationInputs();
 }
 function onDragEnd(){ 
   isDrag=false; 
-  // Final update of input fields
+  // Restore rotation state after drag
+  autoRotate = _autoRotateBeforeDrag;
+  seqRotate  = _seqRotateBeforeDrag;
   updateRotationInputs();
 }
 
@@ -2308,9 +2329,11 @@ pCv.addEventListener('touchend',   onDragEnd);
 //  ROTATION BUTTONS
 // ═══════════════════════════════════════════════════════════════
 document.getElementById('btnAutoRot').addEventListener('click',function(){
+  // If seqRotate is running, stop it — user is taking control
+  if (seqRotate) stopSeqRotate();
   autoRotate=!autoRotate;
   this.classList.toggle('on',autoRotate);
-  this.textContent=autoRotate?'⟳ Rotating...':'⟳ Auto-Rotate';
+  this.textContent=autoRotate?'⟳ Rotating...':'⟳ Rotate';
 });
 document.getElementById('btnResetRot').addEventListener('click',()=>{
   manualRotX = 90;
@@ -2323,9 +2346,11 @@ document.getElementById('btnResetRot').addEventListener('click',()=>{
   document.getElementById('rotYSlider').value = 0;
   document.getElementById('rotZSlider').value = 0;
   updateManualRotation();
-  autoRotate=false;
-  const b=document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent='⟳ Auto-Rotate';
+  autoRotate=false; seqRotate=false; seqAxis=0; seqAngle=0;
+  const rBtn=document.getElementById('btnAutoRot');
+  rBtn.classList.remove('on'); rBtn.textContent='⟳ Rotate';
+  const cBtn=document.getElementById('btnSkipComplete');
+  cBtn.classList.remove('on');
 });
 
 // Manual rotation X - slider
@@ -2334,9 +2359,6 @@ document.getElementById('rotXSlider').addEventListener('input', function() {
   manualRotX = val;
   document.getElementById('rotX').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // Manual rotation X - input (with wrapping)
@@ -2346,9 +2368,6 @@ document.getElementById('rotX').addEventListener('input', function() {
   this.value = Math.round(val);
   document.getElementById('rotXSlider').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // Manual rotation Y - slider
@@ -2357,9 +2376,6 @@ document.getElementById('rotYSlider').addEventListener('input', function() {
   manualRotY = val;
   document.getElementById('rotY').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // Manual rotation Y - input (with wrapping)
@@ -2369,9 +2385,6 @@ document.getElementById('rotY').addEventListener('input', function() {
   this.value = Math.round(val);
   document.getElementById('rotYSlider').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // Manual rotation Z - slider
@@ -2380,9 +2393,6 @@ document.getElementById('rotZSlider').addEventListener('input', function() {
   manualRotZ = val;
   document.getElementById('rotZ').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // Manual rotation Z - input (with wrapping)
@@ -2392,9 +2402,6 @@ document.getElementById('rotZ').addEventListener('input', function() {
   this.value = Math.round(val);
   document.getElementById('rotZSlider').value = Math.round(val);
   updateManualRotation();
-  autoRotate = false;
-  const b = document.getElementById('btnAutoRot');
-  b.classList.remove('on'); b.textContent = '⟳ Auto-Rotate';
 });
 
 // ═══════════════════════════════════════════════════════════════
@@ -2432,7 +2439,8 @@ document.getElementById('cbLoop').addEventListener('change', function(){
   document.getElementById('loopState').textContent = looping ? 'on — loops forever' : 'off — stops at end';
 });
 
-// Negative-A extension toggle
+// Negative-A extension toggle — default ON
+document.getElementById('cbNegA').checked = true;
 document.getElementById('cbNegA').addEventListener('change', function(){
   cartNegA = this.checked;
   invalidateCartBuf();
@@ -3152,10 +3160,8 @@ function applyPreset(p, btn, isGap){
   // Fast speed
   setSpeed(20);
 
-  // Auto-rotate OFF (as requested)
-  autoRotate=false;
-  const rotBtn=document.getElementById('btnAutoRot');
-  if(rotBtn){ rotBtn.classList.remove('on'); rotBtn.textContent='⟳ Auto-Rotate'; }
+  // Auto-rotate: preserve user's current toggle state; seqRotate fires when wave ends
+  seqRotateOnComplete = true;
 
   // Reset then play
   hardReset();
@@ -4789,7 +4795,7 @@ document.addEventListener('keydown', e=>{
     case 'KeyR':
       autoRotate=!autoRotate;
       document.getElementById('btnAutoRot').classList.toggle('on',autoRotate);
-      document.getElementById('btnAutoRot').textContent=autoRotate?'⟳ Rotating...':'⟳ Auto-Rotate';
+      document.getElementById('btnAutoRot').textContent=autoRotate?'⟳ Rotating...':'⟳ Rotate';
       break;
     case 'KeyS':
       exportSphere4K();
@@ -5125,10 +5131,10 @@ function startIntro(){
   // Set a welcoming speed (not too fast, not too slow)
   setSpeed(12);
 
-  // Auto-rotate OFF by default
+  // Auto-rotate OFF by default on first load
   autoRotate = false;
   const rotBtn = document.getElementById('btnAutoRot');
-  if(rotBtn){ rotBtn.classList.remove('on'); rotBtn.textContent = '⟳ Auto-Rotate'; }
+  if(rotBtn){ rotBtn.classList.remove('on'); rotBtn.textContent = '⟳ Rotate'; }
 
   // Start playback immediately — gap decomposition runs only when user clicks Compute
   introPlayed = true;
