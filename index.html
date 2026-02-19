@@ -1614,8 +1614,8 @@ select {
           <div style="display:flex;gap:6px;align-items:center;margin-right:8px">
             <button class="ctrl" id="zetaRunBtn" onclick="zetaRun();event.stopPropagation()"
               style="font-size:.5rem;padding:3px 10px;background:rgba(180,100,255,.12);border-color:rgba(180,100,255,.3);color:rgba(200,140,255,.85)">Compute</button>
-            <button class="ctrl" id="zetaScreenshotBtn" onclick="screenshotCanvas(zetaCv,'zeta_spiral');event.stopPropagation()"
-              style="display:none;font-size:.48rem;padding:2px 7px;background:rgba(180,100,255,.08);border-color:rgba(180,100,255,.2);color:rgba(200,140,255,.6)"> PNG</button>
+            <button class="ctrl" id="zetaScreenshotBtn" onclick="zetaExport4K();event.stopPropagation()"
+              style="display:none;font-size:.48rem;padding:2px 7px;background:rgba(180,100,255,.08);border-color:rgba(180,100,255,.2);color:rgba(200,140,255,.6)">4K PNG</button>
           </div>
           <span class="accordion-chevron" id="zetaAccChev" style="color:rgba(180,100,255,.5)">▼</span>
         </div>
@@ -3550,7 +3550,7 @@ let gdData = null;
 let gdTab = 'contrib';
 let gdFilter = 'all';
 const gdCanvas = document.getElementById('gapCanvas');
-const gdCtx = gdCanvas.getContext('2d');
+let gdCtx = gdCanvas.getContext('2d');
 let gdActiveWaveBtn = null;
 
 function gdResizeCanvas(){
@@ -4269,231 +4269,295 @@ function gdDrawConv(w, h){
 }
 
 function gdDrawRatio(w, h){
-  const {c2, c4, c6, c12, primes, s, maxN} = gdData;
-  // Also get c10, c12 from gapProducts
-  const c10 = gdData.gapProducts[10]?.count || 0;
-  const c12_v = gdData.gapProducts[12]?.count || 0;
+  // Use gapProducts as the single source of truth for all gap counts.
+  // c2/c4/c6 on gdData are only set when gap 2/4/6 are in the current filter;
+  // falling back to gapProducts covers all filter modes safely.
+  const { primes, s, maxN, gapProducts: gp } = gdData;
+  const c2   = gp[2]?.count  || gdData.c2  || 0;
+  const c4   = gp[4]?.count  || gdData.c4  || 0;
+  const c6   = gp[6]?.count  || gdData.c6  || 0;
+  const c10  = gp[10]?.count || 0;
+  const c12_v = gp[12]?.count || 0;
   const ctx = gdCtx;
   const FONT = `JetBrains Mono,monospace`;
 
-  // ── Title + subtitle ──
-  ctx.fillStyle = '#ffd700';
-  ctx.font = `bold ${Math.max(10,w*.022)}px ${FONT}`;
-  ctx.textAlign = 'left';
-  ctx.fillText('Gap Ratio Analysis: Twin Prime Conjecture Evidence', 14, 20);
+  // ── Info box header (no duplicate title — it's in the HTML panel header above) ──
+  const titleSz = Math.max(11, Math.round(w * 0.019));
 
-  // Info box
-  const infoH = 48;
+  // Info box — starts near top of canvas
+  const infoFontSz = Math.max(8, Math.round(w * 0.012));
+  const infoLineH  = infoFontSz * 1.45;
+  const infoLines  = 2; // two lines of description
+  const infoH      = infoLines * infoLineH + 10;
+  const infoY      = 4;
   ctx.fillStyle = 'rgba(232,197,71,.06)';
   ctx.strokeStyle = 'rgba(232,197,71,.2)';
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.roundRect(14, 28, w-28, infoH, 4); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = 'rgba(200,210,180,.65)';
-  ctx.font = `${Math.max(7,w*.014)}px ${FONT}`;
+  ctx.beginPath(); ctx.roundRect(12, infoY, w - 24, infoH, 4); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(200,210,180,.72)';
+  ctx.font = `${infoFontSz}px ${FONT}`;
   ctx.textAlign = 'left';
-  const infoText = `Tracks Count(g=2)/Count(g=4) and other gap ratios. Hardy-Littlewood predicts twin primes (gap 2) and cousin primes (gap 4) have identical singular series constants, so their ratio should approach 1.0 as N→∞. Gap 6 (sexy primes) has a 2× larger constant due to the p=3 factor — so it is asymptotically twice as frequent as gap 2 or gap 4, not equal.`;
-  wrapText(ctx, infoText, 20, 46, w-40, 11);
+  ctx.textBaseline = 'top';
+  const infoText = `H-L predicts twin primes (gap 2) ≡ cousin primes (gap 4) — ratio → 1.0 as N→∞.  Gap 6 (sexy primes) has S(6)=2·S(2) so it is asymptotically twice as frequent.`;
+  wrapText(ctx, infoText, 18, infoY + 5, w - 36, infoLineH);
 
-  // Three sub-panels
-  const PANEL_Y = 86;
-  const PANEL_H = h - PANEL_Y - 12;
-  const pW1 = Math.floor(w * 0.28);
-  const pW2 = Math.floor(w * 0.40);
-  const pW3 = w - pW1 - pW2 - 20;
-  const p1x = 0, p2x = pW1 + 8, p3x = pW1 + pW2 + 16;
+  // Three sub-panels — start below header
+  const PANEL_Y = infoY + infoH + 8;
+  const PANEL_H = h - PANEL_Y - 16;
+  const pW1 = Math.floor(w * 0.27);
+  const pW2 = Math.floor(w * 0.39);
+  const pW3 = w - pW1 - pW2 - 24;
+  const p1x = 0, p2x = pW1 + 10, p3x = pW1 + pW2 + 20;
 
   // ─── Panel 1: Gap Count Ratios ───
   {
-    const px = p1x+8, py = PANEL_Y, pw = pW1-16, ph = PANEL_H - 30;
-    ctx.fillStyle = 'rgba(232,197,71,.5)';
-    ctx.font = `${Math.max(7,w*.013)}px ${FONT}`;
+    const px = p1x + 10, py = PANEL_Y, pw = pW1 - 20, ph = PANEL_H;
+    const lblSz   = Math.max(7, Math.round(w * 0.013));
+    const valSz   = Math.max(8, Math.round(w * 0.014));
+    const tickSz  = Math.max(6, Math.round(w * 0.010));
+    const xLblH   = tickSz * 2.6;  // height reserved below chart for 2-line x-labels
+    const topPad  = lblSz + 10;    // header
+    const chartTop = py + topPad;
+    const chartH   = ph - topPad - xLblH - 4;
+
+    // Panel header
+    ctx.fillStyle = 'rgba(232,197,71,.6)';
+    ctx.font = `bold ${lblSz}px ${FONT}`;
     ctx.textAlign = 'center';
-    ctx.fillText('Gap Count Ratios', px + pw/2, py + 12);
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Gap Count Ratios', px + pw/2, py + lblSz);
 
     const ratios = [
-      { lbl:'Gap 2/\nGap 4', val: c4>0 ? c2/c4 : null, tgt:1.0, col:'#22cc44' },
-      { lbl:'Gap 2/\nGap 6',  val: c6>0 ? c2/c6 : null, tgt:0.5, col:'#5b9cf6' },
-      { lbl:'Gap 4/\nGap 6', val: c6>0 ? c4/c6 : null, tgt:0.5, col:'#cc88ff' },
+      { lbl:['Gap 2','Gap 4'], val: c4>0 ? c2/c4 : null, tgt:1.0, col:'#22cc44' },
+      { lbl:['Gap 2','Gap 6'], val: c6>0 ? c2/c6 : null, tgt:0.5, col:'#5b9cf6' },
+      { lbl:['Gap 4','Gap 6'], val: c6>0 ? c4/c6 : null, tgt:0.5, col:'#cc88ff' },
     ];
-    const bw = Math.floor(pw / ratios.length) - 8;
-    const chartTop = py + 20, chartH = ph - 36;
+    const bw = Math.floor(pw / ratios.length) - 6;
     const maxR = 1.5;
-    const toY = v => chartTop + chartH - Math.min(v/maxR, 1)*chartH;
+    const toY = v => chartTop + chartH - Math.min(Math.max(v,0)/maxR, 1) * chartH;
 
-    // Y gridlines
-    [0,0.5,1.0,1.5].forEach(v => {
+    // Y gridlines + labels
+    [0, 0.5, 1.0, 1.5].forEach(v => {
       const gy = toY(v);
-      ctx.strokeStyle = v===1.0 ? 'rgba(255,255,255,.15)' : 'rgba(255,255,255,.06)';
+      ctx.strokeStyle = v === 1.0 ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.07)';
       ctx.lineWidth = 0.5;
-      ctx.beginPath(); ctx.moveTo(px, gy); ctx.lineTo(px+pw, gy); ctx.stroke();
-      ctx.fillStyle = 'rgba(150,180,150,.6)';
-      ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
+      ctx.beginPath(); ctx.moveTo(px, gy); ctx.lineTo(px + pw, gy); ctx.stroke();
+      ctx.fillStyle = 'rgba(160,190,160,.65)';
+      ctx.font = `${tickSz}px ${FONT}`;
       ctx.textAlign = 'right';
-      ctx.fillText(v.toFixed(1), px-3, gy+3);
+      ctx.fillText(v.toFixed(1), px - 3, gy + tickSz * 0.35);
     });
 
-    // Ratio=1 dashed line
+    // Ratio = 1.0 dashed
     const y1 = toY(1.0);
-    ctx.strokeStyle = 'rgba(255,255,150,.3)';
-    ctx.lineWidth = 1; ctx.setLineDash([4,3]);
-    ctx.beginPath(); ctx.moveTo(px, y1); ctx.lineTo(px+pw, y1); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,150,.28)';
+    ctx.lineWidth = 1; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(px, y1); ctx.lineTo(px + pw, y1); ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(255,255,150,.5)';
-    ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
-    ctx.textAlign = 'left';
-    ctx.fillText('Ratio = 1.0', px+2, y1-4);
 
-    ratios.forEach(({lbl, val, tgt, col}, i) => {
-      const bx = px + i*(bw+8);
-      if(val === null){ return; }
+    ratios.forEach(({ lbl, val, tgt, col }, i) => {
+      if (val === null) return;
+      const bx = px + i * (bw + 6);
       const by = toY(val);
       const bh = chartTop + chartH - by;
+
+      // Bar body
       ctx.fillStyle = col + '44';
-      ctx.fillRect(bx, by, bw, bh);
+      ctx.fillRect(bx, by, bw, Math.max(bh, 1));
       ctx.strokeStyle = col; ctx.lineWidth = 1.5;
-      ctx.strokeRect(bx, by, bw, bh);
-      // Value label
+      ctx.strokeRect(bx, by, bw, Math.max(bh, 1));
+
+      // Value label — above bar if there's room, inside if not
       ctx.fillStyle = col;
-      ctx.font = `bold ${Math.max(7,w*.015)}px ${FONT}`;
+      ctx.font = `bold ${valSz}px ${FONT}`;
       ctx.textAlign = 'center';
-      ctx.fillText(val.toFixed(4), bx+bw/2, by-5);
-      // Target dashed
+      const labelY = by > chartTop + valSz + 4 ? by - 4 : by + valSz + 4;
+      ctx.fillText(val.toFixed(4), bx + bw/2, labelY);
+
+      // Target dashed line
       const ty = toY(tgt);
-      ctx.strokeStyle = col+'88'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
-      ctx.beginPath(); ctx.moveTo(bx-3,ty); ctx.lineTo(bx+bw+3,ty); ctx.stroke();
+      ctx.strokeStyle = col + '88'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(bx - 2, ty); ctx.lineTo(bx + bw + 2, ty); ctx.stroke();
       ctx.setLineDash([]);
-      // Label below
-      ctx.fillStyle = 'rgba(180,200,180,.7)';
-      ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
-      lbl.split('\n').forEach((l,li) => ctx.fillText(l, bx+bw/2, chartTop+chartH+12+li*11));
+
+      // X labels — 2 lines, below chart area
+      ctx.fillStyle = 'rgba(180,200,180,.75)';
+      ctx.font = `${tickSz}px ${FONT}`;
+      const lblBaseY = chartTop + chartH + tickSz + 2;
+      lbl.forEach((l, li) => ctx.fillText(l, bx + bw/2, lblBaseY + li * (tickSz + 2)));
     });
   }
 
-  // ─── Panel 2: Gap Ratio Convergence ───
+  // ─── Panel 2: Gap % of Total (bar chart) ───
   {
-    const px = p2x+4, py = PANEL_Y, pw = pW2-8, ph = PANEL_H - 30;
-    ctx.fillStyle = '#ffd700';
-    ctx.font = `bold ${Math.max(8,w*.017)}px ${FONT}`;
-    ctx.textAlign = 'center';
-    ctx.fillText('Gap Ratio Convergence: Twin Prime Conjecture Evidence', px+pw/2, py+12);
+    const px = p2x + 6, py = PANEL_Y, pw = pW2 - 12, ph = PANEL_H;
+    const lblSz   = Math.max(7, Math.round(w * 0.013));
+    const valSz   = Math.max(8, Math.round(w * 0.014));
+    const cntSz   = Math.max(6, Math.round(w * 0.011));
+    const xLblH   = cntSz + 4;
+    const topPad  = lblSz + 10;
+    const chartTop = py + topPad;
+    const chartH   = ph - topPad - xLblH - 4;
 
-    // Bar chart: % of total for key gaps
+    // Panel header
+    ctx.fillStyle = '#ffd700';
+    ctx.font = `bold ${lblSz}px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Gap Ratio Convergence: Twin Prime Conjecture Evidence', px + pw/2, py + lblSz);
+
     const total = primes.length || 1;
     const pcts = [
-      { g:2,  cnt:c2,    col:'#ff6688', lbl:'Gap 2' },
-      { g:4,  cnt:c4,    col:'#5b9cf6', lbl:'Gap 4' },
-      { g:6,  cnt:c6,    col:'#22cc44', lbl:'Gap 6' },
-      { g:10, cnt:c10,   col:'#cc88ff', lbl:'Gap 10' },
-      { g:12, cnt:c12_v, col:'#ffaa44', lbl:'Gap 12' },
-    ].map(d => ({...d, pct: d.cnt/total*100}));
+      { cnt: c2,    col: '#ff6688', lbl: 'Gap 2'  },
+      { cnt: c4,    col: '#5b9cf6', lbl: 'Gap 4'  },
+      { cnt: c6,    col: '#22cc44', lbl: 'Gap 6'  },
+      { cnt: c10,   col: '#cc88ff', lbl: 'Gap 10' },
+      { cnt: c12_v, col: '#ffaa44', lbl: 'Gap 12' },
+    ].map(d => ({ ...d, pct: d.cnt / total * 100 }));
 
-    const chartTop = py+22, chartH = ph - 36;
-    const maxPct = Math.max(...pcts.map(d=>d.pct)) * 1.15 || 20;
-    const bw = Math.floor(pw / pcts.length) - 10;
-    const toY2 = v => chartTop + chartH - (v/maxPct)*chartH;
+    const bw = Math.floor(pw / pcts.length) - 8;
+    const maxPct = Math.max(...pcts.map(d => d.pct)) * 1.18 || 20;
+    const toY2 = v => chartTop + chartH - (v / maxPct) * chartH;
 
-    // Gridlines
-    [0, Math.round(maxPct/3), Math.round(2*maxPct/3), Math.round(maxPct)].forEach(v => {
+    // Y gridlines
+    [0, maxPct * 0.33, maxPct * 0.66, maxPct].forEach(v => {
       const gy = toY2(v);
       ctx.strokeStyle = 'rgba(255,255,255,.06)';
       ctx.lineWidth = 0.5;
-      ctx.beginPath(); ctx.moveTo(px,gy); ctx.lineTo(px+pw,gy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px, gy); ctx.lineTo(px + pw, gy); ctx.stroke();
+      ctx.fillStyle = 'rgba(160,190,160,.5)';
+      ctx.font = `${Math.max(6, Math.round(w * 0.010))}px ${FONT}`;
+      ctx.textAlign = 'right';
+      ctx.fillText(v.toFixed(1) + '%', px - 3, gy + 3);
     });
 
-    pcts.forEach(({pct, col, lbl, cnt}, i) => {
-      const bx = px + 5 + i*(bw+10);
+    pcts.forEach(({ pct, col, lbl, cnt }, i) => {
+      const bx = px + 4 + i * (bw + 8);
       const by = toY2(pct);
       const bh = chartTop + chartH - by;
-      ctx.fillStyle = col + '99';
-      ctx.fillRect(bx, by, bw, bh);
+
+      ctx.fillStyle = col + '88';
+      ctx.fillRect(bx, by, bw, Math.max(bh, 1));
       ctx.strokeStyle = col; ctx.lineWidth = 1.5;
-      ctx.strokeRect(bx, by, bw, bh);
-      // % label
+      ctx.strokeRect(bx, by, bw, Math.max(bh, 1));
+
+      // Count label above % label — stack them only if both fit
+      const pctLabelY = by - 4;
+      const cntLabelY = pctLabelY - valSz - 2;
+
       ctx.fillStyle = '#fff';
-      ctx.globalAlpha = 0.9;
-      ctx.font = `bold ${Math.max(7,w*.015)}px ${FONT}`;
+      ctx.globalAlpha = 0.92;
+      ctx.font = `bold ${valSz}px ${FONT}`;
       ctx.textAlign = 'center';
-      ctx.fillText(pct.toFixed(2)+'%', bx+bw/2, by-5);
+      ctx.fillText(pct.toFixed(2) + '%', bx + bw/2, pctLabelY);
       ctx.globalAlpha = 1;
-      // Count
-      ctx.fillStyle = col+'cc';
-      ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
-      ctx.fillText(cnt >= 1e3 ? (cnt/1e3).toFixed(0)+'k' : cnt.toString(), bx+bw/2, by-15);
-      // x label
-      ctx.fillStyle = 'rgba(180,200,180,.7)';
-      ctx.fillText(lbl, bx+bw/2, chartTop+chartH+12);
+
+      if (cntLabelY > chartTop + 2) {
+        ctx.fillStyle = col + 'cc';
+        ctx.font = `${cntSz}px ${FONT}`;
+        ctx.fillText(cnt >= 1e6 ? (cnt/1e6).toFixed(1)+'M' : cnt >= 1e3 ? (cnt/1e3).toFixed(0)+'k' : cnt.toString(), bx + bw/2, cntLabelY);
+      }
+
+      // X label below chart
+      ctx.fillStyle = 'rgba(180,200,180,.75)';
+      ctx.font = `${cntSz}px ${FONT}`;
+      ctx.fillText(lbl, bx + bw/2, chartTop + chartH + cntSz + 2);
     });
 
     // Footer note
     ctx.fillStyle = 'rgba(150,170,150,.5)';
-    ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
+    ctx.font = `${Math.max(6, Math.round(w * 0.010))}px ${FONT}`;
     ctx.textAlign = 'center';
-    ctx.fillText(`Analysis: ${primes.length.toLocaleString()} primes up to ${maxN.toLocaleString()}`, px+pw/2, py+ph-2);
+    ctx.fillText(`${primes.length.toLocaleString()} primes up to ${maxN.toLocaleString()}`, px + pw/2, py + ph - 2);
   }
 
   // ─── Panel 3: Hardy-Littlewood Accuracy ───
   {
-    const px = p3x+4, py = PANEL_Y, pw = pW3-8, ph = PANEL_H - 30;
-    ctx.fillStyle = 'rgba(232,197,71,.5)';
-    ctx.font = `${Math.max(7,w*.013)}px ${FONT}`;
-    ctx.textAlign = 'center';
-    ctx.fillText('Hardy-Littlewood Accuracy', px+pw/2, py+12);
+    const px = p3x + 6, py = PANEL_Y, pw = pW3 - 12, ph = PANEL_H;
+    const lblSz  = Math.max(7, Math.round(w * 0.013));
+    const valSz  = Math.max(8, Math.round(w * 0.013));
+    const noteSz = Math.max(6, Math.round(w * 0.010));
+    const xLblH  = noteSz * 3;   // two x-label lines + gap
+    const errH   = noteSz * 4;   // error stat + diff note at bottom
+    const topPad = lblSz + 10;
+    const chartH = ph - topPad - xLblH - errH - 6;
+    const chartTop = py + topPad;
 
-    // H-L prediction for twin primes: 2*C2*li₂(N)
-    // C2 = 0.6601618... (twin prime constant)
-    // li₂(x) = ∫₂ˣ dt/ln²(t) ≈ x/ln²(x) · (1 + 2/ln(x) + 6/ln²(x) + 24/ln³(x))
+    // Panel header
+    ctx.fillStyle = 'rgba(232,197,71,.6)';
+    ctx.font = `bold ${lblSz}px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Hardy-Littlewood Accuracy', px + pw/2, py + lblSz);
+
     const C2 = 0.6601618158468696;
     const N = maxN;
     const lnN = Math.log(N);
     const li2 = (N / (lnN * lnN)) * (1 + 2/lnN + 6/(lnN*lnN) + 24/(lnN*lnN*lnN));
     const hlPred = Math.round(2 * C2 * li2);
     const diff = c2 - hlPred;
-    const errPct = c2 > 0 ? Math.abs(diff)/c2*100 : 0;
+    const errPct = c2 > 0 ? Math.abs(diff) / c2 * 100 : 0;
 
-    const chartTop = py+22, chartH = ph - 60;
     const vals = [hlPred, c2];
     const maxV = Math.max(...vals) * 1.15 || 1;
-    const bw2 = Math.floor(pw * 0.35);
-    const gap2 = Math.floor(pw * 0.12);
+    const bw2  = Math.floor(pw * 0.36);
+    const gap2 = Math.floor((pw - bw2 * 2) / 3);
 
-    [[hlPred,'#ffd700','Predicted\n(H-L)'],[c2,'#22cc44','Observed\n(Actual)']].forEach(([v,col,lbl],i) => {
-      const bx = px + gap2 + i*(bw2 + gap2);
-      const bh = (v/maxV)*chartH;
+    [
+      [hlPred, '#ffd700', ['Predicted', '(H-L)']],
+      [c2,     '#22cc44', ['Observed',  '(Actual)']],
+    ].forEach(([v, col, lblLines], i) => {
+      const bx = px + gap2 + i * (bw2 + gap2);
+      const bh = (v / maxV) * chartH;
       const by = chartTop + chartH - bh;
-      ctx.fillStyle = col+'99';
-      ctx.fillRect(bx, by, bw2, bh);
+
+      ctx.fillStyle = col + '88';
+      ctx.fillRect(bx, by, bw2, Math.max(bh, 1));
       ctx.strokeStyle = col; ctx.lineWidth = 1.5;
-      ctx.strokeRect(bx, by, bw2, bh);
-      // Value
+      ctx.strokeRect(bx, by, bw2, Math.max(bh, 1));
+
+      // Value label above bar
       ctx.fillStyle = col;
-      ctx.font = `bold ${Math.max(7,w*.014)}px ${FONT}`;
+      ctx.font = `bold ${valSz}px ${FONT}`;
       ctx.textAlign = 'center';
-      ctx.fillText(v.toLocaleString(), bx+bw2/2, by-5);
-      // Label
-      ctx.fillStyle = 'rgba(180,200,180,.7)';
-      ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
-      lbl.split('\n').forEach((l,li) => ctx.fillText(l, bx+bw2/2, chartTop+chartH+12+li*11));
+      ctx.fillText(v.toLocaleString(), bx + bw2/2, by - 4);
+
+      // X labels below chart
+      ctx.fillStyle = 'rgba(180,200,180,.75)';
+      ctx.font = `${noteSz}px ${FONT}`;
+      lblLines.forEach((l, li) => {
+        ctx.fillText(l, bx + bw2/2, chartTop + chartH + noteSz + 2 + li * (noteSz + 2));
+      });
     });
 
-    // Error stat
+    // Error stats — below x-labels
+    const errBaseY = chartTop + chartH + xLblH + noteSz;
     ctx.fillStyle = errPct < 1 ? '#22cc44' : errPct < 5 ? '#ffd700' : '#ff6688';
-    ctx.font = `bold ${Math.max(8,w*.016)}px ${FONT}`;
+    ctx.font = `bold ${Math.max(7, Math.round(w * 0.012))}px ${FONT}`;
     ctx.textAlign = 'center';
-    ctx.fillText(`Error: ${errPct.toFixed(4)}%`, px+pw/2, chartTop+chartH+38);
-    ctx.fillStyle = 'rgba(150,170,150,.5)';
-    ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
-    ctx.fillText(diff >= 0 ? `+${diff.toLocaleString()} more twins than predicted` : `${diff.toLocaleString()} fewer twins than predicted`, px+pw/2, chartTop+chartH+52);
-    ctx.fillText(`Difference`, px+pw/2, chartTop+chartH+63);
+    ctx.fillText(`Error: ${errPct.toFixed(4)}%`, px + pw/2, errBaseY);
+    ctx.fillStyle = 'rgba(150,170,150,.55)';
+    ctx.font = `${noteSz}px ${FONT}`;
+    const diffTxt = diff >= 0
+      ? `+${diff.toLocaleString()} more twins`
+      : `${diff.toLocaleString()} fewer twins`;
+    ctx.fillText(diffTxt, px + pw/2, errBaseY + noteSz + 3);
   }
 
-  // Summary line
+  // Summary footer
   const hlC2 = 0.6601618158468696;
   const _lnN = Math.log(maxN);
-  const _li2footer = (maxN/(_lnN*_lnN)) * (1 + 2/_lnN + 6/(_lnN*_lnN) + 24/(_lnN*_lnN*_lnN));
+  const _li2footer = (maxN / (_lnN * _lnN)) * (1 + 2/_lnN + 6/(_lnN*_lnN) + 24/(_lnN*_lnN*_lnN));
+  const footerSz = Math.max(6, Math.round(w * 0.010));
   ctx.fillStyle = 'rgba(150,170,150,.45)';
-  ctx.font = `${Math.max(6,w*.011)}px ${FONT}`;
+  ctx.font = `${footerSz}px ${FONT}`;
   ctx.textAlign = 'center';
-  ctx.fillText(`Twin Prime Constant C₂ = ${hlC2.toFixed(13)} | H-L Predicted (li₂ formula): ${Math.round(2*hlC2*_li2footer).toLocaleString()} twins`, w/2, h-3);
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(
+    `Twin Prime Constant C₂ = ${hlC2.toFixed(13)} | H-L Predicted (li₂): ${Math.round(2*hlC2*_li2footer).toLocaleString()} twins`,
+    w/2, h - 2
+  );
+  ctx.textBaseline = 'alphabetic';
 
   gdBuildLegend([]);
 }
@@ -4846,28 +4910,38 @@ function gdUpdateRatioPanel(){
   const panel = document.getElementById('gdRatioPanel');
   if(panel) panel.style.display = 'block';
 
-  // Size the canvas to match the panel's display width (ratio chart draws relative to w/h)
-  const cv = document.getElementById('gdRatioChartBig');
-  if(!cv) return;
-  const panelWrap = cv.parentElement;
-  const displayW = panelWrap ? Math.max(400, panelWrap.offsetWidth || 860) : 860;
-  const displayH = Math.round(displayW * 0.42);
-  cv.width  = displayW;
-  cv.height = displayH;
-  cv.style.width  = '100%';
-  cv.style.height = 'auto';
+  // Double-rAF: first frame triggers reflow, second reads correct offsetWidth.
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      const cv = document.getElementById('gdRatioChartBig');
+      if(!cv) return;
+      const panelWrap = cv.parentElement;
+      const dpr = window.devicePixelRatio || 1;
+      // CSS display width; fall back to 860 if panel hasn't reflowed yet
+      const cssW  = panelWrap ? Math.max(400, panelWrap.offsetWidth || 860) : 860;
+      const cssH  = Math.round(cssW * 0.55);   // taller than before (was 0.42)
 
-  const rCtx = cv.getContext('2d');
-  rCtx.fillStyle = '#060608';
-  rCtx.fillRect(0, 0, cv.width, cv.height);
-  // Swap gdCtx so gdDrawRatio renders into ratio canvas
-  const _saved = gdCtx;
-  gdCtx = rCtx;
-  gdDrawRatio(cv.width, cv.height);
-  gdCtx = _saved;
+      // Physical pixel resolution = CSS size × devicePixelRatio → sharp on HiDPI
+      cv.width  = Math.round(cssW * dpr);
+      cv.height = Math.round(cssH * dpr);
+      cv.style.width  = cssW  + 'px';
+      cv.style.height = cssH  + 'px';
 
-  // Populate the ratio table
-  gdBuildRatioTable();
+      const rCtx = cv.getContext('2d');
+      rCtx.scale(dpr, dpr);          // all draw calls now use CSS pixels
+      rCtx.fillStyle = '#060608';
+      rCtx.fillRect(0, 0, cssW, cssH);
+
+      // Swap gdCtx so gdDrawRatio renders into ratio canvas (in CSS px space)
+      const _saved = gdCtx;
+      gdCtx = rCtx;
+      gdDrawRatio(cssW, cssH);
+      gdCtx = _saved;
+
+      // Populate the ratio table
+      gdBuildRatioTable();
+    });
+  });
 }
 
 function gdBuildRatioTable(){
@@ -4984,17 +5058,22 @@ function gdExportRatioDOM(){
 }
 
 function gdExportRatioCanvas(){
-  const cv = document.getElementById('gdRatioChartBig');
-  if(!cv || !gdData){ alert('Run decomposition first.'); return; }
-  // Re-render at 4K
-  const rCtx = cv.getContext('2d');
-  rCtx.fillStyle='#060608'; rCtx.fillRect(0,0,cv.width,cv.height);
-  const _s = gdCtx; gdCtx = rCtx;
-  gdDrawRatio(cv.width, cv.height);
+  if(!gdData){ alert('Run decomposition first.'); return; }
+  // Always export at 3840px wide for 4K quality
+  const EXP_W = 3840;
+  const EXP_H = Math.round(EXP_W * 0.55);
+  const expCv = document.createElement('canvas');
+  expCv.width  = EXP_W;
+  expCv.height = EXP_H;
+  const expCtx = expCv.getContext('2d');
+  expCtx.fillStyle = '#060608';
+  expCtx.fillRect(0, 0, EXP_W, EXP_H);
+  const _s = gdCtx; gdCtx = expCtx;
+  gdDrawRatio(EXP_W, EXP_H);
   gdCtx = _s;
   const a = document.createElement('a');
-  a.download = `gap_ratio_analysis_canvas_4K_N${gdData.maxN}.png`;
-  a.href = cv.toDataURL('image/png');
+  a.download = `gap_ratio_analysis_4K_N${gdData.maxN}.png`;
+  a.href = expCv.toDataURL('image/png');
   a.click();
 }
 
@@ -6683,6 +6762,27 @@ function zetaSizeCanvases() {
   zetaCv.height  = Math.round(W * 0.55);
   zeta3dCv.width  = W;
   zeta3dCv.height = Math.round(W * 0.55);
+}
+
+// Export zeta spiral at 4K resolution
+function zetaExport4K() {
+  if (!zetaData) { alert('Run Compute first.'); return; }
+  // Save live canvas size
+  const liveW = zetaCv.width, liveH = zetaCv.height;
+  // Render at 4K
+  const EXP_W = 3840, EXP_H = Math.round(3840 * 0.55);
+  zetaCv.width  = EXP_W;
+  zetaCv.height = EXP_H;
+  zetaDrawProg  = zetaData.N;  // draw fully
+  zetaDrawSpiral();
+  const a = document.createElement('a');
+  a.download = `zeta_spiral_4K_T${zetaData.tMax}.png`;
+  a.href = zetaCv.toDataURL('image/png');
+  a.click();
+  // Restore live canvas
+  zetaCv.width  = liveW;
+  zetaCv.height = liveH;
+  zetaDrawSpiral();
 }
 
 // ── Animated draw ──
