@@ -872,18 +872,13 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
   color: var(--green) !important;
 }
 
-/* ── Belt flash ──────────────────── */
-@keyframes beltFlash {
-  0%,100% { opacity: 0; }
-  10%,90% { opacity: 1; }
+/* ── Blend slider flash ──────────── */
+@keyframes blendFlash {
+  0%,100% { box-shadow: none; }
+  30%,70% { box-shadow: 0 0 0 3px rgba(94,189,120,0.7), 0 0 14px 4px rgba(94,189,120,0.45); }
 }
-#beltFlashOverlay {
-  position: absolute; inset: 0; pointer-events: none; border-radius: 50%;
-  box-shadow: inset 0 0 0 3px rgba(94,189,120,0);
-  transition: none;
-}
-#beltFlashOverlay.flash {
-  animation: beltFlash 0.7s ease-in-out;
+#coordBlend.flash {
+  animation: blendFlash 0.8s ease-in-out;
 }
 
 /* ── Param number input boxes ─────── */
@@ -913,6 +908,96 @@ button.ctrl.gold-ctrl:hover, button.ctrl.gold-ctrl.on { background:var(--gold); 
   font-size:.5rem; color:rgba(91,156,246,.3); text-align:center;
   letter-spacing:.1em; margin-top:4px; font-family:'JetBrains Mono',monospace;
 }
+
+/* ── GIF / WebM Export Modal ──────── */
+.gif-modal-backdrop {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(6,6,8,.85);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s;
+}
+.gif-modal-backdrop.open { opacity: 1; pointer-events: all; }
+.gif-modal {
+  background: #10131c;
+  border: 1px solid rgba(232,197,71,.35);
+  border-radius: 14px;
+  padding: 28px 32px 24px;
+  width: min(540px, 96vw);
+  box-shadow: 0 0 60px rgba(232,197,71,.12);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.gif-modal-title {
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  color: var(--gold);
+  display: flex; align-items: center; gap: 10px;
+}
+.gif-modal-close {
+  margin-left: auto; background: none; border: none;
+  color: rgba(232,197,71,.5); font-size: 1.2rem; cursor: pointer;
+  transition: color .15s;
+}
+.gif-modal-close:hover { color: var(--gold); }
+.gif-opt-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px;
+}
+.gif-opt { display: flex; flex-direction: column; gap: 5px; }
+.gif-opt label {
+  font-size: .56rem; text-transform: uppercase; letter-spacing: .18em;
+  color: rgba(232,197,71,.55); font-family: 'JetBrains Mono', monospace;
+}
+.gif-opt select, .gif-opt input[type=number], .gif-opt input[type=range] {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(232,197,71,.2);
+  border-radius: 5px; color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; padding: 6px 9px;
+}
+.gif-opt select:focus, .gif-opt input:focus {
+  outline: none; border-color: var(--gold);
+}
+.gif-axis-row {
+  display: flex; gap: 8px;
+}
+.gif-axis-btn {
+  flex: 1; padding: 7px 4px; border-radius: 5px; cursor: pointer;
+  border: 1px solid rgba(232,197,71,.25);
+  background: rgba(232,197,71,.04);
+  color: rgba(232,197,71,.6);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem; font-weight: 700; text-align: center;
+  transition: all .13s;
+}
+.gif-axis-btn:hover { border-color: var(--gold); color: var(--gold); }
+.gif-axis-btn.active { background: var(--gold); color: #0e1119; border-color: var(--gold); }
+.gif-progress-wrap {
+  height: 6px; background: rgba(232,197,71,.1); border-radius: 3px; overflow: hidden;
+  display: none;
+}
+.gif-progress-bar {
+  height: 100%; background: var(--gold); border-radius: 3px;
+  width: 0%; transition: width .1s linear;
+}
+.gif-status {
+  font-size: .6rem; font-family: 'JetBrains Mono', monospace;
+  color: rgba(232,197,71,.55); min-height: 16px;
+}
+.gif-btn-row { display: flex; gap: 10px; justify-content: flex-end; }
+.gif-btn {
+  padding: 9px 22px; border-radius: 6px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+  font-weight: 700; border: none; transition: all .15s;
+}
+.gif-btn.cancel { background: rgba(255,255,255,.06); color: rgba(200,210,235,.6); }
+.gif-btn.cancel:hover { background: rgba(255,255,255,.12); }
+.gif-btn.go {
+  background: linear-gradient(135deg, #e8c547, #b89020);
+  color: #0e1119;
+}
+.gif-btn.go:hover { filter: brightness(1.1); }
+.gif-btn.go:disabled { opacity: .45; cursor: not-allowed; filter: none; }
 
 /* ── Fullscreen mode ─────────────────────── */
 :fullscreen .page-shell,
@@ -1141,6 +1226,7 @@ select {
       <button class="ctrl" id="btnSkipComplete" title="Skip drawing — show completed state instantly"> Complete</button>
       <button class="ctrl gold-ctrl" id="btnExport4K" title="Export 4K PNG"> 4K</button>
       <button class="ctrl gold-ctrl" id="btnExportMulti" title="Export Multiple Angles"> Multi</button>
+      <button class="ctrl gold-ctrl" id="btnExportGif" title="Export Rotation GIF/WebM">🎞 GIF</button>
       <button class="ctrl" id="btnAutoRot">⟳ Rotate</button>
       <button class="ctrl" id="btnFullscreen" title="Toggle fullscreen"> Full</button>
     </div>
@@ -1277,12 +1363,29 @@ select {
       <div class="gap-ctrl-grid">
         <div class="cg">
           <label>Max N (primes up to)</label>
-          <input type="range" id="gdN" min="1" max="300000000" step="1" value="10000000">
+          <div class="param-row">
+            <input type="range" id="gdN" min="10000" max="400000000" step="10000" value="10000000"
+              style="flex:1;min-width:0">
+            <input type="number" id="gdNNum" min="10000" max="400000000" step="1000000" value="10000000"
+              class="param-num" style="width:80px">
+          </div>
           <div class="gap-vd" id="gdND">10,000,000</div>
+          <!-- Quick N presets -->
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+            <button class="ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(1000000)">1M</button>
+            <button class="ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(10000000)">10M</button>
+            <button class="ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(50000000)">50M</button>
+            <button class="ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(100000000)">100M</button>
+            <button class="ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(200000000)">200M</button>
+            <button class="ctrl gold-ctrl" style="font-size:.5rem;padding:2px 6px" onclick="setGdN(400000000)">400M</button>
+          </div>
         </div>
         <div class="cg">
           <label>ζ exponent s</label>
-          <input type="range" id="gdS" min="1.01" max="10" step="0.01" value="2">
+          <div class="param-row">
+            <input type="range" id="gdS" min="1.01" max="10" step="0.01" value="2" style="flex:1;min-width:0">
+            <input type="number" id="gdSNum" min="1.01" max="10" step="0.01" value="2" class="param-num">
+          </div>
           <div class="gap-vd" id="gdSD" style="color:var(--gold)">s = 2.00</div>
         </div>
       </div>
@@ -1298,6 +1401,7 @@ select {
 
       <div class="gap-run-row" style="margin-top:8px">
         <button class="ctrl gold-ctrl" id="gdRunBtn" onclick="gdRun()">Compute</button>
+        <button class="ctrl" id="gdAbortBtn" onclick="gdAbort()" style="display:none;font-size:.6rem;padding:6px 10px;background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:rgba(248,113,113,.85)">⏹ Stop</button>
         <button class="ctrl gold-ctrl" onclick="gdClear()" style="font-size:.6rem;padding:6px 10px"> Clear</button>
       </div>
 
@@ -1329,7 +1433,6 @@ select {
     <!-- Sphere canvas -->
     <div class="sphere-wrap" style="position:relative;">
       <canvas id="polarCanvas"></canvas>
-      <div id="beltFlashOverlay"></div>
 
       <div class="rot-controls">
         <span class="rot-hint">drag to rotate · shift+drag to pan</span>
@@ -1778,6 +1881,94 @@ select {
 
 </div><!-- /.page-shell -->
 
+<!-- ══ GIF / WebM Export Modal ════════════════════════════════ -->
+<div class="gif-modal-backdrop" id="gifModalBackdrop">
+  <div class="gif-modal" role="dialog" aria-modal="true" aria-label="Export Rotation GIF">
+    <div class="gif-modal-title">
+      🎞 Export Rotation Animation
+      <button class="gif-modal-close" id="gifModalClose" title="Close">✕</button>
+    </div>
+
+    <!-- Rotation axis selection -->
+    <div class="gif-opt">
+      <label>Rotation Axis</label>
+      <div class="gif-axis-row">
+        <button class="gif-axis-btn active" data-axis="Y">Y axis</button>
+        <button class="gif-axis-btn" data-axis="X">X axis</button>
+        <button class="gif-axis-btn" data-axis="Z">Z axis</button>
+        <button class="gif-axis-btn" data-axis="XYZ">X→Y→Z</button>
+      </div>
+    </div>
+
+    <div class="gif-opt-grid">
+      <!-- Format -->
+      <div class="gif-opt">
+        <label>Format</label>
+        <select id="gifFormat">
+          <option value="webm">WebM video (full colour, best quality)</option>
+          <option value="gif">Animated GIF (256 colours)</option>
+        </select>
+      </div>
+
+      <!-- Resolution -->
+      <div class="gif-opt">
+        <label>Resolution</label>
+        <select id="gifRes">
+          <option value="1920">1920 × 1920 (2K)</option>
+          <option value="2560">2560 × 2560 (2.5K)</option>
+          <option value="3840" selected>3840 × 3840 (4K)</option>
+        </select>
+      </div>
+
+      <!-- Duration -->
+      <div class="gif-opt">
+        <label>Duration (seconds)</label>
+        <input type="number" id="gifDuration" min="2" max="30" step="1" value="6">
+      </div>
+
+      <!-- FPS -->
+      <div class="gif-opt">
+        <label>Frame Rate (fps)</label>
+        <select id="gifFps">
+          <option value="15">15 fps</option>
+          <option value="24" selected>24 fps</option>
+          <option value="30">30 fps</option>
+          <option value="60">60 fps</option>
+        </select>
+      </div>
+
+      <!-- Quality (GIF only) -->
+      <div class="gif-opt" id="gifQualityWrap">
+        <label>GIF Quality (1=best, 10=fast)</label>
+        <input type="number" id="gifQuality" min="1" max="20" step="1" value="3">
+      </div>
+
+      <!-- Rotation speed -->
+      <div class="gif-opt">
+        <label>Rotation Speed (°/frame)</label>
+        <input type="number" id="gifRotSpeed" min="0.5" max="12" step="0.5" value="2">
+      </div>
+    </div>
+
+    <!-- Info note -->
+    <div style="font-size:.58rem;color:rgba(180,200,180,.45);font-family:'JetBrains Mono',monospace;line-height:1.7;background:rgba(255,255,255,.02);border-radius:5px;padding:8px 12px;">
+      <strong style="color:rgba(232,197,71,.6)">WebM:</strong> rendered at full resolution with MediaRecorder — download and convert to GIF with any video tool.<br>
+      <strong style="color:rgba(232,197,71,.6)">GIF:</strong> pure-JS encoder runs in-browser; large resolutions may take a minute to encode.
+    </div>
+
+    <!-- Progress -->
+    <div class="gif-progress-wrap" id="gifProgressWrap">
+      <div class="gif-progress-bar" id="gifProgressBar"></div>
+    </div>
+    <div class="gif-status" id="gifStatus"></div>
+
+    <div class="gif-btn-row">
+      <button class="gif-btn cancel" id="gifCancelBtn">Cancel</button>
+      <button class="gif-btn go" id="gifGoBtn">▶ Export</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 //  PRESETS
@@ -2083,15 +2274,16 @@ function precompute() {
 }
 
 // Map each point index to a gap class by finding which prime gap the θ value falls within.
-// θ at point i → t = (i/TOTAL_PTS)*thetaTotal. We scale t into [0, maxPrime] range and find
-// the surrounding prime pair. The gap between that prime pair gives the gap class.
+// When raw prime array is unavailable (large N), we return null so caller handles gracefully.
 function buildGapAtPoint() {
-  const { primes, gapFamilies } = gdData;
-  if (!primes || primes.length < 2) return null;
+  const { gapFamilies, _noRawPrimes } = gdData;
+  // If we don't have raw prime values, gap-point mapping is unavailable
+  if (_noRawPrimes) return null;
+  const primes = gdData.primes;
+  if (!primes || !Array.isArray(primes) || primes.length < 2) return null;
   const maxP = primes[primes.length-1];
 
   // Build sorted list of [prime, gap] pairs for binary search
-  // gap[i] = primes[i+1] - primes[i], associated with primes[i]
   const pArr = primes; // already sorted
   const result = new Array(TOTAL_PTS).fill(null);
 
@@ -2184,26 +2376,21 @@ function cartXY(t, rv) {
 //  SPHERE WIREFRAME
 // ═══════════════════════════════════════════════════════════════
 function drawSphereGrid(ctx) {
+  ctx.lineWidth=0.55;
   for(let li=-2; li<=2; li++){
     const lat=(li/3)*Math.PI/2;
     const cosLat=Math.cos(lat), sinLat=Math.sin(lat);
-    const isBelt = (li===0);  // equator is the belt
-    ctx.lineWidth = isBelt ? 1.4 : 0.55;
     ctx.beginPath(); let first=true;
     for(let lo=0; lo<=Math.PI*2+0.05; lo+=0.07){
       const x=cosLat*Math.cos(lo), y=sinLat, z=cosLat*Math.sin(lo);
       const [rx,ry,rz]=applyM(rotMat,x,y,z);
       const [px,py]=proj(rx,ry,rz);
-      const alpha = isBelt
-        ? Math.max(0.18, 0.25+(rz+1)*0.28)   // belt always visible
-        : Math.max(0.05, 0.06+(rz+1)*0.12);
-      ctx.globalAlpha=alpha;
-      ctx.strokeStyle = isBelt ? '#5ebd78' : '#3a7040';
+      ctx.globalAlpha=Math.max(0.05, 0.06+(rz+1)*0.12);
+      ctx.strokeStyle='#3a7040';
       if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
     }
     ctx.stroke();
   }
-  ctx.lineWidth=0.55;
   for(let lo=0; lo<8; lo++){
     const lon=(lo/8)*Math.PI*2;
     const cosLon=Math.cos(lon), sinLon=Math.sin(lon);
@@ -2658,7 +2845,7 @@ function loop() {
         const btn = document.getElementById('btnPlay');
         btn.textContent = '▶ Play'; btn.classList.remove('on');
         harmSyncStop();
-        stopBeltFlash();
+        stopBlendFlash();
         // Start sequential X→Y→Z rotation after preset finishes drawing
         if (seqRotateOnComplete) { startSeqRotate(); }
       }
@@ -2894,56 +3081,33 @@ document.getElementById('btnPlay').addEventListener('click',function(){
 });
 document.getElementById('btnReset').addEventListener('click',()=>{ harmSyncStop(); hardReset(); });
 
-// ── Belt green flash every 3 seconds while playing ──
-// The equator ring (lat=0) is the visual "belt" on the sphere.
-// We overlay a glowing green ring on the canvas wrapper every 3s.
-let beltFlashInterval = null;
-function startBeltFlash(){
-  if(beltFlashInterval) return;
-  beltFlashInterval = setInterval(()=>{
-    if(paused){ stopBeltFlash(); return; }
-    _triggerBeltFlash();
+// ── Blend slider flash every 3 seconds while playing ──
+// Pulses the Coordinate Mode Blend slider green to draw attention to it.
+let _blendFlashInterval = null;
+
+function startBlendFlash(){
+  if(_blendFlashInterval) return;
+  _blendFlashInterval = setInterval(()=>{
+    if(paused){ stopBlendFlash(); return; }
+    const sl = document.getElementById('coordBlend');
+    if(!sl) return;
+    sl.classList.remove('flash');
+    void sl.offsetWidth; // force reflow to restart animation
+    sl.classList.add('flash');
+    setTimeout(()=>{ if(sl) sl.classList.remove('flash'); }, 800);
   }, 3000);
 }
-function stopBeltFlash(){
-  clearInterval(beltFlashInterval);
-  beltFlashInterval = null;
-}
-function _triggerBeltFlash(){
-  const ov = document.getElementById('beltFlashOverlay');
-  if(!ov) return;
-  ov.classList.remove('flash');
-  // Force reflow so re-adding the class re-triggers animation
-  void ov.offsetWidth;
-  ov.classList.add('flash');
-  // Also draw a glowing equator arc directly on the sphere canvas
-  _drawBeltGlow();
-  setTimeout(()=>{ if(ov) ov.classList.remove('flash'); }, 700);
-}
-function _drawBeltGlow(){
-  // Draw a bright green equator ring on the sphere for one flash frame
-  const cv = document.getElementById('polarCanvas');
-  const ctx = cv ? cv.getContext('2d') : null;
-  if(!ctx) return;
-  const cx2 = cv.width/2, cy2 = cv.height/2;
-  const r2 = Math.min(cx2, cy2) * 0.72 * zoomLevel;
-  ctx.save();
-  ctx.strokeStyle = 'rgba(94,189,120,0.85)';
-  ctx.lineWidth = 3;
-  ctx.shadowColor = '#5ebd78';
-  ctx.shadowBlur = 18;
-  ctx.globalAlpha = 0.9;
-  ctx.beginPath();
-  ctx.ellipse(cx2 + panX, cy2 + panY, r2, r2 * 0.22, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
+
+function stopBlendFlash(){
+  clearInterval(_blendFlashInterval);
+  _blendFlashInterval = null;
 }
 
 // Hook into play button to start/stop flash
 const _origPlayClick = document.getElementById('btnPlay').onclick;
 document.getElementById('btnPlay').addEventListener('click',function(){
-  if(!paused) startBeltFlash();
-  else stopBeltFlash();
+  if(!paused) startBlendFlash();
+  else stopBlendFlash();
 });
 
 // ═══════════════════════════════════════════════════════════════
@@ -3692,7 +3856,7 @@ function applyPreset(p, btn, isGap){
   paused=false;
   const playBtn=document.getElementById('btnPlay');
   if(playBtn){ playBtn.textContent='⏸ Pause'; playBtn.classList.add('on'); }
-  startBeltFlash();
+  startBlendFlash();
   // Sync harmonics with wave
   harmSyncStart();
 }
@@ -3701,233 +3865,396 @@ function applyPreset(p, btn, isGap){
 //  GAP DECOMPOSITION MODULE
 // ═══════════════════════════════════════════════════════════════
 
-document.getElementById('gdN').addEventListener('input', function(){
-  document.getElementById('gdND').textContent = parseInt(this.value).toLocaleString();
-});
-document.getElementById('gdS').addEventListener('input', function(){
-  document.getElementById('gdSD').textContent = `s = ${parseFloat(this.value).toFixed(2)}`;
-});
+// ═══════════════════════════════════════════════════════════════
+//  GAP DECOMPOSITION — Inputs, Worker, Sieve
+// ═══════════════════════════════════════════════════════════════
 
-let gdData = null;
-let gdTab = 'contrib';
+// ── Slider ↔ number input two-way sync for N and s ──
+(function(){
+  function syncPair(sliderId, numId, displayId, fmt){
+    const sl  = document.getElementById(sliderId);
+    const num = document.getElementById(numId);
+    const dsp = document.getElementById(displayId);
+    if(!sl || !num) return;
+
+    function update(v){
+      v = Math.max(parseFloat(sl.min), Math.min(parseFloat(sl.max), v));
+      sl.value  = v;
+      num.value = v;
+      if(dsp) dsp.textContent = fmt ? fmt(v) : v.toLocaleString();
+    }
+
+    sl.addEventListener('input',  ()=> update(parseFloat(sl.value)));
+    num.addEventListener('change', ()=> update(parseFloat(num.value)));
+    num.addEventListener('blur',   ()=> update(parseFloat(num.value)));
+  }
+
+  syncPair('gdN', 'gdNNum', 'gdND',
+    v => parseInt(v).toLocaleString());
+  syncPair('gdS', 'gdSNum', 'gdSD',
+    v => 's = ' + parseFloat(v).toFixed(2));
+})();
+
+// Quick N setter (called by preset buttons)
+function setGdN(n){
+  const sl  = document.getElementById('gdN');
+  const num = document.getElementById('gdNNum');
+  const dsp = document.getElementById('gdND');
+  if(sl)  sl.value  = n;
+  if(num) num.value = n;
+  if(dsp) dsp.textContent = n.toLocaleString();
+}
+
+let gdData   = null;
+let gdTab    = 'contrib';
 let gdFilter = 'all';
 const gdCanvas = document.getElementById('gapCanvas');
 let gdCtx = gdCanvas.getContext('2d');
 let gdActiveWaveBtn = null;
 
-function gdResizeCanvas(){
-  const gapPanel = document.getElementById('gapWavePanel');
-  const leftSidebar = window.innerWidth > 900 ? 320 : 0;
-  const sphereW = Math.min(window.innerWidth - leftSidebar - 80, 900);
+// ── Web Worker source (inline blob) ──────────────────────────
+// The worker receives { maxN, s } and posts back progress and result.
+// It uses a BITPACKED segmented sieve: 1 bit per odd number → 8×
+// less memory than Uint8Array; only ~6 MB for sieve of 400M.
+// Gap families store COUNTS only (not prime values) → ~1 KB total.
 
-  if(!gapPanel || gapPanel.classList.contains('gap-hidden')){
-    gdCanvas.width = Math.max(280, 400);
-  } else {
-    gdCanvas.width = Math.max(280, Math.floor((sphereW - 12) / 2));
-  }
-  gdCanvas.height = Math.max(200, Math.round(cCv.height || 200));
+const WORKER_SRC = `
+'use strict';
 
-  // Big accordion chart canvas — proportional to available width
-  const bigCv = document.getElementById('gdChartBig');
-  if(bigCv){
-    bigCv.width = Math.max(400, sphereW);
-    bigCv.height = Math.round(bigCv.width * 0.45);
-  }
-
-  if(gdData) gdDraw();
-}
-gdResizeCanvas();
-// (resize handled by onLayoutResize above)
-
-function setGapFilter(btn, filter){
-  document.querySelectorAll('.gap-filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  gdFilter = filter;
-}
-
-// ── Sieves ─────────────────────────────────
-function simpleSieve(max){
-  const sieve = new Uint8Array(max+1).fill(1);
-  sieve[0]=sieve[1]=0;
-  for(let i=2;i*i<=max;i++) if(sieve[i]) for(let j=i*i;j<=max;j+=i) sieve[j]=0;
-  const primes=[];
-  for(let i=2;i<=max;i++) if(sieve[i]) primes.push(i);
-  return primes;
-}
-
-function segmentedSieve(max, progressCb){
-  const sqrtMax = Math.ceil(Math.sqrt(max));
-  const small = simpleSieve(sqrtMax);
-  const primes = [];
-  const SEG = 1<<20;
-  for(let lo=0; lo<=max; lo+=SEG){
-    const hi = Math.min(lo+SEG-1, max);
-    const seg = new Uint8Array(hi-lo+1).fill(1);
-    for(const p of small){
-      let start = Math.max(p*p, Math.ceil(lo/p)*p);
-      for(let j=start; j<=hi; j+=p) seg[j-lo]=0;
-    }
-    for(let i=(lo<2?2:lo); i<=hi; i++) if(seg[i-lo]) primes.push(i);
-    if(progressCb) progressCb(hi, max);
-  }
-  return primes;
-}
-
-// ── Core analysis ───────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 function knownZeta(s){
-  const k = {2:Math.PI**2/6, 4:Math.PI**4/90, 6:Math.PI**6/945, 8:Math.PI**8/9450, 10:Math.PI**10/93555};
-  return k[Math.round(s*100)/100] || null;
+  const t={2:Math.PI*Math.PI/6, 4:Math.PI**4/90, 6:Math.PI**6/945,
+           8:Math.PI**8/9450, 10:Math.PI**10/93555};
+  const key=Math.round(s*100)/100;
+  return t[key]||null;
 }
 
-function gdCompute(maxN, s, filter, progressCb){
-  const primes = maxN < 5e6 ? simpleSieve(maxN) : segmentedSieve(maxN, progressCb);
+// ── Bitpacked segmented sieve of Eratosthenes ─────────────────
+// Returns gap counts {gapSize: count} and total prime count.
+// Does NOT store prime values to keep memory tiny.
+function bitpackedSieve(max, s){
+  const sqrtMax = Math.ceil(Math.sqrt(max));
 
-  let target = knownZeta(s);
-  if(!target) target = primes.reduce((p, pr) => p * Math.pow(pr,s)/(Math.pow(pr,s)-1), 1);
+  // ── Phase 1: small sieve up to sqrt(max) ──
+  // Regular Uint8Array is fine here — sqrt(400M) ≈ 20000 numbers
+  const smallArr = new Uint8Array(sqrtMax+1).fill(1);
+  smallArr[0]=smallArr[1]=0;
+  for(let i=2;i*i<=sqrtMax;i++) if(smallArr[i]) for(let j=i*i;j<=sqrtMax;j+=i) smallArr[j]=0;
+  const smallPrimes=[];
+  for(let i=2;i<=sqrtMax;i++) if(smallArr[i]) smallPrimes.push(i);
 
-  const gapFamilies = {};
-  for(let i=0; i<primes.length-1; i++){
-    const g = primes[i+1]-primes[i];
-    if(!gapFamilies[g]) gapFamilies[g]=[];
-    gapFamilies[g].push(primes[i]);
+  // ── Phase 2: segmented sieve, collect stats only ──
+  const SEG  = 1 << 19;  // 512K numbers per segment (512KB bitfield = 64KB)
+  // Bitfield: bit k represents odd number (segLo + 2k+1), index 0 = 2 (special)
+  // We handle 2 separately.
+
+  let gapCounts = {};       // gap -> count
+  let totalPrimes = 0;
+  let logSum = {};          // gap -> sum of log(p^s/(p^s-1)) for ζ product
+  let logTotal = 0;
+
+  let prevPrime = 2;        // last prime seen across segments
+  totalPrimes = 1;          // count 2
+
+  // Prime 2 doesn't form a gap yet — next prime will close gap from 2
+
+  for(let lo = 3; lo <= max; lo += SEG){
+    const hi  = Math.min(lo + SEG - 1, max);
+    const len = (hi - lo) >> 1;  // number of odd numbers in [lo,hi]
+
+    // Bitfield: 1 = prime candidate, 0 = composite
+    // We use Uint32Array for speed
+    const words = (len >> 5) + 1;
+    const sieveArr = new Uint32Array(words).fill(0xFFFFFFFF);
+
+    // Mark composites
+    for(let pi=0; pi<smallPrimes.length; pi++){
+      const p = smallPrimes[pi];
+      if(p === 2) continue;
+      // First odd multiple of p >= lo
+      let startVal = Math.ceil(lo / p) * p;
+      if((startVal & 1) === 0) startVal += p;  // must be odd
+      if(startVal < p*p) startVal = p*p;
+      if((startVal & 1) === 0) startVal += p;
+      for(let v = startVal; v <= hi; v += 2*p){
+        const idx = (v - lo) >> 1;
+        sieveArr[idx >> 5] &= ~(1 << (idx & 31));
+      }
+    }
+
+    // Sweep the bitfield and record gaps
+    for(let k = 0; k <= len; k++){
+      if(sieveArr[k >> 5] & (1 << (k & 31))){
+        const p = lo + (k << 1);
+        if(p > max) break;
+        totalPrimes++;
+        const gap = p - prevPrime;
+        gapCounts[gap] = (gapCounts[gap]||0) + 1;
+        // Accumulate log factor for ζ product
+        const ps = Math.pow(p, s);
+        const lf = Math.log(ps / (ps - 1));
+        logSum[gap] = (logSum[gap]||0) + lf;
+        logTotal += lf;
+        prevPrime = p;
+      }
+    }
+
+    // Progress report every segment
+    const pct = ((hi / max) * 100) | 0;
+    self.postMessage({ type:'progress', pct, cur:hi, max,
+                       primes:totalPrimes, gaps: Object.keys(gapCounts).length });
   }
 
-  let gaps = Object.keys(gapFamilies).map(Number).sort((a,b)=>a-b);
+  // Factor in prime 2 into ζ product
+  const p2s = Math.pow(2, s);
+  const lf2 = Math.log(p2s / (p2s - 1));
 
-  if(filter==='tiny')   gaps = gaps.filter(g=>g>=2&&g<=10);
-  if(filter==='small')  gaps = gaps.filter(g=>g>=2&&g<=30);
-  if(filter==='medium') gaps = gaps.filter(g=>g>=20&&g<=80);
-  if(filter==='large')  gaps = gaps.filter(g=>g>=50&&g<=200);
-
-  const gapProducts = {};
-  let totalLog = 0;
-  gaps.forEach(g=>{
-    const ps = gapFamilies[g];
-    if(!ps||!ps.length) return;
-    let prod=1, logProd=0;
-    ps.forEach(p=>{
-      const ps_s = Math.pow(p,s);
-      const fac = ps_s/(ps_s-1);
-      prod *= fac; logProd += Math.log(fac);
-    });
-    gapProducts[g] = { product:prod, logProduct:logProd, count:ps.length };
-    totalLog += logProd;
-  });
-
-  // Convergence steps
-  const conv = [];
-  let cum = 1, prevCum = 1;
-  gaps.forEach((g,idx)=>{
-    if(!gapProducts[g]) return;
-    prevCum = cum;
-    cum *= gapProducts[g].product;
-    const relErr = Math.abs(cum-target)/target;
-    const pi_est = s >= 1.99 && s <= 2.01 ? Math.sqrt(6*cum) : null;
-    const delta = cum - prevCum;
-    conv.push({ gap:g, value:cum, relErr, prevErr: idx>0?conv[idx-1]?.relErr??null:null,
-                pi_est, delta, logProduct:gapProducts[g].logProduct, step:idx+1 });
-  });
-
-  const c2 = gapFamilies[2]?.length||0;
-  const c4 = gapFamilies[4]?.length||0;
-  const c6 = gapFamilies[6]?.length||0;
-
-  let mostCommon = gaps[0], mcCount = 0;
-  gaps.forEach(g=>{ if((gapFamilies[g]?.length||0)>mcCount){ mcCount=gapFamilies[g].length; mostCommon=g; }});
-
-  const finalErr = Math.abs(cum-target)/target;
-  const pi_calc = (s >= 1.99 && s <= 2.01) ? Math.sqrt(6*cum) : null;
-
-  // Build gap→index map for color assignment
-  gapIndexMap = {};
-  gaps.forEach((g,i) => { gapIndexMap[g] = i; });
-
-  return { primes, gaps, gapFamilies, gapProducts, conv, target, totalLog,
-           finalProduct:cum, finalError:finalErr, s, maxN,
-           c2,c4,c6, mostCommon, mcCount, pi_calc };
+  return { gapCounts, logSum, logTotal: logTotal + lf2, totalPrimes };
 }
 
-// ── Run ─────────────────────────────────────
+// ── Analysis pass: compute ζ product and convergence ─────────
+function analyse(gapCounts, logSum, logTotal, s, filter, totalPrimes){
+  let target = knownZeta(s);
+  // If not a known value, estimate from the log product we accumulated
+  const expProduct = Math.exp(logTotal);
+  if(!target) target = expProduct;
+
+  let gaps = Object.keys(gapCounts).map(Number).sort((a,b)=>a-b);
+
+  if(filter==='tiny')   gaps=gaps.filter(g=>g>=2&&g<=10);
+  if(filter==='small')  gaps=gaps.filter(g=>g>=2&&g<=30);
+  if(filter==='medium') gaps=gaps.filter(g=>g>=20&&g<=80);
+  if(filter==='large')  gaps=gaps.filter(g=>g>=50&&g<=200);
+
+  // For each gap, compute individual product from stored log sums
+  const gapProducts = {};
+  gaps.forEach(g=>{
+    const cnt  = gapCounts[g]||0;
+    const lp   = logSum[g]||0;
+    const prod = Math.exp(lp);
+    gapProducts[g] = { product:prod, logProduct:lp, count:cnt };
+  });
+
+  // Cumulative ζ product over gaps (convergence steps)
+  const conv = [];
+  let cum = 1;
+  // Start with the contribution of prime 2
+  const p2s = Math.pow(2, s);
+  cum = p2s / (p2s - 1);
+
+  gaps.forEach((g, idx)=>{
+    const gp = gapProducts[g];
+    if(!gp) return;
+    const prevCum = cum;
+    cum *= gp.product;
+    const relErr = Math.abs(cum - target) / target;
+    const pi_est = (s>=1.99&&s<=2.01) ? Math.sqrt(6*cum) : null;
+    conv.push({ gap:g, value:cum, relErr,
+                pi_est, delta:cum-prevCum,
+                logProduct:gp.logProduct, step:idx+1 });
+  });
+
+  const c2 = gapCounts[2]||0;
+  const c4 = gapCounts[4]||0;
+  const c6 = gapCounts[6]||0;
+  let mostCommon=gaps[0]||2, mcCount=0;
+  gaps.forEach(g=>{ if((gapCounts[g]||0)>mcCount){ mcCount=gapCounts[g]; mostCommon=g; }});
+
+  const finalProduct = cum;
+  const finalError   = Math.abs(cum - target) / target;
+  const pi_calc      = (s>=1.99&&s<=2.01) ? Math.sqrt(6*cum) : null;
+  const totalLog     = Object.values(logSum).reduce((a,b)=>a+b, 0);
+
+  return { gaps, gapCounts, gapProducts, conv, target, totalLog,
+           finalProduct, finalError, s,
+           c2, c4, c6, mostCommon, mcCount, pi_calc, totalPrimes };
+}
+
+// ── Worker message handler ────────────────────────────────────
+self.onmessage = function(e){
+  const { maxN, s, filter } = e.data;
+  try {
+    self.postMessage({ type:'status', msg:'Sieving primes…' });
+    const { gapCounts, logSum, logTotal, totalPrimes } =
+          bitpackedSieve(maxN, s);
+
+    self.postMessage({ type:'status', msg:'Analysing gaps…' });
+    const result = analyse(gapCounts, logSum, logTotal, s, filter, totalPrimes);
+    result.maxN = maxN;
+
+    self.postMessage({ type:'done', result });
+  } catch(err){
+    self.postMessage({ type:'error', msg: err.message });
+  }
+};
+`;
+
+// ── Worker lifecycle ──────────────────────────────────────────
+let _gdWorker = null;
+
+function gdAbort(){
+  if(_gdWorker){ _gdWorker.terminate(); _gdWorker=null; }
+  document.getElementById('gdRunBtn').disabled = false;
+  document.getElementById('gdAbortBtn').style.display = 'none';
+  document.getElementById('gdProgress').style.display = 'none';
+  document.getElementById('gdStatus').textContent = 'Computation stopped.';
+}
+
 function gdRun(){
   const maxN = parseInt(document.getElementById('gdN').value);
-  const s = parseFloat(document.getElementById('gdS').value);
+  const s    = parseFloat(document.getElementById('gdS').value);
   const filter = gdFilter;
 
-  if(maxN > 300000000){
-    document.getElementById('gdStatus').textContent = ' Max N is 300,000,000 (browser limit).';
+  if(maxN > 400000000){
+    document.getElementById('gdStatus').textContent = '⚠ Max N is 400,000,000.';
+    return;
+  }
+  if(maxN < 100){
+    document.getElementById('gdStatus').textContent = '⚠ N must be at least 100.';
     return;
   }
 
-  document.getElementById('gdStatus').textContent = 'Sieving primes…';
-  document.getElementById('gdRunBtn').disabled = true;
-  document.getElementById('gdProgress').style.display = 'block';
-  document.getElementById('gdProgressFill').style.width = '0%';
+  // Abort any running worker
+  if(_gdWorker){ _gdWorker.terminate(); _gdWorker=null; }
 
-  setTimeout(()=>{
-    try {
-      const progressCb = (cur, max)=>{
-        const pct = Math.min(99, (cur/max*100)).toFixed(0);
-        document.getElementById('gdProgressFill').style.width = pct+'%';
-        document.getElementById('gdStatus').textContent = `Sieving… ${pct}%  (${cur.toLocaleString()} / ${max.toLocaleString()})`;
+  const statusEl  = document.getElementById('gdStatus');
+  const runBtn    = document.getElementById('gdRunBtn');
+  const abortBtn  = document.getElementById('gdAbortBtn');
+  const progWrap  = document.getElementById('gdProgress');
+  const progFill  = document.getElementById('gdProgressFill');
+
+  runBtn.disabled = true;
+  abortBtn.style.display = 'inline-block';
+  progWrap.style.display = 'block';
+  progFill.style.width = '0%';
+  statusEl.textContent = 'Starting worker…';
+
+  // Build worker from blob URL
+  const blob   = new Blob([WORKER_SRC], { type:'application/javascript' });
+  const url    = URL.createObjectURL(blob);
+  _gdWorker    = new Worker(url);
+  URL.revokeObjectURL(url);  // safe to revoke immediately
+
+  _gdWorker.onmessage = function(e){
+    const d = e.data;
+    if(d.type === 'progress'){
+      const pct = Math.min(99, d.pct);
+      progFill.style.width = pct+'%';
+      statusEl.textContent =
+        `Sieving ${pct}%  — ${d.cur.toLocaleString()} / ${d.max.toLocaleString()}`+
+        `  | primes: ${d.primes.toLocaleString()}`+
+        `  | gap families: ${d.gaps}`;
+    } else if(d.type === 'status'){
+      statusEl.textContent = d.msg;
+    } else if(d.type === 'done'){
+      _gdWorker.terminate(); _gdWorker=null;
+      runBtn.disabled = false;
+      abortBtn.style.display = 'none';
+      progFill.style.width = '100%';
+      setTimeout(()=>{ progWrap.style.display='none'; }, 500);
+
+      // Unpack result — worker sends counts only, no prime arrays
+      const r = d.result;
+
+      // Rebuild gapFamilies shim: downstream code reads .length from gapFamilies[g]
+      // We store a lightweight proxy: { length: count } per gap
+      const gapFamilies = {};
+      r.gaps.forEach(g=>{
+        gapFamilies[g] = { length: r.gapCounts[g]||0 };
+      });
+
+      gdData = {
+        primes:        { length: r.totalPrimes },  // shim — no prime array stored
+        totalPrimes:   r.totalPrimes,              // direct field for convenience
+        gaps:          r.gaps,
+        gapFamilies,
+        gapProducts:   r.gapProducts,
+        conv:          r.conv,
+        target:        r.target,
+        totalLog:      r.totalLog,
+        finalProduct:  r.finalProduct,
+        finalError:    r.finalError,
+        s:             r.s,
+        maxN:          r.maxN,
+        c2:            r.c2,
+        c4:            r.c4,
+        c6:            r.c6,
+        mostCommon:    r.mostCommon,
+        mcCount:       r.mcCount,
+        pi_calc:       r.pi_calc,
+        gapCounts:     r.gapCounts,
+        _noRawPrimes:  true   // flag: raw prime array not available
       };
 
-      gdData = gdCompute(maxN, s, filter, progressCb);
+      // Rebuild gapIndexMap
+      gapIndexMap = {};
+      r.gaps.forEach((g,i)=>{ gapIndexMap[g]=i; });
 
-      document.getElementById('gdProgressFill').style.width = '100%';
-      setTimeout(()=>document.getElementById('gdProgress').style.display='none', 400);
-
-      const errPct = (gdData.finalError*100).toFixed(8);
-      document.getElementById('gdStatus').textContent =
-        ` N=${maxN.toLocaleString()} · ${gdData.primes.length.toLocaleString()} primes · `+
-        `${gdData.gaps.length} gap families · `+
-        `ζ(${s.toFixed(2)}) target=${gdData.target.toFixed(10)} · `+
-        `computed=${gdData.finalProduct.toFixed(10)} · err=${errPct}%`;
+      const errPct = (r.finalError*100).toFixed(8);
+      statusEl.textContent =
+        ` N=${r.maxN.toLocaleString()} · ${r.totalPrimes.toLocaleString()} primes · `+
+        `${r.gaps.length} gap families · `+
+        `ζ(${r.s.toFixed(2)}) target=${r.target.toFixed(8)} · `+
+        `computed=${r.finalProduct.toFixed(8)} · err=${errPct}%`;
 
       updateGdStats();
 
-      ['gdExportPNG','gdExportCSV','gdExportTXT'].forEach(id=>document.getElementById(id).style.display='inline-block');
-      document.getElementById('gdTabs').style.display='flex';
-      document.getElementById('gdStatsGrid').style.display='grid';
+      ['gdExportPNG','gdExportCSV','gdExportTXT'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.style.display='inline-block';
+      });
+      const tabs=document.getElementById('gdTabs');
+      if(tabs) tabs.style.display='flex';
+      const sg=document.getElementById('gdStatsGrid');
+      if(sg) sg.style.display='grid';
 
-      // Show big chart area + screenshot button
-      const chartArea = document.getElementById('gdChartArea');
+      const chartArea=document.getElementById('gdChartArea');
       if(chartArea) chartArea.style.display='block';
-      const chartBtn = document.getElementById('gdChartScreenshot');
+      const chartBtn=document.getElementById('gdChartScreenshot');
       if(chartBtn) chartBtn.style.display='inline-block';
 
-      // Open the gap accordion so user sees results
-      const accBody = document.getElementById('gapAccBody');
-      const accChev = document.getElementById('gapAccChev');
-      const accHdr  = document.getElementById('gapAccHeader');
+      const accBody=document.getElementById('gapAccBody');
+      const accChev=document.getElementById('gapAccChev');
+      const accHdr =document.getElementById('gapAccHeader');
       if(accBody && !accBody.classList.contains('open')){
         accBody.classList.add('open');
         if(accChev) accChev.classList.add('open');
         if(accHdr)  accHdr.classList.add('open');
       }
 
-      // Build gap chip selectors (panel + main area)
       buildGapChips();
-
-      // Build stats table and convergence table
       gdBuildTable();
       gdBuildConvTable();
-      document.getElementById('gdTableSection').style.display='block';
-      document.getElementById('gdConvSection').style.display='block';
+      const ts=document.getElementById('gdTableSection');
+      if(ts) ts.style.display='block';
+      const cs=document.getElementById('gdConvSection');
+      if(cs) cs.style.display='block';
 
-      // Recompute sphere with gap data — does NOT reset drawProgress
+      // Sphere recompute (gap channel colours only — no raw primes needed)
       precompute();
       invalidateCartBuf();
-
       gdResizeCanvas();
       gdDraw();
       gdUpdateRatioPanel();
 
-    } catch(e) {
-      document.getElementById('gdStatus').textContent = `Error: ${e.message}`;
-      console.error(e);
+    } else if(d.type === 'error'){
+      _gdWorker.terminate(); _gdWorker=null;
+      runBtn.disabled = false;
+      abortBtn.style.display = 'none';
+      progWrap.style.display = 'none';
+      statusEl.textContent = 'Error: '+d.msg;
+      console.error('Worker error:', d.msg);
     }
-    document.getElementById('gdRunBtn').disabled = false;
-  }, 20);
+  };
+
+  _gdWorker.onerror = function(err){
+    _gdWorker=null;
+    runBtn.disabled = false;
+    abortBtn.style.display = 'none';
+    progWrap.style.display = 'none';
+    statusEl.textContent = 'Worker error: '+err.message;
+  };
+
+  _gdWorker.postMessage({ maxN, s, filter });
 }
 
 function updateGdStats(){
@@ -4060,7 +4387,7 @@ function gdBuildTable(){
     gaps.forEach(gg=>{ if(gg<=g && gapProducts[gg]) cum*=gapProducts[gg].product; });
     return { g, count:gp.count, product:gp.product, logProduct:gp.logProduct,
              logShare, cumulative:cum, relErr:Math.abs(cum-target)/target,
-             pctPrimes:gp.count/(gdData.primes.length||1)*100, i };
+             pctPrimes:gp.count/((gdData.totalPrimes||gdData.primes.length)||1)*100, i };
   });
 
   if(sortBy==='count_desc') rows.sort((a,b)=>b.count-a.count);
@@ -4196,6 +4523,34 @@ function gdBuildConvTable(){
 // ═══════════════════════════════════════════════════════════════
 
 function buildRefinedWavePresets(){}
+
+// ═══════════════════════════════════════════════════════════════
+//  CANVAS SIZING
+// ═══════════════════════════════════════════════════════════════
+function gdResizeCanvas(){
+  const leftSidebar = window.innerWidth > 900 ? 320 : 0;
+  const sphereW = Math.min(window.innerWidth - leftSidebar - 80, 900);
+  const gapPanel = document.getElementById('gapWavePanel');
+
+  if(!gapPanel || gapPanel.classList.contains('gap-hidden')){
+    gdCanvas.width = Math.max(280, 400);
+  } else {
+    gdCanvas.width = Math.max(280, Math.floor((sphereW - 12) / 2));
+  }
+  gdCanvas.height = Math.max(200, Math.round(
+    document.getElementById('cartCanvas') ? document.getElementById('cartCanvas').height || 200 : 200
+  ));
+
+  // Big accordion chart canvas
+  const bigCv = document.getElementById('gdChartBig');
+  if(bigCv){
+    bigCv.width  = Math.max(400, sphereW);
+    bigCv.height = Math.round(bigCv.width * 0.45);
+  }
+
+  if(gdData) gdDraw();
+}
+gdResizeCanvas();
 
 // ═══════════════════════════════════════════════════════════════
 //  CHART DRAWING
@@ -5273,7 +5628,7 @@ PARAMETERS
 
 PRIME STATISTICS
   Total primes  = ${d.primes.length.toLocaleString()}
-  Max prime     = ${d.primes[d.primes.length-1].toLocaleString()}
+  Max prime     = ${d._noRawPrimes ? `~${d.maxN.toLocaleString()} (approx)` : d.primes[d.primes.length-1].toLocaleString()}
   Gap families  = ${d.gaps.length}
   Largest gap   = ${Math.max(...d.gaps)}
   Most common g = ${d.mostCommon} (${d.mcCount.toLocaleString()} times)
@@ -6212,8 +6567,9 @@ function updateCartProbe() {
 
   panel.style.display = 'block';
 
-  const primeIdx = pc ? Math.round((i / TOTAL_PTS) * (gdData ? gdData.primes.length - 1 : 0)) : 0;
-  const nearPrime = gdData ? gdData.primes[primeIdx] : null;
+  const nearPrime = (gdData && !gdData._noRawPrimes && Array.isArray(gdData.primes))
+    ? gdData.primes[Math.round((i / TOTAL_PTS) * (gdData.primes.length - 1))]
+    : null;
 
   const cells = [
     { lbl: 'θ',          val: `${(t / Math.PI).toFixed(5)}π` },
@@ -7369,6 +7725,472 @@ function zetaSyncTick() {
   }
 }
 zetaSyncTick();
+
+// ═══════════════════════════════════════════════════════════════
+//  GIF / WebM ROTATION EXPORT ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+(function gifExportModule() {
+"use strict";
+
+// ─── state ────────────────────────────────────────────────────
+let gifAxis      = 'Y';
+let gifExporting = false;
+let gifAborted   = false;
+let _mrChunks    = [];
+let _mrec        = null;
+
+// ─── modal open/close ─────────────────────────────────────────
+function openModal(){
+  document.getElementById('gifModalBackdrop').classList.add('open');
+  setStatus(''); resetProg();
+}
+function closeModal(){
+  if(gifExporting) return;
+  document.getElementById('gifModalBackdrop').classList.remove('open');
+}
+
+document.getElementById('btnExportGif').addEventListener('click', openModal);
+document.getElementById('gifModalClose').addEventListener('click', closeModal);
+document.getElementById('gifModalBackdrop').addEventListener('click', e=>{
+  if(e.target===document.getElementById('gifModalBackdrop') && !gifExporting) closeModal();
+});
+document.getElementById('gifCancelBtn').addEventListener('click', ()=>{
+  if(gifExporting){
+    gifAborted = true;
+    try{ if(_mrec && _mrec.state!=='inactive') _mrec.stop(); }catch(e){}
+  }
+  closeModal();
+});
+
+// ─── axis buttons ─────────────────────────────────────────────
+document.querySelectorAll('.gif-axis-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.gif-axis-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    gifAxis = btn.dataset.axis;
+  });
+});
+
+// hide/show GIF quality when format changes
+document.getElementById('gifFormat').addEventListener('change', function(){
+  document.getElementById('gifQualityWrap').style.display = this.value==='gif' ? '' : 'none';
+});
+
+// ─── UI helpers ───────────────────────────────────────────────
+function setStatus(msg){ document.getElementById('gifStatus').textContent = msg; }
+function setProg(pct){
+  document.getElementById('gifProgressBar').style.width = Math.min(100,pct).toFixed(1)+'%';
+}
+function showProg(){ document.getElementById('gifProgressWrap').style.display = ''; }
+function resetProg(){ setProg(0); document.getElementById('gifProgressWrap').style.display='none'; }
+function setGoBtn(dis, lbl){ const b=document.getElementById('gifGoBtn'); b.disabled=dis; b.textContent=lbl; }
+function yieldFrame(){ return new Promise(r=>setTimeout(r,0)); }
+
+// ─── main export dispatcher ───────────────────────────────────
+document.getElementById('gifGoBtn').addEventListener('click', async()=>{
+  if(gifExporting) return;
+  gifExporting = true;
+  gifAborted   = false;
+
+  const format    = document.getElementById('gifFormat').value;
+  const res       = parseInt(document.getElementById('gifRes').value);
+  const dur       = Math.max(2, parseInt(document.getElementById('gifDuration').value)||6);
+  const fps       = parseInt(document.getElementById('gifFps').value);
+  const quality   = Math.max(1, parseInt(document.getElementById('gifQuality').value)||4);
+  const rotDeg    = parseFloat(document.getElementById('gifRotSpeed').value)||2;
+  const axis      = gifAxis;
+
+  setGoBtn(true,'⏳ Rendering…');
+  showProg();
+  setStatus(`Preparing ${res}×${res} @ ${fps}fps…`);
+
+  try {
+    if(format==='webm') await doWebM(res, fps, dur, rotDeg, axis);
+    else                await doGIF (res, fps, dur, rotDeg, axis, quality);
+  } catch(err){
+    if(!gifAborted) setStatus('Error: '+err.message);
+    console.error(err);
+  } finally {
+    gifExporting = false;
+    setGoBtn(false,'▶ Export');
+    if(!gifAborted) setStatus('✓ Done — check your downloads!');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  FRAME RENDERER — draws one sphere frame into a fresh canvas
+// ═══════════════════════════════════════════════════════════════
+function buildFrame(res, mat){
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = res;
+  const ctx = cv.getContext('2d');
+  const mid = res/2;
+  const SR  = res * 0.42;   // sphere radius in px
+
+  // dark background
+  ctx.fillStyle = '#060608';
+  ctx.fillRect(0,0,res,res);
+
+  // perspective projection into frame
+  function proj(rx,ry,rz){
+    const fov=2.8, s=fov/(fov-rz);
+    return [mid + rx*SR*s*zoomLevel, mid - ry*SR*s*zoomLevel];
+  }
+
+  // ── grid ──
+  for(let li=-2; li<=2; li++){
+    const lat=(li/3)*Math.PI/2, cl=Math.cos(lat), sl=Math.sin(lat);
+    const belt=(li===0);
+    ctx.lineWidth = belt ? 1.6 : 0.7;
+    ctx.beginPath(); let first=true;
+    for(let lo=0; lo<=Math.PI*2+0.05; lo+=0.05){
+      const [rx,ry,rz]=applyM(mat, cl*Math.cos(lo), sl, cl*Math.sin(lo));
+      const [px,py]=proj(rx,ry,rz);
+      ctx.globalAlpha=Math.max(0.07,0.08+(rz+1)*0.14);
+      ctx.strokeStyle=belt?'#5ebd78':'#3a7040';
+      first?(ctx.moveTo(px,py),first=false):ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  ctx.lineWidth=0.7;
+  for(let lo=0;lo<8;lo++){
+    const lon=(lo/8)*Math.PI*2, cl2=Math.cos(lon), sl2=Math.sin(lon);
+    ctx.beginPath(); let first=true;
+    for(let la=-Math.PI/2; la<=Math.PI/2+0.05; la+=0.06){
+      const [rx,ry,rz]=applyM(mat, Math.cos(la)*cl2, Math.sin(la), Math.cos(la)*sl2);
+      const [px,py]=proj(rx,ry,rz);
+      ctx.globalAlpha=Math.max(0.06,0.07+(rz+1)*0.12);
+      ctx.strokeStyle='#3a7040';
+      first?(ctx.moveTo(px,py),first=false):ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  // ── curve ──
+  const end=Math.floor(drawProgress);
+  if(end>=2){
+    ctx.lineWidth=Math.max(1.2, traceThickness*(res/600));
+    for(let i=1;i<end;i++){
+      const p0=precomputed[i-1], p1=precomputed[i];
+      if(!p0||!p1) continue;
+      const [rx1,ry1,rz1]=applyM(mat,p0[0],p0[1],p0[2]);
+      const [rx2,ry2,rz2]=applyM(mat,p1[0],p1[1],p1[2]);
+      const [px1,py1]=proj(rx1,ry1,rz1);
+      const [px2,py2]=proj(rx2,ry2,rz2);
+      const frac=i/TOTAL_PTS;
+      const gap=p1[4];
+      const selCol=gap!==null?selectedGaps.get(gap):undefined;
+      if(selCol){ ctx.strokeStyle=selCol; }
+      else if(harmColorMode){ ctx.strokeStyle=harmColorForProgress(frac)||`hsl(${295+frac*40},100%,55%)`; }
+      else { const avgZ=(rz1+rz2)*0.5; ctx.strokeStyle=`hsl(${295+frac*40},100%,${48+avgZ*22}%)`; }
+      ctx.globalAlpha=0.84;
+      ctx.beginPath(); ctx.moveTo(px1,py1); ctx.lineTo(px2,py2); ctx.stroke();
+    }
+    // centre glow
+    const [crx,cry,crz]=applyM(mat,0,0,0);
+    const [cx,cy]=proj(crx,cry,crz);
+    ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.arc(cx,cy,Math.max(3,res*0.004),0,Math.PI*2);
+    ctx.fillStyle='#ffd700'; ctx.shadowColor='#ffd700'; ctx.shadowBlur=20;
+    ctx.fill(); ctx.shadowBlur=0;
+  }
+
+  // ── watermark ──
+  ctx.fillStyle='rgba(232,197,71,.3)';
+  ctx.font=`${Math.round(res*0.014)}px JetBrains Mono,monospace`;
+  ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.globalAlpha=1;
+  ctx.fillText(`f(θ)=${A}+sin(${B}θ)·sin(${C}θ/${D}) · Wessen Getachew`, res-16, res-10);
+
+  return cv;
+}
+
+// ─── Build rotation matrix for a given axis+cumulative degrees ─
+function rotatedMat(base, axis, cumDeg){
+  const r = cumDeg * Math.PI / 180;
+  if(axis==='X') return mmul(mrotX(r), base);
+  if(axis==='Y') return mmul(mrotY(r), base);
+  if(axis==='Z') return mmul(mrotZ(r), base);
+  return base; // should not happen — XYZ handled per-frame
+}
+
+// ─── axis sequence for XYZ mode ───────────────────────────────
+function axisForFrame(axis, f, total){
+  if(axis!=='XYZ') return axis;
+  const seg = Math.floor(total/3);
+  if(f < seg)         return 'X';
+  if(f < seg*2)       return 'Y';
+  return 'Z';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  WebM EXPORT  (full colour, MediaRecorder)
+// ═══════════════════════════════════════════════════════════════
+async function doWebM(res, fps, dur, rotDeg, axis){
+  if(!window.MediaRecorder){ throw new Error('MediaRecorder not supported in this browser. Try Chrome/Edge.'); }
+
+  const totalFrames = Math.ceil(fps * dur);
+  const offCv = document.createElement('canvas');
+  offCv.width = offCv.height = res;
+  const offCtx = offCv.getContext('2d');
+
+  const types=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  const mime  = types.find(t=>MediaRecorder.isTypeSupported(t))||'video/webm';
+
+  const stream = offCv.captureStream(fps);
+  _mrChunks=[]; _mrec = new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond:60_000_000});
+  _mrec.ondataavailable = e=>{ if(e.data.size>0) _mrChunks.push(e.data); };
+
+  const whenDone = new Promise((ok,fail)=>{
+    _mrec.onstop  = ok;
+    _mrec.onerror = e=>fail(e.error||new Error('MediaRecorder error'));
+  });
+  _mrec.start(100); // collect chunks every 100 ms
+
+  const baseM = rotMat.slice();
+  let cumDeg = 0;
+
+  for(let f=0; f<totalFrames; f++){
+    if(gifAborted) break;
+    const ax  = axisForFrame(axis, f, totalFrames);
+    const mat = rotatedMat(baseM, ax, cumDeg);
+    cumDeg += rotDeg;
+    const frame = buildFrame(res, mat);
+    offCtx.clearRect(0,0,res,res);
+    offCtx.drawImage(frame,0,0);
+    setStatus(`WebM: frame ${f+1} / ${totalFrames}`);
+    setProg((f+1)/totalFrames*88);
+    await yieldFrame();
+  }
+
+  _mrec.stop();
+  setStatus('Finalising WebM…'); setProg(92);
+  await whenDone;
+
+  if(gifAborted) return;
+  const blob = new Blob(_mrChunks,{type:mime});
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'),{href:url, download:`sphere_rot_${axis}_${res}p.webm`});
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),8000);
+  setProg(100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GIF EXPORT  (pure-JS, no network required)
+// ═══════════════════════════════════════════════════════════════
+async function doGIF(res, fps, dur, rotDeg, axis, quality){
+  // Cap frames — GIF at 4K with many frames is huge; warn + cap
+  const maxFrames = 120;
+  const totalFrames = Math.min(Math.ceil(fps*dur), maxFrames);
+  const delayCS = Math.round(100/fps); // centiseconds per frame
+
+  setStatus(`Building ${totalFrames} frames…`);
+  const baseM = rotMat.slice();
+  const pixelData = [];
+  let cumDeg = 0;
+
+  for(let f=0; f<totalFrames; f++){
+    if(gifAborted) return;
+    const ax  = axisForFrame(axis, f, totalFrames);
+    const mat = rotatedMat(baseM, ax, cumDeg);
+    cumDeg += rotDeg;
+    const cv  = buildFrame(res, mat);
+    pixelData.push(cv.getContext('2d').getImageData(0,0,res,res).data);
+    setProg((f+1)/totalFrames*55);
+    setStatus(`Frame ${f+1}/${totalFrames}`);
+    if(f%5===4) await yieldFrame();
+  }
+
+  if(gifAborted) return;
+  setStatus('Quantising colours…'); setProg(58);
+  await yieldFrame();
+
+  const bytes = buildGIF89a(pixelData, res, res, delayCS, quality);
+  setProg(98);
+
+  if(gifAborted) return;
+  const blob = new Blob([bytes],{type:'image/gif'});
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'),{href:url, download:`sphere_rot_${axis}_${res}p.gif`});
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),8000);
+  setProg(100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GIF89a ENCODER  (median-cut quantiser + LZW)
+// ═══════════════════════════════════════════════════════════════
+function buildGIF89a(frames, W, H, delayCS, quality){
+  const N = 256; // palette size
+
+  // ── Median-cut colour quantiser ─────────────────────────────
+  function quantiseFrame(rgba){
+    const nPx = W*H;
+    // Sample every (quality)th pixel for speed
+    const step = Math.max(1, quality);
+    const sample = [];
+    for(let i=0;i<nPx;i+=step){
+      const o=i*4;
+      sample.push([rgba[o],rgba[o+1],rgba[o+2]]);
+    }
+
+    // Build palette via median cut
+    function medianCut(colors, depth){
+      if(depth===0 || colors.length===0) return [averageColor(colors)];
+      // Find channel with greatest range
+      let minR=255,maxR=0,minG=255,maxG=0,minB=255,maxB=0;
+      for(const [r,g,b] of colors){
+        if(r<minR)minR=r; if(r>maxR)maxR=r;
+        if(g<minG)minG=g; if(g>maxG)maxG=g;
+        if(b<minB)minB=b; if(b>maxB)maxB=b;
+      }
+      const rR=maxR-minR, rG=maxG-minG, rB=maxB-minB;
+      let ch=0;
+      if(rG>rR&&rG>=rB) ch=1;
+      else if(rB>rR&&rB>rG) ch=2;
+      colors.sort((a,b)=>a[ch]-b[ch]);
+      const mid=colors.length>>1;
+      return [
+        ...medianCut(colors.slice(0,mid),depth-1),
+        ...medianCut(colors.slice(mid),  depth-1)
+      ];
+    }
+    function averageColor(colors){
+      if(!colors.length) return [0,0,0];
+      let r=0,g=0,b=0;
+      for(const [cr,cg,cb] of colors){r+=cr;g+=cg;b+=cb;}
+      const n=colors.length;
+      return [r/n|0, g/n|0, b/n|0];
+    }
+
+    const depth = Math.log2(N)|0; // 8 for 256 colours
+    const palette = medianCut(sample, depth);
+    // Ensure exactly N entries
+    while(palette.length<N) palette.push([0,0,0]);
+    palette.length=N;
+
+    // Build index map: nearest-neighbour lookup via kd-approximation
+    // For speed, use a flat 3D grid (6 bits per channel = 18 bits)
+    const BITS=6, BINS=1<<BITS;
+    const grid = new Int16Array(BINS*BINS*BINS).fill(-1);
+    function gridIdx(r,g,b){ return ((r>>2)*BINS+(g>>2))*BINS+(b>>2); }
+
+    palette.forEach(([r,g,b],i)=>{ grid[gridIdx(r,g,b)]=i; });
+
+    function nearest(r,g,b){
+      let best=1e9, bi=0;
+      for(let i=0;i<N;i++){
+        const [pr,pg,pb]=palette[i];
+        const d=(r-pr)**2+(g-pg)**2+(b-pb)**2;
+        if(d<best){best=d;bi=i;if(d===0)break;}
+      }
+      return bi;
+    }
+
+    // Map pixels to indices
+    const indices = new Uint8Array(nPx);
+    for(let i=0;i<nPx;i++){
+      const o=i*4;
+      indices[i]=nearest(rgba[o],rgba[o+1],rgba[o+2]);
+    }
+
+    return {palette, indices};
+  }
+
+  // ── LZW encoder ─────────────────────────────────────────────
+  function lzwEncode(indices){
+    const minLZW = 8; // GIF spec: min code size for 256-colour palette
+    const clearCode = 1<<minLZW, eoi = clearCode+1;
+    let codeSize = minLZW+1, maxCode = 1<<codeSize;
+    const out=[]; let buf=0, bits=0;
+
+    function emit(code){
+      buf|=code<<bits; bits+=codeSize;
+      while(bits>=8){ out.push(buf&0xff); buf>>=8; bits-=8; }
+    }
+    function reset(){
+      table={}; nextCode=eoi+1; codeSize=minLZW+1; maxCode=1<<codeSize;
+    }
+
+    let table={}, nextCode=eoi+1;
+    emit(clearCode);
+    let prefix=indices[0];
+
+    for(let i=1;i<indices.length;i++){
+      const cur=indices[i];
+      const key=(prefix<<8)|cur;
+      if(table[key]!==undefined){
+        prefix=table[key];
+      } else {
+        emit(prefix);
+        if(nextCode<4096){
+          table[key]=nextCode++;
+          if(nextCode>maxCode && codeSize<12){ codeSize++; maxCode<<=1; }
+        } else {
+          emit(clearCode); reset();
+        }
+        prefix=cur;
+      }
+    }
+    emit(prefix);
+    emit(eoi);
+    if(bits>0) out.push(buf&0xff);
+    return out;
+  }
+
+  // ── Assemble GIF bytes ───────────────────────────────────────
+  const out=[];
+  const push=b=>out.push(b);
+  const pushArr=a=>a.forEach(b=>out.push(b));
+  const pushStr=s=>{ for(let i=0;i<s.length;i++) out.push(s.charCodeAt(i)); };
+  const word=v=>[v&0xff,(v>>8)&0xff];
+
+  // Header
+  pushStr('GIF89a');
+  pushArr(word(W)); pushArr(word(H));
+  push(0x70); push(0); push(0); // no global colour table; bg=0; aspect=0
+
+  // NETSCAPE looping extension (loop forever)
+  pushArr([0x21,0xff,0x0b]); pushStr('NETSCAPE2.0');
+  pushArr([0x03,0x01,0x00,0x00,0x00]);
+
+  // Frames
+  for(let fi=0;fi<frames.length;fi++){
+    const {palette, indices} = quantiseFrame(frames[fi]);
+
+    // Graphics control extension (delay + disposal)
+    push(0x21); push(0xf9); push(0x04);
+    push(0x04); // disposal=2 (restore to bg), no user input, no transparent
+    pushArr(word(delayCS));
+    push(0); push(0); // transparent index (unused)
+
+    // Image descriptor
+    push(0x2c);
+    pushArr([0,0,0,0]); // left=0,top=0
+    pushArr(word(W)); pushArr(word(H));
+    push(0x80|7); // local colour table present, size=256 (2^(7+1)=256)
+
+    // Local colour table (R,G,B × 256)
+    for(let i=0;i<N;i++){ const [r,g,b]=palette[i]; push(r);push(g);push(b); }
+
+    // Image data: min LZW code size, then blocks
+    push(8); // minLZW=8
+    const lzw = lzwEncode(indices);
+    for(let i=0;i<lzw.length;i+=255){
+      const chunk=lzw.slice(i,i+255);
+      push(chunk.length);
+      pushArr(chunk);
+    }
+    push(0); // block terminator
+  }
+
+  push(0x3b); // GIF trailer
+  return new Uint8Array(out);
+}
+
+})(); // end gifExportModule
 
 </script>
 </body>
