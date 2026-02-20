@@ -397,6 +397,29 @@
   .abstract     { animation: fadeUp 0.7s ease 0.15s both; }
   main          { animation: fadeUp 0.7s ease 0.25s both; }
 
+  /* ── Tool link flash ── */
+  @keyframes toolFlash {
+    0%, 100% { color: var(--gold); box-shadow: none; background: transparent; }
+    50%       { color: var(--paper); background: var(--gold); box-shadow: 0 0 12px rgba(139,105,20,0.55); }
+  }
+  .tool-link {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    animation: toolFlash 1.4s ease-in-out infinite;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    transition: none;
+  }
+  .tool-link:hover {
+    animation-play-state: paused;
+    color: var(--paper) !important;
+    background: var(--gold);
+    box-shadow: 0 0 16px rgba(139,105,20,0.7);
+  }
+
   /* ── Print ── */
   @media print {
     body { padding: 40px; font-size: 11pt; }
@@ -414,10 +437,7 @@
   <h1 class="paper-title">Gap-Class Decomposition<br>of ζ(2) = π²/6</h1>
   <p class="paper-subtitle">A partition of the Euler product by prime gap families</p>
   <p style="margin-top:10px;font-size:0.85rem;font-family:'JetBrains Mono',monospace;">
-    <a href="https://wessengetachew.github.io/Quant/" target="_blank"
-       style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(139,105,20,0.35);padding-bottom:1px;transition:border-color 0.2s"
-       onmouseover="this.style.borderColor='var(--gold)'"
-       onmouseout="this.style.borderColor='rgba(139,105,20,0.35)'">
+    <a href="https://wessengetachew.github.io/Quant/" target="_blank" rel="noopener" class="tool-link">
       → Explore the interactive analysis tool
     </a>
   </p>
