@@ -452,15 +452,15 @@
 
 <div class="abstract">
   <div class="abstract-label">Abstract</div>
-  The Euler product for ζ(2) = π²/6 is ordinarily indexed by primes. We
-  reindex it by prime gap size, grouping each prime with others that share
-  the same forward gap. This yields a family of sub-products
+  The Euler product for ζ(2) = π²/6 is ordinarily indexed by primes. This
+  paper reindexes it by prime gap size, grouping each prime with others that
+  share the same forward gap. The construction yields a family of sub-products
   <em>P<sub>g</sub></em>, one per gap class, whose full product recovers ζ(2).
-  We show that twin primes (gap 2) account for 34.79% of log ζ(2) — second
-  only to the prime 2 itself — and that the Hardy-Littlewood singular series,
-  classically a density prediction for prime pairs, determines the asymptotic
-  ratio of log-weights between any two gap classes. The framework extends to
-  ζ(s) for all Re(s) > 1.
+  It is shown that twin primes (gap 2) account for 34.79% of log ζ(2) —
+  second only to the prime 2 itself — and that the Hardy-Littlewood singular
+  series, classically a density prediction for prime pairs, determines the
+  asymptotic ratio of log-weights between any two gap classes. The framework
+  extends to ζ(s) for all Re(s) > 1.
 </div>
 
 <main>
@@ -484,7 +484,7 @@
 
 <p>
   The Euler product groups the contribution of each prime individually. This
-  paper asks a different question: what if we group primes by the <em>gap</em>
+  paper asks a different question: what if primes are grouped by the <em>gap</em>
   to the next prime? Twin primes (gap 2), cousin primes (gap 4), and sexy
   primes (gap 6) each form a natural family. What multiplicative weight does
   each family carry in ζ(2)?
@@ -495,8 +495,8 @@
   of its factors converges to the same limit. Grouping by gap class is therefore
   valid, and the resulting sub-products are well-defined. What is less obvious
   is what those sub-products look like numerically, how quickly they converge,
-  and whether their relative sizes have a theoretical explanation. That is what
-  this paper works out.
+  and whether their relative sizes admit a theoretical explanation. These
+  questions are addressed in the sections that follow.
 </p>
 
 <!-- ──────────────────────────────────────────── -->
@@ -761,11 +761,12 @@
 
 <p>
   Classically, S(g) is used as a density correction: it tells you how many
-  prime pairs of gap g to expect up to x. The sub-product framework puts S(g)
-  to a different use. Because the count of primes with gap g governs the size
-  of P<sub>g</sub>(s), and S(g) governs that count asymptotically, the singular
-  series ends up predicting the <em>ratio of log-weights</em> between gap
-  classes — a statement about the Euler product rather than a count of pairs.
+  prime pairs of gap g to expect up to x. The sub-product framework applies
+  S(g) in a different role. Because the count of primes with gap g governs
+  the size of P<sub>g</sub>(s), and S(g) governs that count asymptotically,
+  the singular series determines the <em>ratio of log-weights</em> between
+  gap classes — a statement about the Euler product rather than a count of
+  pairs.
 </p>
 
 <div class="theorem">
@@ -859,9 +860,10 @@
 
 <p>
   As s → ∞, the factor p<sup>s</sup>/(p<sup>s</sup>−1) → 1 for all primes p ≥ 3
-  faster than for p = 2, so P<sub>1</sub>(s) → 4/3 and all other
-  P<sub>g</sub>(s) → 1, with the product tending to 4/3 = 2<sup>s</sup>/(2<sup>s</sup>−1)
-  as the dominant term.
+  faster than for p = 2, so P<sub>1</sub>(s) → 4/3 while all other
+  P<sub>g</sub>(s) → 1. In the limit, the dominant contribution to ζ(s) is
+  the single factor 2<sup>s</sup>/(2<sup>s</sup>−1), with all remaining gap
+  classes contributing negligibly.
 </p>
 
 <!-- ──────────────────────────────────────────── -->
@@ -905,19 +907,19 @@
   of ζ(s) into sub-products P<sub>g</sub>(s), each associated with a named
   family of primes. The twin prime family dominates: gap 2 accounts for 34.79%
   of log ζ(2) at N = 400 million, and the proportion appears stable as N grows.
-  The Hardy-Littlewood singular series, applied to this setting, predicts the
+  The Hardy-Littlewood singular series, applied in this setting, predicts the
   ratio of log-weights between any two gap classes (Proposition 1) — a
-  consequence of Conjecture B that does not seem to have been noted before,
-  and one that is directly checkable against data.
+  consequence of Conjecture B that does not appear to have been noted
+  previously, and one that is directly verifiable against finite data.
 </p>
 
 <p>
-  The most interesting open problem may be Q4. If the analytic constraints
-  imposed by ζ(s) are strong enough to force P<sub>2</sub>(s) to be an
-  infinite product, that would be a new avenue toward the infinitude of twin
-  primes — distinct from sieve methods and independent of the Riemann
-  hypothesis. Whether the gap-class framework is rich enough to carry that
-  argument is not yet clear.
+  The most structurally significant open problem is Q4. If the analytic
+  constraints imposed by ζ(s) are incompatible with a finite twin prime
+  sub-product P<sub>2</sub>(s), the gap-class decomposition would yield a
+  new obstruction to the finiteness of twin primes — one independent of sieve
+  methods and of the Riemann hypothesis. Whether the analytic properties of
+  ζ(s) are strong enough to force this conclusion remains to be determined.
 </p>
 
 </main>
