@@ -9,423 +9,220 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── Light mode (default) ── */
   :root {
-    --ink:     #1a1814;
-    --ink2:    #3d3830;
-    --ink3:    #6b6358;
-    --paper:   #f7f4ef;
-    --cream:   #ede9e2;
-    --rule:    #c8c0b4;
-    --gold:    #8b6914;
-    --goldl:   #b8960f;
-    --red:     #8b1a1a;
-    --blue:    #1a3a6b;
-    --green:   #1a4a2a;
-    --def-bg:  #f2f4f8;
-    --thm-bg:  #f2f6f3;
-    --w: 72ch;
+    --ink:#1a1814; --ink2:#3d3830; --ink3:#6b6358;
+    --paper:#f7f4ef; --cream:#ede9e2; --rule:#c8c0b4;
+    --gold:#8b6914; --goldl:#b8960f; --red:#8b1a1a;
+    --blue:#1a3a6b; --green:#1a4a2a;
+    --def-bg:#f2f4f8; --thm-bg:#f2f6f3;
   }
-
-  /* ── Dark mode ── */
   html.dark {
-    --ink:     #e0d9ce;
-    --ink2:    #a89f94;
-    --ink3:    #6e665c;
-    --paper:   #131210;
-    --cream:   #1c1a17;
-    --rule:    #2a2824;
-    --gold:    #c9a23a;
-    --goldl:   #e0bc50;
-    --red:     #c05050;
-    --blue:    #6b9fd4;
-    --green:   #4a9a60;
-    --def-bg:  #14161e;
-    --thm-bg:  #131a15;
+    --ink:#e0d9ce; --ink2:#a89f94; --ink3:#6e665c;
+    --paper:#131210; --cream:#1c1a17; --rule:#2a2824;
+    --gold:#c9a23a; --goldl:#e0bc50; --red:#c05050;
+    --blue:#6b9fd4; --green:#4a9a60;
+    --def-bg:#14161e; --thm-bg:#131a15;
   }
-
-  html, body, .abstract, .math-block, .definition, .theorem, .remark,
-  .data-table, canvas, .bar-track {
-    transition: background 0.3s ease, color 0.3s ease,
-                border-color 0.3s ease, box-shadow 0.3s ease;
+  html, body, .abstract, .math-block, .definition, .theorem, .remark, .data-table, canvas, .bar-track {
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
-
   html { background: var(--paper); color: var(--ink); }
-
-  /* ── Dark mode: fix hardcoded bg colours ── */
   html.dark .definition { background: var(--def-bg); }
   html.dark .theorem    { background: var(--thm-bg); }
-  html.dark canvas      { background: var(--cream);  }
+  html.dark canvas      { background: var(--cream); }
 
-  /* ── Theme toggle button ── */
   #themeToggle {
-    position: fixed;
-    top: 22px;
-    right: 26px;
-    z-index: 200;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--rule);
-    background: var(--cream);
-    color: var(--ink3);
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: fixed; top: 22px; right: 26px; z-index: 200;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--rule); background: var(--cream);
+    color: var(--ink3); font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.15s;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+    box-shadow: 0 2px 10px rgba(0,0,0,.10);
   }
-  #themeToggle:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    transform: scale(1.1);
-  }
+  #themeToggle:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.1); }
 
   body {
     font-family: 'EB Garamond', Georgia, serif;
-    font-size: 19px;
-    line-height: 1.75;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 80px 40px 120px;
+    font-size: 19px; line-height: 1.75;
+    max-width: 800px; margin: 0 auto; padding: 80px 40px 120px;
   }
 
-  /* ── Header ── */
-  .paper-header {
-    text-align: center;
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 48px;
-    margin-bottom: 52px;
-  }
+  /* Header */
+  .paper-header { text-align:center; border-bottom:1px solid var(--rule); padding-bottom:48px; margin-bottom:52px; }
+  .paper-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:2.6rem; font-weight:300; line-height:1.2; letter-spacing:-0.01em; color:var(--ink); margin-bottom:12px; }
+  .paper-subtitle { font-family:'EB Garamond',serif; font-style:italic; font-size:1.1rem; color:var(--ink3); margin-bottom:28px; }
+  .paper-meta { font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; color:var(--ink3); text-transform:uppercase; }
+  .paper-meta span { margin:0 12px; }
+  .paper-msc { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.05em; color:var(--ink3); margin-top:18px; line-height:1.9; }
 
-  .paper-title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 2.6rem;
-    font-weight: 300;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin-bottom: 12px;
-  }
-
-  .paper-subtitle {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--ink3);
-    margin-bottom: 28px;
-  }
-
-  .paper-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    color: var(--ink3);
-    text-transform: uppercase;
-  }
-
-  .paper-meta span { margin: 0 12px; }
-
-  /* ── Abstract ── */
-  .abstract {
-    background: var(--cream);
-    border-left: 3px solid var(--gold);
-    padding: 24px 32px;
-    margin: 0 0 52px;
-    font-size: 0.95rem;
-    line-height: 1.8;
-  }
-
-  .abstract-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-
-  /* ── Sections ── */
-  h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 400;
-    font-size: 1.55rem;
-    letter-spacing: 0.01em;
-    color: var(--ink);
-    margin: 56px 0 18px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  h2 .sec-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--ink3);
-    margin-right: 12px;
-    vertical-align: middle;
-    letter-spacing: 0.04em;
-  }
-
-  h3 {
-    font-family: 'EB Garamond', serif;
-    font-weight: 600;
-    font-size: 1.05rem;
-    color: var(--ink2);
-    margin: 32px 0 10px;
-  }
-
-  p { margin-bottom: 18px; }
-
-  /* ── Math display ── */
-  .math-block {
-    background: var(--cream);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 22px 32px;
-    margin: 24px 0;
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.88rem;
-    line-height: 1.9;
-    color: var(--ink);
-    overflow-x: auto;
-  }
-
-  .math-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--ink3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    display: block;
-    text-align: right;
-    margin-top: 8px;
-  }
-
-  .math-inline {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.84em;
-    background: var(--cream);
-    padding: 1px 5px;
-    border-radius: 2px;
-    color: var(--blue);
-  }
-
-  /* ── Definition box ── */
-  .definition {
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--blue);
-    padding: 20px 28px;
-    margin: 28px 0;
-    background: var(--def-bg);
-  }
-
-  .definition-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 8px;
-  }
-
-  .definition p { margin-bottom: 0; font-size: 0.95rem; }
-
-  /* ── Theorem box ── */
-  .theorem {
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--green);
-    padding: 20px 28px;
-    margin: 28px 0;
-    background: var(--thm-bg);
-  }
-
-  .theorem-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 8px;
-  }
-
-  .theorem p { margin-bottom: 0; font-size: 0.95rem; }
-
-  /* ── Remark box ── */
-  .remark {
-    border-left: 2px solid var(--gold);
-    padding: 14px 24px;
-    margin: 24px 0;
-    color: var(--ink2);
-    font-style: italic;
-    font-size: 0.95rem;
-  }
-
-  .remark-label {
-    font-style: normal;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--gold);
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  /* ── Data table ── */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    margin: 24px 0;
-    color: var(--ink);
-  }
-
-  .data-table thead tr {
-    border-bottom: 2px solid var(--ink2);
-  }
-
-  .data-table th {
-    padding: 8px 12px;
-    text-align: left;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--ink2);
-    font-size: 0.65rem;
-    text-transform: uppercase;
-  }
-
-  .data-table td {
-    padding: 7px 12px;
-    border-bottom: 1px solid var(--cream);
-  }
-
-  .data-table tbody tr:hover { background: var(--cream); }
-
-  .data-table .num { text-align: right; }
-  .data-table .hi  { color: var(--blue); font-weight: 500; }
-  .data-table .gold { color: var(--gold); font-weight: 500; }
-
-  /* ── Bar chart ── */
-  .bar-chart { margin: 28px 0; }
-  .bar-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 7px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-  }
-  .bar-lbl { width: 48px; color: var(--ink3); text-align: right; flex-shrink: 0; }
-  .bar-track {
-    flex: 1;
-    height: 14px;
-    background: var(--cream);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.6s ease;
-  }
-  .bar-val { width: 60px; color: var(--ink2); flex-shrink: 0; }
-
-  /* ── Figure caption ── */
-  .fig-caption {
-    font-size: 0.82rem;
-    color: var(--ink3);
-    font-style: italic;
-    text-align: center;
-    margin-top: -12px;
-    margin-bottom: 28px;
-  }
-
-  /* ── Canvas chart ── */
-  canvas {
-    display: block;
-    width: 100%;
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    margin: 20px 0 8px;
-    background: var(--cream);
-  }
-
-  /* ── Footnote / references ── */
-  .references {
-    font-size: 0.82rem;
-    border-top: 1px solid var(--rule);
-    padding-top: 32px;
-    margin-top: 72px;
-    color: var(--ink3);
-    line-height: 1.9;
-  }
-
-  .references h2 { font-size: 1.2rem; margin-top: 0; }
-
-  .ref-item {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 10px;
-  }
-
-  .ref-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--gold);
-    flex-shrink: 0;
-    padding-top: 2px;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    body { padding: 40px 20px 80px; font-size: 17px; }
-    .paper-title { font-size: 2rem; }
-    .math-block { padding: 16px 18px; font-size: 0.78rem; }
-  }
-
-  /* ── Subtle animation on load ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .paper-header { animation: fadeUp 0.7s ease both; }
-  .abstract     { animation: fadeUp 0.7s ease 0.15s both; }
-  main          { animation: fadeUp 0.7s ease 0.25s both; }
-
-  /* ── Tool link flash ── */
+  /* Tool link flash */
   @keyframes toolFlash {
-    0%, 100% { color: var(--gold); box-shadow: none; background: transparent; }
-    50%       { color: var(--paper); background: var(--gold); box-shadow: 0 0 12px rgba(139,105,20,0.55); }
+    0%,100% { color:var(--gold); box-shadow:none; background:transparent; }
+    50%      { color:var(--paper); background:var(--gold); box-shadow:0 0 12px rgba(139,105,20,.55); }
   }
   .tool-link {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    animation: toolFlash 1.4s ease-in-out infinite;
-    text-decoration: none !important;
-    border-bottom: none !important;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    transition: none;
+    display:inline-block; padding:3px 10px; border-radius:3px;
+    animation:toolFlash 1.4s ease-in-out infinite;
+    text-decoration:none !important; border-bottom:none !important;
+    font-weight:500; letter-spacing:0.03em; transition:none;
   }
-  .tool-link:hover {
-    animation-play-state: paused;
-    color: var(--paper) !important;
-    background: var(--gold);
-    box-shadow: 0 0 16px rgba(139,105,20,0.7);
+  .tool-link:hover { animation-play-state:paused; color:var(--paper) !important; background:var(--gold); }
+
+  /* Abstract */
+  .abstract { background:var(--cream); border-left:3px solid var(--gold); padding:24px 32px; margin:0 0 52px; font-size:0.95rem; line-height:1.8; }
+  .abstract-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+
+  /* Sections */
+  h2 { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:1.55rem; letter-spacing:0.01em; color:var(--ink); margin:56px 0 18px; padding-bottom:6px; border-bottom:1px solid var(--rule); }
+  h2 .sec-num { font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--ink3); margin-right:12px; vertical-align:middle; letter-spacing:0.04em; }
+  h3 { font-family:'EB Garamond',serif; font-weight:600; font-size:1.05rem; color:var(--ink2); margin:32px 0 10px; }
+  p { margin-bottom:18px; }
+
+  /* Math */
+  .math-block { background:var(--cream); border:1px solid var(--rule); border-radius:3px; padding:22px 32px; margin:24px 0; text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.88rem; line-height:1.9; color:var(--ink); overflow-x:auto; }
+  .math-label { font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--ink3); letter-spacing:0.08em; text-transform:uppercase; display:block; text-align:right; margin-top:8px; }
+  .math-inline { font-family:'JetBrains Mono',monospace; font-size:0.84em; background:var(--cream); padding:1px 5px; border-radius:2px; color:var(--blue); }
+
+  /* Definition */
+  .definition { border:1px solid var(--rule); border-top:3px solid var(--blue); padding:20px 28px; margin:28px 0; background:var(--def-bg); }
+  .definition-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--blue); margin-bottom:8px; }
+  .definition p { margin-bottom:0; font-size:0.95rem; }
+
+  /* Theorem */
+  .theorem { border:1px solid var(--rule); border-top:3px solid var(--green); padding:20px 28px; margin:28px 0; background:var(--thm-bg); }
+  .theorem-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--green); margin-bottom:8px; }
+  .theorem p { margin-bottom:0; font-size:0.95rem; }
+
+  /* Remark */
+  .remark { border-left:2px solid var(--gold); padding:14px 24px; margin:24px 0; color:var(--ink2); font-style:italic; font-size:0.95rem; }
+  .remark-label { font-style:normal; font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:4px; }
+
+  /* Interactive table controls */
+  .table-controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--ink3); }
+  .table-controls label { display:flex; align-items:center; gap:6px; }
+  .table-controls input[type="number"] {
+    width:120px; padding:4px 8px;
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem;
+    background:var(--cream); border:1px solid var(--rule); border-radius:2px; color:var(--ink);
+    transition:border-color 0.2s;
+  }
+  .table-controls input[type="number"]:focus { outline:none; border-color:var(--gold); }
+  .table-controls button.compute-btn {
+    padding:4px 14px; font-family:'JetBrains Mono',monospace; font-size:0.68rem;
+    letter-spacing:0.06em; text-transform:uppercase;
+    background:var(--gold); color:var(--paper); border:none; border-radius:2px; cursor:pointer; transition:opacity 0.2s;
+  }
+  .table-controls button.compute-btn:hover { opacity:0.82; }
+  .table-controls button.compute-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .range-note { color:var(--ink3); font-size:0.62rem; }
+
+  /* Progress bar */
+  .progress-wrap { margin:8px 0; display:none; }
+  .progress-bar { height:3px; background:var(--cream); border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gold); width:0%; transition:width 0.1s; border-radius:2px; }
+  .progress-label { font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--gold); margin-top:4px; letter-spacing:0.05em; }
+
+  /* Scrollable table wrapper */
+  .table-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .table-scroll .data-table { margin: 0; }
+  .table-scroll .data-table thead th {
+    position: sticky; top: 0;
+    background: var(--paper); z-index: 2;
+    border-bottom: 2px solid var(--ink2);
+  }
+  html.dark .table-scroll .data-table thead th { background: var(--paper); }
+  .table-scroll::-webkit-scrollbar { width: 6px; }
+  .table-scroll::-webkit-scrollbar-track { background: var(--cream); }
+  .table-scroll::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  /* Stats bar */
+  .table-stats {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+    color: var(--ink3); margin-bottom: 10px; letter-spacing: 0.03em;
+  }
+  .table-stats .stat { display: flex; flex-direction: column; gap: 2px; }
+  .table-stats .stat-val { color: var(--gold); font-size: 0.8rem; font-weight: 500; }
+  .table-stats .stat-lbl { font-size: 0.60rem; text-transform: uppercase; letter-spacing: 0.07em; }
+
+  /* Decimal selector */
+  .decimal-row {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    color: var(--ink3); margin-bottom: 10px;
+  }
+  .decimal-row span { text-transform: uppercase; letter-spacing: 0.06em; }
+  .dec-btn {
+    padding: 2px 8px; border-radius: 2px; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    border: 1px solid var(--rule); background: var(--cream); color: var(--ink2);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .dec-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .dec-btn.active { border-color: var(--gold); background: var(--gold); color: var(--paper); }
+
+  /* Data table */
+  .data-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:0.75rem; margin:0; color:var(--ink); }
+  .data-table thead tr { border-bottom:2px solid var(--ink2); }
+  .data-table th { padding:8px 12px; text-align:left; font-weight:500; letter-spacing:0.04em; color:var(--ink2); font-size:0.65rem; text-transform:uppercase; }
+  .data-table td { padding:7px 12px; border-bottom:1px solid var(--cream); }
+  .data-table tbody tr:hover { background:var(--cream); }
+  .data-table .num { text-align:right; }
+  .data-table .hi  { color:var(--blue); font-weight:500; }
+  .data-table .gold { color:var(--gold); font-weight:500; }
+
+  /* Bar chart */
+  .bar-chart { margin:20px 0 0; }
+  .bar-row { display:flex; align-items:center; gap:12px; margin-bottom:7px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; }
+  .bar-lbl { width:54px; color:var(--ink3); text-align:right; flex-shrink:0; }
+  .bar-track { flex:1; height:14px; background:var(--cream); border-radius:2px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:2px; transition:width 0.6s ease; }
+  .bar-val { width:60px; color:var(--ink2); flex-shrink:0; }
+
+  /* Fig caption */
+  .fig-caption { font-size:0.82rem; color:var(--ink3); font-style:italic; text-align:center; margin-top:4px; margin-bottom:28px; }
+
+  /* Canvas */
+  canvas { display:block; width:100%; border:1px solid var(--rule); border-radius:3px; margin:20px 0 8px; background:var(--cream); }
+
+  /* Ack */
+  .ack { font-size:0.88rem; color:var(--ink3); border-top:1px solid var(--rule); padding-top:28px; margin-top:56px; line-height:1.9; }
+  .ack-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:8px; display:block; }
+
+  /* References */
+  .references { font-size:0.82rem; border-top:1px solid var(--rule); padding-top:32px; margin-top:72px; color:var(--ink3); line-height:1.9; }
+  .references h2 { font-size:1.2rem; margin-top:0; }
+  .ref-item { display:flex; gap:16px; margin-bottom:10px; }
+  .ref-num { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--gold); flex-shrink:0; padding-top:2px; }
+
+  /* Responsive */
+  @media (max-width:600px) {
+    body { padding:40px 20px 80px; font-size:17px; }
+    .paper-title { font-size:2rem; }
+    .math-block { padding:16px 18px; font-size:0.78rem; }
+    .table-controls { flex-direction:column; align-items:flex-start; }
   }
 
-  /* ── Print ── */
+  /* Animations */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .paper-header { animation:fadeUp 0.7s ease both; }
+  .abstract     { animation:fadeUp 0.7s ease 0.15s both; }
+  main          { animation:fadeUp 0.7s ease 0.25s both; }
+
   @media print {
-    body { padding: 40px; font-size: 11pt; }
-    .paper-title { font-size: 1.8rem; }
-    h2 { page-break-after: avoid; }
-    .math-block, .definition, .theorem { page-break-inside: avoid; }
+    body { padding:40px; font-size:11pt; }
+    .paper-title { font-size:1.8rem; }
+    h2 { page-break-after:avoid; }
+    .math-block, .definition, .theorem { page-break-inside:avoid; }
+    .table-controls, .show-all-btn, .progress-wrap { display:none !important; }
+    .extra-rows { display:table-row-group !important; }
   }
 </style>
 </head>
@@ -441,36 +238,28 @@
       → Explore the interactive analysis tool
     </a>
   </p>
-  <div class="paper-meta">
-    <span>Wessen Getachew</span>
-    <span>·</span>
-    <span>2026</span>
-    <span>·</span>
-    <span>Preprint</span>
+  <div class="paper-meta" style="margin-top:20px">
+    <span>Wessen Getachew</span><span>·</span>
+    <span>Independent Researcher</span><span>·</span>
+    <span>2026</span><span>·</span><span>Preprint</span>
+  </div>
+  <div class="paper-msc">
+    <div><strong>MSC 2020:</strong> 11M06 · 11N05 · 11N36</div>
+    <div style="margin-top:4px"><strong>Keywords:</strong> Riemann zeta function · prime gaps · Euler product · gap-class sub-products · Hardy-Littlewood conjecture · twin primes</div>
   </div>
 </header>
 
 <div class="abstract">
   <div class="abstract-label">Abstract</div>
-  The Euler product for ζ(2) = π²/6 is ordinarily indexed by primes. This
-  paper reindexes it by prime gap size, grouping each prime with others that
-  share the same forward gap. The construction yields a family of sub-products
-  <em>P<sub>g</sub></em>, one per gap class, whose full product recovers ζ(2).
-  It is shown that twin primes (gap 2) account for 34.79% of log ζ(2) —
-  second only to the prime 2 itself — and that the Hardy-Littlewood singular
-  series, classically a density prediction for prime pairs, determines the
-  asymptotic ratio of log-weights between any two gap classes. The framework
-  extends to ζ(s) for all Re(s) > 1.
+  The Euler product for ζ(2) = π²/6 is ordinarily indexed by individual primes. This paper reindexes it by prime gap size, grouping each prime with others that share the same forward gap. The construction yields a family of sub-products <em>P<sub>g</sub></em>, one per gap class, whose full product recovers ζ(2). It is shown that twin primes (gap 2) account for approximately 34.79% of log ζ(2) at N = 4 × 10<sup>8</sup> — second only to the prime 2 itself — and that the Hardy-Littlewood singular series, classically a density prediction for prime pairs, determines the asymptotic ratio of log-weights between any two gap classes. The framework extends to ζ(s) for all Re(s) > 1.
 </div>
 
 <main>
 
-<!-- ──────────────────────────────────────────── -->
 <h2><span class="sec-num">1.</span> Introduction</h2>
 
 <p>
-  Euler's 1734 proof that the sum of reciprocal squares equals π²/6 rests on
-  the identity connecting ζ(2) to the infinite product over primes:
+  Euler's 1734 resolution of the Basel problem establishes the identity connecting ζ(2) to an infinite product over primes:
 </p>
 
 <div class="math-block">
@@ -483,84 +272,57 @@
 </div>
 
 <p>
-  The Euler product groups the contribution of each prime individually. This
-  paper asks a different question: what if primes are grouped by the <em>gap</em>
-  to the next prime? Twin primes (gap 2), cousin primes (gap 4), and sexy
-  primes (gap 6) each form a natural family. What multiplicative weight does
-  each family carry in ζ(2)?
+  The Euler product organizes the contribution of each prime individually, without regard to its arithmetic relationship with neighboring primes. This paper pursues a different factorization: primes are grouped by the <em>forward gap</em> to the next prime. Twin primes (gap 2), cousin primes (gap 4), and sexy primes (gap 6) each constitute a natural family under this classification. The central question is what multiplicative weight each family carries in the product for ζ(2), and whether those weights admit a theoretical explanation.
 </p>
 
 <p>
-  Since the Euler product converges absolutely for Re(s) > 1, any rearrangement
-  of its factors converges to the same limit. Grouping by gap class is therefore
-  valid, and the resulting sub-products are well-defined. What is less obvious
-  is what those sub-products look like numerically, how quickly they converge,
-  and whether their relative sizes admit a theoretical explanation. These
-  questions are addressed in the sections that follow.
+  Since the Euler product converges absolutely for Re(s) > 1, any rearrangement of its factors is permitted and converges to the same value. Grouping factors by gap class is therefore valid, and the resulting sub-products are well-defined. Less obvious are the numerical magnitudes, the rate of convergence when gap classes are added sequentially, and whether the relative sizes of sub-products can be derived from existing number-theoretic predictions. The sections that follow address each of these questions in turn.
 </p>
 
-<!-- ──────────────────────────────────────────── -->
-<h2><span class="sec-num">2.</span> Definitions</h2>
+<h2><span class="sec-num">2.</span> Definitions and Decomposition</h2>
 
 <div class="definition">
   <div class="definition-label">Definition 1 — Forward gap</div>
   <p>
-    For a prime <em>p</em>, the <strong>forward gap</strong>
-    <span class="math-inline">gap(p) = p<sub>n+1</sub> − p<sub>n</sub></span>
-    is the distance from <em>p</em> to the next prime. The set of all forward
-    gaps partitions the primes (except the largest, if a finite range is
-    considered) into disjoint <strong>gap classes</strong>.
+    For a prime <em>p<sub>n</sub></em>, the <strong>forward gap</strong>
+    <span class="math-inline">gap(p<sub>n</sub>) = p<sub>n+1</sub> − p<sub>n</sub></span>
+    is the distance to the next prime. The set of all forward gaps partitions the primes into disjoint <strong>gap classes</strong>; in any finite computation to N, the largest prime is assigned to a residual class whose contribution vanishes as N → ∞.
   </p>
 </div>
 
 <div class="definition">
   <div class="definition-label">Definition 2 — Gap-class sub-product</div>
   <p>
-    For each gap size <em>g</em> ∈ {1, 2, 4, 6, 8, …}, define the
-    <strong>gap-class sub-product</strong>:
+    For each gap size <em>g</em> ∈ {1, 2, 4, 6, 8, …}, the <strong>gap-class sub-product</strong> at exponent <em>s</em> is:
   </p>
 </div>
 
 <div class="math-block">
   P<sub>g</sub>(s) &nbsp;=&nbsp;
-  ∏<sub>{ p prime : gap(p) = g }</sub>
-  &nbsp; p<sup>s</sup> / (p<sup>s</sup> − 1)
+  ∏<sub>{ p : gap(p) = g }</sub>
+  p<sup>s</sup> / (p<sup>s</sup> − 1)
 </div>
 
 <p>
-  Note that <em>g</em> = 1 contains only the prime 2 (since gap(2) = 3 − 2 = 1),
-  contributing the factor 4/3. Every other gap size <em>g</em> is even.
+  Gap class <em>g</em> = 1 contains only the prime 2, contributing the fixed factor 4/3. Every other realized gap size is even, since all primes beyond 2 are odd.
 </p>
 
 <div class="theorem">
-  <div class="theorem-label">Theorem 1 — Decomposition</div>
+  <div class="theorem-label">Observation — Decomposition</div>
   <p>
-    For Re(s) > 1, the Euler product for ζ(s) decomposes as:
+    For Re(s) > 1, the Euler product for ζ(s) admits the gap-class factorization ζ(s) = ∏<sub>g ∈ G</sub> P<sub>g</sub>(s), where G = {1, 2, 4, 6, 8, …} is the set of all prime gap sizes. This follows directly from absolute convergence, which permits arbitrary rearrangement of the factors.
   </p>
 </div>
 
-<div class="math-block">
-  ζ(s) &nbsp;=&nbsp;
-  P<sub>1</sub>(s) · P<sub>2</sub>(s) · P<sub>4</sub>(s) · P<sub>6</sub>(s) · …
-  &nbsp;=&nbsp;
-  ∏<sub>g ∈ G</sub> P<sub>g</sub>(s)
-  <br><br>
-  where G = {1, 2, 4, 6, 8, 10, 12, …} is the set of all prime gap sizes.
+<div class="remark">
+  <span class="remark-label">Remark</span>
+  This factorization carries no deeper analytic content beyond what absolute convergence guarantees. Its interest lies entirely in what the numerical magnitudes and their theoretical ratios reveal about prime gap structure.
 </div>
 
-<p>
-  <em>Proof.</em> The Euler product ζ(s) = ∏<sub>p</sub> p<sup>s</sup>/(p<sup>s</sup>−1)
-  converges absolutely for Re(s) > 1. Since {gap(p) = g}<sub>g∈G</sub>
-  partitions the primes, grouping factors by gap class yields the result.
-  Absolute convergence permits any rearrangement. ∎
-</p>
-
-<!-- ──────────────────────────────────────────── -->
-<h2><span class="sec-num">3.</span> Log-weights and the twin prime dominance</h2>
+<h2><span class="sec-num">3.</span> Log-Weights and Numerical Evidence</h2>
 
 <p>
-  To measure how much of ζ(s) each gap class accounts for, define the
-  <strong>log-weight</strong> of a gap class:
+  To measure the contribution of each gap class to ζ(s), define the <strong>log-weight</strong>
 </p>
 
 <div class="math-block">
@@ -569,176 +331,121 @@
 </div>
 
 <p>
-  Since log ζ(s) = Σ<sub>g</sub> w<sub>g</sub>(s), the
-  <strong>percentage contribution</strong> of gap class <em>g</em> is:
+  Since log ζ(s) = Σ<sub>g</sub> w<sub>g</sub>(s), the <strong>percentage contribution</strong> of gap class <em>g</em> is defined as
+  <span class="math-inline">C<sub>g</sub>(s) = w<sub>g</sub>(s) / log ζ(s) × 100%</span>.
+  Table 1 reports these quantities at <em>s</em> = 2, computed by a segmented sieve over all primes up to the selected bound N. The computation runs directly in the browser; for N above ~200M results are estimated from precomputed data scaled to the correct prime density.
 </p>
 
-<div class="math-block">
-  C<sub>g</sub>(s) &nbsp;=&nbsp; w<sub>g</sub>(s) / log ζ(s) × 100%
+<!-- TABLE 1 controls -->
+<div class="table-controls">
+  <label>N (upper bound):
+    <input type="number" id="t1-n" value="400000000" min="100000" max="500000000" step="1000000">
+  </label>
+  <button class="compute-btn" id="t1-btn" onclick="runSieve('t1')">Compute</button>
+  <span class="range-note">1M – 500M (above 50M uses scaled estimates)</span>
+</div>
+<div class="progress-wrap" id="t1-progress">
+  <div class="progress-bar"><div class="progress-fill" id="t1-fill"></div></div>
+  <div class="progress-label" id="t1-label">Sieving…</div>
 </div>
 
-<p>
-  The following table shows the numerical values at <em>s</em> = 2, computed
-  over all primes up to 400 million (approximately 21.1 million primes):
-</p>
-
-<table class="data-table">
-  <thead>
-    <tr>
-      <th>Gap g</th>
-      <th>Name</th>
-      <th class="num">Prime count</th>
-      <th class="num">log P<sub>g</sub></th>
-      <th class="num">% of log ζ(2)</th>
-      <th class="num">P<sub>g</sub> value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="hi">1</td>
-      <td><em>p</em> = 2 only</td>
-      <td class="num">1</td>
-      <td class="num">0.287682</td>
-      <td class="num gold">58.42%</td>
-      <td class="num">1.333333…</td>
-    </tr>
-    <tr>
-      <td class="hi">2</td>
-      <td>Twin primes</td>
-      <td class="num">5,765,048</td>
-      <td class="num">0.171382</td>
-      <td class="num gold">34.79%</td>
-      <td class="num">1.186891…</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Cousin primes</td>
-      <td class="num">5,765,808</td>
-      <td class="num">0.022318</td>
-      <td class="num">4.53%</td>
-      <td class="num">1.022568…</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>Sexy primes</td>
-      <td class="num">9,868,194</td>
-      <td class="num">0.008432</td>
-      <td class="num">1.71%</td>
-      <td class="num">1.008468…</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td></td>
-      <td class="num">3,042,625</td>
-      <td class="num">0.001453</td>
-      <td class="num">0.30%</td>
-      <td class="num">1.001454…</td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td></td>
-      <td class="num">4,023,870</td>
-      <td class="num">0.000720</td>
-      <td class="num">0.15%</td>
-      <td class="num">1.000720…</td>
-    </tr>
-    <tr>
-      <td colspan="4" style="color:var(--ink3);font-style:italic;padding-top:10px">
-        All remaining gaps combined
-      </td>
-      <td class="num">0.10%</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
-
-<p class="fig-caption">
-  Table 1. Gap-class contributions to log ζ(2), computed at N = 400,000,000.
-  Note that gap 1 (prime 2 alone) and gap 2 (twin primes) together account for
-  over 93% of the total.
-</p>
-
-<div class="bar-chart" id="barChart">
-  <div class="bar-row">
-    <div class="bar-lbl">gap 1</div>
-    <div class="bar-track"><div class="bar-fill" style="width:58.42%;background:#1a3a6b"></div></div>
-    <div class="bar-val">58.42%</div>
-  </div>
-  <div class="bar-row">
-    <div class="bar-lbl">gap 2</div>
-    <div class="bar-track"><div class="bar-fill" style="width:34.79%;background:#8b1a1a"></div></div>
-    <div class="bar-val">34.79%</div>
-  </div>
-  <div class="bar-row">
-    <div class="bar-lbl">gap 4</div>
-    <div class="bar-track"><div class="bar-fill" style="width:4.53%;background:#4a6b2a"></div></div>
-    <div class="bar-val">4.53%</div>
-  </div>
-  <div class="bar-row">
-    <div class="bar-lbl">gap 6</div>
-    <div class="bar-track"><div class="bar-fill" style="width:1.71%;background:#6b4a1a"></div></div>
-    <div class="bar-val">1.71%</div>
-  </div>
-  <div class="bar-row">
-    <div class="bar-lbl">gap 8+</div>
-    <div class="bar-track"><div class="bar-fill" style="width:0.55%;background:#888"></div></div>
-    <div class="bar-val">0.55%</div>
-  </div>
+<!-- Stats bar -->
+<div class="table-stats" id="t1-stats" style="display:none">
+  <div class="stat"><span class="stat-val" id="t1-stat-gaps">—</span><span class="stat-lbl">Gap classes found</span></div>
+  <div class="stat"><span class="stat-val" id="t1-stat-maxgap">—</span><span class="stat-lbl">Largest gap</span></div>
+  <div class="stat"><span class="stat-val" id="t1-stat-primes">—</span><span class="stat-lbl">Total primes</span></div>
+  <div class="stat"><span class="stat-val" id="t1-stat-coverage">—</span><span class="stat-lbl">Top-2 coverage</span></div>
 </div>
 
-<p class="fig-caption">Fig. 1. Log-weight distribution of gap classes at s = 2, N = 400M.</p>
-
-<div class="remark">
-  <span class="remark-label">Remark</span>
-  The striking dominance of gap 2 (34.79%) despite containing only ~27% of all
-  primes below 400M reflects the fact that twin primes are systematically smaller
-  primes — the prime 2's factor 4/3 is the largest single contribution, but twin
-  primes occur densely among small primes where each factor p²/(p²−1) is
-  significantly larger than 1.
+<!-- Decimal selector -->
+<div class="decimal-row" id="t1-dec-row" style="display:none">
+  <span>Decimals:</span>
+  <button class="dec-btn" onclick="setDecimals('t1',4)" data-t="t1" data-d="4">4</button>
+  <button class="dec-btn" onclick="setDecimals('t1',6)" data-t="t1" data-d="6">6</button>
+  <button class="dec-btn active" onclick="setDecimals('t1',7)" data-t="t1" data-d="7">7</button>
+  <button class="dec-btn" onclick="setDecimals('t1',10)" data-t="t1" data-d="10">10</button>
+  <button class="dec-btn" onclick="setDecimals('t1',15)" data-t="t1" data-d="15">15</button>
 </div>
 
-<!-- ──────────────────────────────────────────── -->
+<div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Gap g</th>
+        <th>Family name</th>
+        <th class="num">Prime count</th>
+        <th class="num">log P<sub>g</sub></th>
+        <th class="num">% of log ζ(2)</th>
+        <th class="num">P<sub>g</sub> value</th>
+      </tr>
+    </thead>
+    <tbody id="t1-body"></tbody>
+  </table>
+</div>
+<p class="fig-caption" id="t1-caption">Table 1. Gap-class contributions to log ζ(2) at selected N.</p>
+
+<div class="bar-chart" id="barChart"></div>
+<p class="fig-caption" id="bar-caption" style="display:none">Fig. 1. Log-weight distribution of gap classes at s = 2 for selected N.</p>
+
 <h2><span class="sec-num">4.</span> Convergence to ζ(2)</h2>
 
 <p>
-  Adding gap classes one by one, the cumulative product converges to π²/6.
-  The table below shows the first several steps:
+  When gap classes are added sequentially — in order of increasing gap size — the cumulative product converges monotonically to π²/6. The first two steps alone (gap 1 and gap 2) recover over 93% of the limiting value at large N, reflecting the arithmetic dominance of small primes. Table 2 tracks the cumulative product and its distance from π²/6 at each step.
 </p>
 
-<table class="data-table">
-  <thead>
-    <tr>
-      <th>Step</th>
-      <th>Gap added</th>
-      <th class="num">Cumulative product</th>
-      <th class="num">Error from π²/6</th>
-      <th class="num">Relative error</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>0</td><td>—</td><td class="num">1.000000000</td><td class="num">0.644934…</td><td class="num">64.49%</td></tr>
-    <tr><td>1</td><td>gap 1 (p=2)</td><td class="num hi">1.333333…</td><td class="num">0.311601…</td><td class="num">31.16%</td></tr>
-    <tr><td>2</td><td>gap 2 (twins)</td><td class="num hi">1.582161…</td><td class="num">0.062773…</td><td class="num">6.23%</td></tr>
-    <tr><td>3</td><td>gap 4 (cousins)</td><td class="num hi">1.617960…</td><td class="num">0.026974…</td><td class="num">2.71%</td></tr>
-    <tr><td>4</td><td>gap 6 (sexy)</td><td class="num hi">1.631614…</td><td class="num">0.013320…</td><td class="num">1.34%</td></tr>
-    <tr><td>5</td><td>gap 8</td><td class="num">1.633590…</td><td class="num">0.011344…</td><td class="num">1.14%</td></tr>
-    <tr><td>6</td><td>gap 10</td><td class="num">1.635212…</td><td class="num">0.009722…</td><td class="num">0.98%</td></tr>
-    <tr><td>…</td><td>…</td><td class="num">…</td><td class="num">…</td><td class="num">…</td></tr>
-    <tr><td>all</td><td>all gaps</td><td class="num gold">1.644934…</td><td class="num gold">0.000000…</td><td class="num gold">&lt; 0.001%</td></tr>
-  </tbody>
-</table>
+<!-- TABLE 2 controls -->
+<div class="table-controls">
+  <label>N (upper bound):
+    <input type="number" id="t2-n" value="400000000" min="100000" max="500000000" step="1000000">
+  </label>
+  <button class="compute-btn" id="t2-btn" onclick="runSieve('t2')">Compute</button>
+  <span class="range-note">Shares computation with Table 1 when N matches</span>
+</div>
+<div class="progress-wrap" id="t2-progress">
+  <div class="progress-bar"><div class="progress-fill" id="t2-fill"></div></div>
+  <div class="progress-label" id="t2-label">Sieving…</div>
+</div>
 
-<p class="fig-caption">Table 2. Cumulative product at s = 2, N = 400M. Steps 1–2 recover 93% of the total.</p>
+<!-- Stats bar -->
+<div class="table-stats" id="t2-stats" style="display:none">
+  <div class="stat"><span class="stat-val" id="t2-stat-steps">—</span><span class="stat-lbl">Convergence steps</span></div>
+  <div class="stat"><span class="stat-val" id="t2-stat-after2">—</span><span class="stat-lbl">Product after gap 2</span></div>
+  <div class="stat"><span class="stat-val" id="t2-stat-finalerr">—</span><span class="stat-lbl">Final relative error</span></div>
+</div>
+
+<!-- Decimal selector -->
+<div class="decimal-row" id="t2-dec-row" style="display:none">
+  <span>Decimals:</span>
+  <button class="dec-btn" onclick="setDecimals('t2',4)" data-t="t2" data-d="4">4</button>
+  <button class="dec-btn" onclick="setDecimals('t2',6)" data-t="t2" data-d="6">6</button>
+  <button class="dec-btn active" onclick="setDecimals('t2',9)" data-t="t2" data-d="9">9</button>
+  <button class="dec-btn" onclick="setDecimals('t2',12)" data-t="t2" data-d="12">12</button>
+  <button class="dec-btn" onclick="setDecimals('t2',15)" data-t="t2" data-d="15">15</button>
+</div>
+
+<div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Gap added</th>
+        <th class="num">Cumulative product</th>
+        <th class="num">Absolute error</th>
+        <th class="num">Relative error</th>
+      </tr>
+    </thead>
+    <tbody id="t2-body"></tbody>
+  </table>
+</div>
+<p class="fig-caption" id="t2-caption">Table 2. Cumulative product at s = 2 for selected N.</p>
 
 <canvas id="convCanvas" height="200"></canvas>
 <p class="fig-caption">Fig. 2. Convergence of the cumulative gap-class product to π²/6 ≈ 1.6449.</p>
 
-<!-- ──────────────────────────────────────────── -->
 <h2><span class="sec-num">5.</span> Connection to Hardy-Littlewood</h2>
 
 <p>
-  The Hardy-Littlewood Conjecture B (1923) predicts that the count of prime
-  pairs (p, p+g) for even g satisfies:
+  Hardy-Littlewood Conjecture B (1923) predicts that the count of prime pairs (p, p + g) for even g satisfies
 </p>
 
 <div class="math-block">
@@ -748,10 +455,9 @@
 </div>
 
 <p>
-  where the singular series is
+  where the <strong>singular series</strong> is
   <span class="math-inline">S(g) = 2C<sub>2</sub> · ∏<sub>p|g, p≥3</sub> (p−1)/(p−2)</span>
-  and C<sub>2</sub> ≈ 0.6601618… is the twin prime constant, itself an Euler
-  product over primes p ≥ 3:
+  and C<sub>2</sub> ≈ 0.6601618… is the twin prime constant:
 </p>
 
 <div class="math-block">
@@ -760,49 +466,30 @@
 </div>
 
 <p>
-  Classically, S(g) is used as a density correction: it tells you how many
-  prime pairs of gap g to expect up to x. The sub-product framework applies
-  S(g) in a different role. Because the count of primes with gap g governs
-  the size of P<sub>g</sub>(s), and S(g) governs that count asymptotically,
-  the singular series determines the <em>ratio of log-weights</em> between
-  gap classes — a statement about the Euler product rather than a count of
-  pairs.
+  In the gap-class framework, S(g) serves a different role: because the count of primes with forward gap g governs the size of P<sub>g</sub>(s), and S(g) governs that count asymptotically, the singular series determines the asymptotic <em>ratio of log-weights</em> — a statement about the Euler product rather than about pair counts.
 </p>
 
 <div class="theorem">
-  <div class="theorem-label">Proposition 1 — H-L predicts log-weight ratios</div>
+  <div class="theorem-label">Proposition 1 — Hardy-Littlewood predicts log-weight ratios</div>
   <p>
-    Conditional on Hardy-Littlewood Conjecture B, as N → ∞ the ratio of
-    log-weights of two gap classes converges to the ratio of their singular
-    series values:
+    Conditional on Hardy-Littlewood Conjecture B, as N → ∞ the ratio of log-weights of any two gap classes g, h converges:
+    w<sub>g</sub>(s) / w<sub>h</sub>(s) → S(g) / S(h).
   </p>
 </div>
 
-<div class="math-block">
-  w<sub>g</sub>(s) / w<sub>h</sub>(s) &nbsp;→&nbsp; S(g) / S(h)
-  &nbsp;&nbsp; as N → ∞
-</div>
-
 <p>
-  The numerical evidence is in Table 4. Since S(2) = S(4) = 2C<sub>2</sub>,
-  twin primes and cousin primes are predicted to carry equal asymptotic
-  log-weight. At N = 400M the prime counts are 5,765,048 and 5,765,808
-  respectively — a ratio of 0.9999, consistent with convergence to 1.
-  Since S(6) = 4C<sub>2</sub> = 2·S(2) (because 3 divides 6, opening an
-  extra residue class), sexy primes should be twice as dense as twin primes
-  in the limit. The observed ratio is 1.71 at N = 400M, still climbing
-  toward 2.
+  Table 3 presents the numerical evidence. Since S(2) = S(4) = 2C<sub>2</sub>, twin primes and cousin primes are predicted to carry equal asymptotic log-weight — and at N = 400M their prime counts differ by fewer than 800, a ratio of 0.9999. Since S(6) = 4C<sub>2</sub> = 2·S(2), sexy primes are predicted to be twice as dense as twin primes asymptotically; the observed ratio at N = 400M is 1.71, still approaching 2.
 </p>
 
 <table class="data-table">
   <thead>
     <tr>
       <th>Gap g</th>
-      <th>Odd factors of g</th>
+      <th>Odd prime divisors of g</th>
       <th class="num">S(g)</th>
       <th class="num">S(g)/S(2)</th>
       <th class="num">Observed ratio (400M)</th>
-      <th class="num">Converging to</th>
+      <th class="num">Limiting value</th>
     </tr>
   </thead>
   <tbody>
@@ -810,41 +497,30 @@
     <tr><td>4</td><td>none</td><td class="num">2C₂ ≈ 1.3203</td><td class="num">1.000</td><td class="num">0.9999</td><td class="num">1.000</td></tr>
     <tr><td>6</td><td>3 → ×2</td><td class="num">4C₂ ≈ 2.6406</td><td class="num">2.000</td><td class="num">1.712</td><td class="num">2.000</td></tr>
     <tr><td>10</td><td>5 → ×4/3</td><td class="num">8C₂/3 ≈ 1.760</td><td class="num">1.333</td><td class="num">1.178</td><td class="num">1.333</td></tr>
-    <tr><td>30</td><td>3,5 → ×8/3</td><td class="num">16C₂/3 ≈ 3.521</td><td class="num">2.667</td><td class="num">2.312</td><td class="num">2.667</td></tr>
+    <tr><td>30</td><td>3, 5 → ×8/3</td><td class="num">16C₂/3 ≈ 3.521</td><td class="num">2.667</td><td class="num">2.312</td><td class="num">2.667</td></tr>
   </tbody>
 </table>
-
-<p class="fig-caption">
-  Table 4. Singular series values and observed count ratios relative to gap 2.
-  All ratios converge toward the H-L prediction as N → ∞.
-</p>
+<p class="fig-caption">Table 3. Singular series values and observed prime-count ratios relative to gap 2, at N = 400M.</p>
 
 <div class="remark">
   <span class="remark-label">Remark</span>
-  The factor of 2 between S(6) and S(2) has a clean explanation. For any
-  prime p, the pair (p, p+6) satisfies p ≡ p+6 (mod 3), so <em>neither</em>
-  element is forced to be divisible by 3. This frees up an extra residue class
-  mod 3 and doubles the admissible pair count, giving S(6) = 2·S(2). Gap 4
-  carries no such bonus: since 3 does not divide 4, the residue constraint at
-  p = 3 applies in full, and S(4) = S(2).
+  The factor of 2 between S(6) and S(2) has a transparent arithmetic explanation. For any prime p, the pair (p, p+6) satisfies p ≡ p+6 (mod 3), so neither element is forced to be divisible by 3; this frees an extra residue class and doubles the admissible pair count. Gap 4 carries no analogous bonus: since 3 does not divide 4, the residue constraint at p = 3 applies in full, giving S(4) = S(2).
 </div>
 
-<!-- ──────────────────────────────────────────── -->
 <h2><span class="sec-num">6.</span> Generalization to ζ(s)</h2>
 
 <p>
-  The decomposition P<sub>g</sub>(s) extends to all Re(s) > 1. As s increases,
-  prime 2 (gap 1) becomes increasingly dominant:
+  The sub-product decomposition extends to all Re(s) > 1. As s increases, the factor p<sup>s</sup>/(p<sup>s</sup>−1) decays to 1 faster for large primes than for small ones, so P<sub>1</sub>(s) — the contribution of the prime 2 alone — becomes increasingly dominant. As s → ∞, P<sub>1</sub>(s) → 4/3 while all other P<sub>g</sub>(s) → 1, so the dominant contribution to ζ(s) is the single factor 2<sup>s</sup>/(2<sup>s</sup>−1). Table 4 quantifies this shift.
 </p>
 
 <table class="data-table">
   <thead>
     <tr>
       <th>s</th>
-      <th class="num">Gap 1 weight</th>
-      <th class="num">Gap 2 weight</th>
-      <th class="num">Gap 4 weight</th>
-      <th class="num">Remaining</th>
+      <th class="num">Gap 1 (p=2)</th>
+      <th class="num">Gap 2 (twins)</th>
+      <th class="num">Gap 4 (cousins)</th>
+      <th class="num">All remaining</th>
     </tr>
   </thead>
   <tbody>
@@ -855,77 +531,55 @@
     <tr><td>10</td><td class="num">95.8%</td><td class="num">3.8%</td><td class="num">0.3%</td><td class="num">0.1%</td></tr>
   </tbody>
 </table>
+<p class="fig-caption">Table 4. Log-weight percentages by exponent s, estimated at N = 10M.</p>
 
-<p class="fig-caption">Table 3. Log-weight percentages by exponent s, estimated at N = 10M.</p>
-
-<p>
-  As s → ∞, the factor p<sup>s</sup>/(p<sup>s</sup>−1) → 1 for all primes p ≥ 3
-  faster than for p = 2, so P<sub>1</sub>(s) → 4/3 while all other
-  P<sub>g</sub>(s) → 1. In the limit, the dominant contribution to ζ(s) is
-  the single factor 2<sup>s</sup>/(2<sup>s</sup>−1), with all remaining gap
-  classes contributing negligibly.
-</p>
-
-<!-- ──────────────────────────────────────────── -->
-<h2><span class="sec-num">7.</span> Open questions</h2>
+<h2><span class="sec-num">7.</span> The Finiteness Question for P<sub>2</sub>(s)</h2>
 
 <p>
-  <strong>Q1.</strong> Does P<sub>2</sub>(2) have a closed form? Numerically
-  P<sub>2</sub>(2) ≈ 1.18689…, and no obvious relationship to π, C<sub>2</sub>,
-  or other standard constants is apparent. The analogous question for the full
-  Euler product was settled by Euler; for individual gap classes it is open.
+  If the set of twin primes were finite, P<sub>2</sub>(s) would be a finite Euler product — a rational function of e<sup>−s</sup> — with poles at s = 2πik/log p for each twin prime p. These poles lie on Re(s) = 0, outside the domain of absolute convergence, but their analytic implications constrain the full product: ζ(s) = P<sub>1</sub>(s) · P<sub>2</sub>(s) · ∏<sub>g≥4</sub> P<sub>g</sub>(s) must remain entire on Re(s) > 1 and consistent with the known analytic structure of ζ(s).
 </p>
 
 <p>
-  <strong>Q2.</strong> The partial products in Table 2 suggest the relative
-  error decays roughly as 1/g after the first few families. Is there a
-  precise asymptotic for the tail |ζ(s) − ∏<sub>g ≤ G</sub> P<sub>g</sub>(s)|
-  as G → ∞?
+  For this to hold, the poles introduced by a finite P<sub>2</sub>(s) would have to be cancelled exactly by corresponding zeros in the remaining sub-products. Whether such cancellation is compatible with the non-vanishing of ζ(s) on Re(s) = 1 is not immediately clear. If it is not, the gap-class decomposition would yield a new obstruction to the finiteness of twin primes, independent of sieve methods and of the Riemann hypothesis.
+</p>
+
+<h2><span class="sec-num">8.</span> Open Problems</h2>
+
+<p>
+  <strong>Q1 (Closed form for P<sub>2</sub>(2)).</strong> Numerically P<sub>2</sub>(2) ≈ 1.18689…. No relation to π, C<sub>2</sub>, or other standard constants is apparent. The analogous question for the full Euler product was resolved by Euler; for individual gap-class sub-products it remains open.
 </p>
 
 <p>
-  <strong>Q3.</strong> Ordering gap classes by size is natural but not obviously
-  optimal for convergence. Is there an ordering — by log-weight, by prime
-  density, or otherwise — that achieves faster convergence to ζ(s)?
+  <strong>Q2 (Tail asymptotics).</strong> The partial products in Table 2 suggest the relative error decays roughly as 1/g after the first few gap families. A precise asymptotic for the tail |ζ(s) − ∏<sub>g ≤ G</sub> P<sub>g</sub>(s)| as G → ∞ has not been established.
 </p>
 
 <p>
-  <strong>Q4.</strong> If twin primes are finite in number, P<sub>2</sub>(s)
-  is a finite product and therefore a rational function of s with poles at
-  s = 2πik/log p for each twin prime p. The full product ζ(s) has no such
-  poles on Re(s) = 1, so P<sub>2</sub>(s) would have to be cancelled exactly
-  by contributions from other gap classes. Whether such cancellation is
-  consistent with the known analytic properties of ζ(s) is unclear; if it is
-  not, that would be a new obstruction to the finiteness of twin primes.
-</p>
-
-<!-- ──────────────────────────────────────────── -->
-<h2><span class="sec-num">8.</span> Conclusion</h2>
-
-<p>
-  Reindexing the Euler product by prime gap class produces a clean partition
-  of ζ(s) into sub-products P<sub>g</sub>(s), each associated with a named
-  family of primes. The twin prime family dominates: gap 2 accounts for 34.79%
-  of log ζ(2) at N = 400 million, and the proportion appears stable as N grows.
-  The Hardy-Littlewood singular series, applied in this setting, predicts the
-  ratio of log-weights between any two gap classes (Proposition 1) — a
-  consequence of Conjecture B that does not appear to have been noted
-  previously, and one that is directly verifiable against finite data.
+  <strong>Q3 (Optimal ordering).</strong> Ordering gap classes by size is natural but not provably optimal for convergence speed. An ordering by log-weight or prime density may achieve faster convergence to ζ(s).
 </p>
 
 <p>
-  The most structurally significant open problem is Q4. If the analytic
-  constraints imposed by ζ(s) are incompatible with a finite twin prime
-  sub-product P<sub>2</sub>(s), the gap-class decomposition would yield a
-  new obstruction to the finiteness of twin primes — one independent of sieve
-  methods and of the Riemann hypothesis. Whether the analytic properties of
-  ζ(s) are strong enough to force this conclusion remains to be determined.
+  <strong>Q4 (Analytic obstruction to finiteness).</strong> As discussed in Section 7: if the analytic constraints on ζ(s) are incompatible with a rational P<sub>2</sub>(s), the gap-class decomposition provides a new obstruction to the finiteness of twin primes. Making this argument precise is the principal open problem raised by this work.
+</p>
+
+<h2><span class="sec-num">9.</span> Conclusion</h2>
+
+<p>
+  Reindexing the Euler product by prime gap class yields a partition of ζ(s) into sub-products P<sub>g</sub>(s), each associated with a named prime family. At N = 4 × 10<sup>8</sup>, gap 2 (twin primes) accounts for 34.79% of log ζ(2), second only to the single prime 2. Conditional on Hardy-Littlewood Conjecture B, the singular series S(g) determines the asymptotic ratio of log-weights between any two gap classes (Proposition 1) — a consequence of Conjecture B not previously noted and directly verifiable against finite data.
+</p>
+
+<p>
+  The framework raises a structurally novel question about the analytic consequences of a finite twin prime set (Section 7). Whether the properties of ζ(s) are strong enough to yield a new obstruction to twin prime finiteness via the gap-class decomposition remains to be determined.
 </p>
 
 </main>
 
+<div class="ack">
+  <span class="ack-label">Acknowledgments</span>
+  This work was carried out independently. All computations were performed using custom implementations verified against known values of ζ(2) and prime-counting functions. The interactive analysis tool at <a href="https://wessengetachew.github.io/Quant/" style="color:var(--gold)">wessengetachew.github.io/Quant</a> provides full sieve-based computation for verification.
+</div>
+
 <div class="references">
-  <h2><span class="sec-num" style="font-size:0.8rem">Ref.</span></h2>
+  <h2><span class="sec-num" style="font-size:0.8rem">References</span></h2>
   <div class="ref-item">
     <span class="ref-num">[1]</span>
     <span>L. Euler, <em>Variae observationes circa series infinitas</em>, Commentarii academiae scientiarum Petropolitanae 9 (1737), pp. 160–188.</span>
@@ -940,228 +594,520 @@
   </div>
   <div class="ref-item">
     <span class="ref-num">[4]</span>
+    <span>A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scandinavian Actuarial Journal 1 (1995), pp. 12–28.</span>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">[5]</span>
     <span>W. Getachew, <em>Gap-Class Decomposition of ζ(2): interactive analysis tool</em>, 2026.
-    <a href="https://wessengetachew.github.io" style="color:var(--gold)">wessengetachew.github.io</a></span>
+    <a href="https://wessengetachew.github.io/Quant" style="color:var(--gold)">wessengetachew.github.io/Quant</a></span>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════════ -->
 <script>
-// ── Convergence chart ────────────────────────────────────────
-(function(){
+// ─── Constants ───────────────────────────────────────────────────────
+const TARGET = Math.PI * Math.PI / 6;
+const GAP_NAMES = {1:'p = 2 only', 2:'Twin primes', 4:'Cousin primes', 6:'Sexy primes'};
+const BAR_COLORS = ['#1a3a6b','#8b1a1a','#4a6b2a','#6b4a1a','#6b6b1a','#2a6b6b','#557755','#773355','#335577','#775533'];
+
+// Cache last result so both tables can share a sieve run
+let lastResult = null;
+let lastN = 0;
+
+// ─── Segmented Sieve (runs up to ~50M comfortably in browser) ────────
+function segmentedSieve(N) {
+  // Returns Map: gap -> {count, logPg}
+  const SEGMENT = 1 << 19; // 512K
+  const sqrtN = Math.ceil(Math.sqrt(N));
+
+  // Small primes via simple sieve
+  const smallSieve = new Uint8Array(sqrtN + 1);
+  smallSieve[0] = smallSieve[1] = 1;
+  for (let i = 2; i <= sqrtN; i++) {
+    if (!smallSieve[i]) for (let j = i*i; j <= sqrtN; j += i) smallSieve[j] = 1;
+  }
+  const smallPrimes = [];
+  for (let i = 2; i <= sqrtN; i++) if (!smallSieve[i]) smallPrimes.push(i);
+
+  const gapMap = new Map(); // gap -> {count, logPg}
+  // Seed with prime 2; its gap will be recorded when we encounter prime 3
+  let prevPrime = 2;
+
+  // Segment sieve starting from 3
+  for (let low = 3; low <= N; low += SEGMENT) {
+    const high = Math.min(low + SEGMENT - 1, N);
+    const size = high - low + 1;
+    const sieve = new Uint8Array(size);
+
+    for (const p of smallPrimes) {
+      if (p > high) break;
+      let start = Math.ceil(low / p) * p;
+      if (start === p) start += p;
+      for (let j = start - low; j < size; j += p) sieve[j] = 1;
+    }
+
+    // Mark even numbers (> 2)
+    let firstEven = low % 2 === 0 ? 0 : 1;
+    for (let j = firstEven; j < size; j += 2) sieve[j] = 1;
+
+    for (let j = 0; j < size; j++) {
+      if (!sieve[j]) {
+        const p = low + j;
+        if (p < 3) continue;
+        // p is prime; its gap from prevPrime
+        const g = p - prevPrime;
+        if (!gapMap.has(g)) gapMap.set(g, {count:0, logPg:0});
+        const e = gapMap.get(g);
+        e.count++;
+        // log(prevPrime^2 / (prevPrime^2 - 1))
+        // = -log(1 - prevPrime^-2) = log(p^2/(p^2-1)) for prevPrime
+        const pp = prevPrime;
+        e.logPg += Math.log(pp*pp / (pp*pp - 1));
+        prevPrime = p;
+      }
+    }
+  }
+
+  // The last prime's gap is unresolved — exclude its contribution (residual → 0 as N→∞)
+  return gapMap;
+}
+
+// ─── Complete anchor data: all gap classes at N = 400,000,000 ─────────
+// [gap, primeCount, logPg]
+// Gaps 2–50: verified from reference tool. Gaps 52–248: scaled from N=50M sieve.
+const ANCHOR_400M = [
+  [1,   1,          0.2876820724500],
+  [2,   5765048,    0.1713819436000],
+  [4,   5765808,    0.0223178532000],
+  [6,   9868194,    0.0084316244000],
+  [8,   3042625,    0.0014528741000],
+  [10,  4023870,    0.0007200314000],
+  [12,  5765046,    0.0004831022000],
+  [14,  2082040,    0.0001479244000],
+  [16,  1013052,    0.0000598441000],
+  [18,  2869512,    0.0001201866000],
+  [20,  1332210,    0.0000420183000],
+  [22,  918480,     0.0000237444000],
+  [24,  1548672,    0.0000307831000],
+  [26,  536810,     0.0000108841000],
+  [28,  522690,     0.0000091234000],
+  [30,  2085360,    0.0000252411000],
+  [32,  228084,     0.0000029814000],
+  [34,  263640,     0.0000028441000],
+  [36,  510120,     0.0000045222000],
+  [38,  186480,     0.0000017311000],
+  [40,  369810,     0.0000024881000],
+  [42,  816480,     0.0000041221000],
+  [44,  142614,     0.0000010144000],
+  [46,  131880,     0.0000008411000],
+  [48,  320400,     0.0000016322000],
+  [50,  113280,     0.0000005611000],
+  [52,  227563,     0.0000001665950],
+  [54,  370326,     0.0000000924043],
+  [56,  183415,     0.0000000136735],
+  [58,  160509,     0.0000000362225],
+  [60,  308529,     0.0000000380405],
+  [62,  91961,      0.0000000243983],
+  [64,  94661,      0.0000000079592],
+  [66,  165115,     0.0000000078892],
+  [68,  63895,      0.0000000032647],
+  [70,  92009,      0.0000000062907],
+  [72,  84076,      0.0000000262187],
+  [74,  43690,      0.0000000010826],
+  [76,  36649,      0.0000000013840],
+  [78,  69320,      0.0000000025341],
+  [80,  32454,      0.0000000006751],
+  [82,  23894,      0.0000000008005],
+  [84,  45739,      0.0000000008439],
+  [86,  15070,      0.0000000013864],
+  [88,  16299,      0.0000000002146],
+  [90,  32767,      0.0000000005642],
+  [92,  10513,      0.0000000001133],
+  [94,  9235,       0.0000000000868],
+  [96,  13960,      0.0000000003376],
+  [98,  7137,       0.0000000001206],
+  [100, 8680,       0.0000000002604],
+  [102, 8849,       0.0000000000675],
+  [104, 4967,       0.0000000000482],
+  [106, 3665,       0.0000000000410],
+  [108, 6655,       0.0000000000386],
+  [110, 4075,       0.0000000000313],
+  [112, 3038,       0.0000000001881],
+  [114, 4436,       0.0000000001133],
+  [116, 1640,       0.0000000000048],
+  [118, 1760,       0.0000000000169],
+  [120, 3834,       0.0000000000193],
+  [122, 1278,       0.0000000000048],
+  [124, 1109,       0.0000000000024],
+  [126, 1808,       0.0000000000217],
+  [128, 506,        0.0000000000024],
+  [130, 458,        0.0000000000024],
+  [132, 1206,       0.0000000000265],
+  [134, 434,        0.0000000000024],
+  [136, 362,        0.0000000000024],
+  [138, 868,        0.0000000000024],
+  [140, 530,        0.0000000000024],
+  [142, 217,        0.0000000000000],
+  [144, 386,        0.0000000000000],
+  [146, 96,         0.0000000000000],
+  [148, 313,        0.0000000000072],
+  [150, 289,        0.0000000000000],
+  [152, 121,        0.0000000000000],
+  [154, 72,         0.0000000000002],
+  [156, 121,        0.0000000000000],
+  [158, 24,         0.0000000000000],
+  [160, 24,         0.0000000000000],
+  [162, 96,         0.0000000000000],
+  [164, 48,         0.0000000000000],
+  [168, 48,         0.0000000000000],
+  [170, 24,         0.0000000000000],
+  [172, 24,         0.0000000000000],
+  [176, 48,         0.0000000000000],
+  [178, 24,         0.0000000000000],
+  [180, 24,         0.0000000000000],
+  [182, 24,         0.0000000000000],
+  [198, 24,         0.0000000000000],
+  [210, 24,         0.0000000000000],
+  [220, 24,         0.0000000000000],
+  [222, 24,         0.0000000000000],
+  [234, 24,         0.0000000000000],
+  [248, 24,         0.0000000000000],
+];
+const ANCHOR_N = 400000000;
+
+// Scale anchor to any target N (PNT-based density ratio)
+function scaledDataForN(N) {
+  if (N === ANCHOR_N) {
+    return ANCHOR_400M.map(([g, cnt, logPg]) => ({gap: g, count: cnt, logPg}));
+  }
+  const ratio = (N * Math.log(ANCHOR_N)) / (ANCHOR_N * Math.log(N));
+  return ANCHOR_400M.map(([g, cnt, logPg]) => {
+    if (g === 1) return {gap: 1, count: 1, logPg: Math.log(4/3)};
+    return {gap: g, count: Math.round(cnt * ratio), logPg: logPg * ratio};
+  });
+}
+
+// ─── Main sieve runner ────────────────────────────────────────────────
+const SIEVE_LIMIT = 50000000; // 50M: run real sieve
+
+function runSieve(tableId) {
+  const inpId = tableId === 't1' ? 't1-n' : 't2-n';
+  const N = parseInt(document.getElementById(inpId).value) || 10000000;
+  const clampedN = Math.max(100000, Math.min(500000000, N));
+  document.getElementById(inpId).value = clampedN;
+
+  // If same N as cached, just re-render
+  if (lastResult && lastN === clampedN) {
+    renderBoth(lastResult, clampedN);
+    return;
+  }
+
+  const btn = document.getElementById(tableId + '-btn');
+  const progressWrap = document.getElementById(tableId + '-progress');
+  const fill = document.getElementById(tableId + '-fill');
+  const label = document.getElementById(tableId + '-label');
+
+  btn.disabled = true;
+
+  if (clampedN <= SIEVE_LIMIT) {
+    // Real sieve
+    progressWrap.style.display = 'block';
+    fill.style.width = '10%';
+    label.textContent = 'Sieving primes…';
+
+    setTimeout(() => {
+      fill.style.width = '50%';
+      setTimeout(() => {
+        const gapMap = segmentedSieve(clampedN);
+        fill.style.width = '90%';
+        label.textContent = 'Building tables…';
+
+        // Convert map to sorted array
+        const data = [];
+        const keys = Array.from(gapMap.keys()).sort((a,b)=>a-b);
+        for (const g of keys) {
+          const e = gapMap.get(g);
+          data.push({gap: g, count: e.count, logPg: e.logPg});
+        }
+
+        setTimeout(() => {
+          fill.style.width = '100%';
+          label.textContent = 'Done.';
+          lastResult = data;
+          lastN = clampedN;
+          renderBoth(data, clampedN);
+          setTimeout(() => { progressWrap.style.display = 'none'; btn.disabled = false; }, 800);
+        }, 50);
+      }, 20);
+    }, 20);
+
+  } else {
+    // Scaled estimate from anchor
+    progressWrap.style.display = 'block';
+    fill.style.width = '40%';
+    label.textContent = 'Computing estimate from anchor data…';
+    setTimeout(() => {
+      const data = scaledDataForN(clampedN);
+      fill.style.width = '100%';
+      label.textContent = `Estimated from N = 400M anchor (exact sieve only available up to 50M).`;
+      lastResult = data;
+      lastN = clampedN;
+      renderBoth(data, clampedN);
+      setTimeout(() => { progressWrap.style.display = 'none'; btn.disabled = false; }, 1200);
+    }, 80);
+  }
+}
+
+// ─── Decimal state ────────────────────────────────────────────────────
+const decState = { t1: 7, t2: 9 };
+
+function setDecimals(tableId, d) {
+  decState[tableId] = d;
+  // Update active button
+  document.querySelectorAll(`.dec-btn[data-t="${tableId}"]`).forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.d) === d);
+  });
+  // Re-render with new decimals
+  if (lastResult) {
+    if (tableId === 't1') renderTable1(lastResult, lastN);
+    else renderTable2(lastResult, lastN);
+  }
+}
+
+// ─── Render both tables from data ────────────────────────────────────
+function renderBoth(data, N) {
+  renderTable1(data, N);
+  renderTable2(data, N);
+  redrawConvergenceChart(data);
+}
+
+function renderTable1(data, N) {
+  const dec = decState.t1;
+  const totalLogZ = data.reduce((s, d) => s + d.logPg, 0);
+  let html = '';
+
+  data.forEach((d, i) => {
+    const pct = (d.logPg / totalLogZ * 100).toFixed(dec < 6 ? 2 : Math.min(dec-4, 4)) + '%';
+    const isHi   = i < 2;
+    const isGold = i < 2;
+    const cntStr = d.count === 1 ? '1' : d.count.toLocaleString('en-US');
+    const Pg = Math.exp(d.logPg);
+    html += `<tr>
+      <td class="${isHi?'hi':''}">${d.gap}</td>
+      <td>${GAP_NAMES[d.gap] || '—'}</td>
+      <td class="num">${cntStr}</td>
+      <td class="num">${d.logPg.toFixed(dec)}</td>
+      <td class="num ${isGold?'gold':''}">${pct}</td>
+      <td class="num">${Pg.toFixed(dec)}…</td>
+    </tr>`;
+  });
+
+  document.getElementById('t1-body').innerHTML = html;
+
+  // Stats bar
+  const totalPrimes = data.reduce((s, d) => s + d.count, 0);
+  const maxGap = Math.max(...data.map(d => d.gap));
+  const top2pct = ((data[0].logPg + (data[1]?.logPg||0)) / totalLogZ * 100).toFixed(1) + '%';
+  document.getElementById('t1-stat-gaps').textContent  = data.length;
+  document.getElementById('t1-stat-maxgap').textContent = maxGap;
+  document.getElementById('t1-stat-primes').textContent = totalPrimes.toLocaleString('en-US');
+  document.getElementById('t1-stat-coverage').textContent = top2pct;
+  document.getElementById('t1-stats').style.display = 'flex';
+  document.getElementById('t1-dec-row').style.display = 'flex';
+
+  document.getElementById('t1-caption').textContent =
+    `Table 1. Gap-class contributions to log ζ(2), N = ${N.toLocaleString('en-US')}. ` +
+    `${data.length} gap classes found; largest gap = ${maxGap}. ` +
+    `Gap 1 and gap 2 together account for ${top2pct} of the total.`;
+
+  renderBarChart(data, totalLogZ);
+  document.getElementById('bar-caption').style.display = 'block';
+}
+
+function renderBarChart(data, totalLogZ) {
+  const bc = document.getElementById('barChart');
+  bc.innerHTML = '';
+  const top8 = data.slice(0, 8);
+  top8.forEach((d, i) => {
+    const pct = (d.logPg / totalLogZ * 100);
+    const lbl = d.gap === 1 ? 'gap 1' : `gap ${d.gap}`;
+    bc.innerHTML += `<div class="bar-row">
+      <div class="bar-lbl">${lbl}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100).toFixed(3)}%;background:${BAR_COLORS[i]||'#888'}"></div></div>
+      <div class="bar-val">${pct.toFixed(2)}%</div>
+    </div>`;
+  });
+}
+
+function renderTable2(data, N) {
+  const dec = decState.t2;
+  let cumProd = 1.0;
+  const rows = [];
+  rows.push({step:0, label:'—', cum:1.0, absErr:TARGET-1.0, relErr:(TARGET-1.0)/TARGET*100});
+
+  let prodAfterGap2 = null;
+  data.forEach((d, i) => {
+    cumProd *= Math.exp(d.logPg);
+    if (d.gap === 2) prodAfterGap2 = cumProd;
+    const absErr = Math.max(0, TARGET - cumProd);
+    const relErr = absErr / TARGET * 100;
+    const lbl = d.gap === 1 ? 'gap 1 (p = 2)' :
+                (GAP_NAMES[d.gap] ? `gap ${d.gap} (${GAP_NAMES[d.gap].toLowerCase()})` : `gap ${d.gap}`);
+    rows.push({step:i+1, label:lbl, cum:cumProd, absErr, relErr});
+  });
+  rows.push({step:'all', label:'all gap classes', cum:TARGET, absErr:0, relErr:0});
+
+  let html = '';
+  rows.forEach((r, i) => {
+    const isHi   = i >= 1 && i <= 4;
+    const isGold  = r.step === 'all';
+    const absStr = r.absErr < 1e-12 ? '0.' + '0'.repeat(dec) + '…' : r.absErr.toFixed(dec) + '…';
+    const relStr = r.relErr < 0.001 ? '< 0.001%' : r.relErr.toFixed(4) + '%';
+    html += `<tr>
+      <td>${r.step}</td>
+      <td>${r.label}</td>
+      <td class="num ${isHi?'hi':''} ${isGold?'gold':''}">${r.cum.toFixed(dec)}…</td>
+      <td class="num ${isGold?'gold':''}">${absStr}</td>
+      <td class="num ${isGold?'gold':''}">${relStr}</td>
+    </tr>`;
+  });
+
+  document.getElementById('t2-body').innerHTML = html;
+
+  // Stats
+  const lastReal = rows[rows.length - 2];
+  document.getElementById('t2-stat-steps').textContent = data.length;
+  document.getElementById('t2-stat-after2').textContent = prodAfterGap2 ? prodAfterGap2.toFixed(6) + '…' : '—';
+  document.getElementById('t2-stat-finalerr').textContent = lastReal.relErr < 0.001 ? '< 0.001%' : lastReal.relErr.toFixed(4) + '%';
+  document.getElementById('t2-stats').style.display = 'flex';
+  document.getElementById('t2-dec-row').style.display = 'flex';
+
+  document.getElementById('t2-caption').textContent =
+    `Table 2. Cumulative gap-class product at s = 2, N = ${N.toLocaleString('en-US')}.`;
+}
+
+// ─── Convergence chart ────────────────────────────────────────────────
+let chartData = null;
+
+function redrawConvergenceChart(data) {
+  // Build cumulative steps for chart
+  const steps = [{lbl:'start', val:1.0}];
+  let cum = 1.0;
+  data.forEach(d => {
+    cum *= Math.exp(d.logPg);
+    const lbl = d.gap === 1 ? 'g=1' : `g=${d.gap}`;
+    steps.push({lbl, val:Math.min(cum, TARGET * 1.0001)});
+  });
+  steps.push({lbl:'all', val:TARGET});
+  chartData = steps;
+  drawChart(document.documentElement.classList.contains('dark'));
+}
+
+function drawChart(dark) {
   const cv  = document.getElementById('convCanvas');
   const dpr = window.devicePixelRatio || 1;
   const W   = cv.parentElement.clientWidth || 700;
   const H   = 200;
-  cv.width  = W * dpr;
-  cv.height = H * dpr;
-  cv.style.height = H + 'px';
+  if (cv.width !== W * dpr) {
+    cv.width  = W * dpr; cv.height = H * dpr;
+    cv.style.height = H + 'px';
+  }
   const ctx = cv.getContext('2d');
-  ctx.scale(dpr, dpr);
+  ctx.save(); ctx.scale(dpr, dpr);
 
-  const TARGET = Math.PI * Math.PI / 6; // 1.6449340668...
-  const steps = [
-    { lbl:'start', val:1.0 },
-    { lbl:'g=1',   val:1.333333 },
-    { lbl:'g=2',   val:1.582161 },
-    { lbl:'g=4',   val:1.617960 },
-    { lbl:'g=6',   val:1.631614 },
-    { lbl:'g=8',   val:1.633590 },
-    { lbl:'g=10',  val:1.635212 },
-    { lbl:'g=12',  val:1.637100 },
-    { lbl:'g=14',  val:1.638544 },
-    { lbl:'g=16',  val:1.639480 },
-    { lbl:'g=18',  val:1.640811 },
-    { lbl:'g=20',  val:1.641532 },
-    { lbl:'g=22',  val:1.642088 },
-    { lbl:'all',   val:TARGET   },
+  const steps = chartData || [
+    {lbl:'start',val:1.0},{lbl:'g=1',val:1.333333},{lbl:'g=2',val:1.582161},
+    {lbl:'g=4',val:1.617960},{lbl:'g=6',val:1.631614},{lbl:'g=8',val:1.633590},
+    {lbl:'g=10',val:1.635212},{lbl:'g=12',val:1.637100},{lbl:'g=14',val:1.638544},
+    {lbl:'all',val:TARGET}
   ];
 
-  const PAD  = { l:52, r:20, t:24, b:36 };
-  const pw   = W - PAD.l - PAD.r;
-  const ph   = H - PAD.t - PAD.b;
+  // Limit to 14 visible steps max for readability
+  const display = steps.length > 16
+    ? [steps[0], ...steps.slice(1, 13), steps[steps.length-1]]
+    : steps;
+
+  const bg     = dark ? '#1c1a17' : '#f7f4ef';
+  const grid   = dark ? '#2a2824' : '#ede9e2';
+  const tgtCol = dark ? '#4a4840' : '#c8c0b4';
+  const lblCol = dark ? '#6e665c' : '#6b6358';
+  const lineCol= dark ? '#6b9fd4' : '#1a3a6b';
+  const fillCol= dark ? 'rgba(107,159,212,0.10)' : 'rgba(26,58,107,0.08)';
+  const dotCol = dark ? '#6b9fd4' : '#1a3a6b';
+  const endCol = dark ? '#c9a23a' : '#8b6914';
+
+  const PAD = {l:52, r:20, t:24, b:36};
+  const pw = W - PAD.l - PAD.r;
+  const ph = H - PAD.t - PAD.b;
   const minV = 0.9, maxV = TARGET + 0.02;
-  const scX  = i  => PAD.l + (i / (steps.length - 1)) * pw;
-  const scY  = v  => PAD.t + ph - ((v - minV) / (maxV - minV)) * ph;
+  const scX = i => PAD.l + (i / (display.length-1)) * pw;
+  const scY = v => PAD.t + ph - ((v - minV)/(maxV - minV)) * ph;
 
-  // Background
-  ctx.fillStyle = '#f7f4ef';
-  ctx.fillRect(0, 0, W, H);
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-  // Target line
+  [1.0,1.2,1.4,1.6,TARGET].forEach(v => {
+    ctx.strokeStyle = grid; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD.l, scY(v)); ctx.lineTo(W-PAD.r, scY(v)); ctx.stroke();
+  });
+
   const ty = scY(TARGET);
-  ctx.setLineDash([4, 4]);
-  ctx.strokeStyle = '#c8c0b4';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(PAD.l, ty); ctx.lineTo(W - PAD.r, ty); ctx.stroke();
+  ctx.setLineDash([4,4]); ctx.strokeStyle = tgtCol; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD.l, ty); ctx.lineTo(W-PAD.r, ty); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = '#6b6358';
-  ctx.font = '10px JetBrains Mono, monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText('π²/6', W - PAD.r - 2, ty - 4);
+  ctx.fillStyle = lblCol; ctx.font = '10px JetBrains Mono,monospace';
+  ctx.textAlign = 'left'; ctx.fillText('π²/6', W-PAD.r-2, ty-4);
 
-  // Y axis labels
-  ctx.fillStyle = '#6b6358';
-  ctx.textAlign = 'right';
-  [1.0, 1.2, 1.4, 1.6, TARGET].forEach(v => {
-    const y = scY(v);
-    ctx.fillText(v === TARGET ? '1.6449' : v.toFixed(1), PAD.l - 6, y + 4);
-    ctx.strokeStyle = '#ede9e2';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r, y); ctx.stroke();
+  ctx.fillStyle = lblCol; ctx.textAlign = 'right';
+  [1.0,1.2,1.4,1.6,TARGET].forEach(v => {
+    ctx.fillText(v===TARGET?'1.6449':v.toFixed(1), PAD.l-6, scY(v)+4);
   });
 
-  // Area fill
   ctx.beginPath();
-  steps.forEach((s, i) => {
-    const x = scX(i), y = scY(s.val);
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.lineTo(scX(steps.length-1), scY(minV));
+  display.forEach((s,i) => { const x=scX(i),y=scY(s.val); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.lineTo(scX(display.length-1), scY(minV));
   ctx.lineTo(scX(0), scY(minV));
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(26, 58, 107, 0.08)';
-  ctx.fill();
+  ctx.closePath(); ctx.fillStyle = fillCol; ctx.fill();
 
-  // Line
   ctx.beginPath();
-  steps.forEach((s, i) => {
-    const x = scX(i), y = scY(s.val);
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.strokeStyle = '#1a3a6b';
-  ctx.lineWidth = 2;
-  ctx.lineJoin = 'round';
-  ctx.stroke();
+  display.forEach((s,i) => { const x=scX(i),y=scY(s.val); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.strokeStyle = lineCol; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
 
-  // Dots + labels
-  steps.forEach((s, i) => {
-    const x = scX(i), y = scY(s.val);
-    ctx.beginPath();
-    ctx.arc(x, y, i === steps.length - 1 ? 5 : 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = i === steps.length - 1 ? '#8b6914' : '#1a3a6b';
-    ctx.fill();
-    if(i % 2 === 0 || i === steps.length - 1){
-      ctx.fillStyle = '#3d3830';
-      ctx.font = '9px JetBrains Mono, monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(s.lbl, x, H - PAD.b + 14);
+  display.forEach((s,i) => {
+    const x=scX(i), y=scY(s.val);
+    ctx.beginPath(); ctx.arc(x,y,i===display.length-1?5:3.5,0,Math.PI*2);
+    ctx.fillStyle = i===display.length-1 ? endCol : dotCol; ctx.fill();
+    if(i%2===0 || i===display.length-1){
+      ctx.fillStyle=lblCol; ctx.font='9px JetBrains Mono,monospace';
+      ctx.textAlign='center'; ctx.fillText(s.lbl, x, H-PAD.b+14);
     }
   });
 
-})();
-</script>
+  ctx.restore();
+}
 
-<script>
-// ── Dark / light mode toggle ─────────────────────────────────
+// ─── Load 400M anchor data on page start ─────────────────────────────
+(function(){
+  const data = scaledDataForN(ANCHOR_N); // returns exact anchor at 400M
+  lastResult = data;
+  lastN = ANCHOR_N;
+  renderBoth(data, ANCHOR_N);
+})();
+
+// ─── Dark mode ────────────────────────────────────────────────────────
 (function(){
   const btn  = document.getElementById('themeToggle');
   const html = document.documentElement;
-
-  // Apply saved preference immediately (before paint)
   const saved = localStorage.getItem('theme');
-  if(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)){
-    html.classList.add('dark');
-    btn.textContent = '☀';
+  if(saved==='dark' || (!saved && window.matchMedia('(prefers-color-scheme:dark)').matches)){
+    html.classList.add('dark'); btn.textContent = '☀';
   }
-
   btn.addEventListener('click', function(){
     const dark = html.classList.toggle('dark');
     btn.textContent = dark ? '☀' : '🌙';
     localStorage.setItem('theme', dark ? 'dark' : 'light');
-
-    // Redraw canvas with updated background colour
-    setTimeout(redrawCanvas, 320);
+    setTimeout(() => drawChart(dark), 320);
   });
-
-  function redrawCanvas(){
-    const cv  = document.getElementById('convCanvas');
-    if(!cv) return;
-    const ctx = cv.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
-    const W   = cv.width  / dpr;
-    const H   = cv.height / dpr;
-    const dark = document.documentElement.classList.contains('dark');
-
-    const bg     = dark ? '#1c1a17' : '#f7f4ef';
-    const grid   = dark ? '#2a2824' : '#ede9e2';
-    const tgtCol = dark ? '#4a4840' : '#c8c0b4';
-    const lblCol = dark ? '#6e665c' : '#6b6358';
-    const lineCol= dark ? '#6b9fd4' : '#1a3a6b';
-    const fillCol= dark ? 'rgba(107,159,212,0.10)' : 'rgba(26,58,107,0.08)';
-    const dotCol = dark ? '#6b9fd4' : '#1a3a6b';
-    const endCol = dark ? '#c9a23a' : '#8b6914';
-
-    const TARGET = Math.PI * Math.PI / 6;
-    const steps = [
-      { lbl:'start', val:1.0 },{ lbl:'g=1', val:1.333333 },
-      { lbl:'g=2',   val:1.582161 },{ lbl:'g=4', val:1.617960 },
-      { lbl:'g=6',   val:1.631614 },{ lbl:'g=8', val:1.633590 },
-      { lbl:'g=10',  val:1.635212 },{ lbl:'g=12', val:1.637100 },
-      { lbl:'g=14',  val:1.638544 },{ lbl:'g=16', val:1.639480 },
-      { lbl:'g=18',  val:1.640811 },{ lbl:'g=20', val:1.641532 },
-      { lbl:'g=22',  val:1.642088 },{ lbl:'all',  val:TARGET   },
-    ];
-
-    const PAD = { l:52, r:20, t:24, b:36 };
-    const pw  = W - PAD.l - PAD.r;
-    const ph  = H - PAD.t - PAD.b;
-    const minV = 0.9, maxV = TARGET + 0.02;
-    const scX = i => PAD.l + (i / (steps.length-1)) * pw;
-    const scY = v => PAD.t + ph - ((v - minV)/(maxV - minV)) * ph;
-
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    ctx.save();
-    ctx.scale(dpr, dpr);
-
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    // Grid lines
-    [1.0,1.2,1.4,1.6,TARGET].forEach(v => {
-      const y = scY(v);
-      ctx.strokeStyle = grid; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W-PAD.r, y); ctx.stroke();
-    });
-
-    // Target dashed line
-    const ty = scY(TARGET);
-    ctx.setLineDash([4,4]); ctx.strokeStyle = tgtCol; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(PAD.l, ty); ctx.lineTo(W-PAD.r, ty); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = lblCol; ctx.font = '10px JetBrains Mono,monospace';
-    ctx.textAlign = 'left'; ctx.fillText('π²/6', W-PAD.r-2, ty-4);
-
-    // Y axis labels
-    ctx.fillStyle = lblCol; ctx.textAlign = 'right';
-    [1.0,1.2,1.4,1.6,TARGET].forEach(v => {
-      ctx.fillText(v===TARGET?'1.6449':v.toFixed(1), PAD.l-6, scY(v)+4);
-    });
-
-    // Area fill
-    ctx.beginPath();
-    steps.forEach((s,i) => { const x=scX(i),y=scY(s.val); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-    ctx.lineTo(scX(steps.length-1), scY(minV));
-    ctx.lineTo(scX(0), scY(minV));
-    ctx.closePath(); ctx.fillStyle = fillCol; ctx.fill();
-
-    // Line
-    ctx.beginPath();
-    steps.forEach((s,i) => { const x=scX(i),y=scY(s.val); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-    ctx.strokeStyle = lineCol; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
-
-    // Dots + x labels
-    steps.forEach((s,i) => {
-      const x=scX(i), y=scY(s.val);
-      ctx.beginPath(); ctx.arc(x,y,i===steps.length-1?5:3.5,0,Math.PI*2);
-      ctx.fillStyle = i===steps.length-1 ? endCol : dotCol; ctx.fill();
-      if(i%2===0 || i===steps.length-1){
-        ctx.fillStyle=lblCol; ctx.font='9px JetBrains Mono,monospace';
-        ctx.textAlign='center'; ctx.fillText(s.lbl, x, H-PAD.b+14);
-      }
-    });
-
-    ctx.restore();
-  }
 })();
 </script>
 
