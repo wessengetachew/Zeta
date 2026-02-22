@@ -1625,6 +1625,20 @@
                     </div>
                   </div>
 
+                  <!-- Ring spacing -->
+                  <div>
+                    <div style="margin-bottom:5px;color:var(--gold);">RING SPACING</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <input id="f-spacing" type="range" min="10" max="200" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-spacing-val').textContent=this.value+'%';fareyRedraw()">
+                      <span id="f-spacing-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
+                    </div>
+                    <div style="margin-top:6px;color:#9a8060;font-size:0.58rem;">INNER RADIUS</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
+                      <input id="f-rinner" type="range" min="1" max="40" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-rinner-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
+                      <span id="f-rinner-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">0.04</span>
+                    </div>
+                  </div>
+
                   <!-- Show chords -->
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">SHOW CHORDS</div>
@@ -11532,7 +11546,10 @@
 
     var fracs = buildFractions(modN);
     var cx=W/2, cy=H/2;
-    var rMin=W*0.045, rMax=W*0.42;
+    var _spacing = (parseInt(document.getElementById('f-spacing').value)||100)/100;
+    var _rinner  = (parseInt(document.getElementById('f-rinner').value)||4)/100;
+    var rMin=W*_rinner, rMax=W*0.045 + (W*0.42-W*0.045)*_spacing;
+    if(rMax > W*0.49) rMax = W*0.49;
     var ang = _combinedAngle;
 
     function radius(m){ return rMin+(rMax-rMin)*(m-1)/(modN-1||1); }
@@ -11750,7 +11767,10 @@
     var pts = which==='coprime'?fracs.cop:fracs.ncp;
 
     var cx=W/2, cy=H/2;
-    var rMin=W*0.045, rMax=W*0.42;
+    var _spacing = (parseInt(document.getElementById('f-spacing').value)||100)/100;
+    var _rinner  = (parseInt(document.getElementById('f-rinner').value)||4)/100;
+    var rMin=W*_rinner, rMax=W*0.045 + (W*0.42-W*0.045)*_spacing;
+    if(rMax > W*0.49) rMax = W*0.49;
     var ang = _angles[which]||0;
 
     function radius(m){ return rMin+(rMax-rMin)*(m-1)/(modN-1||1); }
