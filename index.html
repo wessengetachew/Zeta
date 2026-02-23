@@ -73,7 +73,9 @@
         body.dark-mode .modal-prime-list,
         body.dark-mode .stats-table-wrapper,
         body.dark-mode .data-table,
-        body.dark-mode .stats-table {
+        body.dark-mode .stats-table,
+        body.dark-mode .dropdown-section,
+        body.dark-mode .dropdown-content {
             background: var(--parchment) !important;
             background-image: none !important;
         }
@@ -1634,8 +1636,19 @@
                     </div>
                     <div style="margin-top:6px;color:#9a8060;font-size:0.58rem;">INNER RADIUS</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
-                      <input id="f-rinner" type="range" min="1" max="40" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-rinner-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
+                      <input id="f-rinner" type="range" min="0" max="50" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-rinner-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
                       <span id="f-rinner-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">0.04</span>
+                    </div>
+                    <div style="margin-top:6px;color:#9a8060;font-size:0.58rem;">ZOOM</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
+                      <input id="f-zoom" type="range" min="50" max="500" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-zoom-val').textContent=this.value+'%';fareyRedraw()">
+                      <span id="f-zoom-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
+                    </div>
+                    <div style="margin-top:8px;">
+                      <label style="cursor:pointer;display:flex;align-items:center;gap:8px;">
+                        <input id="f-invert-order" type="checkbox" onchange="fareyRedraw()" style="accent-color:var(--gold);">
+                        <span style="color:#9a8060;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;">Invert Ring Order (outer→inner)</span>
+                      </label>
                     </div>
                   </div>
 
@@ -1777,6 +1790,8 @@
             </div>
             <!-- ══ END FAREY ══ -->
             </div>            </div>
+        </div><!-- end intro-section -->
+        <div class="intro-section">
             <h2>Abstract</h2>
 
             <p>Euler's product formula expresses ζ(2) = π²/6 as an infinite product over all primes. Because the product converges absolutely, its factors may be collected in any order without changing the value. This tool implements a specific collection: prime factors are grouped by the <em>forward gap</em> of each prime — the distance to the next prime — yielding a factorization ζ(2) = ∏<sub>g</sub> P<sub>g</sub> indexed by gap class. This regrouping is a direct consequence of absolute convergence, not a new theorem. Its interest lies in what the resulting numerical magnitudes reveal about prime gap structure.</p>
@@ -1834,6 +1849,8 @@
             </ul>
         </div>
     </div>
+        </div><!-- end abstract intro-section -->
+    </div><!-- end introduction -->
     
     <div class="controls-container">
         <!-- Computation Parameters (NOT in dropdown - on main page) -->
@@ -11520,8 +11537,8 @@
     highlightNavLink();
   };
 
-  function drawCombined(){
-    var c   = document.getElementById('fc-combined');
+  function drawCombined(overrideCanvas){
+    var c   = overrideCanvas || document.getElementById('fc-combined');
     if(!c) return;
     var ctx = c.getContext('2d');
     var W=c.width, H=c.height;
@@ -11548,11 +11565,16 @@
     var cx=W/2, cy=H/2;
     var _spacing = (parseInt(document.getElementById('f-spacing').value)||100)/100;
     var _rinner  = (parseInt(document.getElementById('f-rinner').value)||4)/100;
-    var rMin=W*_rinner, rMax=W*0.045 + (W*0.42-W*0.045)*_spacing;
-    if(rMax > W*0.49) rMax = W*0.49;
+    var _zoom    = (parseInt(document.getElementById('f-zoom').value)||100)/100;
+    var _invert  = document.getElementById('f-invert-order').checked;
+    var rBase = W*0.42*_spacing; if(rBase > W*0.49) rBase=W*0.49;
+    var rMin = W*_rinner*_zoom, rMax = rBase*_zoom;
     var ang = _combinedAngle;
 
-    function radius(m){ return rMin+(rMax-rMin)*(m-1)/(modN-1||1); }
+    function radius(m){
+      var t = _invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
+      return rMin+(rMax-rMin)*t;
+    }
     function ptXY(r,m){
       var base = dir*2*Math.PI*r/(m||1);
       var rad  = radius(m);
@@ -11738,9 +11760,8 @@
   }
 
   // ── draw ─────────────────────────────────────────────────────────────────
-  function drawFarey(which){
-    var canvasId = 'fc-'+which;
-    var c = document.getElementById(canvasId);
+  function drawFarey(which, overrideCanvas){
+    var c = overrideCanvas || document.getElementById('fc-'+which);
     if(!c) return;
     var ctx = c.getContext('2d');
     var W=c.width, H=c.height;
@@ -11769,11 +11790,16 @@
     var cx=W/2, cy=H/2;
     var _spacing = (parseInt(document.getElementById('f-spacing').value)||100)/100;
     var _rinner  = (parseInt(document.getElementById('f-rinner').value)||4)/100;
-    var rMin=W*_rinner, rMax=W*0.045 + (W*0.42-W*0.045)*_spacing;
-    if(rMax > W*0.49) rMax = W*0.49;
+    var _zoom    = (parseInt(document.getElementById('f-zoom').value)||100)/100;
+    var _invert  = document.getElementById('f-invert-order').checked;
+    var rBase = W*0.42*_spacing; if(rBase > W*0.49) rBase=W*0.49;
+    var rMin = W*_rinner*_zoom, rMax = rBase*_zoom;
     var ang = _angles[which]||0;
 
-    function radius(m){ return rMin+(rMax-rMin)*(m-1)/(modN-1||1); }
+    function radius(m){
+      var t = _invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
+      return rMin+(rMax-rMin)*t;
+    }
     function ptXY(r,m){
       var dir = parseFloat(document.getElementById('f-dir').value)||1;
       var base = dir * 2*Math.PI*r/(m||1);
@@ -11967,36 +11993,94 @@
   });
 
   // ── Composite PNG export ─────────────────────────────────────────────────
+  // ── Helper: render a fresh offscreen canvas ─────────────────────────────
+  function makeFareyCanvas(mode, size){
+    // mode: 'coprime' | 'noncoprime' | 'combined'
+    var c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    if(mode === 'combined'){
+      drawCombined(c);
+    } else {
+      drawFarey(mode, c);
+    }
+    return c;
+  }
+
+  // ── Shared: draw point detail panel onto ctx ──────────────────────────────
+  function drawDetailPanel(ctx, pt, panelX, panelY, panelW, panelH, col1, col2, modN){
+    var dir = parseFloat(document.getElementById('f-dir').value)||1;
+    var g   = gcd(pt.r, pt.m);
+    var ptColor = g===1 ? col1 : col2;
+    var ang = dir*2*Math.PI*pt.r/(pt.m||1) + _combinedAngle*Math.PI/180;
+    var deg = ((ang*180/Math.PI)%360+360)%360;
+    var rad = dir*2*pt.r/(pt.m||1);
+    var phi = eulerPhi(pt.m);
+
+    ctx.fillStyle='rgba(14,11,5,0.97)'; ctx.fillRect(panelX,panelY,panelW,panelH);
+    ctx.strokeStyle='rgba(196,155,56,0.55)'; ctx.lineWidth=0.8;
+    ctx.strokeRect(panelX,panelY,panelW,panelH);
+
+    var tx=panelX+14, lineH=19, ty=panelY+24;
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+
+    ctx.font='bold 13px "Cinzel",Georgia,serif';
+    ctx.fillStyle=ptColor; ctx.fillText(pt.r+'/'+pt.m, tx, ty); ty+=lineH+4;
+
+    ctx.strokeStyle='rgba(196,155,56,0.25)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(panelX+8,ty-4); ctx.lineTo(panelX+panelW-8,ty-4); ctx.stroke();
+
+    ctx.font='10px "Cinzel",Georgia,serif';
+    [['r',''+pt.r],['m',''+pt.m],['gcd',''+g]].forEach(function(row){
+      ctx.fillStyle='#9a8060'; ctx.fillText(row[0],tx,ty);
+      ctx.fillStyle=ptColor;   ctx.fillText(row[1],tx+64,ty); ty+=lineH;
+    });
+
+    ty+=4; ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(panelX+8,ty-4); ctx.lineTo(panelX+panelW-8,ty-4); ctx.stroke();
+
+    [['angle',deg.toFixed(2)+'°'],['radian',rad.toFixed(4)+'π'],['decimal',(pt.r/pt.m).toFixed(6)]].forEach(function(row){
+      ctx.fillStyle='#9a8060'; ctx.fillText(row[0],tx,ty);
+      ctx.fillStyle='#e8d9b0'; ctx.fillText(row[1],tx+64,ty); ty+=lineH;
+    });
+
+    ty+=4; ctx.beginPath(); ctx.moveTo(panelX+8,ty-4); ctx.lineTo(panelX+panelW-8,ty-4); ctx.stroke();
+    ctx.fillStyle='#9a8060'; ctx.fillText('φ('+pt.m+')',tx,ty);
+    ctx.fillStyle='#e8d9b0'; ctx.fillText(''+phi,tx+64,ty); ty+=lineH;
+    ctx.fillStyle='#9a8060'; ctx.fillText('type',tx,ty);
+    ctx.fillStyle=ptColor;   ctx.fillText(g===1?'gcd = 1':'gcd = '+g,tx+64,ty);
+  }
+
+  // ── Composite export ───────────────────────────────────────────────────────
   window.fareyComposite = function(){
     var modN     = parseInt(document.getElementById('f-mod-num').value)||49;
     var col1     = document.getElementById('f-col1').value;
     var col2     = document.getElementById('f-col2').value;
-    var diagSize = parseInt(document.getElementById('f-size-num').value)||260;
-
-    var combinedOpen = document.getElementById('farey-combined-view').style.display !== 'none';
-    var pt = _activeTooltipPt;
+    var diagSize = parseInt(document.getElementById('f-size-num').value)||800;
+    var pt       = _activeTooltipPt;
 
     var PAD=16, GAP=24, FOOT=18;
-    var DETAIL_W = pt ? 220 : 0;
-    var DETAIL_PAD = pt ? 16 : 0;
+    var DETAIL_W = pt ? 220 : 0, DETAIL_PAD = pt ? 16 : 0;
 
-    var W, H, off, ctx;
+    // Render fresh canvases for export
+    var combinedOpen = document.getElementById('farey-combined-view').style.display !== 'none';
+    var src1 = combinedOpen ? makeFareyCanvas('combined', diagSize)
+                            : makeFareyCanvas('coprime',  diagSize);
+    var src2 = combinedOpen ? null : makeFareyCanvas('noncoprime', diagSize);
+
+    var W = combinedOpen
+      ? PAD + diagSize + DETAIL_PAD + DETAIL_W + PAD
+      : PAD + diagSize + GAP + diagSize + DETAIL_PAD + DETAIL_W + PAD;
+    var H = PAD + diagSize + FOOT + PAD;
+
+    var off = document.createElement('canvas'); off.width=W; off.height=H;
+    var ctx = off.getContext('2d');
+    ctx.fillStyle='#0e0b05'; ctx.fillRect(0,0,W,H);
 
     if(combinedOpen){
-      W = PAD + diagSize + DETAIL_PAD + DETAIL_W + PAD;
-      H = PAD + diagSize + FOOT + PAD;
-      off = document.createElement('canvas'); off.width=W; off.height=H;
-      ctx = off.getContext('2d');
-      ctx.fillStyle='#0e0b05'; ctx.fillRect(0,0,W,H);
-      ctx.drawImage(document.getElementById('fc-combined'), PAD, PAD, diagSize, diagSize);
+      ctx.drawImage(src1, PAD, PAD, diagSize, diagSize);
     } else {
-      W = PAD + diagSize + GAP + diagSize + DETAIL_PAD + DETAIL_W + PAD;
-      H = PAD + diagSize + FOOT + PAD;
-      off = document.createElement('canvas'); off.width=W; off.height=H;
-      ctx = off.getContext('2d');
-      ctx.fillStyle='#0e0b05'; ctx.fillRect(0,0,W,H);
-      ctx.drawImage(document.getElementById('fc-coprime'),    PAD,               PAD, diagSize, diagSize);
-      ctx.drawImage(document.getElementById('fc-noncoprime'), PAD+diagSize+GAP,  PAD, diagSize, diagSize);
+      ctx.drawImage(src1, PAD,               PAD, diagSize, diagSize);
+      ctx.drawImage(src2, PAD+diagSize+GAP,  PAD, diagSize, diagSize);
     }
 
     // mod label
@@ -12005,212 +12089,214 @@
     var labelX = combinedOpen ? PAD+diagSize/2 : PAD+diagSize+GAP/2+diagSize/2;
     ctx.fillText('mod 1…'+modN, labelX, PAD+diagSize+FOOT/2+2);
 
-    // point detail panel
     if(pt){
-      var dir = parseFloat(document.getElementById('f-dir').value)||1;
-      var g   = gcd(pt.r, pt.m);
-      var ptColor = g===1 ? col1 : col2;
-      var ang = dir*2*Math.PI*pt.r/(pt.m||1) + _combinedAngle*Math.PI/180;
-      var deg = ((ang*180/Math.PI)%360+360)%360;
-      var rad = dir*2*pt.r/(pt.m||1);
-      var phi = eulerPhi(pt.m);
-      var dx = W - PAD - DETAIL_W, dy = PAD, dh = diagSize;
-
-      // panel bg + border
-      ctx.fillStyle='rgba(14,11,5,0.96)'; ctx.fillRect(dx,dy,DETAIL_W,dh);
-      ctx.strokeStyle='rgba(196,155,56,0.55)'; ctx.lineWidth=0.8;
-      ctx.strokeRect(dx,dy,DETAIL_W,dh);
-
-      // highlight ring on point in exported diagram
-      if(combinedOpen){
-        var rMin=diagSize*0.045, rMax=diagSize*0.42;
-        var rr=rMin+(rMax-rMin)*(pt.m-1)/(modN-1||1);
-        var baseA=dir*2*Math.PI*pt.r/(pt.m||1)+_combinedAngle*Math.PI/180;
-        var px2=PAD+diagSize/2+rr*Math.sin(baseA);
-        var py2=PAD+diagSize/2-rr*Math.cos(baseA);
-        ctx.beginPath(); ctx.arc(px2,py2,7,0,2*Math.PI);
-        ctx.strokeStyle='#f0d060'; ctx.lineWidth=2; ctx.stroke();
-        ctx.beginPath(); ctx.arc(px2,py2,3,0,2*Math.PI);
-        ctx.fillStyle='#f0d060'; ctx.fill();
-      }
-
-      // text
-      var tx=dx+14, lineH=19, ty=dy+24;
-      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-
-      ctx.font='bold 13px "Cinzel",Georgia,serif';
-      ctx.fillStyle=ptColor; ctx.fillText(pt.r+'/'+pt.m, tx, ty); ty+=lineH+4;
-
-      ctx.strokeStyle='rgba(196,155,56,0.25)'; ctx.lineWidth=0.5;
-      ctx.beginPath(); ctx.moveTo(dx+8,ty-4); ctx.lineTo(dx+DETAIL_W-8,ty-4); ctx.stroke();
-
-      ctx.font='10px "Cinzel",Georgia,serif';
-      [['r',''+pt.r],['m',''+pt.m],['gcd',''+g]].forEach(function(row){
-        ctx.fillStyle='#9a8060'; ctx.fillText(row[0],tx,ty);
-        ctx.fillStyle=ptColor;   ctx.fillText(row[1],tx+64,ty); ty+=lineH;
-      });
-
-      ty+=4; ctx.beginPath(); ctx.moveTo(dx+8,ty-4); ctx.lineTo(dx+DETAIL_W-8,ty-4); ctx.stroke();
-
-      [['angle',deg.toFixed(2)+'°'],['radian',rad.toFixed(4)+'π'],['decimal',(pt.r/pt.m).toFixed(6)]].forEach(function(row){
-        ctx.fillStyle='#9a8060'; ctx.fillText(row[0],tx,ty);
-        ctx.fillStyle='#e8d9b0'; ctx.fillText(row[1],tx+64,ty); ty+=lineH;
-      });
-
-      ty+=4; ctx.beginPath(); ctx.moveTo(dx+8,ty-4); ctx.lineTo(dx+DETAIL_W-8,ty-4); ctx.stroke();
-
-      ctx.fillStyle='#9a8060'; ctx.fillText('φ('+pt.m+')',tx,ty);
-      ctx.fillStyle='#e8d9b0'; ctx.fillText(''+phi,tx+64,ty); ty+=lineH;
-      ctx.fillStyle='#9a8060'; ctx.fillText('type',tx,ty);
-      ctx.fillStyle=ptColor;   ctx.fillText(g===1?'gcd = 1':'gcd = '+g,tx+64,ty);
+      var dx = W - PAD - DETAIL_W;
+      drawDetailPanel(ctx, pt, dx, PAD, DETAIL_W, diagSize, col1, col2, modN);
     }
 
     var a = document.createElement('a');
     a.download = 'farey_mod'+modN+(pt?'_r'+pt.r+'_m'+pt.m:'')+'_composite.png';
-    a.href     = off.toDataURL('image/png');
-    a.click();
+    a.href = off.toDataURL('image/png'); a.click();
   };
 
-  // ── Triangle export: combined top-center, gcd=1 and gcd>1 bottom ─────────
+  // ── Triangle export ────────────────────────────────────────────────────────
   window.fareyTriangleExport = function(){
     var modN     = parseInt(document.getElementById('f-mod-num').value)||49;
     var col1     = document.getElementById('f-col1').value;
     var col2     = document.getElementById('f-col2').value;
-    var diagSize = parseInt(document.getElementById('f-size-num').value)||260;
+    var S        = parseInt(document.getElementById('f-size-num').value)||800; // all diagrams this size
 
-    // Generate combined canvas fresh (offscreen)
-    // We need to draw combined + the two split canvases
-    // Use the live canvases directly
+    // Render all three at the user-set size
+    var srcCop  = makeFareyCanvas('coprime',   S);
+    var srcNcp  = makeFareyCanvas('noncoprime',S);
+    var srcComb = makeFareyCanvas('combined',  S);
 
-    var srcCop  = document.getElementById('fc-coprime');
-    var srcNcp  = document.getElementById('fc-noncoprime');
-    var srcComb = document.getElementById('fc-combined');
+    // ── Layout ────────────────────────────────────────────────────────────
+    // PLUS sign between top two, combined centered below, stats in bottom corners
+    var PLUS   = 40;   // plus-sign zone width between top images
+    var PAD    = 28;
+    var VGAP   = 32;   // vertical gap between top row and combined
+    var STATS_H= 160;  // height of bottom stats panels
+    var STATS_VGAP = 20;
 
-    // We'll use diagSize for the two bottom canvases
-    // Combined top will be slightly larger: diagSize * 1.4 (centered)
-    var topSize  = Math.round(diagSize * 1.4);
-    var botSize  = diagSize;
-
-    var OUTER_PAD = 30;
-    var GAP_H     = 24;  // vertical gap between top and bottom row
-    var GAP_W     = 20;  // horizontal gap between bottom two
-
-    var totalW = OUTER_PAD + botSize + GAP_W + botSize + OUTER_PAD;
-    var topX   = Math.round((totalW - topSize) / 2);
-    var topY   = OUTER_PAD;
-    var botY   = OUTER_PAD + topSize + GAP_H;
-    var totalH = botY + botSize + OUTER_PAD + 30; // +30 for label row
+    var totalW = PAD + S + PLUS + S + PAD;
+    // combined is same size S, centered
+    var combX  = Math.round((totalW - S) / 2);
+    var topY   = PAD;
+    var combY  = PAD + S + VGAP;
+    var statsY = combY + S + STATS_VGAP;
+    var totalH = statsY + STATS_H + PAD;
 
     var off = document.createElement('canvas');
-    off.width  = totalW;
-    off.height = totalH;
+    off.width = totalW; off.height = totalH;
     var ctx = off.getContext('2d');
 
-    // dark bg
+    // background
     ctx.fillStyle = '#0e0b05';
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // subtle grid lines connecting the three circles (triangle skeleton)
-    ctx.strokeStyle = 'rgba(196,155,56,0.12)';
+    // ── Top row: gcd=1 (left) + gcd>1 (right), corners touching ──────────
+    var copX = PAD;
+    var ncpX = PAD + S + PLUS;
+
+    ctx.drawImage(srcCop, copX, topY, S, S);
+    ctx.drawImage(srcNcp, ncpX, topY, S, S);
+
+    // ── Plus sign centered between the two top images ─────────────────────
+    var plusCX = PAD + S + PLUS/2;
+    var plusCY = topY + S/2;
+    var arm = 12, thick = 3;
+    ctx.fillStyle = '#c49b38';
+    ctx.fillRect(plusCX - arm, plusCY - thick/2, arm*2, thick);
+    ctx.fillRect(plusCX - thick/2, plusCY - arm, thick, arm*2);
+
+    // corner decoration: small gold bracket where they "meet"
+    // inner corners of both images
+    var copInnerX = copX + S;
+    var ncpInnerX = ncpX;
+    // faint gold line connecting inner bottom corners to combined center top
+    ctx.strokeStyle = 'rgba(196,155,56,0.2)';
     ctx.lineWidth   = 0.8;
-    var topCX  = topX + topSize/2,   topCY  = topY  + topSize/2;
-    var botLCX = OUTER_PAD + botSize/2, botCY = botY + botSize/2;
-    var botRCX = OUTER_PAD + botSize + GAP_W + botSize/2;
-    // connect centers with faint lines
-    ctx.beginPath(); ctx.moveTo(topCX, topCY+topSize/2);   ctx.lineTo(botLCX, botCY-botSize/2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(topCX, topCY+topSize/2);   ctx.lineTo(botRCX, botCY-botSize/2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(botLCX, botCY); ctx.lineTo(botRCX, botCY); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(copInnerX, topY + S);
+    ctx.lineTo(combX + S/2, combY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ncpInnerX, topY + S);
+    ctx.lineTo(combX + S/2, combY);
+    ctx.stroke();
 
-    // ── Top: combined ────────────────────────────────────────────────────
-    // If combined canvas exists and has content, stamp it; else render fresh
-    if(srcComb && srcComb.width > 0){
-      ctx.drawImage(srcComb, topX, topY, topSize, topSize);
-    } else {
-      // Draw a placeholder note
-      ctx.fillStyle = 'rgba(196,155,56,0.1)';
-      ctx.beginPath(); ctx.arc(topCX, topCY, topSize/2, 0, 2*Math.PI); ctx.fill();
-      ctx.fillStyle = '#9a8060'; ctx.textAlign='center'; ctx.font='12px Cinzel,serif';
-      ctx.fillText('Open Advanced to render combined', topCX, topCY);
-    }
+    // corner tick marks where images would share a corner
+    ctx.strokeStyle = 'rgba(196,155,56,0.5)';
+    ctx.lineWidth   = 1.5;
+    var tick = 16;
+    // right corner of cop
+    ctx.beginPath(); ctx.moveTo(copInnerX-tick, topY); ctx.lineTo(copInnerX, topY); ctx.lineTo(copInnerX, topY+tick); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(copInnerX-tick, topY+S); ctx.lineTo(copInnerX, topY+S); ctx.lineTo(copInnerX, topY+S-tick); ctx.stroke();
+    // left corner of ncp
+    ctx.beginPath(); ctx.moveTo(ncpInnerX+tick, topY); ctx.lineTo(ncpInnerX, topY); ctx.lineTo(ncpInnerX, topY+tick); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ncpInnerX+tick, topY+S); ctx.lineTo(ncpInnerX, topY+S); ctx.lineTo(ncpInnerX, topY+S-tick); ctx.stroke();
 
-    // top label
-    ctx.textAlign='center'; ctx.textBaseline='top';
-    ctx.font='8px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.6)';
-    ctx.fillText('Combined', topCX, topY + topSize + 4);
-
-    // ── Bottom left: gcd=1 ───────────────────────────────────────────────
-    if(srcCop && srcCop.width > 0){
-      ctx.drawImage(srcCop, OUTER_PAD, botY, botSize, botSize);
-    }
-    ctx.fillStyle=col1;
-    ctx.font='8px "Cinzel",Georgia,serif'; ctx.textAlign='center';
-    ctx.fillText('gcd(r, m) = 1', OUTER_PAD + botSize/2, botY + botSize + 6);
-
-    // ── Bottom right: gcd>1 ──────────────────────────────────────────────
-    if(srcNcp && srcNcp.width > 0){
-      ctx.drawImage(srcNcp, OUTER_PAD + botSize + GAP_W, botY, botSize, botSize);
-    }
+    // labels above
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.font='bold 11px "Cinzel",Georgia,serif'; ctx.fillStyle=col1;
+    ctx.fillText('gcd(r, m) = 1', copX+S/2, topY-6);
     ctx.fillStyle=col2;
-    ctx.fillText('gcd(r, m) > 1', OUTER_PAD + botSize + GAP_W + botSize/2, botY + botSize + 6);
+    ctx.fillText('gcd(r, m) > 1', ncpX+S/2, topY-6);
 
-    // bottom center: mod label
-    ctx.fillStyle='#9a8060';
-    ctx.textAlign='center';
-    ctx.font='9px "Cinzel",Georgia,serif';
-    ctx.fillText('mod 1…'+modN, totalW/2, botY + botSize + 18);
+    // ── Combined centered below ───────────────────────────────────────────
+    ctx.drawImage(srcComb, combX, combY, S, S);
 
-    // active point detail strip if a point is selected
-    var pt = _activeTooltipPt;
-    if(pt){
-      var g   = gcd(pt.r, pt.m);
-      var ptColor = g===1 ? col1 : col2;
-      var dir = parseFloat(document.getElementById('f-dir').value)||1;
-      var ang = dir*2*Math.PI*pt.r/(pt.m||1) + _combinedAngle*Math.PI/180;
-      var deg = ((ang*180/Math.PI)%360+360)%360;
-      var rad = dir*2*pt.r/(pt.m||1);
-      var phi = eulerPhi(pt.m);
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.font='bold 11px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.8)';
+    ctx.fillText('Combined', combX+S/2, combY-6);
 
-      // footer strip
-      var fh = 42, fy = totalH - fh;
-      ctx.fillStyle='rgba(10,8,3,0.9)'; ctx.fillRect(0, fy, totalW, fh);
-      ctx.strokeStyle='rgba(196,155,56,0.35)'; ctx.lineWidth=0.7;
-      ctx.beginPath(); ctx.moveTo(0,fy); ctx.lineTo(totalW,fy); ctx.stroke();
+    // ── Compute stats ─────────────────────────────────────────────────────
+    var fracs = buildFractions(modN);
+    var cop = fracs.cop, ncp = fracs.ncp;
+    var totalPts = cop.length + ncp.length;
+    var copCount = cop.length, ncpCount = ncp.length;
+    var copRatio = totalPts > 0 ? copCount/totalPts : 0;
+    var ncpRatio = totalPts > 0 ? ncpCount/totalPts : 0;
 
-      ctx.textAlign='center'; ctx.textBaseline='middle';
+    // phi sum = copCount (sum of phi(m) for m=1..N)
+    // Count by ring
+    var copByM = {}, ncpByM = {}, gcds = {};
+    cop.forEach(function(p){ copByM[p.m]=(copByM[p.m]||0)+1; });
+    ncp.forEach(function(p){
+      ncpByM[p.m]=(ncpByM[p.m]||0)+1;
+      var g=gcd(p.r,p.m); if(!gcds[g]) gcds[g]=0; gcds[g]++;
+    });
+    var gcdList = Object.keys(gcds).map(Number).sort(function(a,b){return a-b;});
+
+    // ── Bottom-left stats panel: gcd=1 properties ────────────────────────
+    var statW = Math.round((totalW - PAD*3)/2);
+    var statLX = PAD;
+    var statRX = PAD*2 + statW;
+
+    function drawStatsPanel(x, y, w, h, title, titleColor, rows){
+      ctx.fillStyle='rgba(14,11,5,0.85)';
+      ctx.fillRect(x,y,w,h);
+      ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.7;
+      ctx.strokeRect(x,y,w,h);
+
+      // title
+      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
       ctx.font='bold 10px "Cinzel",Georgia,serif';
-      ctx.fillStyle=ptColor; ctx.fillText(pt.r+'/'+pt.m, totalW*0.10, fy+14);
+      ctx.fillStyle=titleColor;
+      ctx.fillText(title, x+12, y+16);
 
+      ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=0.5;
+      ctx.beginPath(); ctx.moveTo(x+8,y+22); ctx.lineTo(x+w-8,y+22); ctx.stroke();
+
+      var ty=y+34, lineH=16, col2off=w*0.52;
       ctx.font='9px "Cinzel",Georgia,serif';
-      var items=[
-        ['r',pt.r],['m',pt.m],['gcd',g],
-        ['angle',deg.toFixed(1)+'°'],
-        ['rad',rad.toFixed(3)+'π'],
-        ['φ(m)',phi]
-      ];
-      var spacing = totalW * 0.78 / items.length;
-      items.forEach(function(item, i){
-        var x = totalW*0.22 + i*spacing + spacing/2;
-        ctx.fillStyle='#9a8060'; ctx.fillText(item[0], x, fy+10);
-        ctx.fillStyle=i<3?ptColor:'#e8d9b0'; ctx.fillText(''+item[1], x, fy+26);
+      rows.forEach(function(row){
+        if(row === '---'){
+          ctx.strokeStyle='rgba(196,155,56,0.15)'; ctx.lineWidth=0.4;
+          ctx.beginPath(); ctx.moveTo(x+8,ty-4); ctx.lineTo(x+w-8,ty-4); ctx.stroke();
+          ty+=4; return;
+        }
+        ctx.fillStyle='#9a8060'; ctx.textAlign='left';
+        ctx.fillText(row[0], x+12, ty);
+        ctx.fillStyle=row[2]||'#e8d9b0'; ctx.textAlign='right';
+        ctx.fillText(row[1], x+w-12, ty);
+        ty+=lineH;
       });
     }
 
+    // Left panel: gcd=1 stats
+    drawStatsPanel(statLX, statsY, statW, STATS_H, 'gcd(r, m) = 1  ·  COPRIME', col1, [
+      ['Total points', copCount+''],
+      ['Share of all r/m', (copRatio*100).toFixed(2)+'%'],
+      ['Ratio cop / total', copCount+' / '+totalPts],
+      ['---'],
+      ['Σ φ(m), m=1…'+modN, copCount+''],
+      ['Avg φ(m) / m', (copRatio).toFixed(4)],
+      ['mod N', ''+modN],
+    ]);
+
+    // Right panel: gcd>1 stats + gcd breakdown
+    var ncpRows = [
+      ['Total points', ncpCount+''],
+      ['Share of all r/m', (ncpRatio*100).toFixed(2)+'%'],
+      ['Ratio ncp / total', ncpCount+' / '+totalPts],
+      ['---'],
+    ];
+    gcdList.slice(0,5).forEach(function(g){
+      var cnt=gcds[g];
+      ncpRows.push(['gcd = '+g, cnt+' ('+((cnt/totalPts)*100).toFixed(1)+'%)']);
+    });
+    if(gcdList.length > 5) ncpRows.push(['… more gcds', '']);
+
+    drawStatsPanel(statRX, statsY, statW, STATS_H, 'gcd(r, m) > 1  ·  NON-COPRIME', col2, ncpRows);
+
+    // ── Ratio bar spanning full width ────────────────────────────────────
+    var barY   = statsY + STATS_H + 10;
+    var barH   = 10;
+    var barX   = PAD;
+    var barW   = totalW - PAD*2;
+    ctx.fillStyle='rgba(196,155,56,0.1)'; ctx.fillRect(barX,barY,barW,barH);
+    ctx.fillStyle=col1; ctx.fillRect(barX, barY, Math.round(barW*copRatio), barH);
+    ctx.fillStyle=col2; ctx.fillRect(barX+Math.round(barW*copRatio), barY, Math.round(barW*ncpRatio), barH);
+    // label
+    ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle='#9a8060';
+    ctx.font='8px "Cinzel",Georgia,serif';
+    ctx.fillText('gcd=1: '+(copRatio*100).toFixed(1)+'%  +  gcd>1: '+(ncpRatio*100).toFixed(1)+'%  =  100%  ·  mod 1…'+modN, totalW/2, barY+barH+4);
+
     var a = document.createElement('a');
-    a.download = 'farey_mod'+modN+'_triangle'+(pt?'_r'+pt.r+'m'+pt.m:'')+'.png';
-    a.href     = off.toDataURL('image/png');
-    a.click();
+    a.download='farey_mod'+modN+'_layout.png';
+    a.href=off.toDataURL('image/png'); a.click();
   };
 
   // ── Per-ring cumulative rotation ─────────────────────────────────────────
-  var _ringOffsets = {}; // m -> extra degrees offset accumulated by animation
+  var _ringOffsets  = {};
   var _ringAnimTimer = null;
 
-  // Returns the total extra rotation in degrees for ring m (beyond global ang)
   function ringOffset(m, modN){
     var a    = parseFloat(document.getElementById('f-ringstep-a').value)||0;
     var b    = parseFloat(document.getElementById('f-ringstep-b').value)||2;
     var rdir = parseFloat(document.getElementById('f-ringdir').value)||1;
-    // step per ring = (a/b) * 360 degrees, cumulative from ring 1
     var staticOffset = rdir * (m-1) * (a/b) * 360;
     var animOffset   = _ringOffsets[m] || 0;
     return staticOffset + animOffset;
@@ -12229,9 +12315,6 @@
         var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
         var speed = parseInt(document.getElementById('f-ringspeed').value)||20;
         var rdir  = parseFloat(document.getElementById('f-ringdir').value)||1;
-        var a     = parseFloat(document.getElementById('f-ringstep-a').value)||0;
-        var b     = parseFloat(document.getElementById('f-ringstep-b').value)||2;
-        // each ring rotates at speed*(m/modN) for inner->outer or speed*((modN-m+1)/modN) for outer->inner
         for(var m=1; m<=modN; m++){
           var t = rdir===1 ? m/modN : (modN-m+1)/modN;
           _ringOffsets[m] = (_ringOffsets[m]||0) + speed * t * 0.04;
