@@ -541,7 +541,7 @@
         
         .dropdown-header {
             padding: 16px 24px;
-            background: linear-gradient(135deg, var(--ink) 0%, var(--ink-mid) 100%);
+            background: linear-gradient(135deg, #1e1008 0%, #3b220f 100%);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -555,7 +555,7 @@
         }
         
         .dropdown-header h3 {
-            color: var(--gold-light) !important;
+            color: #e0bc60 !important;
             font-family: 'Cinzel', serif;
             font-size: 0.82rem !important;
             letter-spacing: 0.14em;
@@ -569,7 +569,7 @@
         }
         
         .dropdown-icon {
-            color: var(--gold-light);
+            color: #e0bc60;
             font-size: 1rem;
             transition: transform 0.3s;
         }
@@ -1621,8 +1621,8 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">DIAGRAM SIZE</div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                      <input id="f-size" type="range" min="160" max="1000" value="260" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-size-num').value=this.value;fareyResize()">
-                      <input id="f-size-num" type="number" min="160" max="1000" value="260" style="width:54px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(1000,Math.max(160,parseInt(this.value)||260));document.getElementById('f-size').value=v;fareyResize()">
+                      <input id="f-size" type="range" min="160" max="2000" value="260" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-size-num').value=this.value;fareyResize()">
+                      <input id="f-size-num" type="number" min="160" max="2000" value="260" style="width:54px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(2000,Math.max(160,parseInt(this.value)||260));document.getElementById('f-size').value=v;fareyResize()">
                       <span style="color:var(--ink-light);font-size:0.58rem;">px</span>
                     </div>
                   </div>
@@ -1649,6 +1649,11 @@
                         <input id="f-invert-order" type="checkbox" onchange="fareyRedraw()" style="accent-color:var(--gold);">
                         <span style="color:#9a8060;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;">Invert Ring Order (outer→inner)</span>
                       </label>
+                    </div>
+                    <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">BRIGHTNESS</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
+                      <input id="f-bright" type="range" min="0" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-bright-val').textContent='+'+this.value+'%';fareyRedraw()">
+                      <span id="f-bright-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">+0%</span>
                     </div>
                   </div>
 
@@ -1796,7 +1801,7 @@
 
             <p>Euler's product formula expresses ζ(2) = π²/6 as an infinite product over all primes. Because the product converges absolutely, its factors may be collected in any order without changing the value. This tool implements a specific collection: prime factors are grouped by the <em>forward gap</em> of each prime — the distance to the next prime — yielding a factorization ζ(2) = ∏<sub>g</sub> P<sub>g</sub> indexed by gap class. This regrouping is a direct consequence of absolute convergence, not a new theorem. Its interest lies in what the resulting numerical magnitudes reveal about prime gap structure.</p>
 
-            <p>At N = 400 million, gap class 1 (the prime 2 alone) contributes 57.8% of log ζ(2), and gap class 2 (twin primes) contributes a further 34.8% — together accounting for over 92% of the total. A consequence of the Hardy-Littlewood Conjecture B is that the singular series S(g) predicts the asymptotic ratio of log-weights between any two gap classes: S(g)/S(h) → w<sub>g</sub>/w<sub>h</sub> as N → ∞. This follows from Conjecture B and is directly testable against finite data; it does not appear to have been stated in this form previously. The framework also raises a structural question: if twin primes were finite, P<sub>2</sub>(s) would be a rational function of e<sup>−s</sup> — what analytic constraints would that place on the remaining sub-products via the product identity with ζ(s)?</p>
+            <p>At N = 400 million, gap class 1 (the prime 2 alone) contributes 57.8% of log ζ(2), and gap class 2 (twin primes) contributes a further 34.8% of log ζ(2) — together accounting for over 92% of the total logarithmic weight of the Euler product. That is, 92% of log(π²/6) is explained by just the prime 2 and the twin primes alone. A consequence of the Hardy-Littlewood Conjecture B is that the singular series S(g) predicts the asymptotic ratio of log-weights between any two gap classes: S(g)/S(h) → w<sub>g</sub>/w<sub>h</sub> as N → ∞. This follows from Conjecture B and is directly testable against finite data; it does not appear to have been stated in this form previously. The framework also raises a structural question: if twin primes were finite, P<sub>2</sub>(s) would be a rational function of e<sup>−s</sup> — what analytic constraints would that place on the remaining sub-products via the product identity with ζ(s)?</p>
 
             <div class="formula-box">
                 ζ(2) = ∏<sub>p prime</sub> p²/(p²−1) &nbsp;=&nbsp; ∏<sub>g ∈ G</sub> P<sub>g</sub> &nbsp;=&nbsp; π²/6 ≈ 1.644934066848…
@@ -2242,7 +2247,7 @@
 
         <!-- Analysis Statistics (Fixed toggle) -->
         <div id="statsPanel" class="dropdown-section" style="display: none; border: 2px solid var(--green-ink);">
-            <div class="dropdown-header" onclick="toggleSection(this)" style="background: rgba(45,90,39,0.06);">
+            <div class="dropdown-header" onclick="toggleSection(this)" style="background: linear-gradient(135deg, #1a1e0a 0%, #2a3a12 100%);">
                 <h3 style="color: var(--green-ink);">Analysis Statistics</h3>
                 <span class="dropdown-icon" style="color: var(--green-ink);">v</span>
             </div>
@@ -2834,7 +2839,7 @@
     <!-- MERTENS FUNCTION SECTION -->
     <div class="controls-container" style="margin-top: 40px;">
         <div class="dropdown-section" style="border: 2px solid var(--teal-ink);">
-            <div class="dropdown-header" onclick="toggleSection(this)" style="background: linear-gradient(135deg, var(--ink) 0%, var(--ink-mid) 100%);">
+            <div class="dropdown-header" onclick="toggleSection(this)">
                 <h3 style="color: var(--teal-ink); display: flex; align-items: center; gap: 12px;">
                     <span>⟨μ⟩</span> Mertens Function & Riemann Hypothesis Connection
                     <span style="background: rgba(78,205,196,0.2); color: var(--teal-ink); padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Companion Analysis</span>
@@ -2947,6 +2952,9 @@
                     <canvas id="m_graphCanvas" width="1400" height="500" style="display:block; width:100%; height:auto; background:#0a0a10; border-radius:4px; cursor:crosshair;"></canvas>
                     <div id="m_tooltip" style="position:absolute; background:rgba(0,0,0,0.92); color:var(--ink-mid); padding:10px 14px; border-radius:6px; font-size:0.85rem; pointer-events:none; opacity:0; transition:opacity 0.15s; z-index:1000; border:1px solid #3a3a5a; max-width:260px;"></div>
                 </div>
+                <div style="text-align:center; margin:-12px 0 20px;">
+                    <button onclick="mertensExportPNG()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;background:#1e1008;color:#e0bc60;border:1px solid #c49b38;padding:6px 18px;cursor:pointer;">&#8615; Export PNG</button>
+                </div>
 
                 <!-- Data Table -->
                 <div style="background: var(--parchment-dark); border-radius: 8px; padding: 16px; border: 1px solid var(--panel-border);">
@@ -3002,7 +3010,7 @@
     <!-- CREDITS SECTION -->
     <div class="controls-container" style="margin-top: 40px;">
         <div class="dropdown-section" style="border: 2px solid #ffd700;">
-            <div class="dropdown-header" onclick="toggleSection(this)" style="background: linear-gradient(135deg, var(--ink) 0%, var(--ink-mid) 100%);">
+            <div class="dropdown-header" onclick="toggleSection(this)">
                 <h3 style="color: var(--gold);">Credits &amp; Attribution</h3>
                 <span class="dropdown-icon" style="color: var(--gold);">v</span>
             </div>
@@ -3012,12 +3020,34 @@
                     <!-- Author -->
                     <div style="background: rgba(139,99,16,0.05); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold);">
                         <h4 style="color: var(--gold); margin: 0 0 12px 0; font-size: 1.1rem;">Author</h4>
-                        <p style="margin: 0; color: var(--ink-mid); line-height: 2.0;">
+                        <p style="margin: 0 0 14px 0; color: var(--ink-mid); line-height: 2.2;">
                             <strong>Wessen Getachew</strong><br>
-                            Independent Mathematical Researcher<br>
-                            Twitter/X: <a href="https://twitter.com/7dview" target="_blank" style="color: var(--teal-ink); text-decoration: none;">@7dview</a><br>
-                            GitHub: <a href="https://wessengetachew.github.io/Quant" target="_blank" style="color: var(--teal-ink); text-decoration: none;">wessengetachew.github.io/Quant</a>
+                            Independent Mathematical Researcher &nbsp;·&nbsp; Addis Ababa, Ethiopia<br>
+                            Twitter/X: <a href="https://twitter.com/7dview" target="_blank" style="color: var(--teal-ink); text-decoration: none;">@7dview</a>
                         </p>
+                        <h4 style="color: var(--gold); margin: 0 0 10px 0; font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase;">Mathematical Tools Suite</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <a href="https://wessengetachew.github.io/Quant" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
+                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Gap-Class Decomposition</span>
+                                wessengetachew.github.io/Quant
+                            </a>
+                            <a href="https://wessengetachew.github.io/G/" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
+                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Interactive Tool</span>
+                                wessengetachew.github.io/G
+                            </a>
+                            <a href="https://wessengetachew.github.io/Primes/" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
+                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Modular Sieve</span>
+                                wessengetachew.github.io/Primes
+                            </a>
+                            <a href="https://wessengetachew.github.io/Composite/" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
+                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Composite Explorer</span>
+                                wessengetachew.github.io/Composite
+                            </a>
+                            <a href="https://wessengetachew.github.io/Transform/" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
+                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Farey / Transform Explorer</span>
+                                wessengetachew.github.io/Transform
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Mathematical Context -->
@@ -3062,14 +3092,24 @@
 
                     <!-- References -->
                     <div style="background: var(--parchment-dark); padding: 20px; border-radius: 8px; border: 1px solid var(--panel-border);">
-                        <h4 style="color:var(--ink-light); margin: 0 0 14px 0; font-size: 1.1rem;">References</h4>
+                        <h4 style="color:var(--ink-light); margin: 0 0 14px 0; font-size: 1.1rem;">Mathematical References</h4>
                         <div style="color:var(--ink-light); font-size: 0.88rem; line-height: 2.2; font-family: serif;">
                             [1] L. Euler, <em>Variae observationes circa series infinitas</em>, Comm. Acad. Sci. Petrop. 9 (1737), 160–188.<br>
                             [2] G. H. Hardy &amp; J. E. Littlewood, <em>Some problems of 'Partitio Numerorum' III</em>, Acta Math. 44 (1923), 1–70.<br>
                             [3] H. Cramér, <em>On the order of magnitude of the difference between consecutive prime numbers</em>, Acta Arith. 2 (1936), 23–46.<br>
                             [4] A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scand. Actuarial J. 1 (1995), 12–28.<br>
-                            [5] W. Getachew, <em>Gap-Class Decomposition of ζ(2): interactive analysis tool</em>, 2026.
+                            [5] A. E. Ingham, <em>The Distribution of Prime Numbers</em>, Cambridge Tracts in Mathematics, Cambridge University Press (1932).<br>
+                            [6] W. Getachew, <em>Gap-Class Decomposition of ζ(2) = π²/6</em>, independent research, 2025–2026.
                             &nbsp;<a href="https://wessengetachew.github.io/Quant" target="_blank" style="color: var(--teal-ink); text-decoration: none;">wessengetachew.github.io/Quant</a>
+                        </div>
+                        <h4 style="color:var(--ink-light); margin: 18px 0 10px 0; font-size: 1.0rem;">Software &amp; Technology</h4>
+                        <div style="color:var(--ink-light); font-size: 0.85rem; line-height: 2.0; font-family: serif;">
+                            Segmented prime sieve implementation adapted from classical sieve of Eratosthenes; all computation in-browser (no server).<br>
+                            Chart rendering: HTML5 Canvas API.<br>
+                            Farey diagram &amp; interactive visualization: original implementation, W. Getachew (2025–2026).<br>
+                            Mertens function / Möbius sieve: original implementation, W. Getachew (2026).<br>
+                            Hardy-Littlewood singular series computation: original implementation, W. Getachew (2026).<br>
+                            Development assistance: Claude (Anthropic), 2025–2026 — code generation, debugging, UI refinement.
                         </div>
                     </div>
 
@@ -5339,17 +5379,19 @@
             csv += `Gaps Compared:,${selectedGaps.join(' vs ')}\n\n`;
             
             csv += 'COMPARISON DATA:\n';
-            csv += 'Gap,Prime Count,% of Total,Product P_g,Log(P_g),Average Prime,First 5 Primes\n';
+            csv += 'Gap,Prime Count,% of Total,Product P_g,Log(P_g),Average Prime,Min Prime,Max Prime,All Primes in Family\n';
             
             selectedGaps.forEach(gap => {
                 const data = analysisResults.gapProducts[gap];
                 const pct = (data.count / totalPrimes) * 100;
                 const avgPrime = data.primes.reduce((a, b) => a + b, 0) / data.primes.length;
-                const firstPrimes = data.primes.slice(0, 5).join(' ');
+                const allPrimes = (data.primes || []).join(' ');
+                const minP = data.primes.length ? data.primes[0] : '';
+                const maxP = data.primes.length ? data.primes[data.primes.length-1] : '';
                 
                 csv += `${gap},${data.count},${pct.toFixed(precision)}%,`;
                 csv += `${data.product.toFixed(precision)},${data.logProduct.toFixed(precision)},`;
-                csv += `${avgPrime.toFixed(0)},"${firstPrimes}"\n`;
+                csv += `${avgPrime.toFixed(0)},${minP},${maxP},"${allPrimes}"\n`;
             });
             
             csv += '\n=================================================\n';
@@ -5641,12 +5683,16 @@
             const maxPrimes = detailLevel === 'summary' ? 20 : detailLevel === 'detailed' ? 100 : gapData.primes.length;
             const primes = gapData.primes.slice(0, maxPrimes);
             
-            let csv = 'DECIMAL CONVERGENCE ANALYSIS\\n';
-            csv += `Gap ${gap} - Per-Prime Contribution Analysis\\n`;
-            csv += `Date: ${new Date().toISOString()}\\n`;
-            csv += `Precision: ${precision} decimal places\\n\\n`;
-            
-            csv += 'Index,Prime,Factor (p²/(p²-1)),Contribution (factor-1),Log₁₀(factor),Cumulative Product,Percent Change,Decimal Places Affected\\n';
+            const ts2 = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+            const gapData2 = analysisResults.gapProducts[gap];
+            let csv = 'Decimal Convergence Analysis\n';
+            csv += `Generated:,${new Date().toISOString()}\n`;
+            csv += `Gap Family:,${gap}\n`;
+            csv += `Maximum Prime:,${analysisResults.maxPrime.toLocaleString()}\n`;
+            csv += `Total Primes in Gap ${gap}:,${gapData2 ? gapData2.count : primes.length}\n`;
+            csv += `Final P_${gap}:,${gapData2 ? gapData2.product.toFixed(precision) : ''}\n`;
+            csv += `Precision:,${precision} decimal places\n\n`;
+            csv += 'Index,Prime p,Factor p^2/(p^2-1),Contribution (factor-1),Log10(factor),Cumulative Product,Percent Change,Decimal Place Affected\n';
             
             let cumProduct = 1;
             primes.forEach((p, idx) => {
@@ -5659,13 +5705,14 @@
                 const decimalChange = Math.abs(cumProduct - prevProduct);
                 const decimalPlace = decimalChange > 0 ? Math.ceil(-Math.log10(decimalChange)) : 15;
                 
-                csv += `${idx+1},${p},${factor.toFixed(precision)},${contribution.toExponential(6)},${logContribution.toExponential(6)},${cumProduct.toFixed(precision)},${percentChange.toExponential(4)}%,${Math.min(decimalPlace, 15)}+\\n`;
+                csv += `${idx+1},${p},${factor.toFixed(precision)},${contribution.toExponential(6)},${logContribution.toExponential(6)},${cumProduct.toFixed(precision)},${percentChange.toExponential(4)}%,${Math.min(decimalPlace,15)}+\n`;
             });
+            csv += `\nEND OF DATASET — ${primes.length} primes in gap family ${gap}\n`;
             
             const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `gap${gap}_decimal_convergence_${Date.now()}.csv`;
+            link.download = `gap${gap}_decimal_convergence_${analysisResults.maxPrime}_${ts2}.csv`;
             link.click();
         }
         
@@ -5762,11 +5809,11 @@
             csv += `Relative Error,${analysisResults.finalRelativeError}\n\n`;
             
             csv += 'Gap Family Analysis\n';
-            csv += 'Gap,Prime Count,Product P_g,Log Product,Percentage Contribution,First 20 Primes\n';
+            csv += 'Gap,Prime Count,Product P_g,Log Product,Percentage Contribution,All Primes in Family\n';
             analysisResults.evenGaps.forEach(gap => {
                 const data = analysisResults.gapProducts[gap];
                 const pct = analysisResults.percentageContributions[gap];
-                const primes = data.primes.slice(0, 20).join(' ');
+                const primes = (data.primes || []).join(' ');
                 csv += `${gap},${data.count},${data.product},${data.logProduct},${pct},"${primes}"\n`;
             });
             
@@ -7726,12 +7773,12 @@
             csv += `Total Gap Families:,${analysisResults.evenGaps.length}\n\n`;
             
             csv += 'DATA TABLE:\n';
-            csv += 'Gap,Product P_g,Log(P_g),Prime Count,Percentage of Total,First 20 Primes in Family\n';
+            csv += 'Gap,Product P_g,Log(P_g),Prime Count,% of Total Primes,All Primes in Family\n';
             
             analysisResults.evenGaps.forEach(gap => {
                 const data = analysisResults.gapProducts[gap];
                 const pct = (data.count / analysisResults.totalPrimes * 100).toFixed(4);
-                const primes = data.primes.slice(0, 20).join(' ');
+                const primes = (data.primes || []).join(' ');
                 csv += `${gap},${data.product.toFixed(precision)},${data.logProduct.toFixed(precision)},`;
                 csv += `${data.count},${pct}%,"${primes}"\n`;
             });
@@ -8066,11 +8113,7 @@
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
-                ctx.font = "48px sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("No data in selected gap range", w/2, h/2);
-                return;
+                return 'No data in selected gap range\n';
             }
             gaps.forEach((gap, idx) => {
                 const data = analysisResults.gapProducts[gap];
@@ -9025,15 +9068,25 @@
         }
 
         function exportDensityCSV() {
-            let csv = 'Range Start,Range End,Prime Count,Actual Density,Predicted Density\n';
+            const maxP = analysisResults ? analysisResults.maxPrime : (densityData.length ? densityData[densityData.length-1].end : 0);
+            const ts   = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+            let csv  = 'Prime Density Analysis\n';
+            csv += `Generated:,${new Date().toISOString()}\n`;
+            csv += `Maximum Prime:,${maxP.toLocaleString()}\n`;
+            csv += `Total Intervals:,${densityData.length}\n`;
+            csv += `Total Primes:,${densityData.reduce((s,d)=>s+d.count,0).toLocaleString()}\n\n`;
+            csv += 'Range Start,Range End,Interval Width,Prime Count,Actual Density,Predicted Density (1/ln n),Actual/Predicted Ratio\n';
             densityData.forEach(item => {
-                csv += `${item.start},${item.end},${item.count},${item.density},${item.predicted}\n`;
+                const width = item.end - item.start;
+                const pred  = item.predicted || (1/Math.log((item.start+item.end)/2));
+                const ratio = item.density > 0 && pred > 0 ? (item.density/pred).toFixed(6) : '';
+                csv += `${item.start},${item.end},${width},${item.count},${item.density},${typeof item.predicted!=='undefined'?item.predicted:pred.toFixed(8)},${ratio}\n`;
             });
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'prime_density.csv';
+            csv += `\nEND OF DATASET — ${densityData.length} intervals\n`;
+            const blob = new Blob([csv], {type:'text/csv'});
+            const a    = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = `prime_density_${maxP}_${ts}.csv`;
             a.click();
         }
 
@@ -9132,15 +9185,23 @@
         }
 
         function exportTwinsCSV() {
-            let csv = 'Index,Prime 1,Prime 2,Gap Before,Gap After\n';
+            const maxP = analysisResults ? analysisResults.maxPrime : (twinsData.length ? twinsData[twinsData.length-1].q : 0);
+            const ts   = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+            let csv  = 'Twin Primes Export\n';
+            csv += `Generated:,${new Date().toISOString()}\n`;
+            csv += `Maximum Prime:,${maxP.toLocaleString()}\n`;
+            csv += `Total Twin Pairs:,${twinsData.length.toLocaleString()}\n`;
+            csv += `First Twin Pair:,${twinsData.length?twinsData[0].p+' '+twinsData[0].q:''}\n`;
+            csv += `Last Twin Pair:,${twinsData.length?twinsData[twinsData.length-1].p+' '+twinsData[twinsData.length-1].q:''}\n\n`;
+            csv += 'Index,p (smaller twin),q = p+2,p mod 6,q mod 6,Gap before p,Gap after q,|p·q|\n';
             twinsData.forEach((item, idx) => {
-                csv += `${idx+1},${item.p},${item.q},${item.gapBefore},${item.gapAfter}\n`;
+                csv += `${idx+1},${item.p},${item.q},${item.p%6},${item.q%6},${item.gapBefore},${item.gapAfter},${item.p*item.q}\n`;
             });
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'twin_primes.csv';
+            csv += `\nEND OF DATASET — ${twinsData.length} twin pairs up to ${maxP.toLocaleString()}\n`;
+            const blob = new Blob([csv], {type:'text/csv'});
+            const a    = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = `twin_primes_${maxP}_${ts}.csv`;
             a.click();
         }
 
@@ -9265,15 +9326,27 @@
         }
 
         function exportGapsCSV() {
-            let csv = 'Gap Size,Frequency,Percentage,First Occurrence\n';
+            const maxP = analysisResults ? analysisResults.maxPrime : 0;
+            const ts   = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+            const total = gapsStatsData.reduce((s,d)=>s+d.count,0);
+            let csv  = 'Prime Gap Frequency Distribution\n';
+            csv += `Generated:,${new Date().toISOString()}\n`;
+            csv += `Maximum Prime:,${maxP.toLocaleString()}\n`;
+            csv += `Distinct Gap Sizes:,${gapsStatsData.length}\n`;
+            csv += `Total Gaps Counted:,${total.toLocaleString()}\n\n`;
+            csv += 'Gap Size,Frequency,Percentage (%),Cumulative Count,Cumulative %,First Occurrence (prime p where gap(p)=g)\n';
+            let cumul = 0;
             gapsStatsData.forEach(item => {
-                csv += `${item.gap},${item.count},${item.percentage},${item.first}\n`;
+                cumul += item.count;
+                const pct  = total > 0 ? (item.count/total*100).toFixed(6) : '';
+                const cpct = total > 0 ? (cumul/total*100).toFixed(4) : '';
+                csv += `${item.gap},${item.count},${pct},${cumul},${cpct},${item.first||''}\n`;
             });
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'gap_statistics.csv';
+            csv += `\nEND OF DATASET — ${gapsStatsData.length} distinct gaps up to ${maxP.toLocaleString()}\n`;
+            const blob = new Blob([csv], {type:'text/csv'});
+            const a    = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = `prime_gaps_${maxP}_${ts}.csv`;
             a.click();
         }
 
@@ -9415,16 +9488,35 @@
         }
 
         function exportConstellationsCSV() {
-            let csv = 'Type,Count,Examples (first 10)\n';
+            const maxP = analysisResults ? analysisResults.maxPrime : 0;
+            const ts   = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+            let csv  = 'Prime Constellations Export\n';
+            csv += `Generated:,${new Date().toISOString()}\n`;
+            csv += `Maximum Prime:,${maxP.toLocaleString()}\n\n`;
+            // Summary sheet
+            csv += 'SUMMARY\n';
+            csv += 'Type,Total Count,First Example,Last Example\n';
             Object.entries(constellationsData).forEach(([type, items]) => {
-                const examples = items.slice(0, 10).map(p => '(' + p.join(',') + ')').join('; ');
-                csv += `${type},${items.length},"${examples}"\n`;
+                const first = items.length ? '('+items[0].join(',')+')'  : '';
+                const last  = items.length ? '('+items[items.length-1].join(',')+')'  : '';
+                csv += `${type},${items.length},"${first}","${last}"\n`;
             });
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'prime_constellations.csv';
+            // Full listings per type
+            Object.entries(constellationsData).forEach(([type, items]) => {
+                csv += `\n${type.toUpperCase()} — ${items.length} instances\n`;
+                // header: number of primes in tuple
+                if (items.length === 0) return;
+                const cols = items[0].map((_,i)=>'p'+(i+1)).join(',');
+                csv += `Index,${cols},Base prime mod 30\n`;
+                items.forEach((tuple, idx) => {
+                    csv += `${idx+1},${tuple.join(',')},${tuple[0]%30}\n`;
+                });
+            });
+            csv += `\nEND OF DATASET\n`;
+            const blob = new Blob([csv], {type:'text/csv'});
+            const a    = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = `prime_constellations_${maxP}_${ts}.csv`;
             a.click();
         }
         
@@ -10672,15 +10764,38 @@
             // ----- CSV Export -----
             function m_exportCSV() {
                 m_extendTo(m_currentRange);
-                let csv = 'n,mu(n),M(n),delta,square_free,prime_factors,distance,within_boundary,status\n';
-                for (let i = 0; i < m_currentRange; i++) {
+                const N = m_currentRange;
+                const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,-5);
+                // summary stats
+                let zeros=0, positives=0, negatives=0, maxAbsM=0, maxAbsN=1;
+                let lastZero=0;
+                for (let i=0;i<N;i++){
+                    const M=m_mertens[i];
+                    if(M===0){zeros++;lastZero=i+1;}
+                    else if(M>0) positives++;
+                    else negatives++;
+                    if(Math.abs(M)>maxAbsM){maxAbsM=Math.abs(M);maxAbsN=i+1;}
+                }
+                let csv  = 'Mertens Function M(n) = sum of mu(k) for k=1..n\n';
+                csv += `Generated:,${new Date().toISOString()}\n`;
+                csv += `Range:,n = 1 to ${N.toLocaleString()}\n`;
+                csv += `Zero crossings M(n)=0:,${zeros.toLocaleString()}\n`;
+                csv += `Positive values:,${positives.toLocaleString()}\n`;
+                csv += `Negative values:,${negatives.toLocaleString()}\n`;
+                csv += `Max |M(n)|:,${maxAbsM} at n=${maxAbsN.toLocaleString()}\n`;
+                csv += `Last zero crossing:,n=${lastZero.toLocaleString()}\n`;
+                csv += `RH boundary sqrt(n) at n=${N}: ,${Math.sqrt(N).toFixed(4)}\n\n`;
+                csv += 'n,mu(n),M(n),delta (M(n)-M(n-1)),square_free,prime_factor_count,|M(n)|,|M(n)|/sqrt(n),within_sqrt_boundary,status\n';
+                for (let i = 0; i < N; i++) {
                     const n = i+1, mu = m_mobius[i], M = m_mertens[i];
                     const delta = i === 0 ? mu : M - m_mertens[i-1];
-                    csv += `${n},${mu},${M},${delta},${m_sqFree[i]},${m_nFactors[i]},${Math.abs(M)},${Math.abs(M)<=Math.sqrt(n)?1:0},${M===0?'equilibrium':M>0?'positive':'negative'}\n`;
+                    const ratio = (Math.abs(M)/Math.sqrt(n)).toFixed(6);
+                    csv += `${n},${mu},${M},${delta},${m_sqFree[i]?1:0},${m_nFactors[i]},${Math.abs(M)},${ratio},${Math.abs(M)<=Math.sqrt(n)?1:0},${M===0?'equilibrium':M>0?'positive':'negative'}\n`;
                 }
+                csv += `\nEND OF DATASET — n=1 to ${N.toLocaleString()}\n`;
                 const a = document.createElement('a');
                 a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-                a.download = `mertens_n${m_currentRange}.csv`;
+                a.download = `mertens_n${N}_${ts}.csv`;
                 a.click();
             }
 
@@ -11601,7 +11716,7 @@
     ctx.globalAlpha=1;
 
     sets.forEach(function(s){
-      var pts=s.pts, color=s.color;
+      var pts=s.pts, color=brightenColor(s.color, getBrightness());
       var ptMap={};
       pts.forEach(function(p){ ptMap[p.r+'/'+p.m]=p; });
 
@@ -11782,7 +11897,8 @@
     var sameModFixedCol= document.getElementById('f-samemod-col').value;
     var sameModThick= parseInt(document.getElementById('f-samemod-thick').value)/10;
     var crossModThick= parseInt(document.getElementById('f-crossmod-thick').value)/10;
-    var color = which==='coprime'?col1:col2;
+    var _bright = getBrightness();
+    var color = brightenColor(which==='coprime'?col1:col2, _bright);
 
     var fracs = buildFractions(modN);
     var pts = which==='coprime'?fracs.cop:fracs.ncp;
@@ -12101,205 +12217,242 @@
 
   // ── Triangle export ────────────────────────────────────────────────────────
   window.fareyTriangleExport = function(){
-    var modN     = parseInt(document.getElementById('f-mod-num').value)||49;
-    var col1     = document.getElementById('f-col1').value;
-    var col2     = document.getElementById('f-col2').value;
-    var S        = parseInt(document.getElementById('f-size-num').value)||800; // all diagrams this size
+    var modN = parseInt(document.getElementById('f-mod-num').value)||49;
+    var col1 = document.getElementById('f-col1').value;
+    var col2 = document.getElementById('f-col2').value;
+    var S    = parseInt(document.getElementById('f-size-num').value)||800;
+    var pt   = _activeTooltipPt;
 
-    // Render all three at the user-set size
-    var srcCop  = makeFareyCanvas('coprime',   S);
-    var srcNcp  = makeFareyCanvas('noncoprime',S);
-    var srcComb = makeFareyCanvas('combined',  S);
+    // Render all three at user size
+    var srcCop  = makeFareyCanvas('coprime',    S);
+    var srcNcp  = makeFareyCanvas('noncoprime', S);
+    var srcComb = makeFareyCanvas('combined',   S);
 
-    // ── Layout ────────────────────────────────────────────────────────────
-    // PLUS sign between top two, combined centered below, stats in bottom corners
-    var PLUS   = 40;   // plus-sign zone width between top images
-    var PAD    = 28;
-    var VGAP   = 32;   // vertical gap between top row and combined
-    var STATS_H= 160;  // height of bottom stats panels
-    var STATS_VGAP = 20;
+    // ── Compute stats ─────────────────────────────────────────────────────
+    var fracs    = buildFractions(modN);
+    var cop = fracs.cop, ncp = fracs.ncp;
+    var total    = cop.length + ncp.length;
+    var copCount = cop.length, ncpCount = ncp.length;
+    var copRatio = total>0 ? copCount/total : 0;
+    var ncpRatio = total>0 ? ncpCount/total : 0;
+    var gcds = {};
+    ncp.forEach(function(p){ var g=gcd(p.r,p.m); gcds[g]=(gcds[g]||0)+1; });
+    var gcdList = Object.keys(gcds).map(Number).sort(function(a,b){return a-b;});
 
-    var totalW = PAD + S + PLUS + S + PAD;
-    // combined is same size S, centered
-    var combX  = Math.round((totalW - S) / 2);
-    var topY   = PAD;
-    var combY  = PAD + S + VGAP;
-    var statsY = combY + S + STATS_VGAP;
-    var totalH = statsY + STATS_H + PAD;
+    // ── Layout constants ──────────────────────────────────────────────────
+    var OUTER    = 28;   // outer padding
+    var PLUS     = 40;   // plus-sign zone between top two
+    var STATS_H  = 170;  // height of each stats panel
+    var STATS_GAP= 16;   // gap between diagram and stats below it
+    var COMB_GAP = 20;   // gap between stats row and combined
+    var BAR_H    = 14;   // ratio bar height
+    var BAR_GAP  = 8;    // gap between bar and combined top
+
+    // Combined is centered horizontally; sits below the stats panels
+    // Total width = OUTER + S + PLUS + S + OUTER
+    var totalW   = OUTER + S + PLUS + S + OUTER;
+    var combX    = Math.round((totalW - S) / 2);
+
+    // Row positions
+    var diagY    = OUTER + 16;           // diagrams top (leave room for labels)
+    var statsY   = diagY + S + STATS_GAP; // stats panels top
+    var barY     = statsY + STATS_H + COMB_GAP;
+    var combY    = barY + BAR_H + BAR_GAP;
+    var totalH   = combY + S + OUTER;
 
     var off = document.createElement('canvas');
     off.width = totalW; off.height = totalH;
     var ctx = off.getContext('2d');
 
-    // background
+    // Background
     ctx.fillStyle = '#0e0b05';
     ctx.fillRect(0, 0, totalW, totalH);
 
-    // ── Top row: gcd=1 (left) + gcd>1 (right), corners touching ──────────
-    var copX = PAD;
-    var ncpX = PAD + S + PLUS;
+    // ── Draw top diagrams ─────────────────────────────────────────────────
+    var copX = OUTER;
+    var ncpX = OUTER + S + PLUS;
 
-    ctx.drawImage(srcCop, copX, topY, S, S);
-    ctx.drawImage(srcNcp, ncpX, topY, S, S);
+    ctx.drawImage(srcCop, copX, diagY, S, S);
+    ctx.drawImage(srcNcp, ncpX, diagY, S, S);
 
-    // ── Plus sign centered between the two top images ─────────────────────
-    var plusCX = PAD + S + PLUS/2;
-    var plusCY = topY + S/2;
-    var arm = 12, thick = 3;
-    ctx.fillStyle = '#c49b38';
-    ctx.fillRect(plusCX - arm, plusCY - thick/2, arm*2, thick);
-    ctx.fillRect(plusCX - thick/2, plusCY - arm, thick, arm*2);
-
-    // corner decoration: small gold bracket where they "meet"
-    // inner corners of both images
-    var copInnerX = copX + S;
-    var ncpInnerX = ncpX;
-    // faint gold line connecting inner bottom corners to combined center top
-    ctx.strokeStyle = 'rgba(196,155,56,0.2)';
-    ctx.lineWidth   = 0.8;
-    ctx.beginPath();
-    ctx.moveTo(copInnerX, topY + S);
-    ctx.lineTo(combX + S/2, combY);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(ncpInnerX, topY + S);
-    ctx.lineTo(combX + S/2, combY);
-    ctx.stroke();
-
-    // corner tick marks where images would share a corner
-    ctx.strokeStyle = 'rgba(196,155,56,0.5)';
-    ctx.lineWidth   = 1.5;
-    var tick = 16;
-    // right corner of cop
-    ctx.beginPath(); ctx.moveTo(copInnerX-tick, topY); ctx.lineTo(copInnerX, topY); ctx.lineTo(copInnerX, topY+tick); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(copInnerX-tick, topY+S); ctx.lineTo(copInnerX, topY+S); ctx.lineTo(copInnerX, topY+S-tick); ctx.stroke();
-    // left corner of ncp
-    ctx.beginPath(); ctx.moveTo(ncpInnerX+tick, topY); ctx.lineTo(ncpInnerX, topY); ctx.lineTo(ncpInnerX, topY+tick); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(ncpInnerX+tick, topY+S); ctx.lineTo(ncpInnerX, topY+S); ctx.lineTo(ncpInnerX, topY+S-tick); ctx.stroke();
-
-    // labels above
+    // Labels above diagrams
     ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.font='bold 11px "Cinzel",Georgia,serif'; ctx.fillStyle=col1;
-    ctx.fillText('gcd(r, m) = 1', copX+S/2, topY-6);
-    ctx.fillStyle=col2;
-    ctx.fillText('gcd(r, m) > 1', ncpX+S/2, topY-6);
+    ctx.font='bold 11px "Cinzel",Georgia,serif';
+    ctx.fillStyle=col1; ctx.fillText('gcd(r, m) = 1',  copX+S/2, diagY-5);
+    ctx.fillStyle=col2; ctx.fillText('gcd(r, m) > 1', ncpX+S/2, diagY-5);
 
-    // ── Combined centered below ───────────────────────────────────────────
-    ctx.drawImage(srcComb, combX, combY, S, S);
+    // Plus sign between diagrams
+    var plusCX = OUTER + S + PLUS/2;
+    var plusCY = diagY + S/2;
+    var arm=13, thick=3;
+    ctx.fillStyle='#c49b38';
+    ctx.fillRect(plusCX-arm, plusCY-thick/2, arm*2, thick);
+    ctx.fillRect(plusCX-thick/2, plusCY-arm, thick, arm*2);
 
-    ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.font='bold 11px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.8)';
-    ctx.fillText('Combined', combX+S/2, combY-6);
+    // Corner ticks where diagrams "meet"
+    ctx.strokeStyle='rgba(196,155,56,0.5)'; ctx.lineWidth=1.5;
+    var tick=16;
+    var copIX=copX+S, ncpIX=ncpX;
+    [[copIX-tick,diagY,copIX,diagY,copIX,diagY+tick],
+     [copIX-tick,diagY+S,copIX,diagY+S,copIX,diagY+S-tick],
+     [ncpIX+tick,diagY,ncpIX,diagY,ncpIX,diagY+tick],
+     [ncpIX+tick,diagY+S,ncpIX,diagY+S,ncpIX,diagY+S-tick]
+    ].forEach(function(c){ ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[2],c[3]); ctx.lineTo(c[4],c[5]); ctx.stroke(); });
 
-    // ── Compute stats ─────────────────────────────────────────────────────
-    var fracs = buildFractions(modN);
-    var cop = fracs.cop, ncp = fracs.ncp;
-    var totalPts = cop.length + ncp.length;
-    var copCount = cop.length, ncpCount = ncp.length;
-    var copRatio = totalPts > 0 ? copCount/totalPts : 0;
-    var ncpRatio = totalPts > 0 ? ncpCount/totalPts : 0;
-
-    // phi sum = copCount (sum of phi(m) for m=1..N)
-    // Count by ring
-    var copByM = {}, ncpByM = {}, gcds = {};
-    cop.forEach(function(p){ copByM[p.m]=(copByM[p.m]||0)+1; });
-    ncp.forEach(function(p){
-      ncpByM[p.m]=(ncpByM[p.m]||0)+1;
-      var g=gcd(p.r,p.m); if(!gcds[g]) gcds[g]=0; gcds[g]++;
-    });
-    var gcdList = Object.keys(gcds).map(Number).sort(function(a,b){return a-b;});
-
-    // ── Bottom-left stats panel: gcd=1 properties ────────────────────────
-    var statW = Math.round((totalW - PAD*3)/2);
-    var statLX = PAD;
-    var statRX = PAD*2 + statW;
-
-    function drawStatsPanel(x, y, w, h, title, titleColor, rows){
-      ctx.fillStyle='rgba(14,11,5,0.85)';
-      ctx.fillRect(x,y,w,h);
+    // ── Stats panels ─────────────────────────────────────────────────────
+    function drawStats(x, y, w, h, title, titleColor, rows){
+      ctx.fillStyle='rgba(14,11,5,0.85)'; ctx.fillRect(x,y,w,h);
       ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.7;
       ctx.strokeRect(x,y,w,h);
-
-      // title
       ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-      ctx.font='bold 10px "Cinzel",Georgia,serif';
+      ctx.font='bold 9px "Cinzel",Georgia,serif';
       ctx.fillStyle=titleColor;
-      ctx.fillText(title, x+12, y+16);
-
-      ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=0.5;
-      ctx.beginPath(); ctx.moveTo(x+8,y+22); ctx.lineTo(x+w-8,y+22); ctx.stroke();
-
-      var ty=y+34, lineH=16, col2off=w*0.52;
+      ctx.fillText(title, x+12, y+15);
+      ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=0.4;
+      ctx.beginPath(); ctx.moveTo(x+8,y+21); ctx.lineTo(x+w-8,y+21); ctx.stroke();
+      var ty=y+33, lh=15;
       ctx.font='9px "Cinzel",Georgia,serif';
       rows.forEach(function(row){
-        if(row === '---'){
-          ctx.strokeStyle='rgba(196,155,56,0.15)'; ctx.lineWidth=0.4;
-          ctx.beginPath(); ctx.moveTo(x+8,ty-4); ctx.lineTo(x+w-8,ty-4); ctx.stroke();
-          ty+=4; return;
+        if(row==='---'){
+          ctx.strokeStyle='rgba(196,155,56,0.12)'; ctx.lineWidth=0.4;
+          ctx.beginPath(); ctx.moveTo(x+8,ty-3); ctx.lineTo(x+w-8,ty-3); ctx.stroke();
+          ty+=5; return;
         }
-        ctx.fillStyle='#9a8060'; ctx.textAlign='left';
-        ctx.fillText(row[0], x+12, ty);
-        ctx.fillStyle=row[2]||'#e8d9b0'; ctx.textAlign='right';
-        ctx.fillText(row[1], x+w-12, ty);
-        ty+=lineH;
+        ctx.fillStyle='#9a8060'; ctx.textAlign='left';  ctx.fillText(row[0], x+12, ty);
+        ctx.fillStyle=row[2]||'#e8d9b0'; ctx.textAlign='right'; ctx.fillText(row[1], x+w-12, ty);
+        ty+=lh;
       });
     }
 
-    // Left panel: gcd=1 stats
-    drawStatsPanel(statLX, statsY, statW, STATS_H, 'gcd(r, m) = 1  ·  COPRIME', col1, [
-      ['Total points', copCount+''],
+    var sw = S; // stats panel same width as diagram
+
+    // Left stats: gcd=1 — placed directly below gcd=1 diagram
+    drawStats(copX, statsY, sw, STATS_H, 'GCD(R,M) = 1  ·  COPRIME', col1, [
+      ['Total points', ''+copCount],
       ['Share of all r/m', (copRatio*100).toFixed(2)+'%'],
-      ['Ratio cop / total', copCount+' / '+totalPts],
+      ['Ratio cop / total', copCount+' / '+total],
       ['---'],
-      ['Σ φ(m), m=1…'+modN, copCount+''],
-      ['Avg φ(m) / m', (copRatio).toFixed(4)],
+      ['Σφ(m),  m=1…'+modN, ''+copCount],
+      ['Avg φ(m) / m', copRatio.toFixed(4)],
       ['mod N', ''+modN],
     ]);
 
-    // Right panel: gcd>1 stats + gcd breakdown
+    // Right stats: gcd>1 — placed directly below gcd>1 diagram
     var ncpRows = [
-      ['Total points', ncpCount+''],
+      ['Total points', ''+ncpCount],
       ['Share of all r/m', (ncpRatio*100).toFixed(2)+'%'],
-      ['Ratio ncp / total', ncpCount+' / '+totalPts],
+      ['Ratio ncp / total', ncpCount+' / '+total],
       ['---'],
     ];
     gcdList.slice(0,5).forEach(function(g){
       var cnt=gcds[g];
-      ncpRows.push(['gcd = '+g, cnt+' ('+((cnt/totalPts)*100).toFixed(1)+'%)']);
+      ncpRows.push(['gcd = '+g, cnt+' ('+((cnt/total)*100).toFixed(1)+'%)']);
     });
-    if(gcdList.length > 5) ncpRows.push(['… more gcds', '']);
+    drawStats(ncpX, statsY, sw, STATS_H, 'GCD(R,M) > 1  ·  NON-COPRIME', col2, ncpRows);
 
-    drawStatsPanel(statRX, statsY, statW, STATS_H, 'gcd(r, m) > 1  ·  NON-COPRIME', col2, ncpRows);
+    // ── Ratio bar just above combined ─────────────────────────────────────
+    // Bar spans same width as combined diagram, centered
+    var barX = combX, barW = S;
+    ctx.fillStyle='rgba(196,155,56,0.08)'; ctx.fillRect(barX,barY,barW,BAR_H);
+    ctx.fillStyle=col1; ctx.fillRect(barX, barY, Math.round(barW*copRatio), BAR_H);
+    ctx.fillStyle=col2; ctx.fillRect(barX+Math.round(barW*copRatio), barY, Math.round(barW*ncpRatio), BAR_H);
+    // bar labels
+    ctx.textBaseline='middle'; ctx.font='7px "Cinzel",Georgia,serif';
+    var midBar = barY + BAR_H/2;
+    if(copRatio > 0.12){
+      ctx.textAlign='left'; ctx.fillStyle='rgba(0,0,0,0.7)';
+      ctx.fillText('gcd=1  '+(copRatio*100).toFixed(1)+'%', barX+5, midBar);
+    }
+    if(ncpRatio > 0.12){
+      ctx.textAlign='right'; ctx.fillStyle='rgba(0,0,0,0.7)';
+      ctx.fillText((ncpRatio*100).toFixed(1)+'%  gcd>1', barX+barW-5, midBar);
+    }
 
-    // ── Ratio bar spanning full width ────────────────────────────────────
-    var barY   = statsY + STATS_H + 10;
-    var barH   = 10;
-    var barX   = PAD;
-    var barW   = totalW - PAD*2;
-    ctx.fillStyle='rgba(196,155,56,0.1)'; ctx.fillRect(barX,barY,barW,barH);
-    ctx.fillStyle=col1; ctx.fillRect(barX, barY, Math.round(barW*copRatio), barH);
-    ctx.fillStyle=col2; ctx.fillRect(barX+Math.round(barW*copRatio), barY, Math.round(barW*ncpRatio), barH);
-    // label
-    ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle='#9a8060';
-    ctx.font='8px "Cinzel",Georgia,serif';
-    ctx.fillText('gcd=1: '+(copRatio*100).toFixed(1)+'%  +  gcd>1: '+(ncpRatio*100).toFixed(1)+'%  =  100%  ·  mod 1…'+modN, totalW/2, barY+barH+4);
+    // Combined label above bar
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.font='bold 9px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.6)';
+    ctx.fillText('Combined  ·  mod 1…'+modN, combX+S/2, barY-4);
+
+    // Faint guide lines from inner corners of top diagrams down to combined
+    ctx.strokeStyle='rgba(196,155,56,0.1)'; ctx.lineWidth=0.6;
+    ctx.beginPath(); ctx.moveTo(copX+S, diagY+S); ctx.lineTo(combX, combY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ncpX,   diagY+S); ctx.lineTo(combX+S, combY); ctx.stroke();
+
+    // ── Combined diagram ──────────────────────────────────────────────────
+    ctx.drawImage(srcComb, combX, combY, S, S);
+
+    // ── Active point detail (optional footer on combined) ─────────────────
+    if(pt){
+      var g2  = gcd(pt.r,pt.m);
+      var ptC = g2===1?col1:col2;
+      var dir = parseFloat(document.getElementById('f-dir').value)||1;
+      var ang = dir*2*Math.PI*pt.r/(pt.m||1)+_combinedAngle*Math.PI/180;
+      var deg = ((ang*180/Math.PI)%360+360)%360;
+      var rad = dir*2*pt.r/(pt.m||1);
+      var phi = eulerPhi(pt.m);
+      var fh=36, fy=combY+S-fh;
+      ctx.fillStyle='rgba(10,8,3,0.88)'; ctx.fillRect(combX,fy,S,fh);
+      ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.5;
+      ctx.beginPath(); ctx.moveTo(combX,fy); ctx.lineTo(combX+S,fy); ctx.stroke();
+      var items=[['r',pt.r],['m',pt.m],['gcd',g2],['angle',deg.toFixed(1)+'°'],['rad',rad.toFixed(3)+'π'],['φ(m)',phi]];
+      var sp=S/items.length;
+      ctx.font='8px "Cinzel",Georgia,serif'; ctx.textBaseline='middle';
+      items.forEach(function(item,i){
+        var ix=combX+i*sp+sp/2;
+        ctx.textAlign='center'; ctx.fillStyle='#9a8060'; ctx.fillText(item[0],ix,fy+10);
+        ctx.fillStyle=i<3?ptC:'#e8d9b0'; ctx.fillText(''+item[1],ix,fy+24);
+      });
+    }
 
     var a = document.createElement('a');
-    a.download='farey_mod'+modN+'_layout.png';
+    a.download='farey_mod'+modN+'_layout'+(pt?'_r'+pt.r+'m'+pt.m:'')+'.png';
     a.href=off.toDataURL('image/png'); a.click();
   };
 
+
+  // ── Color brightness helper (hue-preserving, no glow) ────────────────────
+  function brightenColor(hex, amount){
+    // amount: 0-100 extra lightness %
+    if(!amount) return hex;
+    // parse hex
+    var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+    // to hsl
+    r/=255; g/=255; b/=255;
+    var max=Math.max(r,g,b), min=Math.min(r,g,b);
+    var h,s,l=(max+min)/2;
+    if(max===min){ h=s=0; }
+    else{
+      var d=max-min;
+      s = l>0.5 ? d/(2-max-min) : d/(max+min);
+      switch(max){
+        case r: h=((g-b)/d+(g<b?6:0))/6; break;
+        case g: h=((b-r)/d+2)/6; break;
+        case b: h=((r-g)/d+4)/6; break;
+      }
+    }
+    // increase lightness, clamp to 0.88 to avoid white-out
+    var newL = Math.min(0.88, l + amount/100 * (0.88-l));
+    // hsl back to rgb
+    function hue2rgb(p,q,t){ if(t<0)t+=1; if(t>1)t-=1; if(t<1/6)return p+(q-p)*6*t; if(t<1/2)return q; if(t<2/3)return p+(q-p)*(2/3-t)*6; return p; }
+    var q2 = newL<0.5 ? newL*(1+s) : newL+s-newL*s;
+    var p2 = 2*newL-q2;
+    var rr=Math.round(hue2rgb(p2,q2,h+1/3)*255);
+    var gg=Math.round(hue2rgb(p2,q2,h)*255);
+    var bb=Math.round(hue2rgb(p2,q2,h-1/3)*255);
+    return '#'+((1<<24)+(rr<<16)+(gg<<8)+bb).toString(16).slice(1);
+  }
+
+  function getBrightness(){ return parseInt(document.getElementById('f-bright').value)||0; }
+
   // ── Per-ring cumulative rotation ─────────────────────────────────────────
-  var _ringOffsets  = {};
+  var _ringOffsets   = {};
   var _ringAnimTimer = null;
 
   function ringOffset(m, modN){
     var a    = parseFloat(document.getElementById('f-ringstep-a').value)||0;
     var b    = parseFloat(document.getElementById('f-ringstep-b').value)||2;
     var rdir = parseFloat(document.getElementById('f-ringdir').value)||1;
-    var staticOffset = rdir * (m-1) * (a/b) * 360;
-    var animOffset   = _ringOffsets[m] || 0;
-    return staticOffset + animOffset;
+    return rdir*(m-1)*(a/b)*360 + (_ringOffsets[m]||0);
   }
 
   window.fareyToggleRingAnim = function(){
@@ -12317,7 +12470,7 @@
         var rdir  = parseFloat(document.getElementById('f-ringdir').value)||1;
         for(var m=1; m<=modN; m++){
           var t = rdir===1 ? m/modN : (modN-m+1)/modN;
-          _ringOffsets[m] = (_ringOffsets[m]||0) + speed * t * 0.04;
+          _ringOffsets[m] = (_ringOffsets[m]||0) + speed*t*0.04;
         }
         fareyRedraw();
       }, 16);
@@ -12327,6 +12480,29 @@
   window.fareyResetRings = function(){
     _ringOffsets = {};
     fareyRedraw();
+  };
+
+  // ── Mertens PNG export ────────────────────────────────────────────────────
+  window.mertensExportPNG = function(){
+    var src = document.getElementById('m_graphCanvas');
+    if(!src){ alert('Mertens chart not rendered yet.'); return; }
+    var PAD=24, FOOT=32;
+    var W=src.width+PAD*2, H=src.height+PAD+FOOT;
+    var off=document.createElement('canvas'); off.width=W; off.height=H;
+    var ctx=off.getContext('2d');
+    ctx.fillStyle='#07060f'; ctx.fillRect(0,0,W,H);
+    ctx.drawImage(src, PAD, PAD, src.width, src.height);
+    // border
+    ctx.strokeStyle='rgba(90,90,140,0.5)'; ctx.lineWidth=1;
+    ctx.strokeRect(PAD,PAD,src.width,src.height);
+    // label
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='10px "Cinzel",Georgia,serif'; ctx.fillStyle='#9a8060';
+    var nMax=document.getElementById('m_nMax')?document.getElementById('m_nMax').value:'';
+    ctx.fillText('Mertens Function M(n) = Σμ(k)  ·  n = 1…'+(nMax||'N'), W/2, PAD+src.height+FOOT/2);
+    var a=document.createElement('a');
+    a.download='mertens_'+(nMax||'N')+'.png';
+    a.href=off.toDataURL('image/png'); a.click();
   };
 
 })();
