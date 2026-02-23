@@ -2380,6 +2380,74 @@
             </div>
         </div>
         
+        <div class="chart-wrapper" id="customGapCompareWrapper">
+            <div class="chart-title">Custom Gap Family Comparison</div>
+            <div class="chart-description">
+                Compare specific gap families you choose. Test hypotheses like "gaps divisible by 6 have more primes" 
+                or "gap 6n > gap 6n±k for all k". Select up to 10 gaps to visualize side-by-side.
+            </div>
+            
+            <!-- Gap Selection Controls -->
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 20px;">
+                <h4 style="color: var(--sepia); margin: 0 0 16px 0;">Select Gaps to Compare</h4>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; color: #aaa; font-size: 0.9rem;">
+                        Enter gaps (comma-separated, even numbers only):
+                    </label>
+                    <input type="text" id="compareGapsInput" placeholder="e.g., 2, 4, 6, 8, 10, 12, 18, 24, 30"
+                           style="width: 100%; padding: 12px; background: var(--parchment-dark); border: 1px solid var(--border); border-radius: 4px; color: var(--ink-mid); font-size: 1rem;">
+                    <div style="margin-top: 6px; font-size: 0.75rem; color: #666;">
+                        Enter any even numbers separated by commas. Example: 6, 12, 18, 24, 30
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; color: #aaa; font-size: 0.9rem;">Quick Presets:</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button onclick="loadGapPreset('twins_cousins')" class="preset-btn">Twins vs Cousins (2,4)</button>
+                        <button onclick="loadGapPreset('small_gaps')" class="preset-btn">Small Gaps (2,4,6,8,10)</button>
+                        <button onclick="loadGapPreset('mod6')" class="preset-btn">Gaps ≡ 0 (mod 6)</button>
+                        <button onclick="loadGapPreset('mod6_nearby')" class="preset-btn">6n vs 6n±2 vs 6n±4</button>
+                        <button onclick="loadGapPreset('powers_of_2')" class="preset-btn">Powers: 2,4,8,16,32</button>
+                        <button onclick="loadGapPreset('clear')" class="preset-btn" style="background: var(--ink-light);">Clear</button>
+                    </div>
+                </div>
+                
+                <button onclick="renderCustomGapComparison()" class="btn" style="width: 100%;">
+                    Compare Selected Gaps
+                </button>
+            </div>
+            
+            <canvas id="customGapCompareChart" width="3840" height="2160"></canvas>
+            
+            <div class="stats-table-wrapper">
+                <div class="stats-table-header">
+                    <div class="stats-table-title">Comparison Statistics</div>
+                    <div class="precision-control">
+                        <label>Decimals:</label>
+                        <select id="customGapComparePrecision" onchange="renderCustomGapComparison()">
+                            <option value="4">4</option>
+                            <option value="6" selected>6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="stats-table-container" id="customGapCompareTable">
+                    <table class="stats-table" id="customGapCompareTableContent"></table>
+                </div>
+                <div class="export-row">
+                    <button class="export-btn csv" onclick="exportCustomGapCompareCSV()">Export Comparison CSV</button>
+                    <button class="export-btn png" onclick="exportChartPNG_DOM('customGapCompareChart', 'custom_gap_comparison')" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: var(--sepia);">DOM Export</button>
+                    <button class="export-btn png" onclick="exportChartPNG_Canvas('customGapCompareChart', 'custom_gap_comparison')" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-color: #ef4444;">Canvas Export</button>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
         <div class="chart-wrapper" id="percentageWrapper">
             <div class="chart-title">Percentage Contribution to ζ(2) by Gap Family</div>
             <div class="chart-description">
@@ -2516,72 +2584,231 @@
             </div>
         </div>
         
-        <div class="chart-wrapper" id="customGapCompareWrapper">
-            <div class="chart-title">Custom Gap Family Comparison</div>
-            <div class="chart-description">
-                Compare specific gap families you choose. Test hypotheses like "gaps divisible by 6 have more primes" 
-                or "gap 6n > gap 6n±k for all k". Select up to 10 gaps to visualize side-by-side.
+        <div class="chart-wrapper" id="hlDeepDiveWrapper" style="border: 2px solid var(--gold);">
+            <div class="chart-title" style="color: var(--gold); font-size: 1.5rem; border-bottom-color: var(--gold);">
+                Hardy-Littlewood Conjecture B: Step-by-Step Calculations for Every Gap Family
             </div>
-            
-            <!-- Gap Selection Controls -->
-            <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 20px;">
-                <h4 style="color: var(--sepia); margin: 0 0 16px 0;">Select Gaps to Compare</h4>
-                
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; color: #aaa; font-size: 0.9rem;">
-                        Enter gaps (comma-separated, even numbers only):
-                    </label>
-                    <input type="text" id="compareGapsInput" placeholder="e.g., 2, 4, 6, 8, 10, 12, 18, 24, 30"
-                           style="width: 100%; padding: 12px; background: var(--parchment-dark); border: 1px solid var(--border); border-radius: 4px; color: var(--ink-mid); font-size: 1rem;">
-                    <div style="margin-top: 6px; font-size: 0.75rem; color: #666;">
-                        Enter any even numbers separated by commas. Example: 6, 12, 18, 24, 30
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; color: #aaa; font-size: 0.9rem;">Quick Presets:</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <button onclick="loadGapPreset('twins_cousins')" class="preset-btn">Twins vs Cousins (2,4)</button>
-                        <button onclick="loadGapPreset('small_gaps')" class="preset-btn">Small Gaps (2,4,6,8,10)</button>
-                        <button onclick="loadGapPreset('mod6')" class="preset-btn">Gaps ≡ 0 (mod 6)</button>
-                        <button onclick="loadGapPreset('mod6_nearby')" class="preset-btn">6n vs 6n±2 vs 6n±4</button>
-                        <button onclick="loadGapPreset('powers_of_2')" class="preset-btn">Powers: 2,4,8,16,32</button>
-                        <button onclick="loadGapPreset('clear')" class="preset-btn" style="background: var(--ink-light);">Clear</button>
-                    </div>
-                </div>
-                
-                <button onclick="renderCustomGapComparison()" class="btn" style="width: 100%;">
-                    Compare Selected Gaps
-                </button>
+            <div class="chart-description" style="border-left-color: var(--gold);">
+                Full derivation of the singular series S(h), the logarithmic integral li₂(x), and the predicted prime-pair count
+                for each gap family — with every arithmetic step shown and compared against your observed data.
             </div>
-            
-            <canvas id="customGapCompareChart" width="3840" height="2160"></canvas>
-            
-            <div class="stats-table-wrapper">
-                <div class="stats-table-header">
-                    <div class="stats-table-title">Comparison Statistics</div>
-                    <div class="precision-control">
-                        <label>Decimals:</label>
-                        <select id="customGapComparePrecision" onchange="renderCustomGapComparison()">
-                            <option value="4">4</option>
-                            <option value="6" selected>6</option>
-                            <option value="8">8</option>
-                            <option value="10">10</option>
-                        </select>
+
+            <!-- PART 1: THE FORMULA -->
+            <div style="background:#0d0d1a;border:1px solid #a855f7;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#a855f7;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 1 — The Hardy-Littlewood Formula</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">Hardy &amp; Littlewood's Conjecture B (1923): for any even integer h ≥ 2, the count of primes p ≤ x where p+h is also prime satisfies:</p>
+                <div class="formula-box" style="font-size:1.4rem;margin:20px 0;">π<sub>h</sub>(x) &nbsp;~&nbsp; S(h) · li<sub>2</sub>(x)</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                    <div style="background:rgba(168,85,247,.08);border-left:3px solid #a855f7;padding:16px;border-radius:6px;">
+                        <div style="color:#a855f7;font-weight:700;margin-bottom:10px;">S(h) — The Singular Series</div>
+                        <div style="color:#e0e0e0;font-family:'EB Garamond',Georgia,serif;font-size:1.1rem;line-height:2.2;">S(h) = 2C<sub>2</sub> · ∏<sub>p | h, p odd prime</sub> (p−1)/(p−2)</div>
+                        <div style="color:#888;font-size:.85rem;margin-top:8px;">Encodes how divisibility of h by small primes opens extra residue classes, making some gaps more probable than others.</div>
+                    </div>
+                    <div style="background:rgba(78,205,196,.08);border-left:3px solid #4ecdc4;padding:16px;border-radius:6px;">
+                        <div style="color:#4ecdc4;font-weight:700;margin-bottom:10px;">li<sub>2</sub>(x) — The Logarithmic Integral</div>
+                        <div style="color:#e0e0e0;font-family:'EB Garamond',Georgia,serif;font-size:1.1rem;line-height:2.2;">li<sub>2</sub>(x) = ∫<sub>2</sub><sup>x</sup> dt / ln²(t)</div>
+                        <div style="color:#888;font-size:.85rem;margin-top:8px;">The density baseline — how many prime pairs would exist if distributed purely by logarithm. S(h) scales this per gap.</div>
                     </div>
                 </div>
-                <div class="stats-table-container" id="customGapCompareTable">
-                    <table class="stats-table" id="customGapCompareTableContent"></table>
+            </div>
+
+            <!-- PART 2: C2 CONSTANT -->
+            <div style="background:#0d0d1a;border:1px solid #ffd700;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#ffd700;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 2 — Where Does C₂ = 0.6601618… Come From?</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">C₂ is the <strong style="color:#ffd700">twin prime constant</strong> — an infinite Euler product over all primes p ≥ 3, measuring how residue-class constraints reduce the density of twin primes relative to a random model:</p>
+                <div class="formula-box">C<sub>2</sub> = ∏<sub>p ≥ 3</sub> p(p−2) / (p−1)²</div>
+                <p style="color:#ccc;margin:0 0 16px 0;line-height:1.7;font-size:.9rem;">Each factor p(p−2)/(p−1)² &lt; 1 accounts for the fact that for a prime p, there is one forbidden residue class mod p for each element of a twin-prime pair. The infinite product converges slowly to ≈ 0.66016. Below: partial products through the first 20 primes.</p>
+                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:.83rem;min-width:600px;">
+                        <thead><tr style="background:#1a1a2a;">
+                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Prime p</th>
+                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">p(p−2)/(p−1)²</th>
+                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Factor value</th>
+                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Running C₂ product</th>
+                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">% of final C₂</th>
+                        </tr></thead>
+                        <tbody id="hl_c2_table_body"></tbody>
+                    </table>
                 </div>
-                <div class="export-row">
-                    <button class="export-btn csv" onclick="exportCustomGapCompareCSV()">Export Comparison CSV</button>
-                    <button class="export-btn png" onclick="exportChartPNG_DOM('customGapCompareChart', 'custom_gap_comparison')" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: var(--sepia);">DOM Export</button>
-                    <button class="export-btn png" onclick="exportChartPNG_Canvas('customGapCompareChart', 'custom_gap_comparison')" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-color: #ef4444;">Canvas Export</button>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;">
+                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
+                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">C₂ (full precision)</div>
+                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">0.6601618158468695…</div>
+                    </div>
+                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
+                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">2·C₂ = S(2) = S(4) = S(8)</div>
+                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">1.3203236316937390…</div>
+                    </div>
+                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
+                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">4·C₂ = S(6) = S(12) = S(18)</div>
+                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">2.6406472633874780…</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 3: SINGULAR SERIES TABLE -->
+            <div style="background:#0d0d1a;border:1px solid #22c55e;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#22c55e;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 3 — Singular Series S(h) for the First 30 Even Gaps: Full Derivation</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">For each gap h, we compute S(h) = 2C₂ · ∏<sub>(odd prime p | h)</sub> (p−1)/(p−2). The table below shows the factorisation of h, which odd primes divide it, each correction factor, and the final S(h). <strong style="color:#22c55e;">Only odd prime factors count</strong> — p=2 always divides even h but contributes no correction because 2 is already handled in the baseline C₂ Euler product.</p>
+                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px;">
+                        <thead><tr style="background:#1a1a2a;">
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Gap h</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">h = 2^a × odd</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Odd prime factors</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Correction factors (p−1)/(p−2)</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Product</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">S(h) = 2C₂ × product</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">S(h)/S(2)</th>
+                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Name</th>
+                        </tr></thead>
+                        <tbody id="hl_singular_table_body"></tbody>
+                    </table>
+                </div>
+                <div style="background:rgba(34,197,94,.07);border-left:4px solid #22c55e;padding:16px;border-radius:6px;margin-top:16px;">
+                    <div style="color:#22c55e;font-weight:700;margin-bottom:8px;">The key insight: why gap 6 is twice as common as gap 2</div>
+                    <div style="color:#ccc;font-size:.88rem;line-height:1.8;">
+                        Gap 2: h=2, no odd prime factors → correction product = 1 → S(2) = 2C₂ ≈ 1.3203<br>
+                        Gap 4: h=4=2², no odd prime factors → S(4) = 2C₂ <em>identical to gap 2</em><br>
+                        Gap 6: h=6=2×3, odd factor p=3 → correction = (3−1)/(3−2) = 2/1 = <strong style="color:#ffd700">2</strong> → S(6) = 2 × 2C₂ = 4C₂ ≈ 2.6406<br><br>
+                        Gap 30: h=30=2×3×5, corrections: (2/1)×(4/3) = 8/3 → S(30) = (8/3)×2C₂ = <strong style="color:#ffd700">16C₂/3 ≈ 3.5209</strong><br><br>
+                        Because 3 | 6, the pair {p, p+6} satisfies p ≡ p+6 (mod 3), so <em>neither element is forced to be divisible by 3</em>.
+                        This doubles admissible residue pairs. At 400M your data shows gap6/gap2 = 1.767 — converging toward the limit of 2.0.
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 4: li2 EXPANSION -->
+            <div style="background:#0d0d1a;border:1px solid #4ecdc4;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#4ecdc4;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 4 — The li₂(x) Expansion: Every Correction Term Analysed</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">The integral li₂(x)=∫dt/ln²(t) has an asymptotic expansion. Each correction term below reduces prediction error. Change x to see how the terms' magnitudes shift with your analysis range.</p>
+                <div class="formula-box" style="font-size:1.05rem;">li₂(x) = (x/ln²x) · [ 1 + 2/ln x + 6/ln²x + 24/ln³x + 120/ln⁴x + … ]&nbsp;&nbsp;&nbsp;(k-th coefficient = (k+1)!)</div>
+                <div style="background:#12121a;border-radius:8px;padding:14px;margin:16px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                    <label style="color:#4ecdc4;font-size:.9rem;">Compute at x =</label>
+                    <input type="number" id="hl_li2_x_input" value="400000000" min="1000" max="10000000000" step="1000000"
+                           oninput="hl_updateLi2Table()"
+                           style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:180px;">
+                    <div id="hl_li2_lnx_display" style="color:#888;font-size:.82rem;"></div>
+                </div>
+                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:.82rem;min-width:750px;">
+                        <thead><tr style="background:#1a1a2a;">
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Terms used</th>
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Formula</th>
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">li₂(x) value</th>
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">2C₂·li₂ prediction</th>
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Gain from prev term</th>
+                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Error vs obs twins*</th>
+                        </tr></thead>
+                        <tbody id="hl_li2_table_body"></tbody>
+                    </table>
+                    <div style="color:#555;font-size:.75rem;margin-top:8px;">*Observed twin count auto-populated from your last analysis run; otherwise uses 1,507,733 (400M baseline)</div>
+                </div>
+                <div style="background:rgba(78,205,196,.07);border-left:4px solid #4ecdc4;padding:14px;border-radius:6px;margin-top:16px;">
+                    <div style="color:#4ecdc4;font-weight:700;margin-bottom:6px;">Why the corrections are large at practical ranges</div>
+                    <div style="color:#ccc;font-size:.85rem;line-height:1.7;">At x=400M, ln(x) ≈ 19.8, so the first correction 2/ln(x) ≈ 10.1% — far from negligible. The k-th term has coefficient (k+1)!, so the corrections form a divergent asymptotic series — accuracy peaks around the 4th–5th term for x in the billions, then worsens. The 4-term formula gives &lt;0.1% error at 400M.</div>
+                </div>
+            </div>
+
+            <!-- PART 5: PER-GAP FULL TABLE (live from analysis) -->
+            <div style="background:#0d0d1a;border:1px solid #f59e0b;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#f59e0b;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 5 — Full Gap-by-Gap H-L Prediction vs Your Observed Data</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">Every gap family in your analysis: S(h) derived step-by-step, li₂ prediction computed, compared against your observed count. The obs/pred ratio converges to 1.0 as x→∞.</p>
+                <div style="background:#12121a;border-radius:8px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                    <div style="color:#f59e0b;font-size:.9rem;">Analysis range:</div>
+                    <div id="hl_range_display" style="color:#ffd700;font-family:monospace;font-size:.95rem;font-weight:700;">Run analysis above first</div>
+                </div>
+                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:.8rem;min-width:1050px;">
+                        <thead><tr style="background:#1a1a2a;">
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Gap h</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Name</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Odd prime factors of h</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">S(h)</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">S(h)/S(2)</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Predicted</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Observed</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Obs/Pred</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Error %</th>
+                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Convergence</th>
+                        </tr></thead>
+                        <tbody id="hl_full_table_body">
+                            <tr><td colspan="10" style="padding:20px;text-align:center;color:#888;font-style:italic;">Run the prime analysis above to populate this table</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="export-row" style="margin-top:16px;">
+                    <button class="export-btn csv" onclick="exportHLFullTableCSV()">Export Part 5 CSV</button>
+                    <button class="export-btn png" onclick="exportHLFullTableDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Part 5 PNG</button>
+                </div>
+            </div>
+
+            <!-- PART 6: INTERACTIVE WALKTHROUGH -->
+            <div style="background:#0d0d1a;border:1px solid #e879f9;border-radius:10px;padding:28px;margin-bottom:24px;">
+                <h3 style="color:#e879f9;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 6 — Interactive: Full Arithmetic Walkthrough for Any Gap</h3>
+                <p style="color:#ccc;margin-bottom:20px;line-height:1.8;">Select any gap to see every single arithmetic step: prime factorisation of h, identifying correction primes, computing each (p−1)/(p−2) factor, building S(h), expanding li₂(x) term by term, and arriving at the final prediction.</p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:flex-end;">
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <label style="color:#e879f9;font-size:.85rem;">Gap h</label>
+                        <input type="number" id="hl_gap_input" value="6" min="2" max="500" step="2"
+                               style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:100px;">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <label style="color:#e879f9;font-size:.85rem;">At x =</label>
+                        <input type="number" id="hl_x_input" value="400000000" min="1000" max="10000000000" step="1000000"
+                               style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:180px;">
+                    </div>
+                    <button onclick="hl_computeWalkthrough()"
+                            style="padding:10px 24px;background:linear-gradient(135deg,#e879f9,#a855f7);border:none;border-radius:6px;color:#fff;font-weight:700;cursor:pointer;font-size:.95rem;">
+                        Compute Step by Step
+                    </button>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button onclick="hl_setGap(2)"   class="hl-preset-btn">Gap 2 (twins)</button>
+                        <button onclick="hl_setGap(4)"   class="hl-preset-btn">Gap 4 (cousins)</button>
+                        <button onclick="hl_setGap(6)"   class="hl-preset-btn">Gap 6 (sexy)</button>
+                        <button onclick="hl_setGap(10)"  class="hl-preset-btn">Gap 10</button>
+                        <button onclick="hl_setGap(12)"  class="hl-preset-btn">Gap 12</button>
+                        <button onclick="hl_setGap(30)"  class="hl-preset-btn">Gap 30</button>
+                        <button onclick="hl_setGap(210)" class="hl-preset-btn">Gap 210 (2×3×5×7)</button>
+                    </div>
+                </div>
+                <div id="hl_walkthrough_output" style="background:#0a0a10;border-radius:8px;padding:24px;border:1px solid #2a2a4a;min-height:80px;">
+                    <div style="color:#666;font-style:italic;">Click "Compute Step by Step" to see the full arithmetic</div>
+                </div>
+                <div class="export-row" style="margin-top:16px;">
+                    <button class="export-btn csv" onclick="exportHLWalkthroughCSV()">Export Walkthrough CSV</button>
+                    <button class="export-btn png" onclick="exportHLWalkthroughDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Walkthrough PNG</button>
+                </div>
+            </div>
+
+            <!-- PART 7: RATIO CONVERGENCE TABLE -->
+            <div style="background:#0d0d1a;border:1px solid #64748b;border-radius:10px;padding:28px;">
+                <h3 style="color:#94a3b8;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 7 — Convergence of Count Ratios to Theoretical Limits</h3>
+                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">As x→∞, Count(gap=a)/Count(gap=b) → S(a)/S(b). This table shows current ratios from your data vs the theoretical limits, with a convergence bar showing how close you are.</p>
+                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:.83rem;min-width:750px;">
+                        <thead><tr style="background:#1a1a2a;">
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Ratio</th>
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Why this limit</th>
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Theoretical limit</th>
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Current value</th>
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">% of limit reached</th>
+                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Visual</th>
+                        </tr></thead>
+                        <tbody id="hl_ratio_table_body">
+                            <tr><td colspan="6" style="padding:20px;text-align:center;color:#888;font-style:italic;">Run analysis above to populate</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="export-row" style="margin-top:16px;">
+                    <button class="export-btn csv" onclick="exportHLRatioTableCSV()">Export Ratios CSV</button>
+                    <button class="export-btn png" onclick="exportHLSectionDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Full Section PNG</button>
                 </div>
             </div>
         </div>
+        <!-- ── end HL deep dive section ── -->
         
-        <div class="chart-wrapper" id="stepByStepWrapper">
+<div class="chart-wrapper" id="stepByStepWrapper">
             <div class="chart-title">Step-by-Step Gap Accumulation: ζ(2) = P<sub>0</sub> × P<sub>2</sub> × P<sub>4</sub> × ...</div>
             <div class="chart-description">
                 Shows the progressive buildup of the cumulative product as each gap family is added. This table view complements the convergence chart by providing exact numerical values at each step.
@@ -11106,7 +11333,7 @@
                     { label:'Count(10)/Count(2)', a:10, b:2,
                       why:'S(10)=8C₂/3 (factor 4/3 from p=5). Ratio → 4/3 ≈ 1.333.' },
                     { label:'Count(30)/Count(6)', a:30, b:6,
-                      why:'S(30)=8C₂ (factors from p=3 and p=5). Ratio → S(30)/S(6) = 2.' },
+                      why:'S(30)=16C₂/3 (corrections (2/1)×(4/3)=8/3 from p=3 and p=5). Ratio → S(30)/S(6) = 4/3 ≈ 1.333.' },
                 ];
 
                 let rows = '';
