@@ -3836,6 +3836,120 @@
             };
         }
         
+        function computeGapDecompositionWithS(maxPrime, s, gapRangeFilter = null, progressCallback = null) {
+            const primes = sievePrimes(maxPrime, progressCallback);
+            
+            // Get target value
+            const known = getKnownZetaValue(s);
+            const targetZeta = known ? known.value : computeApproximateZeta(s);
+            
+            // Calculate gaps and classify primes
+            const gapFamilies = {}; // Will be populated by loop - gap 1 gets prime 2 from 3-2=1
+            const gaps = [];
+            
+            for (let i = 0; i < primes.length - 1; i++) {
+                const gap = primes[i + 1] - primes[i];
+                gaps.push(gap);
+                
+                if (!gapFamilies[gap]) {
+                    gapFamilies[gap] = [];
+                }
+                gapFamilies[gap].push(primes[i]);
+            }
+            
+            // Calculate products for each gap family using p^s/(p^s-1)
+            const gapProducts = {};
+            
+            // Find all unique gaps that actually exist in the data
+            const uniqueGaps = new Set(gaps);
+            let evenGaps = Array.from(uniqueGaps).sort((a, b) => a - b);
+            
+            // Apply gap range filter if specified
+            if (gapRangeFilter && gapRangeFilter.mode === 'manual') {
+                const minGap = gapRangeFilter.min;
+                const maxGap = gapRangeFilter.max;
+                evenGaps = evenGaps.filter(gap => gap >= minGap && gap <= maxGap);
+            }
+            
+            evenGaps.forEach(gap => {
+                if (gapFamilies[gap] && gapFamilies[gap].length > 0) {
+                    let product = 1;
+                    let logProduct = 0;
+                    
+                    gapFamilies[gap].forEach(p => {
+                        const ps = Math.pow(p, s);
+                        const factor = ps / (ps - 1);
+                        product *= factor;
+                        logProduct += Math.log(factor);
+                    });
+                    
+                    gapProducts[gap] = {
+                        product: product,
+                        logProduct: logProduct,
+                        count: gapFamilies[gap].length,
+                        primes: gapFamilies[gap] // Store ALL primes
+                    };
+                }
+            });
+            
+            // Add last prime contribution
+            const lastPrime = primes[primes.length - 1];
+            const lastPs = Math.pow(lastPrime, s);
+            const lastFactor = lastPs / (lastPs - 1);
+            
+            // Calculate progressive convergence
+            const progressiveProducts = [];
+            let cumulative = 1;
+            let cumulativeLog = 0;
+            
+            evenGaps.forEach(gap => {
+                if (gapProducts[gap]) {
+                    cumulative *= gapProducts[gap].product;
+                    cumulativeLog += gapProducts[gap].logProduct;
+                    
+                    progressiveProducts.push({
+                        gap: gap,
+                        value: cumulative,
+                        logValue: cumulativeLog,
+                        error: Math.abs(cumulative - targetZeta),
+                        relativeError: Math.abs(cumulative - targetZeta) / targetZeta
+                    });
+                }
+            });
+            
+            // Multiply by last prime
+            cumulative *= lastFactor;
+            const finalProduct = cumulative;
+            const finalError = Math.abs(finalProduct - targetZeta);
+            
+            // Calculate percentage contributions
+            const totalLogProduct = cumulativeLog + Math.log(lastFactor);
+            const percentageContributions = {};
+            evenGaps.forEach(gap => {
+                if (gapProducts[gap]) {
+                    const contribution = gapProducts[gap].logProduct / totalLogProduct;
+                    percentageContributions[gap] = contribution * 100;
+                }
+            });
+            
+            return {
+                s: s,
+                primes: primes,
+                totalPrimes: primes.length,
+                allPrimesFound: primes.length,  // Total primes found - same as totalPrimes in this function
+                maxPrime: maxPrime,
+                targetZeta: targetZeta,
+                targetZeta2: targetZeta, // Keep for compatibility
+                gapFamilies: gapFamilies,
+                evenGaps: evenGaps,
+                gapProducts: gapProducts,
+                progressiveProducts: progressiveProducts,
+                percentageContributions: percentageContributions,
+                finalProduct: finalProduct,
+                finalError: finalError,
+                finalRelativeError: finalError / targetZeta
+            };
+        }
         // Global variable to store uploaded/fetched primes
         let customPrimeList = null;
         
@@ -5286,7 +5400,9 @@
                 return (x / (L * L)) * (1 + 2/L + 6/(L*L) + 24/(L*L*L));
             }
             
+            const _ssMemo1 = Object.create(null);
             function singularSeries(h) {
+                if (_ssMemo1[h] !== undefined) return _ssMemo1[h];
                 // Compute Prod_{odd prime p | h} (p-1)/(p-2)
                 let mult = 1.0;
                 for (let p = 3; p <= h; p++) {
@@ -5296,7 +5412,7 @@
                         if (isPrime) mult *= (p - 1) / (p - 2);
                     }
                 }
-                return 2 * C2_FULL * mult;
+                return (_ssMemo1[h] = 2 * C2_FULL * mult);
             }
             
             // Hardy-Littlewood predictions using li2 approximation
@@ -6717,7 +6833,9 @@
             // Full precision constant, li2 approximation, and per-gap singular series
             const C2_FULL = 0.6601618158468695;
             function li2(x) { const L = Math.log(x); return (x/(L*L))*(1 + 2/L + 6/(L*L) + 24/(L*L*L)); }
+            const _ssMemo2 = Object.create(null);
             function singularSeries(h) {
+                if (_ssMemo2[h] !== undefined) return _ssMemo2[h];
                 let mult = 1.0;
                 for (let p = 3; p <= h; p++) {
                     if (h % p === 0) {
@@ -6725,7 +6843,7 @@
                         if (ip) mult *= (p-1)/(p-2);
                     }
                 }
-                return 2 * C2_FULL * mult;
+                return (_ssMemo2[h] = 2 * C2_FULL * mult);
             }
             const maxPrime = analysisResults.maxPrime;
             const predictedTwins = singularSeries(2) * li2(maxPrime);
@@ -9015,120 +9133,7 @@
             return sum;
         }
         
-        function computeGapDecompositionWithS(maxPrime, s, gapRangeFilter = null, progressCallback = null) {
-            const primes = sievePrimes(maxPrime, progressCallback);
-            
-            // Get target value
-            const known = getKnownZetaValue(s);
-            const targetZeta = known ? known.value : computeApproximateZeta(s);
-            
-            // Calculate gaps and classify primes
-            const gapFamilies = {}; // Will be populated by loop - gap 1 gets prime 2 from 3-2=1
-            const gaps = [];
-            
-            for (let i = 0; i < primes.length - 1; i++) {
-                const gap = primes[i + 1] - primes[i];
-                gaps.push(gap);
-                
-                if (!gapFamilies[gap]) {
-                    gapFamilies[gap] = [];
-                }
-                gapFamilies[gap].push(primes[i]);
-            }
-            
-            // Calculate products for each gap family using p^s/(p^s-1)
-            const gapProducts = {};
-            
-            // Find all unique gaps that actually exist in the data
-            const uniqueGaps = new Set(gaps);
-            let evenGaps = Array.from(uniqueGaps).sort((a, b) => a - b);
-            
-            // Apply gap range filter if specified
-            if (gapRangeFilter && gapRangeFilter.mode === 'manual') {
-                const minGap = gapRangeFilter.min;
-                const maxGap = gapRangeFilter.max;
-                evenGaps = evenGaps.filter(gap => gap >= minGap && gap <= maxGap);
-            }
-            
-            evenGaps.forEach(gap => {
-                if (gapFamilies[gap] && gapFamilies[gap].length > 0) {
-                    let product = 1;
-                    let logProduct = 0;
-                    
-                    gapFamilies[gap].forEach(p => {
-                        const ps = Math.pow(p, s);
-                        const factor = ps / (ps - 1);
-                        product *= factor;
-                        logProduct += Math.log(factor);
-                    });
-                    
-                    gapProducts[gap] = {
-                        product: product,
-                        logProduct: logProduct,
-                        count: gapFamilies[gap].length,
-                        primes: gapFamilies[gap] // Store ALL primes
-                    };
-                }
-            });
-            
-            // Add last prime contribution
-            const lastPrime = primes[primes.length - 1];
-            const lastPs = Math.pow(lastPrime, s);
-            const lastFactor = lastPs / (lastPs - 1);
-            
-            // Calculate progressive convergence
-            const progressiveProducts = [];
-            let cumulative = 1;
-            let cumulativeLog = 0;
-            
-            evenGaps.forEach(gap => {
-                if (gapProducts[gap]) {
-                    cumulative *= gapProducts[gap].product;
-                    cumulativeLog += gapProducts[gap].logProduct;
-                    
-                    progressiveProducts.push({
-                        gap: gap,
-                        value: cumulative,
-                        logValue: cumulativeLog,
-                        error: Math.abs(cumulative - targetZeta),
-                        relativeError: Math.abs(cumulative - targetZeta) / targetZeta
-                    });
-                }
-            });
-            
-            // Multiply by last prime
-            cumulative *= lastFactor;
-            const finalProduct = cumulative;
-            const finalError = Math.abs(finalProduct - targetZeta);
-            
-            // Calculate percentage contributions
-            const totalLogProduct = cumulativeLog + Math.log(lastFactor);
-            const percentageContributions = {};
-            evenGaps.forEach(gap => {
-                if (gapProducts[gap]) {
-                    const contribution = gapProducts[gap].logProduct / totalLogProduct;
-                    percentageContributions[gap] = contribution * 100;
-                }
-            });
-            
-            return {
-                s: s,
-                primes: primes,
-                totalPrimes: primes.length,
-                allPrimesFound: primes.length,  // Total primes found - same as totalPrimes in this function
-                maxPrime: maxPrime,
-                targetZeta: targetZeta,
-                targetZeta2: targetZeta, // Keep for compatibility
-                gapFamilies: gapFamilies,
-                evenGaps: evenGaps,
-                gapProducts: gapProducts,
-                progressiveProducts: progressiveProducts,
-                percentageContributions: percentageContributions,
-                finalProduct: finalProduct,
-                finalError: finalError,
-                finalRelativeError: finalError / targetZeta
-            };
-        }
+
         
         function computeComparisonData(gapRangeFilter = null) {
             const maxPrime = parseInt(document.getElementById('maxPrime').value);
@@ -11247,11 +11252,13 @@
                 return factors;
             }
 
+            const _ssMemo3 = Object.create(null);
             function singularSeries(h) {
+                if (_ssMemo3[h] !== undefined) return _ssMemo3[h];
                 const opf = oddPrimeFactors(h);
                 let mult = 1;
                 opf.forEach(p => mult *= (p - 1) / (p - 2));
-                return 2 * C2 * mult;
+                return (_ssMemo3[h] = 2 * C2 * mult);
             }
 
             function li2(x, terms = 4) {
