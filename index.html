@@ -59,15 +59,22 @@
         }
 
         /* Header */
-        canvas#fc-coprime, canvas#fc-noncoprime, canvas#fc-combined,
-        canvas#rz-circle-canvas, canvas#rz-spectrum-canvas {
+        canvas {
             background: var(--canvas-bg) !important;
         }
         canvas#fc-coprime, canvas#fc-noncoprime, canvas#rz-circle-canvas {
             border-radius: 50%;
         }
-        canvas#fc-combined, canvas#rz-spectrum-canvas {
+        canvas#fc-combined, canvas#rz-spectrum-canvas, canvas#compositeCanvas {
             border-radius: 0;
+        }
+        /* Light mode: dark-hardcoded divs around canvases */
+        body:not(.dark-mode) [style*="background: #0a0a10"],
+        body:not(.dark-mode) [style*="background:#0a0a10"],
+        body:not(.dark-mode) [style*="background: #0a0a0f"],
+        body:not(.dark-mode) [style*="background:#0a0a0f"] {
+            background: #ffffff !important;
+            color: var(--ink) !important;
         }
 
         body.dark-mode .header {
@@ -1542,7 +1549,7 @@
         }
     </style>
 </head>
-<body class="dark-mode">
+<body>
     <header class="header">
         <h1>Gap-Class Decomposition of ζ(2) = π²/6</h1>
         <div class="subtitle">A Partition of the Euler Product by Prime Gap Class: Numerical Evidence and Open Questions</div>
@@ -1561,7 +1568,7 @@
         </div>
     </header>
     
-    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw();">☀ Light</button>
+    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw();">☾ Dark</button>
 
     <div class="introduction">
         <div class="intro-section">
@@ -1668,6 +1675,11 @@
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
                       <input id="f-bright" type="range" min="0" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-bright-val').textContent='+'+this.value+'%';fareyRedraw()">
                       <span id="f-bright-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">+0%</span>
+                    </div>
+                    <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">POINT SIZE</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
+                      <input id="f-ptsize" type="range" min="10" max="400" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-ptsize-val').textContent=this.value+'%';fareyRedraw()">
+                      <span id="f-ptsize-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
                     </div>
                   </div>
 
@@ -2796,7 +2808,7 @@
                         <button onclick="hl_setGap(210)" class="hl-preset-btn">Gap 210 (2×3×5×7)</button>
                     </div>
                 </div>
-                <div id="hl_walkthrough_output" style="background:#0a0a10;border-radius:8px;padding:24px;border:1px solid #2a2a4a;min-height:80px;">
+                <div id="hl_walkthrough_output" style="background:var(--parchment-deep);border-radius:8px;padding:24px;border:1px solid var(--border);min-height:80px;">
                     <div style="color:#666;font-style:italic;">Click "Compute Step by Step" to see the full arithmetic</div>
                 </div>
                 <div class="export-row" style="margin-top:16px;">
@@ -3272,8 +3284,8 @@
                 </div>
 
                 <!-- Canvas -->
-                <div style="position: relative; background: #0a0a10; border-radius: 8px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--panel-border);">
-                    <canvas id="m_graphCanvas" width="1400" height="500" style="display:block; width:100%; height:auto; background:#0a0a10; border-radius:4px; cursor:crosshair;"></canvas>
+                <div style="position: relative; background: var(--canvas-bg); border-radius: 8px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--panel-border);">
+                    <canvas id="m_graphCanvas" width="1400" height="500" style="display:block; width:100%; height:auto; background:var(--canvas-bg); border-radius:4px; cursor:crosshair;"></canvas>
                     <div id="m_tooltip" style="position:absolute; background:rgba(0,0,0,0.92); color:var(--ink-mid); padding:10px 14px; border-radius:6px; font-size:0.85rem; pointer-events:none; opacity:0; transition:opacity 0.15s; z-index:1000; border:1px solid #3a3a5a; max-width:260px;"></div>
                 </div>
                 <div style="text-align:center; margin:-12px 0 20px;">
@@ -3298,7 +3310,7 @@
                                 style="padding: 8px 16px; background: #2a2a4a; border: none; border-radius: 4px; color: var(--ink-mid); cursor: pointer; font-size: 0.85rem;">Export CSV</button>
                     </div>
                     <div style="max-height: 400px; overflow: auto; border-radius: 6px;">
-                        <table style="width:100%; border-collapse:collapse; background:#0a0a10; font-size:0.82rem;">
+                        <table style="width:100%; border-collapse:collapse; background:var(--canvas-bg); font-size:0.82rem;">
                             <thead style="position:sticky; top:0; background:var(--parchment-dark); z-index:5;">
                                 <tr>
                                     <th onclick="m_sortTable('n')" style="padding:10px 12px; text-align:left; color:var(--gold); cursor:pointer; border-bottom:1px solid #2a2a4a;">n</th>
@@ -3490,6 +3502,7 @@
 // Gap Decomposition Analyzer v2.1 - Fixed xPos scope issue
         // Global variables
         let analysisResults = null;
+        window.analysisResults = null; // kept in sync below
         let animationId = null;
         let isAnimating = false;
 
@@ -3528,7 +3541,7 @@
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -3969,14 +3982,14 @@
                         // Compute for multiple s values
                         const compData = computeComparisonData(gapRangeFilter);
                         // Use s=2 as primary result for compatibility
-                        analysisResults = compData[2];
+                        analysisResults = compData[2]; window.analysisResults = analysisResults;
                         analysisResults.comparisonData = compData;
                         
                         statusBar.className = 'status-bar complete';
                         statusBar.textContent = `Comparison complete: Computed for s = [1.5, 2, 3, 4, 5, 10]`;
                     } else {
                         // Single s analysis
-                        analysisResults = computeGapDecompositionWithS(maxPrime, s, gapRangeFilter, progressCallback);
+                        analysisResults = computeGapDecompositionWithS(maxPrime, s, gapRangeFilter, progressCallback); window.analysisResults = analysisResults;
                         
                         const known = getKnownZetaValue(s);
                         const zetaLabel = known ? `ζ(${s}) = ${known.formula}` : `ζ(${s.toFixed(2)})`;
@@ -4595,6 +4608,27 @@
                 renderPercentageChart(gap);
             }
         }
+        // ── Theme helper for canvas rendering ─────────────────────────────────
+        window.canvasBg   = function() { return document.body.classList.contains('dark-mode') ? '#0a0a10' : '#ffffff'; };
+        window.canvasText = function() { return document.body.classList.contains('dark-mode') ? '#888'    : '#444'; };
+        window.canvasTextBright = function() { return document.body.classList.contains('dark-mode') ? '#aaa' : '#222'; };
+        window.canvasGrid = function() { return document.body.classList.contains('dark-mode') ? '#2a2a4a' : '#e0e0e8'; };
+        window.canvasFaint   = function() { return document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'; };
+        window.canvasSubBg   = function() { return document.body.classList.contains('dark-mode') ? '#1a1a2a' : '#f0f0f8'; };
+        window.canvasSubBg2  = function() { return document.body.classList.contains('dark-mode') ? '#12121a' : '#e8e8f4'; };
+        window.canvasRowAlt  = function() { return document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)'; };
+        window.canvasHighlight = function() { return document.body.classList.contains('dark-mode') ? 'rgba(255,215,0,0.1)' : 'rgba(100,80,0,0.07)'; };
+        window.canvasPurpleHL = function() { return document.body.classList.contains('dark-mode') ? 'rgba(139,92,246,0.1)' : 'rgba(100,60,200,0.07)'; };
+        window.canvasTooltipBg = function() { return document.body.classList.contains('dark-mode') ? 'rgba(14,11,5,0.97)' : 'rgba(255,255,250,0.97)'; };
+        window.canvasTooltipBg2 = function() { return document.body.classList.contains('dark-mode') ? 'rgba(14,11,5,0.85)' : 'rgba(255,255,250,0.85)'; };
+        window.canvasInspectBg = function() { return document.body.classList.contains('dark-mode') ? 'rgba(10,8,3,0.88)' : 'rgba(255,255,250,0.92)'; };
+        window.canvasZeroBg    = function() { return document.body.classList.contains('dark-mode') ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.85)'; };
+        var canvasBg = window.canvasBg, canvasText = window.canvasText,
+            canvasTextBright = window.canvasTextBright, canvasGrid = window.canvasGrid,
+            canvasFaint = window.canvasFaint, canvasSubBg = window.canvasSubBg,
+            canvasSubBg2 = window.canvasSubBg2, canvasRowAlt = window.canvasRowAlt,
+            canvasHighlight = window.canvasHighlight, canvasPurpleHL = window.canvasPurpleHL;
+
         function renderConvergenceChart() {
             const canvas = document.getElementById('convergenceChart');
             const ctx = canvas.getContext('2d');
@@ -4602,12 +4636,12 @@
             const h = canvas.height;
             
             // Clear
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const data = getFilteredProgressiveProducts();
             if (data.length === 0) {
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('No data in selected gap range', w/2, h/2);
@@ -4628,7 +4662,7 @@
             const yScale = chartH / (maxY - minY);
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -4638,7 +4672,7 @@
                 ctx.stroke();
                 
                 const value = maxY - (maxY - minY) * (i / 10);
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(value.toFixed(4), margin.left - 20, y + 12);
@@ -4683,7 +4717,7 @@
             });
             
             // X-axis labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 28px monospace';
             ctx.textAlign = 'center';
             data.forEach((point, i) => {
@@ -4716,12 +4750,12 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('No data in selected gap range', w/2, h/2);
@@ -4739,7 +4773,7 @@
             const yScale = chartH / maxProduct;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -4749,7 +4783,7 @@
                 ctx.stroke();
                 
                 const value = maxProduct - (maxProduct * (i / 10));
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(value.toFixed(6), margin.left - 20, y + 12);
@@ -4782,7 +4816,7 @@
             });
             
             // Labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 24px monospace';
             ctx.textAlign = 'center';
             gaps.forEach((gap, i) => {
@@ -4816,12 +4850,12 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('No data in selected gap range', w/2, h/2);
@@ -4839,7 +4873,7 @@
             const yScale = chartH / maxCount;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -4849,7 +4883,7 @@
                 ctx.stroke();
                 
                 const value = maxCount - (maxCount * (i / 10));
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(Math.round(value).toLocaleString(), margin.left - 20, y + 12);
@@ -4882,7 +4916,7 @@
             });
             
             // Labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 24px monospace';
             ctx.textAlign = 'center';
             gaps.forEach((gap, i) => {
@@ -4916,12 +4950,12 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -4938,7 +4972,7 @@
             const yScale = chartH / maxPct;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -4948,7 +4982,7 @@
                 ctx.stroke();
                 
                 const value = maxPct - (maxPct * (i / 10));
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(value.toFixed(2) + '%', margin.left - 20, y + 12);
@@ -4981,7 +5015,7 @@
             });
             
             // Labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 24px monospace';
             ctx.textAlign = 'center';
             gaps.forEach((gap, i) => {
@@ -5015,7 +5049,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const data = analysisResults.progressiveProducts;
@@ -5031,7 +5065,7 @@
             const yScale = chartH / (maxError - minError);
             
             // Grid (log scale for y-axis)
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -5042,7 +5076,7 @@
                 
                 const logValue = Math.log10(maxError) - (Math.log10(maxError) - Math.log10(minError)) * (i / 10);
                 const value = Math.pow(10, logValue);
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText((value * 100).toExponential(2) + '%', margin.left - 20, y + 12);
@@ -5077,7 +5111,7 @@
             });
             
             // Labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 28px monospace';
             ctx.textAlign = 'center';
             data.forEach((point, i) => {
@@ -5110,12 +5144,12 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -5133,7 +5167,7 @@
             const yScale = chartH / (maxLog - minLog);
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 2;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -5143,7 +5177,7 @@
                 ctx.stroke();
                 
                 const value = maxLog - (maxLog - minLog) * (i / 10);
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 32px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(value.toFixed(4), margin.left - 20, y + 12);
@@ -5168,7 +5202,7 @@
             });
             
             // Labels
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 24px monospace';
             ctx.textAlign = 'center';
             gaps.forEach((gap, i) => {
@@ -5199,11 +5233,11 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             if (!analysisResults || !analysisResults.gapProducts) {
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('Run analysis first', w/2, h/2);
@@ -5291,7 +5325,7 @@
             ctx.fillText('Gap Ratio Convergence: Twin Prime Conjecture Evidence', w / 2, 70);
             
             // Footer info
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 32px sans-serif';
             ctx.fillText(`Analysis: ${analysisResults.allPrimesFound.toLocaleString()} primes up to ${maxPrime.toLocaleString()}`, w / 2, h - 80);
             
@@ -5463,7 +5497,7 @@
             ctx.textAlign = 'center';
             ctx.fillText('Error: ' + errorPct.toFixed(3) + '%', x + w/2, y + h * 0.3);
             
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = '24px sans-serif';
             const diff = observed - predicted;
             const sign = diff > 0 ? '+' : '';
@@ -5534,7 +5568,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = { left: 250, right: 100, top: 120, bottom: 180 };
@@ -5578,7 +5612,7 @@
             ctx.fillText('Custom Gap Family Comparison', w / 2, 70);
             
             // Footer
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 32px sans-serif';
             ctx.fillText(`Comparing gaps: ${validGaps.join(', ')}  |  ${analysisResults.allPrimesFound.toLocaleString()} primes up to ${analysisResults.maxPrime.toLocaleString()}`, w / 2, h - 80);
             
@@ -5617,12 +5651,12 @@
                 
                 ctx.fillStyle = gradient;
                 ctx.fillRect(barX, barY, barW * 0.7, barH);
-                ctx.strokeStyle = '#fff';
+                ctx.strokeStyle = canvasGrid();
                 ctx.lineWidth = 3;
                 ctx.strokeRect(barX, barY, barW * 0.7, barH);
                 
                 // Value on top
-                ctx.fillStyle = '#fff';
+                ctx.fillStyle = canvasTextBright();
                 ctx.font = 'bold 28px monospace';
                 ctx.textAlign = 'center';
                 const displayVal = metric === 'percentage' ? data[metric].toFixed(2) + '%' : 
@@ -5750,7 +5784,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = { left: 300, right: 250, top: 150, bottom: 150 };
@@ -5760,7 +5794,7 @@
             // Get primes for the selected gap
             const gapData = analysisResults.gapProducts[focusGap];
             if (!gapData || !gapData.primes) {
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('No data for selected gap', w/2, h/2);
@@ -5816,7 +5850,7 @@
             });
             
             // Y-axis for contribution
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = canvasText();
             ctx.font = '28px monospace';
             ctx.textAlign = 'right';
             for (let i = 0; i <= 5; i++) {
@@ -5861,7 +5895,7 @@
             });
             
             // Y-axis for cumulative
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = canvasText();
             ctx.font = '28px monospace';
             ctx.textAlign = 'right';
             for (let i = 0; i <= 5; i++) {
@@ -5871,7 +5905,7 @@
             }
             
             // Legend
-            ctx.fillStyle = '#aaa';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = '32px sans-serif';
             ctx.textAlign = 'left';
             let legendY = margin.top + 50;
@@ -5894,7 +5928,7 @@
             ctx.fillText('Primes 20+', w - 180, legendY + 30);
             
             // Footer annotations
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = canvasText();
             ctx.font = '32px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(`Gap ${focusGap}: ${primes.length} primes analyzed | Final P_${focusGap} = ${data[data.length-1].cumProduct.toFixed(12)}`, w / 2, h - 60);
@@ -6079,7 +6113,7 @@
                     return;
                 }
                 
-                analysisResults = computeGapDecomposition(currentRange);
+                analysisResults = computeGapDecomposition(currentRange); window.analysisResults = analysisResults;
                 
                 const progress = ((currentRange - startRange) / (endRange - startRange)) * 100;
                 progressFill.style.width = progress + '%';
@@ -6285,7 +6319,7 @@
             const showAll = tableStates.gapContribTable;
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -6342,7 +6376,7 @@
             const showAll = tableStates.gapDistTable;
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -6405,7 +6439,7 @@
             const showAll = tableStates.percentageTable;
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -6518,7 +6552,7 @@
             const showAll = tableStates.logScaleTable;
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -6576,7 +6610,7 @@
             const showAll = tableStates.stepByStepTable;
             const gaps = getFilteredGaps();
             if (gaps.length === 0) {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = canvasText();
                 ctx.font = "48px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("No data in selected gap range", w/2, h/2);
@@ -6893,7 +6927,7 @@
             compositeCanvas.height = headerH + statsBarH + chartH + tableH + footerSpace;
             
             // Background
-            ctx.fillStyle = '#0a0a0f';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
             
             // Title section
@@ -6919,14 +6953,14 @@
                 ctx.fillText(titleMap[canvasId] || 'Chart', compositeCanvas.width / 2, 90);
                 
                 // Author credit instead of date
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '36px sans-serif';
                 ctx.fillText('by Wessen Getachew', compositeCanvas.width / 2, 160);
             }
             
             // Stats summary bar
             const statsY = headerH + padding;
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(padding, statsY, compositeCanvas.width - 2 * padding, statsBarH - 2 * padding);
             
             ctx.strokeStyle = '#3a3a5a';
@@ -6947,7 +6981,7 @@
             statsData.forEach((stat, idx) => {
                 const x = padding + idx * (boxW + 20);
                 
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = '28px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(stat.label, x + boxW / 2, statsY + 30);
@@ -6967,7 +7001,7 @@
             
             // Add footer info
             const footerY = tableY + actualTableHeight + 30;
-            ctx.fillStyle = '#666';
+            ctx.fillStyle = window.canvasText ? window.canvasText() : '#666';
             ctx.font = '24px sans-serif';
             ctx.textAlign = 'center';
             
@@ -7026,7 +7060,7 @@
             const colW = (canvasWidth - 80) / headers.length;
             
             // Header background
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             // Headers
@@ -7044,7 +7078,7 @@
                 
                 // Alternating row background
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7089,7 +7123,7 @@
             
             // Add LIMIT row (theoretical target at ∞)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7133,7 +7167,7 @@
             const headers = ['Gap', 'Product P_g', 'Log(P_g)', 'Prime Count', 'First Primes'];
             const colWidths = [0.1, 0.2, 0.2, 0.15, 0.35];
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7152,7 +7186,7 @@
                 const data = analysisResults.gapProducts[gap];
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7178,7 +7212,7 @@
             
             // Add DISPLAYED row (cumulative totals for shown gaps only)
             const displayedY = startY + 60 + gaps.length * 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, displayedY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7206,7 +7240,7 @@
             
             // Add LIMIT row (theoretical limits as gap→∞)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.1)';
+            ctx.fillStyle = canvasPurpleHL();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#8b5cf6';
             ctx.lineWidth = 3;
@@ -7246,7 +7280,7 @@
             const headers = ['Gap', 'Count', '% of Total', 'Cumulative', 'Cumulative %'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7264,7 +7298,7 @@
                 cumulative += data.count;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7287,7 +7321,7 @@
             
             // Add DISPLAYED row (totals for shown gaps only)
             const displayedY = startY + 60 + gaps.length * 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, displayedY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7309,7 +7343,7 @@
             
             // Add LIMIT row (all primes analyzed)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.1)';
+            ctx.fillStyle = canvasPurpleHL();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#8b5cf6';
             ctx.lineWidth = 3;
@@ -7341,7 +7375,7 @@
             const headers = ['Gap', 'Contribution %', 'Product P_g', 'Ratio', 'Log Contrib'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7357,7 +7391,7 @@
                 const data = analysisResults.gapProducts[gap];
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7380,7 +7414,7 @@
             
             // Add DISPLAYED row (totals for shown gaps only)
             const displayedY = startY + 60 + gaps.length * 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, displayedY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7405,7 +7439,7 @@
             
             // Add LIMIT row (theoretical limits)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.1)';
+            ctx.fillStyle = canvasPurpleHL();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#8b5cf6';
             ctx.lineWidth = 3;
@@ -7438,7 +7472,7 @@
             const headers = ['Gap', 'Product', 'Abs Error', 'Rel Error', 'Log10(Error)'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7453,7 +7487,7 @@
                 const y = startY + 60 + rowIdx * 50;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7503,7 +7537,7 @@
             
             // Add LIMIT row (theoretical target)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7536,7 +7570,7 @@
             const headers = ['Gap', 'Log(P_g)', 'P_g', 'Count', 'Avg/Prime'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7552,7 +7586,7 @@
                 const data = analysisResults.gapProducts[gap];
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7574,7 +7608,7 @@
             
             // Add DISPLAYED row (totals for shown gaps only)
             const displayedY = startY + 60 + gaps.length * 50;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, displayedY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#ffd700';
             ctx.lineWidth = 3;
@@ -7599,7 +7633,7 @@
             
             // Add LIMIT row (theoretical limits)
             const limitY = displayedY + 50;
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.1)';
+            ctx.fillStyle = canvasPurpleHL();
             ctx.fillRect(40, limitY, canvasWidth - 80, 50);
             ctx.strokeStyle = '#8b5cf6';
             ctx.lineWidth = 3;
@@ -7664,7 +7698,7 @@
             const headers1 = ['Ratio', 'Value', 'Convergence'];
             const colW1 = (canvasWidth - 80) / 3;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ff4081';
@@ -7674,7 +7708,7 @@
             
             startY += 60;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 50);
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 30px sans-serif';
@@ -7695,7 +7729,7 @@
                 const y = startY + rowIdx * 50;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7714,7 +7748,7 @@
             const headers2 = ['Gap', 'Count', '% of Total'];
             const colW2 = (canvasWidth - 80) / 3;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#4ecdc4';
@@ -7724,7 +7758,7 @@
             
             startY += 60;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 50);
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 30px sans-serif';
@@ -7747,7 +7781,7 @@
                 const y = startY + rowIdx * 50;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7764,7 +7798,7 @@
             const headers3 = ['Metric', 'Value'];
             const colW3 = (canvasWidth - 80) / 2;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffb74d';
@@ -7774,7 +7808,7 @@
             
             startY += 60;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 50);
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 30px sans-serif';
@@ -7797,7 +7831,7 @@
                 const y = startY + rowIdx * 50;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -7829,7 +7863,7 @@
             const primes = gapData.primes.slice(0, numPrimes);
             
             // Title
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#22c55e';
@@ -7843,7 +7877,7 @@
             const headers = ['#', 'Prime', 'Factor', 'Contrib.', 'Cumulative', 'Decimal'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 50);
             ctx.fillStyle = '#ffd700';
             ctx.font = 'bold 28px sans-serif';
@@ -7875,7 +7909,7 @@
                     ctx.fillStyle = 'rgba(34, 197, 94, 0.1)';
                     ctx.fillRect(40, y, canvasWidth - 80, 45);
                 } else if (idx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 45);
                 }
                 
@@ -7910,7 +7944,7 @@
             const weightRatio = firstContrib / lastContrib;
             
             // Summary box background
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(40, startY, canvasWidth - 80, 120);
             
             // Border
@@ -7963,7 +7997,7 @@
             const headers = ['Gap', 'Prime Count', '% of Total', 'Product P_g', 'Log(P_g)', 'Avg Prime'];
             const colW = (canvasWidth - 80) / headers.length;
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(40, startY, canvasWidth - 80, 60);
             
             ctx.fillStyle = '#ffd700';
@@ -7983,7 +8017,7 @@
                 const avgPrime = data.primes.reduce((a, b) => a + b, 0) / data.primes.length;
                 
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(40, y, canvasWidth - 80, 50);
                 }
                 
@@ -8018,7 +8052,7 @@
             
             // Add summary row if not showing all
             if (selectedGaps.length > displayGaps.length) {
-                ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+                ctx.fillStyle = canvasHighlight();
                 ctx.fillRect(40, startY, canvasWidth - 80, 50);
                 
                 ctx.fillStyle = '#ffd700';
@@ -8500,7 +8534,7 @@
             canvas.height = canvasH;
             
             // Background
-            ctx.fillStyle = '#0a0a0f';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, canvasW, canvasH);
             
             // Title
@@ -8509,7 +8543,7 @@
             ctx.textAlign = 'center';
             ctx.fillText('Step-by-Step Gap Accumulation: ζ(2) = P₁ × P₂ × P₄ × ...', canvasW / 2, 80);
             
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = canvasText();
             ctx.font = '32px monospace';
             ctx.fillText(`Analysis: ${analysisResults.totalPrimes.toLocaleString()} primes up to ${analysisResults.maxPrime.toLocaleString()}`, canvasW / 2, 140);
             
@@ -8518,7 +8552,7 @@
             const headers = ['Step', 'Gap', 'P_g', 'Cumulative Product', 'Distance to π²/6', '% Complete'];
             const colWidths = [0.08, 0.08, 0.18, 0.24, 0.22, 0.20];
             
-            ctx.fillStyle = '#1a1a2a';
+            ctx.fillStyle = canvasSubBg();
             ctx.fillRect(padding, tableY, canvasW - 2 * padding, tableHeaderH);
             
             ctx.strokeStyle = '#ffd700';
@@ -8547,7 +8581,7 @@
                 
                 // Alternating row background
                 if (rowIdx % 2 === 0) {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.fillStyle = canvasRowAlt();
                     ctx.fillRect(padding, y, canvasW - 2 * padding, rowH);
                 }
                 
@@ -8604,7 +8638,7 @@
             
             // LIMIT row (theoretical target at infinity)
             const limitY = displayedY + rowH;
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+            ctx.fillStyle = canvasHighlight();
             ctx.fillRect(padding, limitY, canvasW - 2 * padding, rowH);
             
             ctx.strokeStyle = '#ffd700';
@@ -8630,7 +8664,7 @@
             });
             
             // Footer
-            ctx.fillStyle = '#666';
+            ctx.fillStyle = window.canvasText ? window.canvasText() : '#666';
             ctx.font = '28px monospace';
             ctx.textAlign = 'right';
             const dateStr = new Date().toLocaleDateString('en-GB', { 
@@ -8740,7 +8774,7 @@
                     canvas.height = canvasH;
                     
                     // Background
-                    ctx.fillStyle = '#0a0a0f';
+                    ctx.fillStyle = canvasBg();
                     ctx.fillRect(0, 0, canvasW, canvasH);
                     
                     // Header section
@@ -8749,13 +8783,13 @@
                     ctx.textAlign = 'center';
                     ctx.fillText(title, canvasW / 2, 80 * scale);
                     
-                    ctx.fillStyle = '#aaa';
+                    ctx.fillStyle = canvasTextBright();
                     ctx.font = `${36 * scale}px sans-serif`;
                     ctx.fillText(subtitle, canvasW / 2, 140 * scale);
                     
                     // Stats summary bar
                     const statsY = headerH + 20 * scale;
-                    ctx.fillStyle = '#1a1a2a';
+                    ctx.fillStyle = canvasSubBg();
                     ctx.fillRect(padding, statsY, canvasW - 2 * padding, statsH - 40 * scale);
                     
                     ctx.strokeStyle = '#3a3a5a';
@@ -8779,7 +8813,7 @@
                         const sourceCanvas = document.getElementById(chart.canvasId);
                         
                         // Draw border
-                        ctx.strokeStyle = '#2a2a4a';
+                        ctx.strokeStyle = canvasGrid();
                         ctx.lineWidth = 3 * scale;
                         ctx.strokeRect(x - 2 * scale, y - 2 * scale, chartW + 4 * scale, chartH + 4 * scale);
                         
@@ -8790,7 +8824,7 @@
                     // Footer narrative section
                     const footerY = headerH + statsH + rows * chartH + (rows + 1) * padding + 40 * scale;
                     
-                    ctx.fillStyle = '#12121a';
+                    ctx.fillStyle = canvasSubBg2();
                     ctx.fillRect(padding, footerY, canvasW - 2 * padding, footerH - 80 * scale);
                     
                     ctx.strokeStyle = '#ffd700';
@@ -8840,7 +8874,7 @@
                     });
                     
                     // Date stamp
-                    ctx.fillStyle = '#666';
+                    ctx.fillStyle = window.canvasText ? window.canvasText() : '#666';
                     ctx.font = `${22 * scale}px monospace`;
                     ctx.textAlign = 'right';
                     const dateStr = new Date().toLocaleDateString('en-GB', { 
@@ -9099,7 +9133,7 @@
             canvas.height = 2400;
             const ctx = canvas.getContext('2d');
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, 3840, 2400);
             
             const compData = computeComparisonData();
@@ -9134,7 +9168,7 @@
                 });
                 
                 // Label s value
-                ctx.fillStyle = '#aaa';
+                ctx.fillStyle = canvasTextBright();
                 ctx.font = 'bold 32px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(`s=${s}`, margin.left + (sIdx * 5 + 2) * barWidth, 2400 - 50);
@@ -9328,7 +9362,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = {left: 250, right: 150, top: 200, bottom: 200};
@@ -9342,7 +9376,7 @@
             const yScale = chartH / maxDensity;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 3;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -9469,7 +9503,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = {left: 250, right: 150, top: 200, bottom: 200};
@@ -9590,7 +9624,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = {left: 250, right: 150, top: 200, bottom: 200};
@@ -9605,7 +9639,7 @@
             const yScale = chartH / maxCount;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 3;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -9732,7 +9766,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const margin = {left: 300, right: 150, top: 200, bottom: 250};
@@ -9747,7 +9781,7 @@
             const yScale = chartH / maxCount;
             
             // Grid
-            ctx.strokeStyle = '#2a2a4a';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 3;
             for (let i = 0; i <= 10; i++) {
                 const y = margin.top + (chartH / 10) * i;
@@ -9757,7 +9791,7 @@
                 ctx.stroke();
                 
                 const value = maxCount - (maxCount * (i / 10));
-                ctx.fillStyle = '#888';
+                ctx.fillStyle = canvasText();
                 ctx.font = 'bold 40px monospace';
                 ctx.textAlign = 'right';
                 ctx.fillText(Math.floor(value).toLocaleString(), margin.left - 30, y + 15);
@@ -9893,7 +9927,7 @@
             const w = canvas.width;
             const h = canvas.height;
             
-            ctx.fillStyle = '#0a0a10';
+            ctx.fillStyle = canvasBg();
             ctx.fillRect(0, 0, w, h);
             
             const sValues = [1.5, 2, 3, 4, 5, 10];
@@ -9929,7 +9963,7 @@
                 });
                 
                 // Label
-                ctx.fillStyle = '#aaa';
+                ctx.fillStyle = canvasTextBright();
                 ctx.font = 'bold 40px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(`s=${s}`, x + barW/2, h - 100);
@@ -10867,7 +10901,7 @@
                 const toX = i => pad + ((i + 1) / m_currentRange) * gW;
 
                 // Grid lines
-                ctx.strokeStyle = '#1a1a2a'; ctx.lineWidth = 1;
+                ctx.strokeStyle = window.canvasGrid ? window.canvasGrid() : '#1a1a2a'; ctx.lineWidth = 1;
                 const yStep = range > 40 ? 5 : range > 15 ? 2 : 1;
                 for (let v = Math.ceil(minV); v <= Math.floor(maxV); v += yStep) {
                     const y = toY(v);
@@ -10875,17 +10909,17 @@
                 }
 
                 // Axes
-                ctx.strokeStyle = '#3a3a5a'; ctx.lineWidth = 1.5;
+                ctx.strokeStyle = window.canvasGrid ? window.canvasGrid() : '#3a3a5a'; ctx.lineWidth = 1.5;
                 ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, H - pad); ctx.lineTo(W - pad, H - pad); ctx.stroke();
 
                 // Zero line
                 const zeroY = toY(0);
-                ctx.strokeStyle = '#4a4a6a'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = window.canvasGrid ? window.canvasGrid() : '#4a4a6a'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
                 ctx.beginPath(); ctx.moveTo(pad, zeroY); ctx.lineTo(W - pad, zeroY); ctx.stroke();
                 ctx.setLineDash([]);
 
                 // Y labels
-                ctx.fillStyle = '#888'; ctx.font = '11px monospace'; ctx.textAlign = 'right';
+                ctx.fillStyle = canvasText(); ctx.font = '11px monospace'; ctx.textAlign = 'right';
                 for (let v = Math.ceil(minV); v <= Math.floor(maxV); v += yStep) {
                     ctx.fillText(v, pad - 8, toY(v) + 4);
                 }
@@ -10898,7 +10932,7 @@
                 }
 
                 // Axis titles
-                ctx.fillStyle = '#666'; ctx.font = '11px sans-serif';
+                ctx.fillStyle = window.canvasText ? window.canvasText() : '#666'; ctx.font = '11px sans-serif';
                 ctx.textAlign = 'right'; ctx.fillText('M(n)', pad - 8, pad - 10);
                 ctx.textAlign = 'center'; ctx.fillText('n', W - pad + 30, H - pad + 18);
 
@@ -12034,7 +12068,8 @@
     // dots and labels
     pts.forEach(function(p){
       var xy=ptXY(p.r,p.m);
-      var dotR=Math.max(0.5, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400));
+      var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
+      var dotR=Math.max(0.3, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400) * _ptScale);
       ctx.globalAlpha=1;
 
       // label text
@@ -12157,7 +12192,7 @@
     var W=src.width+PAD*2, H=src.height+PAD+FOOT;
     var off=document.createElement('canvas'); off.width=W; off.height=H;
     var ctx=off.getContext('2d');
-    ctx.fillStyle='#07060f'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=canvasBg(); ctx.fillRect(0,0,W,H);
     ctx.drawImage(src, PAD, PAD, src.width, src.height);
     // border
     ctx.strokeStyle='rgba(90,90,140,0.5)'; ctx.lineWidth=1;
@@ -12505,7 +12540,8 @@
       // dots / labels
       pts.forEach(function(p){
         var xy=ptXY(p.r,p.m);
-        var dotR=Math.max(0.5, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400));
+        var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
+        var dotR=Math.max(0.3, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400) * _ptScale);
         var isActive = _activeTooltipPt && _activeTooltipPt.r===p.r && _activeTooltipPt.m===p.m;
 
         // cache for hit testing
@@ -12674,7 +12710,7 @@
     var rad = dir*2*pt.r/(pt.m||1);
     var phi = eulerPhi(pt.m);
 
-    ctx.fillStyle='rgba(14,11,5,0.97)'; ctx.fillRect(panelX,panelY,panelW,panelH);
+    ctx.fillStyle=window.canvasTooltipBg ? window.canvasTooltipBg() : 'rgba(14,11,5,0.97)'; ctx.fillRect(panelX,panelY,panelW,panelH);
     ctx.strokeStyle='rgba(196,155,56,0.55)'; ctx.lineWidth=0.8;
     ctx.strokeRect(panelX,panelY,panelW,panelH);
 
@@ -12698,12 +12734,12 @@
 
     [['angle',deg.toFixed(2)+'°'],['radian',rad.toFixed(4)+'π'],['decimal',(pt.r/pt.m).toFixed(6)]].forEach(function(row){
       ctx.fillStyle='#9a8060'; ctx.fillText(row[0],tx,ty);
-      ctx.fillStyle='#e8d9b0'; ctx.fillText(row[1],tx+64,ty); ty+=lineH;
+      ctx.fillStyle=document.body.classList.contains('dark-mode')?'#e8d9b0':'#1e1008'; ctx.fillText(row[1],tx+64,ty); ty+=lineH;
     });
 
     ty+=4; ctx.beginPath(); ctx.moveTo(panelX+8,ty-4); ctx.lineTo(panelX+panelW-8,ty-4); ctx.stroke();
     ctx.fillStyle='#9a8060'; ctx.fillText('φ('+pt.m+')',tx,ty);
-    ctx.fillStyle='#e8d9b0'; ctx.fillText(''+phi,tx+64,ty); ty+=lineH;
+    ctx.fillStyle=document.body.classList.contains('dark-mode')?'#e8d9b0':'#1e1008'; ctx.fillText(''+phi,tx+64,ty); ty+=lineH;
     ctx.fillStyle='#9a8060'; ctx.fillText('type',tx,ty);
     ctx.fillStyle=ptColor;   ctx.fillText(g===1?'gcd = 1':'gcd = '+g,tx+64,ty);
   }
@@ -12732,7 +12768,7 @@
 
     var off = document.createElement('canvas'); off.width=W; off.height=H;
     var ctx = off.getContext('2d');
-    ctx.fillStyle='#0e0b05'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=canvasBg(); ctx.fillRect(0,0,W,H);
 
     if(combinedOpen){
       ctx.drawImage(src1, PAD, PAD, diagSize, diagSize);
@@ -12783,48 +12819,65 @@
 
     // ── Layout constants ──────────────────────────────────────────────────
     var OUTER    = 28;   // outer padding
-    var PLUS     = 40;   // plus-sign zone between top two
-    var STATS_H  = 170;  // height of each stats panel
-    var STATS_GAP= 16;   // gap between diagram and stats below it
-    var COMB_GAP = 20;   // gap between stats row and combined
+    var PLUS     = 40;   // plus-sign zone between top two diagrams
+    var SIDE_W   = Math.max(180, Math.round(S * 0.28)); // side legend panel width
+    var SIDE_GAP = 16;   // gap between combined and side panels
     var BAR_H    = 14;   // ratio bar height
     var BAR_GAP  = 8;    // gap between bar and combined top
+    var BAR_TOP  = 24;   // gap above bar (for "Combined · mod N" label)
 
-    // Combined is centered horizontally; sits below the stats panels
-    // Total width = OUTER + S + PLUS + S + OUTER
-    var totalW   = OUTER + S + PLUS + S + OUTER;
+    // Top row: two diagrams side by side, centered in totalW
+    // Bottom row: [side panel left] [combined] [side panel right]
+    // totalW must fit the wider of: (top row) or (side+combined+side)
+    var topRowW  = OUTER + S + PLUS + S + OUTER;
+    var botRowW  = OUTER + SIDE_W + SIDE_GAP + S + SIDE_GAP + SIDE_W + OUTER;
+    var totalW   = Math.max(topRowW, botRowW);
+
+    // Center top diagrams and combined within totalW
+    var topRowX  = Math.round((totalW - (S + PLUS + S)) / 2);
+    var copX     = topRowX;
+    var ncpX     = topRowX + S + PLUS;
     var combX    = Math.round((totalW - S) / 2);
 
-    // Row positions
-    var diagY    = OUTER + 16;           // diagrams top (leave room for labels)
-    var statsY   = diagY + S + STATS_GAP; // stats panels top
-    var barY     = statsY + STATS_H + COMB_GAP;
+    // Side panel x positions (flanking combined)
+    var leftPanX = combX - SIDE_GAP - SIDE_W;
+    var rightPanX= combX + S + SIDE_GAP;
+
+    // Row y positions — no stats row between top and bottom
+    var diagY    = OUTER + 28;           // diagrams top
+    var barY     = diagY + S + BAR_TOP;  // bar sits just below the top diagrams
     var combY    = barY + BAR_H + BAR_GAP;
     var totalH   = combY + S + OUTER;
+
+    var STATS_H  = S;    // side panels fill full height of combined canvas
 
     var off = document.createElement('canvas');
     off.width = totalW; off.height = totalH;
     var ctx = off.getContext('2d');
 
     // Background
-    ctx.fillStyle = '#0e0b05';
+    ctx.fillStyle = window.canvasBg ? window.canvasBg() : '#0e0b05';
     ctx.fillRect(0, 0, totalW, totalH);
 
     // ── Draw top diagrams ─────────────────────────────────────────────────
-    var copX = OUTER;
-    var ncpX = OUTER + S + PLUS;
-
     ctx.drawImage(srcCop, copX, diagY, S, S);
     ctx.drawImage(srcNcp, ncpX, diagY, S, S);
 
     // Labels above diagrams
     ctx.textAlign='center'; ctx.textBaseline='bottom';
     ctx.font='bold 11px "Cinzel",Georgia,serif';
-    ctx.fillStyle=col1; ctx.fillText('gcd(r, m) = 1',  copX+S/2, diagY-5);
-    ctx.fillStyle=col2; ctx.fillText('gcd(r, m) > 1', ncpX+S/2, diagY-5);
+    ctx.font='bold 11px "Cinzel",Georgia,serif';
+    ctx.fillStyle=col1; ctx.fillText('GCD(R, M) = 1',  copX+S/2, diagY-5);
+    ctx.fillStyle=col2; ctx.fillText('GCD(R, M) > 1', ncpX+S/2, diagY-5);
+    // subtitle line
+    ctx.font='8px "Cinzel",Georgia,serif';
+    var inkSubtitle = document.body.classList.contains('dark-mode') ? 'rgba(196,155,56,0.7)' : 'rgba(80,50,10,0.7)';
+    ctx.fillStyle=inkSubtitle;
+    ctx.fillText('r/m, 1 ≤ r ≤ m, 1 ≤ m ≤ '+modN, copX+S/2, diagY-5+14);
+    ctx.fillText('r/m, 1 ≤ r ≤ m, 1 ≤ m ≤ '+modN, ncpX+S/2, diagY-5+14);
 
     // Plus sign between diagrams
-    var plusCX = OUTER + S + PLUS/2;
+    var plusCX = copX + S + PLUS/2;
     var plusCY = diagY + S/2;
     var arm=13, thick=3;
     ctx.fillStyle='#c49b38';
@@ -12843,7 +12896,7 @@
 
     // ── Stats panels ─────────────────────────────────────────────────────
     function drawStats(x, y, w, h, title, titleColor, rows){
-      ctx.fillStyle='rgba(14,11,5,0.85)'; ctx.fillRect(x,y,w,h);
+      ctx.fillStyle=window.canvasTooltipBg2 ? window.canvasTooltipBg2() : 'rgba(14,11,5,0.85)'; ctx.fillRect(x,y,w,h);
       ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.7;
       ctx.strokeRect(x,y,w,h);
       ctx.textAlign='left'; ctx.textBaseline='alphabetic';
@@ -12855,21 +12908,26 @@
       var ty=y+33, lh=15;
       ctx.font='9px "Cinzel",Georgia,serif';
       rows.forEach(function(row){
-        if(row==='---'){
+        if(row==='---' || (Array.isArray(row) && row[0]==='---')){
           ctx.strokeStyle='rgba(196,155,56,0.12)'; ctx.lineWidth=0.4;
           ctx.beginPath(); ctx.moveTo(x+8,ty-3); ctx.lineTo(x+w-8,ty-3); ctx.stroke();
           ty+=5; return;
         }
+        var inkColor = document.body.classList.contains('dark-mode') ? (row[2]||'#e8d9b0') : (row[2]||'#1e1008');
         ctx.fillStyle='#9a8060'; ctx.textAlign='left';  ctx.fillText(row[0], x+12, ty);
-        ctx.fillStyle=row[2]||'#e8d9b0'; ctx.textAlign='right'; ctx.fillText(row[1], x+w-12, ty);
+        ctx.fillStyle=inkColor;  ctx.textAlign='right'; ctx.fillText(row[1], x+w-12, ty);
         ty+=lh;
       });
     }
 
-    var sw = S; // stats panel same width as diagram
+    // ── Side legend panels flanking combined ─────────────────────────────
+    var triangleTotal = modN*(modN+1)/2;
+    var verified = (copCount+ncpCount === triangleTotal);
+    var verifyStr = verified ? '✓ '+triangleTotal : '! '+triangleTotal;
+    var tealColor = document.body.classList.contains('dark-mode') ? '#4ecdc4' : '#1a6a4a';
 
-    // Left stats: gcd=1 — placed directly below gcd=1 diagram
-    drawStats(copX, statsY, sw, STATS_H, 'GCD(R,M) = 1  ·  COPRIME', col1, [
+    // Left panel: GCD = 1 (coprime)
+    drawStats(leftPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) = 1  ·  COPRIME', col1, [
       ['Total points', ''+copCount],
       ['Share of all r/m', (copRatio*100).toFixed(2)+'%'],
       ['Ratio cop / total', copCount+' / '+total],
@@ -12877,20 +12935,30 @@
       ['Σφ(m),  m=1…'+modN, ''+copCount],
       ['Avg φ(m) / m', copRatio.toFixed(4)],
       ['mod N', ''+modN],
+      ['---'],
+      ['Total r/m  (N·(N+1)/2)', verifyStr, tealColor],
     ]);
 
-    // Right stats: gcd>1 — placed directly below gcd>1 diagram
+    // Right panel: GCD > 1 (non-coprime)
     var ncpRows = [
       ['Total points', ''+ncpCount],
       ['Share of all r/m', (ncpRatio*100).toFixed(2)+'%'],
       ['Ratio ncp / total', ncpCount+' / '+total],
       ['---'],
     ];
-    gcdList.slice(0,5).forEach(function(g){
+    var showN = Math.min(6, gcdList.length);
+    gcdList.slice(0, showN).forEach(function(g){
       var cnt=gcds[g];
-      ncpRows.push(['gcd = '+g, cnt+' ('+((cnt/total)*100).toFixed(1)+'%)']);
+      ncpRows.push(['gcd = '+g, cnt+' ('+((cnt/ncpCount)*100).toFixed(1)+'%)']);
     });
-    drawStats(ncpX, statsY, sw, STATS_H, 'GCD(R,M) > 1  ·  NON-COPRIME', col2, ncpRows);
+    if(gcdList.length > showN){
+      var remaining = gcdList.length - showN;
+      var remainingCount = gcdList.slice(showN).reduce(function(s,g){return s+gcds[g];},0);
+      ncpRows.push(['+ '+remaining+' more gcd values', remainingCount+' pts']);
+    }
+    ncpRows.push(['---']);
+    ncpRows.push(['Total r/m  (N·(N+1)/2)', verifyStr, tealColor]);
+    drawStats(rightPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) > 1  ·  NON-COPRIME', col2, ncpRows);
 
     // ── Ratio bar just above combined ─────────────────────────────────────
     // Bar spans same width as combined diagram, centered
@@ -12901,19 +12969,20 @@
     // bar labels
     ctx.textBaseline='middle'; ctx.font='7px "Cinzel",Georgia,serif';
     var midBar = barY + BAR_H/2;
-    if(copRatio > 0.12){
-      ctx.textAlign='left'; ctx.fillStyle='rgba(0,0,0,0.7)';
-      ctx.fillText('gcd=1  '+(copRatio*100).toFixed(1)+'%', barX+5, midBar);
+    var barTextColor = document.body.classList.contains('dark-mode') ? '#fff' : '#1e1008';
+    if(copRatio > 0.08){
+      ctx.textAlign='left'; ctx.fillStyle=barTextColor;
+      ctx.fillText('gcd = 1  '+(copRatio*100).toFixed(1)+'%', barX+5, midBar);
     }
-    if(ncpRatio > 0.12){
-      ctx.textAlign='right'; ctx.fillStyle='rgba(0,0,0,0.7)';
-      ctx.fillText((ncpRatio*100).toFixed(1)+'%  gcd>1', barX+barW-5, midBar);
+    if(ncpRatio > 0.08){
+      ctx.textAlign='right'; ctx.fillStyle=barTextColor;
+      ctx.fillText((ncpRatio*100).toFixed(1)+'%  gcd > 1', barX+barW-5, midBar);
     }
 
     // Combined label above bar
     ctx.textAlign='center'; ctx.textBaseline='bottom';
     ctx.font='bold 9px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.6)';
-    ctx.fillText('Combined  ·  mod 1…'+modN, combX+S/2, barY-4);
+    ctx.fillText('Combined  ·  n = 1, …, '+modN+'  (mod '+modN+')', combX+S/2, barY-4);
 
     // Faint guide lines from inner corners of top diagrams down to combined
     ctx.strokeStyle='rgba(196,155,56,0.1)'; ctx.lineWidth=0.6;
@@ -12933,7 +13002,7 @@
       var rad = dir*2*pt.r/(pt.m||1);
       var phi = eulerPhi(pt.m);
       var fh=36, fy=combY+S-fh;
-      ctx.fillStyle='rgba(10,8,3,0.88)'; ctx.fillRect(combX,fy,S,fh);
+      ctx.fillStyle=window.canvasInspectBg ? window.canvasInspectBg() : 'rgba(10,8,3,0.88)'; ctx.fillRect(combX,fy,S,fh);
       ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.5;
       ctx.beginPath(); ctx.moveTo(combX,fy); ctx.lineTo(combX+S,fy); ctx.stroke();
       var items=[['r',pt.r],['m',pt.m],['gcd',g2],['angle',deg.toFixed(1)+'°'],['rad',rad.toFixed(3)+'π'],['φ(m)',phi]];
@@ -13032,7 +13101,7 @@
     var W=src.width+PAD*2, H=src.height+PAD+FOOT;
     var off=document.createElement('canvas'); off.width=W; off.height=H;
     var ctx=off.getContext('2d');
-    ctx.fillStyle='#07060f'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=canvasBg(); ctx.fillRect(0,0,W,H);
     ctx.drawImage(src, PAD, PAD, src.width, src.height);
     // border
     ctx.strokeStyle='rgba(90,90,140,0.5)'; ctx.lineWidth=1;
@@ -13179,7 +13248,7 @@
 
     // Outer ring label
     ctx.font = Math.max(9, W * 0.014) + 'px Cinzel, serif';
-    ctx.fillStyle = '#888'; ctx.globalAlpha = 0.6; ctx.textAlign = 'center';
+    ctx.fillStyle = canvasText(); ctx.globalAlpha = 0.6; ctx.textAlign = 'center';
     ctx.fillText('mod 1…' + modN, cx, H - 8);
     ctx.globalAlpha = 1;
     ctx.restore();
@@ -13276,7 +13345,7 @@
     ctx.globalAlpha = 1;
 
     // Frequency axis tick labels
-    ctx.fillStyle = '#6a5080'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+    ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#6a5080' : '#443060'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
     for (var k = 10; k <= maxFreq; k += 10) {
       var tx = padL + (k - 1) * barW + barW / 2;
       ctx.fillText(k, tx, padT + plotH + 14);
@@ -13347,7 +13416,7 @@
     off.width  = Math.max(CW, SW) + PAD * 2;
     off.height = CH + SH + PAD * 3;
     var ctx = off.getContext('2d');
-    ctx.fillStyle = '#06040e'; ctx.fillRect(0, 0, off.width, off.height);
+    ctx.fillStyle = window.canvasBg ? window.canvasBg() : '#06040e'; ctx.fillRect(0, 0, off.width, off.height);
     var circleX = (off.width - CW) / 2;
     ctx.drawImage(circle, circleX, PAD, CW, CH);
     var specX  = (off.width - SW) / 2;
