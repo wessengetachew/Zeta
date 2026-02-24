@@ -12262,6 +12262,9 @@
     _inspectMode = !_inspectMode;
     var btn = document.getElementById('fcm-inspect');
     var c   = document.getElementById('fc-combined');
+    var sizeEl = document.getElementById('f-size-num');
+    var sizeSlider = document.getElementById('f-size');
+    var INSPECT_SIZE = 600;
     if(_inspectMode){
       // stop auto-rotate
       if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null;
@@ -12270,6 +12273,15 @@
       btn.style.background='var(--gold)'; btn.style.color='var(--parchment)';
       c.style.cursor='crosshair';
       document.getElementById('fc-combined-label').textContent='Inspect mode · click a point for details';
+      // grow canvas to 600 if currently smaller
+      var curSize = parseInt(sizeEl.value) || 400;
+      if(curSize < INSPECT_SIZE){
+        _preinspect_size = curSize;
+        sizeEl.value = INSPECT_SIZE;
+        if(sizeSlider) sizeSlider.value = INSPECT_SIZE;
+        syncCombinedSize();
+        drawCombined();
+      }
     } else {
       btn.style.background='var(--parchment-dark)'; btn.style.color='var(--ink-mid)';
       c.style.cursor='crosshair';
@@ -12279,6 +12291,14 @@
       _chain.length = 0;
       document.getElementById('fcm-chain-clear').style.display   = 'none';
       document.getElementById('farey-chain-panel').style.display  = 'none';
+      // restore previous size if we bumped it
+      if(typeof _preinspect_size !== 'undefined' && _preinspect_size !== null){
+        sizeEl.value = _preinspect_size;
+        if(sizeSlider) sizeSlider.value = _preinspect_size;
+        _preinspect_size = null;
+        syncCombinedSize();
+        drawCombined();
+      }
     }
   };
 
@@ -12341,6 +12361,7 @@
 
   // ── Multi-point chain state ──────────────────────────────────────────────
   var _chain = [];  // [{r,m,px,py,angle,gcd1}]
+  var _preinspect_size = null;
   window._chain = _chain;
 
   window.fareyClearChain = function(){
@@ -12429,46 +12450,123 @@
     info.innerHTML = html;
   }
 
+  // ── Stern-Brocot best rational approx at each ring ──────────────────────
+  function fareyAncestors(r0, m0, modN){
+    // For each ring k=1..modN find the closest fraction p/q with q<=k to r0/m0
+    var target = r0 / (m0 || 1);
+    var path = [];
+    for(var k = 1; k <= modN; k++){
+      var bestR = 0, bestM = 1, bestD = 1e9;
+      for(var q = 1; q <= k; q++){
+        var p = Math.round(target * q);
+        if(p < 0) p = 0; if(p > q) p = q;
+        var d = Math.abs(p/q - target);
+        if(d < bestD){ bestD = d; bestR = p; bestM = q; }
+      }
+      path.push({r: bestR, m: bestM});
+    }
+    return path; // path[k-1] = best approx at ring k
+  }
+
   function drawChainOverlay(ctx, W){
     if(_chain.length < 1) return;
     ctx.save();
-    var radius = 5;
 
-    // Draw chords between consecutive points
-    for(var i=1; i<_chain.length; i++){
-      var a = _chain[i-1], b = _chain[i];
-      ctx.beginPath();
-      ctx.moveTo(a.px, a.py);
-      ctx.lineTo(b.px, b.py);
-      ctx.strokeStyle = '#e879f9';
-      ctx.lineWidth = 1.5;
-      ctx.globalAlpha = 0.7;
-      ctx.setLineDash([4, 3]);
-      ctx.stroke();
-      ctx.setLineDash([]);
+    var modN   = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var dir    = parseFloat(document.getElementById('f-dir').value) || 1;
+    var invert = document.getElementById('f-invert-order').checked;
+    var spacing= (parseInt(document.getElementById('f-spacing').value)||100)/100;
+    var zoom   = (parseInt(document.getElementById('f-zoom').value)||100)/100;
+    var rinner = (parseInt(document.getElementById('f-rinner').value)||4)/100;
+    var cx = W/2, cy = W/2;
+    var rBase = W*0.42*spacing; if(rBase > W*0.49) rBase=W*0.49;
+    var rMin = W*rinner*zoom, rMax = rBase*zoom;
 
-      // Step label at midpoint
-      var mx = (a.px + b.px)/2, my = (a.py + b.py)/2;
-      var dx = b.px-a.px, dy = b.py-a.py;
-      var chordN = Math.sqrt(dx*dx+dy*dy)/(W*0.5);
-      ctx.globalAlpha = 0.9;
-      ctx.font = Math.max(8, W*0.012)+'px Cinzel,serif';
-      ctx.fillStyle = '#e879f9';
-      ctx.textAlign = 'center';
-      ctx.fillText((i)+'→'+(i+1)+' · '+chordN.toFixed(3), mx, my - W*0.012);
+    function radius(m){
+      var t = invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
+      return rMin + (rMax-rMin)*t;
+    }
+    function ptXYlocal(r, m){
+      var ringOff = (typeof ringOffset==='function') ? ringOffset(m, modN) : 0;
+      var a = dir*2*Math.PI*r/(m||1) + _combinedAngle*Math.PI/180 + ringOff*Math.PI/180;
+      var rad = radius(m);
+      return {x: cx+rad*Math.sin(a), y: cy-rad*Math.cos(a)};
     }
 
-    // Draw highlighted dots for each chain point
+    // ── Inward path for each chain point ─────────────────────────────────
+    _chain.forEach(function(pt){
+      var ancestors = fareyAncestors(pt.r, pt.m, modN);
+      // Build path: from pt.m toward the innermost ring
+      // Normal (outer=modN): descend k = pt.m down to 1
+      // Inverted (outer=1):  ascend  k = pt.m up to modN
+      var pathPts = [];
+      if(!invert){
+        for(var k = pt.m; k >= 1; k--)
+          pathPts.push(ptXYlocal(ancestors[k-1].r, k));
+      } else {
+        for(var k = pt.m; k <= modN; k++)
+          pathPts.push(ptXYlocal(ancestors[k-1].r, k));
+      }
+      if(pathPts.length < 2) return;
+
+      var col = pt.gcd1 ? '#4a90d9' : '#c94040';
+      var steps = pathPts.length - 1;
+      for(var i = 0; i < steps; i++){
+        var alpha = 0.72 * (1 - i/steps);
+        var lw    = Math.max(0.5, (1.6 - i/steps) * W*0.002);
+        ctx.beginPath();
+        ctx.moveTo(pathPts[i].x, pathPts[i].y);
+        ctx.lineTo(pathPts[i+1].x, pathPts[i+1].y);
+        ctx.strokeStyle = col;
+        ctx.lineWidth   = lw;
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        // small tick dot at each ring crossing (skip origin dot at i=0)
+        if(i > 0){
+          ctx.beginPath();
+          ctx.arc(pathPts[i].x, pathPts[i].y, Math.max(1, W*0.0028), 0, 2*Math.PI);
+          ctx.fillStyle   = col;
+          ctx.globalAlpha = alpha * 0.65;
+          ctx.fill();
+        }
+      }
+      // Terminal dot at innermost ring
+      var tip = pathPts[pathPts.length-1];
+      ctx.beginPath();
+      ctx.arc(tip.x, tip.y, Math.max(2, W*0.004), 0, 2*Math.PI);
+      ctx.fillStyle = col; ctx.globalAlpha = 0.45; ctx.fill();
+    });
+
+    ctx.globalAlpha = 1;
+
+    // ── Chords between consecutive chain points ───────────────────────────
+    for(var i = 1; i < _chain.length; i++){
+      var a = _chain[i-1], b = _chain[i];
+      ctx.beginPath(); ctx.moveTo(a.px, a.py); ctx.lineTo(b.px, b.py);
+      ctx.strokeStyle = '#e879f9';
+      ctx.lineWidth   = Math.max(1, W*0.002);
+      ctx.globalAlpha = 0.7;
+      ctx.setLineDash([Math.max(3,W*0.004), Math.max(2,W*0.003)]);
+      ctx.stroke(); ctx.setLineDash([]);
+      // midpoint label
+      var mx=(a.px+b.px)/2, my=(a.py+b.py)/2;
+      var chordN = Math.sqrt(Math.pow(b.px-a.px,2)+Math.pow(b.py-a.py,2))/(W*0.5);
+      ctx.globalAlpha = 0.9;
+      ctx.font = Math.max(8,W*0.012)+'px Cinzel,serif';
+      ctx.fillStyle = '#e879f9'; ctx.textAlign = 'center';
+      ctx.fillText((i)+'→'+(i+1)+' · '+chordN.toFixed(3), mx, my-W*0.012);
+    }
+
+    // ── Chain point rings and index labels ───────────────────────────────
     _chain.forEach(function(pt, i){
       ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(pt.px, pt.py, Math.max(4, W*0.009), 0, 2*Math.PI);
       ctx.strokeStyle = '#e879f9';
-      ctx.lineWidth = 2;
+      ctx.lineWidth   = Math.max(1.5, W*0.0025);
       ctx.stroke();
-      // Index number
       ctx.fillStyle = '#e879f9';
-      ctx.font = 'bold '+Math.max(8, W*0.011)+'px Cinzel,serif';
+      ctx.font = 'bold '+Math.max(8,W*0.011)+'px Cinzel,serif';
       ctx.textAlign = 'center';
       ctx.fillText(''+(i+1), pt.px, pt.py - Math.max(6, W*0.013));
     });
@@ -13042,11 +13140,11 @@
     // Labels above diagrams
     ctx.textAlign='center'; ctx.textBaseline='bottom';
     ctx.font='bold 11px "Cinzel",Georgia,serif';
-    ctx.font='bold 11px "Cinzel",Georgia,serif';
+    ctx.font='bold '+Math.max(9,Math.round(11*fScale))+'px "Cinzel",Georgia,serif';
     ctx.fillStyle=col1; ctx.fillText('GCD(R, M) = 1',  copX+S/2, diagY-5);
     ctx.fillStyle=col2; ctx.fillText('GCD(R, M) > 1', ncpX+S/2, diagY-5);
     // subtitle line
-    ctx.font='8px "Cinzel",Georgia,serif';
+    ctx.font=Math.max(7,Math.round(8*fScale))+'px "Cinzel",Georgia,serif';
     var inkSubtitle = document.body.classList.contains('dark-mode') ? 'rgba(196,155,56,0.7)' : 'rgba(80,50,10,0.7)';
     ctx.fillStyle=inkSubtitle;
     ctx.fillText('r/m, 1 ≤ r ≤ m, 1 ≤ m ≤ '+modN, copX+S/2, diagY-5+14);
@@ -13071,29 +13169,80 @@
     ].forEach(function(c){ ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[2],c[3]); ctx.lineTo(c[4],c[5]); ctx.stroke(); });
 
     // ── Stats panels ─────────────────────────────────────────────────────
+    // Font scale: proportional to canvas size (S=800 is baseline)
+    var fScale = S / 800;
+    var fTitlePx = Math.round(Math.max(8,  11 * fScale));
+    var fRowPx   = Math.round(Math.max(7,  9.5* fScale));
+    var fSmallPx = Math.round(Math.max(6,  8  * fScale));
+    var lhRow    = Math.round(Math.max(11, 16 * fScale));
+    var titleH   = Math.round(Math.max(16, 26 * fScale));
+    var indent   = Math.round(Math.max(8,  14 * fScale));
+    var darkMode = document.body.classList.contains('dark-mode');
+    var inkMain  = darkMode ? '#ffffff' : '#000000';
+    var inkLabel = '#9a8060';
+
     function drawStats(x, y, w, h, title, titleColor, rows){
-      ctx.fillStyle=window.canvasTooltipBg2 ? window.canvasTooltipBg2() : 'rgba(14,11,5,0.85)'; ctx.fillRect(x,y,w,h);
-      ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=0.7;
-      ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle=window.canvasTooltipBg2 ? window.canvasTooltipBg2() : 'rgba(14,11,5,0.85)';
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle='rgba(196,155,56,0.3)'; ctx.lineWidth=Math.max(0.5, 0.7*fScale);
+      ctx.strokeRect(x, y, w, h);
       ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-      ctx.font='bold 9px "Cinzel",Georgia,serif';
+      ctx.font='bold '+fTitlePx+'px "Cinzel",Georgia,serif';
       ctx.fillStyle=titleColor;
-      ctx.fillText(title, x+12, y+15);
-      ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=0.4;
-      ctx.beginPath(); ctx.moveTo(x+8,y+21); ctx.lineTo(x+w-8,y+21); ctx.stroke();
-      var ty=y+33, lh=15;
-      ctx.font='9px "Cinzel",Georgia,serif';
+      ctx.fillText(title, x+indent, y+titleH*0.7);
+      ctx.strokeStyle='rgba(196,155,56,0.2)'; ctx.lineWidth=Math.max(0.3, 0.4*fScale);
+      ctx.beginPath(); ctx.moveTo(x+indent*0.6, y+titleH); ctx.lineTo(x+w-indent*0.6, y+titleH); ctx.stroke();
+      var ty = y + titleH + lhRow, lh = lhRow;
+      ctx.font=fRowPx+'px "Cinzel",Georgia,serif';
       rows.forEach(function(row){
         if(row==='---' || (Array.isArray(row) && row[0]==='---')){
-          ctx.strokeStyle='rgba(196,155,56,0.12)'; ctx.lineWidth=0.4;
-          ctx.beginPath(); ctx.moveTo(x+8,ty-3); ctx.lineTo(x+w-8,ty-3); ctx.stroke();
-          ty+=5; return;
+          ctx.strokeStyle='rgba(196,155,56,0.12)'; ctx.lineWidth=Math.max(0.2,0.4*fScale);
+          ctx.beginPath(); ctx.moveTo(x+indent*0.6,ty-3); ctx.lineTo(x+w-indent*0.6,ty-3); ctx.stroke();
+          ty += Math.round(4*fScale); return;
         }
-        var inkColor = document.body.classList.contains('dark-mode') ? (row[2]||'#e8d9b0') : (row[2]||'#1e1008');
-        ctx.fillStyle='#9a8060'; ctx.textAlign='left';  ctx.fillText(row[0], x+12, ty);
-        ctx.fillStyle=inkColor;  ctx.textAlign='right'; ctx.fillText(row[1], x+w-12, ty);
-        ty+=lh;
+        var inkColor = row[2] || inkMain;
+        ctx.fillStyle=inkLabel; ctx.textAlign='left';  ctx.fillText(row[0], x+indent, ty);
+        ctx.fillStyle=inkColor; ctx.textAlign='right'; ctx.fillText(row[1], x+w-indent, ty);
+        ty += lh;
       });
+      return ty; // return end y so caller can know how much space was used
+    }
+
+    // Draw an expandable point list section inside a panel
+    function drawPointList(x, startY, w, endY, pts, color, sectionTitle){
+      var avail = endY - startY - lhRow*2;
+      if(avail < lhRow*3) return; // no room
+      // Section header
+      ctx.font='bold '+fSmallPx+'px "Cinzel",Georgia,serif';
+      ctx.fillStyle=color; ctx.textAlign='left';
+      ctx.fillText(sectionTitle, x+indent, startY+lhRow*0.85);
+      ctx.strokeStyle=color.replace(')',',0.25)').replace('rgb','rgba'); ctx.lineWidth=Math.max(0.2,0.3*fScale);
+      ctx.beginPath(); ctx.moveTo(x+indent*0.6, startY+lhRow); ctx.lineTo(x+w-indent*0.6, startY+lhRow); ctx.stroke();
+
+      var ty = startY + lhRow*1.4;
+      var ptFontPx = Math.max(5, fSmallPx * 0.92);
+      ctx.font = ptFontPx+'px "Cinzel",Georgia,serif';
+      var colW = Math.floor(w / Math.max(3, Math.round(w / (ptFontPx * 5.5))));
+      var cols = Math.floor(w / colW);
+      var col = 0;
+      ctx.fillStyle = darkMode ? '#ffffff' : '#000000';
+      ctx.textAlign = 'left';
+
+      for(var i = 0; i < pts.length; i++){
+        var pt = pts[i];
+        var lbl = pt.r + '/' + pt.m;
+        var cx = x + indent*0.5 + col * colW;
+        if(ty + ptFontPx > endY - 4) {
+          // ran out of vertical space
+          ctx.fillStyle = '#9a8060';
+          ctx.fillText('+'+(pts.length-i)+' more…', cx, ty);
+          break;
+        }
+        ctx.fillStyle = darkMode ? '#ffffff' : '#000000';
+        ctx.fillText(lbl, cx, ty);
+        col++;
+        if(col >= cols){ col=0; ty += Math.round(ptFontPx * 1.35); }
+      }
     }
 
     // ── Side legend panels flanking combined ─────────────────────────────
@@ -13103,7 +13252,7 @@
     var tealColor = document.body.classList.contains('dark-mode') ? '#4ecdc4' : '#1a6a4a';
 
     // Left panel: GCD = 1 (coprime)
-    drawStats(leftPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) = 1  ·  COPRIME', col1, [
+    var leftUsedY = drawStats(leftPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) = 1  ·  COPRIME', col1, [
       ['Total points', ''+copCount],
       ['Share of all r/m', (copRatio*100).toFixed(2)+'%'],
       ['Ratio cop / total', copCount+' / '+total],
@@ -13114,6 +13263,15 @@
       ['---'],
       ['Total r/m  (N·(N+1)/2)', verifyStr, tealColor],
     ]);
+    // List all coprime points grouped by ring m
+    var allCop = [];
+    for(var mi=1; mi<=modN; mi++){
+      for(var ri=1; ri<mi; ri++){
+        if(gcd(ri,mi)===1) allCop.push({r:ri,m:mi});
+      }
+    }
+    allCop.push({r:0,m:1}); allCop.push({r:1,m:1});
+    drawPointList(leftPanX, leftUsedY, SIDE_W, combY+STATS_H, allCop, col1, 'All GCD = 1 Points  (' + copCount + ')');
 
     // Right panel: GCD > 1 (non-coprime)
     var ncpRows = [
@@ -13134,7 +13292,15 @@
     }
     ncpRows.push(['---']);
     ncpRows.push(['Total r/m  (N·(N+1)/2)', verifyStr, tealColor]);
-    drawStats(rightPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) > 1  ·  NON-COPRIME', col2, ncpRows);
+    var rightUsedY = drawStats(rightPanX, combY, SIDE_W, STATS_H, 'GCD(R,M) > 1  ·  NON-COPRIME', col2, ncpRows);
+    // List all non-coprime points
+    var allNcp = [];
+    for(var mi=1; mi<=modN; mi++){
+      for(var ri=1; ri<mi; ri++){
+        if(gcd(ri,mi)>1) allNcp.push({r:ri,m:mi});
+      }
+    }
+    drawPointList(rightPanX, rightUsedY, SIDE_W, combY+STATS_H, allNcp, col2, 'All GCD > 1 Points  (' + ncpCount + ')');
 
     // ── Ratio bar just above combined ─────────────────────────────────────
     // Bar spans same width as combined diagram, centered
@@ -13143,7 +13309,7 @@
     ctx.fillStyle=col1; ctx.fillRect(barX, barY, Math.round(barW*copRatio), BAR_H);
     ctx.fillStyle=col2; ctx.fillRect(barX+Math.round(barW*copRatio), barY, Math.round(barW*ncpRatio), BAR_H);
     // bar labels
-    ctx.textBaseline='middle'; ctx.font='7px "Cinzel",Georgia,serif';
+    ctx.textBaseline='middle'; ctx.font=Math.max(6,Math.round(7*fScale))+'px "Cinzel",Georgia,serif';
     var midBar = barY + BAR_H/2;
     var barTextColor = document.body.classList.contains('dark-mode') ? '#fff' : '#1e1008';
     if(copRatio > 0.08){
@@ -13157,7 +13323,7 @@
 
     // Combined label above bar
     ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.font='bold 9px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.6)';
+    ctx.font='bold '+Math.max(7,Math.round(9*fScale))+'px "Cinzel",Georgia,serif'; ctx.fillStyle='rgba(196,155,56,0.6)';
     ctx.fillText('Combined  ·  n = 1, …, '+modN+'  (mod '+modN+')', combX+S/2, barY-4);
 
     // Faint guide lines from inner corners of top diagrams down to combined
