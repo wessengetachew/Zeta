@@ -1568,7 +1568,7 @@
         </div>
     </header>
     
-    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw();">☾ Dark</button>
+    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw(); if(typeof renderAllCharts==='function' && window.analysisResults) renderAllCharts(); if(typeof m_drawGraph==='function') m_drawGraph();">☾ Dark</button>
 
     <div class="introduction">
         <div class="intro-section">
@@ -1808,6 +1808,7 @@
                   <span style="color:var(--border);padding:0 2px;">|</span>
                   <button id="fcm-autorotate" onclick="fareyToggleAutoRotate()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Auto-Rotate</button>
                   <button id="fcm-inspect"    onclick="fareyToggleInspect()"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect Points</button>
+                  <button id="fcm-chain-clear" onclick="fareyClearChain()" style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
                   <span style="color:var(--border);padding:0 2px;">|</span>
                   <button id="fcm-zeros" onclick="fareyToggleZeros()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
                   <a href="#riemannZerosSection" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;" title="Jump to full Riemann Zero Analysis section">&#8595; Full Analysis</a>
@@ -1818,6 +1819,11 @@
                 <span id="farey-gap-overlay-info"></span>
                 &nbsp;&nbsp;
                 <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#10005; Clear</button>
+              </div>
+
+              <!-- Multi-point chain measurement panel -->
+              <div id="farey-chain-panel" style="display:none;margin-top:10px;padding:12px 16px;background:var(--parchment-dark);border:1px solid #e879f9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.06em;color:var(--ink);">
+                <div id="farey-chain-info" style="line-height:1.9;"></div>
               </div>
 
               </div>
@@ -2416,6 +2422,37 @@
             </div>
         </div>
         
+        <div class="chart-wrapper" id="gapRatioWrapper">
+            <div class="chart-title">Gap Ratio Analysis: Twin Prime Conjecture Evidence</div>
+            <div class="chart-description">
+                Tracks Count(gap=2)/Count(gap=4) and other gap ratios. Hardy-Littlewood predicts twin primes (gap 2) and cousin primes (gap 4) have <em>identical</em> singular series constants, so their ratio should approach 1.0 as N→∞. Gap 6 (sexy primes) has a 2× larger constant due to the p=3 factor — so it is asymptotically <em>twice as frequent</em> as gap 2 or gap 4, not equal.
+            </div>
+            <canvas id="gapRatioChart" width="3840" height="2160"></canvas>
+            <div class="stats-table-wrapper">
+                <div class="stats-table-header">
+                    <div class="stats-table-title">Gap Ratio Data</div>
+                    <div class="precision-control">
+                        <label>Decimals:</label>
+                        <select id="gapRatioPrecision" onchange="updateStatsTables()">
+                            <option value="4">4</option>
+                            <option value="6" selected>6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                        </select>
+                        <button class="show-all-toggle" onclick="toggleTable('gapRatioTable')">Show All</button>
+                    </div>
+                </div>
+                <div class="stats-table-container" id="gapRatioTable">
+                    <table class="stats-table" id="gapRatioTableContent"></table>
+                </div>
+                <div class="export-row">
+                    <button class="export-btn csv" onclick="exportTableCSV('gapRatio')">Export Table CSV</button>
+                    <button class="export-btn png" onclick="exportChartPNG_DOM('gapRatioChart', 'gap_ratio_analysis')" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: var(--sepia);">DOM Export</button>
+                    <button class="export-btn png" onclick="exportChartPNG_Canvas('gapRatioChart', 'gap_ratio_analysis')" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-color: #ef4444;">Canvas Export</button>
+                </div>
+            </div>
+        </div>
+        
         <div class="chart-wrapper" id="customGapCompareWrapper">
             <div class="chart-title">Custom Gap Family Comparison</div>
             <div class="chart-description">
@@ -2585,37 +2622,6 @@
                     <button class="export-btn csv" onclick="exportTableCSV('logScale')">Export Table CSV</button>
                     <button class="export-btn png" onclick="exportChartPNG_DOM('logScaleChart', 'log_scale_products')" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: var(--sepia);">DOM Export</button>
                     <button class="export-btn png" onclick="exportChartPNG_Canvas('logScaleChart', 'log_scale_products')" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-color: #ef4444;">Canvas Export</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="chart-wrapper" id="gapRatioWrapper">
-            <div class="chart-title">Gap Ratio Analysis: Twin Prime Conjecture Evidence</div>
-            <div class="chart-description">
-                Tracks Count(gap=2)/Count(gap=4) and other gap ratios. Hardy-Littlewood predicts twin primes (gap 2) and cousin primes (gap 4) have <em>identical</em> singular series constants, so their ratio should approach 1.0 as N→∞. Gap 6 (sexy primes) has a 2× larger constant due to the p=3 factor — so it is asymptotically <em>twice as frequent</em> as gap 2 or gap 4, not equal.
-            </div>
-            <canvas id="gapRatioChart" width="3840" height="2160"></canvas>
-            <div class="stats-table-wrapper">
-                <div class="stats-table-header">
-                    <div class="stats-table-title">Gap Ratio Data</div>
-                    <div class="precision-control">
-                        <label>Decimals:</label>
-                        <select id="gapRatioPrecision" onchange="updateStatsTables()">
-                            <option value="4">4</option>
-                            <option value="6" selected>6</option>
-                            <option value="8">8</option>
-                            <option value="10">10</option>
-                        </select>
-                        <button class="show-all-toggle" onclick="toggleTable('gapRatioTable')">Show All</button>
-                    </div>
-                </div>
-                <div class="stats-table-container" id="gapRatioTable">
-                    <table class="stats-table" id="gapRatioTableContent"></table>
-                </div>
-                <div class="export-row">
-                    <button class="export-btn csv" onclick="exportTableCSV('gapRatio')">Export Table CSV</button>
-                    <button class="export-btn png" onclick="exportChartPNG_DOM('gapRatioChart', 'gap_ratio_analysis')" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: var(--sepia);">DOM Export</button>
-                    <button class="export-btn png" onclick="exportChartPNG_Canvas('gapRatioChart', 'gap_ratio_analysis')" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-color: #ef4444;">Canvas Export</button>
                 </div>
             </div>
         </div>
@@ -2959,7 +2965,7 @@
         <div class="chart-wrapper" id="riemannZerosSection" style="border:2px solid #a855f7;">
             <div class="chart-title" style="color:#a855f7;">Riemann Zero Heights t&#8319; on the Critical Axis · Farey Angular DFT</div>
             <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:20px;">
-                <strong>What this shows:</strong> The GCD=1 points in the Farey circle are pinned to 90°/270° by the mod 4 coprimality structure — this is Re(s) = ½, the critical line. The 30 known non-trivial zero heights
+                <strong>What this shows:</strong> The GCD=1 points in the Farey circle are pinned to 90°/270° by the mod 4 coprimality structure — this is Re(s) = ½, the critical line. The first 100 known non-trivial zero heights
                 <em>t</em>&#8319; = 14.134, 21.022, 25.010, 30.424 … of ζ(s) are placed as radial tick marks along that axis,
                 at depth proportional to <em>t</em>&#8319; / <em>t</em>₃₀.
                 <br><br>
@@ -2993,7 +2999,7 @@
                         oninput="rzDraw()">
                 </label>
                 <label style="color:var(--gold);">ZEROS SHOWN
-                    <input id="rz-nzeros" type="range" min="5" max="30" value="20"
+                    <input id="rz-nzeros" type="range" min="5" max="100" value="20"
                         style="width:90px;margin-left:8px;vertical-align:middle;accent-color:#a855f7;"
                         oninput="document.getElementById('rz-nzeros-val').textContent=this.value;rzDraw()">
                     <span id="rz-nzeros-val" style="color:#a855f7;min-width:20px;display:inline-block;">20</span>
@@ -5366,11 +5372,11 @@
             const y1 = y + h - h1;
             ctx.fillStyle = ratio_2_4 > 0.98 && ratio_2_4 < 1.02 ? '#4caf50' : '#ff6b6b';
             ctx.fillRect(x + barW * 0.5, y1, barW * 0.8, h1);
-            ctx.strokeStyle = '#fff';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 3;
             ctx.strokeRect(x + barW * 0.5, y1, barW * 0.8, h1);
             
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 32px monospace';
             ctx.textAlign = 'center';
             ctx.fillText(ratio_2_4.toFixed(4), x + barW * 0.9, y1 - 15);
@@ -5386,7 +5392,7 @@
             ctx.fillRect(x + barW * 1.7, y2, barW * 0.8, h2);
             ctx.strokeRect(x + barW * 1.7, y2, barW * 0.8, h2);
             
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 32px monospace';
             ctx.fillText(ratio_2_6.toFixed(4), x + barW * 2.1, y2 - 15);
             
@@ -5401,7 +5407,7 @@
             ctx.fillRect(x + barW * 2.9, y3, barW * 0.8, h3);
             ctx.strokeRect(x + barW * 2.9, y3, barW * 0.8, h3);
             
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 32px monospace';
             ctx.fillText(ratio_4_6.toFixed(4), x + barW * 3.3, y3 - 15);
             
@@ -5432,11 +5438,11 @@
                 
                 ctx.fillStyle = colors[i];
                 ctx.fillRect(barX, barY, barW * 0.8, barH);
-                ctx.strokeStyle = '#fff';
+                ctx.strokeStyle = canvasGrid();
                 ctx.lineWidth = 3;
                 ctx.strokeRect(barX, barY, barW * 0.8, barH);
                 
-                ctx.fillStyle = '#fff';
+                ctx.fillStyle = canvasTextBright();
                 ctx.font = 'bold 30px monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(pcts[i].toFixed(2) + '%', barX + barW * 0.4, barY - 15);
@@ -5463,11 +5469,11 @@
             const y1 = y + h * 0.9 - h1;
             ctx.fillStyle = '#ffd700';
             ctx.fillRect(x + barW * 0.3, y1, barW * 0.8, h1);
-            ctx.strokeStyle = '#fff';
+            ctx.strokeStyle = canvasGrid();
             ctx.lineWidth = 3;
             ctx.strokeRect(x + barW * 0.3, y1, barW * 0.8, h1);
             
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 28px monospace';
             ctx.textAlign = 'center';
             ctx.fillText(Math.round(predicted).toLocaleString(), x + barW * 0.7, y1 - 15);
@@ -5483,7 +5489,7 @@
             ctx.fillRect(x + barW * 1.6, y2, barW * 0.8, h2);
             ctx.strokeRect(x + barW * 1.6, y2, barW * 0.8, h2);
             
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = canvasTextBright();
             ctx.font = 'bold 28px monospace';
             ctx.fillText(observed.toLocaleString(), x + barW * 2.0, y2 - 15);
             
@@ -12269,6 +12275,10 @@
       c.style.cursor='crosshair';
       document.getElementById('fc-combined-label').textContent='Combined · click canvas to rotate 90°';
       hideTooltip();
+      // clear chain
+      _chain.length = 0;
+      document.getElementById('fcm-chain-clear').style.display   = 'none';
+      document.getElementById('farey-chain-panel').style.display  = 'none';
     }
   };
 
@@ -12329,34 +12339,200 @@
     return Math.round(r);
   }
 
+  // ── Multi-point chain state ──────────────────────────────────────────────
+  var _chain = [];  // [{r,m,px,py,angle,gcd1}]
+  window._chain = _chain;
+
+  window.fareyClearChain = function(){
+    _chain = [];
+    _activeTooltipPt = null;
+    document.getElementById('farey-chain-panel').style.display = 'none';
+    document.getElementById('fcm-chain-clear').style.display   = 'none';
+    hideTooltip();
+    drawCombined();
+  };
+
+  function updateChainPanel(){
+    var panel = document.getElementById('farey-chain-panel');
+    var info  = document.getElementById('farey-chain-info');
+    if(_chain.length < 1){ panel.style.display='none'; return; }
+    panel.style.display = 'block';
+    // Update canvas label to show chain count
+    var lbl = document.getElementById('fc-combined-label');
+    if(lbl && _inspectMode) lbl.textContent = 'Inspect · chain: '+_chain.length+' point'+(_chain.length!==1?'s — click to add, right-click to undo, re-click to remove':'  — click more to build chain');
+
+    var modN = parseInt(document.getElementById('f-mod-num').value)||49;
+    var dir  = parseFloat(document.getElementById('f-dir').value)||1;
+
+    // Header
+    var html = '<span style="color:#e879f9;font-weight:bold;letter-spacing:0.12em;">CHAIN  ·  ' + _chain.length + ' point' + (_chain.length!==1?'s':'') + '</span><br>';
+
+    // Point list with step measurements
+    var cumArcDeg = 0, cumChord = 0;
+    for(var i=0; i<_chain.length; i++){
+      var pt = _chain[i];
+      var ang = dir * 2*Math.PI*pt.r/(pt.m||1) + _combinedAngle*Math.PI/180;
+      var deg = ((ang*180/Math.PI)%360+360)%360;
+      var col = pt.gcd1 ? '#4a90d9' : '#c94040';
+      html += '<span style="color:'+col+';font-weight:bold;">' + (i+1) + '. ' + pt.r+'/'+pt.m + '</span>';
+      html += ' <span style="color:#9a8060;">r='+pt.r+' m='+pt.m+' &nbsp;'+deg.toFixed(2)+'°</span>';
+
+      if(i > 0){
+        var prev = _chain[i-1];
+        var pangOrig = dir * 2*Math.PI*prev.r/(prev.m||1) + _combinedAngle*Math.PI/180;
+        var cangOrig = dir * 2*Math.PI*pt.r  /(pt.m||1)  + _combinedAngle*Math.PI/180;
+        var prevDeg = ((pangOrig*180/Math.PI)%360+360)%360;
+        var currDeg = ((cangOrig*180/Math.PI)%360+360)%360;
+
+        // Signed angular step (shortest arc)
+        var dAng = currDeg - prevDeg;
+        if(dAng >  180) dAng -= 360;
+        if(dAng < -180) dAng += 360;
+        cumArcDeg += Math.abs(dAng);
+
+        // Chord distance in canvas pixel coords
+        var dx = pt.px - prev.px, dy = pt.py - prev.py;
+        var chord = Math.sqrt(dx*dx + dy*dy);
+        // normalise by canvas half-width to get 0..1 scale
+        var W = document.getElementById('fc-combined').width;
+        var chordN = chord / (W * 0.5);
+        cumChord += chordN;
+
+        // Fraction difference
+        var fracDiff = pt.r/pt.m - prev.r/prev.m;
+
+        html += '<br><span style="padding-left:1.5em;color:#e879f9;">'
+          + 'Δang = ' + (dAng >= 0 ? '+' : '') + dAng.toFixed(2) + '°'
+          + ' &nbsp; chord = ' + chordN.toFixed(4)
+          + ' &nbsp; Δfrac = ' + (fracDiff>=0?'+':'') + fracDiff.toFixed(6)
+          + '</span>';
+      }
+      html += '<br>';
+    }
+
+    // Totals if 2+ points
+    if(_chain.length >= 2){
+      html += '<span style="border-top:1px solid rgba(232,121,249,0.3);display:block;margin-top:4px;padding-top:4px;">';
+      html += '<span style="color:#e879f9;font-weight:bold;">TOTAL</span>'
+        + ' &nbsp; arc = ' + cumArcDeg.toFixed(2) + '°'
+        + ' &nbsp; cumulative chord = ' + cumChord.toFixed(4);
+      // closing angle: angle from last point back to first
+      var p0 = _chain[0], pN = _chain[_chain.length-1];
+      var a0 = dir*2*Math.PI*p0.r/(p0.m||1)+_combinedAngle*Math.PI/180;
+      var aN = dir*2*Math.PI*pN.r/(pN.m||1)+_combinedAngle*Math.PI/180;
+      var closeAng = ((aN-a0)*180/Math.PI % 360 + 360) % 360;
+      if(closeAng > 180) closeAng = 360 - closeAng;
+      html += ' &nbsp; span = ' + closeAng.toFixed(2) + '° (first→last)';
+      html += '</span>';
+    }
+
+    info.innerHTML = html;
+  }
+
+  function drawChainOverlay(ctx, W){
+    if(_chain.length < 1) return;
+    ctx.save();
+    var radius = 5;
+
+    // Draw chords between consecutive points
+    for(var i=1; i<_chain.length; i++){
+      var a = _chain[i-1], b = _chain[i];
+      ctx.beginPath();
+      ctx.moveTo(a.px, a.py);
+      ctx.lineTo(b.px, b.py);
+      ctx.strokeStyle = '#e879f9';
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.7;
+      ctx.setLineDash([4, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Step label at midpoint
+      var mx = (a.px + b.px)/2, my = (a.py + b.py)/2;
+      var dx = b.px-a.px, dy = b.py-a.py;
+      var chordN = Math.sqrt(dx*dx+dy*dy)/(W*0.5);
+      ctx.globalAlpha = 0.9;
+      ctx.font = Math.max(8, W*0.012)+'px Cinzel,serif';
+      ctx.fillStyle = '#e879f9';
+      ctx.textAlign = 'center';
+      ctx.fillText((i)+'→'+(i+1)+' · '+chordN.toFixed(3), mx, my - W*0.012);
+    }
+
+    // Draw highlighted dots for each chain point
+    _chain.forEach(function(pt, i){
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(pt.px, pt.py, Math.max(4, W*0.009), 0, 2*Math.PI);
+      ctx.strokeStyle = '#e879f9';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Index number
+      ctx.fillStyle = '#e879f9';
+      ctx.font = 'bold '+Math.max(8, W*0.011)+'px Cinzel,serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(''+(i+1), pt.px, pt.py - Math.max(6, W*0.013));
+    });
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
   // ── Canvas click: rotate or inspect ──────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function(){
     var c = document.getElementById('fc-combined');
     if(!c) return;
+
+    // Right-click removes last chain point
+    c.addEventListener('contextmenu', function(e){
+      if(_inspectMode && _chain.length > 0){
+        e.preventDefault();
+        _chain.pop();
+        if(_chain.length === 0){
+          document.getElementById('fcm-chain-clear').style.display = 'none';
+          document.getElementById('farey-chain-panel').style.display = 'none';
+        }
+        updateChainPanel();
+        drawCombined();
+      }
+    });
+
     c.addEventListener('click', function(e){
       if(_inspectMode){
         var rect  = c.getBoundingClientRect();
         var scale = c.width / c.offsetWidth;
         var mx    = (e.clientX - rect.left) * scale;
         var my    = (e.clientY - rect.top)  * scale;
-        // find nearest point within hit radius
-        var hitR = 12 * scale;
-        var best = null, bestD = Infinity;
+        var hitR  = 14 * scale;
+        var best  = null, bestD = Infinity;
         _lastCombinedPts.forEach(function(pt){
           var d = Math.sqrt((pt.px-mx)*(pt.px-mx)+(pt.py-my)*(pt.py-my));
           if(d < hitR && d < bestD){ bestD=d; best=pt; }
         });
         if(best){
-          if(_activeTooltipPt && _activeTooltipPt.r===best.r && _activeTooltipPt.m===best.m){
-            hideTooltip(); // click same point again = dismiss
+          // Check if already in chain — if so remove it
+          var existing = _chain.findIndex(function(p){ return p.r===best.r && p.m===best.m; });
+          if(existing >= 0){
+            _chain.splice(existing, 1);
           } else {
-            _activeTooltipPt = best;
-            showTooltip(best, mx, my);
-            drawCombined(); // redraw to highlight selected
+            _chain.push({r:best.r, m:best.m, px:best.px, py:best.py, gcd1:best.gcd1});
           }
-        } else {
-          hideTooltip();
+          _activeTooltipPt = _chain.length > 0 ? _chain[_chain.length-1] : null;
+          var clearBtn = document.getElementById('fcm-chain-clear');
+          clearBtn.style.display = _chain.length >= 1 ? 'inline-block' : 'none';
+          updateChainPanel();
+          // Show single-point tooltip only when chain has just 1 point
+          if(_chain.length === 1){
+            showTooltip(best, mx, my);
+          } else {
+            document.getElementById('farey-tooltip').style.display = 'none';
+          }
           drawCombined();
+        } else {
+          // Clicked empty space — clear chain if it has points, else do nothing
+          if(_chain.length === 0){
+            hideTooltip();
+            drawCombined();
+          }
         }
       } else {
         fareyCombinedClick();
@@ -13125,12 +13301,26 @@
 // ════════════════════════════════════════════════════════════════════════════
 (function() {
   var RZ_ZEROS = [
-    14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
-    37.586178, 40.918719, 43.327073, 48.005151, 49.773832,
-    52.970321, 56.446248, 59.347044, 60.831779, 65.112544,
-    67.079811, 69.546402, 72.067158, 75.704691, 77.144840,
-    79.337375, 82.910381, 84.735493, 87.425275, 88.809111,
-    92.491899, 94.651344, 95.870634, 98.831194, 101.317851
+     14.134725,  21.022040,  25.010858,  30.424876,  32.935062,
+     37.586178,  40.918719,  43.327073,  48.005151,  49.773832,
+     52.970321,  56.446248,  59.347044,  60.831779,  65.112544,
+     67.079811,  69.546402,  72.067158,  75.704691,  77.144840,
+     79.337375,  82.910381,  84.735493,  87.425275,  88.809111,
+     92.491899,  94.651344,  95.870634,  98.831194, 101.317851,
+    103.725538, 105.446623, 107.168611, 111.029536, 111.874659,
+    114.320221, 116.226680, 118.790782, 121.370125, 122.946829,
+    124.256819, 127.516683, 129.578704, 131.087688, 133.497737,
+    134.756510, 138.116042, 139.736209, 141.123707, 143.111846,
+    146.000982, 147.422765, 150.053521, 150.925257, 153.024693,
+    156.112909, 157.597591, 158.849989, 161.188964, 163.030709,
+    165.537069, 167.184439, 169.094515, 169.911976, 173.411536,
+    174.754191, 176.441434, 178.377407, 179.916484, 182.207078,
+    184.874467, 185.598783, 187.228922, 189.416158, 192.026656,
+    193.079726, 195.265397, 196.876481, 198.015309, 201.264751,
+    202.493594, 204.189671, 205.394697, 207.906258, 209.576509,
+    211.690862, 213.347919, 214.547044, 216.169538, 219.067596,
+    220.714918, 221.430705, 224.007000, 224.983324, 227.421444,
+    229.337413, 231.250188, 231.987235, 233.693404, 236.524229
   ];
   var rzAngle = 0; // rotation in degrees
 
@@ -13602,6 +13792,11 @@
       // After the main draw, overlay gap chords if active
       if (_overlayGap !== null && _overlayPairs.length > 0) {
         drawGapOverlay();
+      }
+      // After gap overlay, draw chain overlay
+      if (window._chain && window._chain.length > 0) {
+        var c = document.getElementById('fc-combined');
+        if (c) drawChainOverlay(c.getContext('2d'), c.width);
       }
     };
   }
