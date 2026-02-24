@@ -1806,7 +1806,7 @@
                   <button onclick="fareyCombinedMode('coprime')"    id="fcm-coprime"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #4a90d9;background:var(--parchment-dark);color:#4a90d9;cursor:pointer;">gcd=1</button>
                   <button onclick="fareyCombinedMode('noncoprime')" id="fcm-noncoprime" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">gcd&gt;1</button>
                   <span style="color:var(--border);padding:0 2px;">|</span>
-                  <button id="fcm-autorotate" onclick="fareyToggleAutoRotate()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Auto-Rotate</button>
+                  <button id="fcm-ar-out"   onclick="fareyToggleAutoRotate('out')" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Rotate outer→inner">&#8635; Out→In</button><button id="fcm-autorotate" onclick="fareyToggleAutoRotate()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Rotate</button><button id="fcm-ar-in"    onclick="fareyToggleAutoRotate('in')"  style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Rotate inner→outer">&#8634; In→Out</button><button onclick="fareyRotateReset()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Reset rotation to 90°">&#11119; Reset</button>
                   <button id="fcm-inspect"    onclick="fareyToggleInspect()"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect Points</button>
                   <button id="fcm-chain-clear" onclick="fareyClearChain()" style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
                   <span style="color:var(--border);padding:0 2px;">|</span>
@@ -11854,6 +11854,8 @@
     highlightNavLink();
   };
 
+  window.buildFractions = buildFractions;
+
   window.fareyRedraw = function(){
     clearAncestorCache();
     if(document.getElementById('farey-combined-view').style.display!=='none'){
@@ -12233,11 +12235,13 @@
 
 
   var _autoRotateTimer = null;
+  var _autoRotateDir = 1;  // 1 = outer (forward), -1 = inner (backward)
   var _inspectMode = false;
   var _activeTooltipPt = null;
   var _lastCombinedPts = [];
   var _combinedMode = 'both';
   var _combinedAngle = 90;
+  Object.defineProperty(window, '_combinedAngle', { get: function(){ return _combinedAngle; }, set: function(v){ _combinedAngle=v; } });
 
   window.toggleFareyPanel = function(){
     var p=document.getElementById('farey-panel');
@@ -12260,20 +12264,77 @@
     }
   };
 
-  window.fareyToggleAutoRotate = function(){
-    var btn = document.getElementById('fcm-autorotate');
-    if(_autoRotateTimer){
-      clearInterval(_autoRotateTimer); _autoRotateTimer=null;
-      btn.style.background='var(--parchment-dark)'; btn.style.color='var(--ink-mid)';
-    } else {
-      // disable inspect while rotating
-      if(_inspectMode) fareyToggleInspect();
-      btn.style.background='var(--gold)'; btn.style.color='var(--parchment)';
-      _autoRotateTimer = setInterval(function(){
-        _combinedAngle = (_combinedAngle+1) % 360;
-        drawCombined();
-      }, 30);
+  window.fareyToggleAutoRotate = function(dir){
+    // dir: 'out' = cumulative outer→inner (outer rings spin faster)
+    //      'in'  = cumulative inner→outer (inner rings spin faster)
+    //      undefined = toggle uniform canvas rotation on/off
+    var btn    = document.getElementById('fcm-autorotate');
+    var dirOut = document.getElementById('fcm-ar-out');
+    var dirIn  = document.getElementById('fcm-ar-in');
+
+    function stopTimer(){
+      if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; }
+      if(btn)  { btn.style.background='var(--parchment-dark)';  btn.style.color='var(--ink-mid)'; }
+      if(dirOut){ dirOut.style.background='var(--parchment-dark)'; dirOut.style.color='var(--ink-mid)'; }
+      if(dirIn) { dirIn.style.background='var(--parchment-dark)';  dirIn.style.color='var(--ink-mid)'; }
     }
+
+    function redrawWithOverlay(){
+      fareyRedraw();
+      if(_overlayGap !== null && _overlayPairs.length > 0) drawGapOverlay();
+    }
+
+    if(dir === 'out' || dir === 'in'){
+      // If already running in same direction, stop (toggle off)
+      if(_autoRotateTimer && _autoRotateDir === (dir==='out'?1:-1)){
+        stopTimer(); return;
+      }
+      stopTimer();
+      _autoRotateDir = (dir === 'out') ? 1 : -1;
+      var activeBtn = dir==='out' ? dirOut : dirIn;
+      if(activeBtn){ activeBtn.style.background='var(--gold)'; activeBtn.style.color='var(--parchment)'; }
+
+      if(_inspectMode) fareyToggleInspect();
+      _autoRotateTimer = setInterval(function(){
+        var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
+        var speed = parseInt(document.getElementById('f-ringspeed').value)||20;
+        // cumulative per-ring: outer faster for 'out', inner faster for 'in'
+        for(var m=1; m<=modN; m++){
+          var t = _autoRotateDir===1 ? m/modN : (modN-m+1)/modN;
+          _ringOffsets[m] = (_ringOffsets[m]||0) + _autoRotateDir * speed * t * 0.04;
+        }
+        redrawWithOverlay();
+      }, 16);
+      return;
+    }
+
+    // Plain toggle — uniform canvas rotation
+    if(_autoRotateTimer && _autoRotateDir === 0){
+      stopTimer(); return;
+    }
+    stopTimer();
+    _autoRotateDir = 0;
+    if(btn){ btn.style.background='var(--gold)'; btn.style.color='var(--parchment)'; }
+    if(_inspectMode) fareyToggleInspect();
+    _autoRotateTimer = setInterval(function(){
+      _combinedAngle = ((_combinedAngle + 1) % 360 + 360) % 360;
+      redrawWithOverlay();
+    }, 30);
+  };
+
+  window.fareyRotateReset = function(){
+    if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; }
+    var btn=document.getElementById('fcm-autorotate');
+    var dirOut=document.getElementById('fcm-ar-out');
+    var dirIn=document.getElementById('fcm-ar-in');
+    if(btn)  { btn.style.background='var(--parchment-dark)';  btn.style.color='var(--ink-mid)'; }
+    if(dirOut){ dirOut.style.background='var(--parchment-dark)'; dirOut.style.color='var(--ink-mid)'; }
+    if(dirIn) { dirIn.style.background='var(--parchment-dark)';  dirIn.style.color='var(--ink-mid)'; }
+    _autoRotateDir = 1;
+    _combinedAngle = 90;
+    _ringOffsets   = {};
+    fareyRedraw();
+    if(_overlayGap !== null && _overlayPairs.length > 0) drawGapOverlay();
   };
 
   window.fareyToggleInspect = function(){
@@ -13055,6 +13116,63 @@
     } else {
       drawFarey(mode, c);
     }
+
+    // ── Gap overlay on export ───────────────────────────────────────────────
+    if (mode === 'combined' && window._overlayGap !== null && window._overlayGap !== undefined && window._overlayPairs && window._overlayPairs.length > 0) {
+      if (typeof window.drawGapOverlay === 'function') window.drawGapOverlay(c);
+    }
+
+    // ── Outer-ring labels ───────────────────────────────────────────────────
+    var ctx = c.getContext('2d');
+    var modN    = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var dir     = parseFloat(document.getElementById('f-dir').value) || 1;
+    var spacing = (parseInt(document.getElementById('f-spacing').value) || 100) / 100;
+    var zoom    = (parseInt(document.getElementById('f-zoom').value) || 100) / 100;
+    var rinner  = (parseInt(document.getElementById('f-rinner').value) || 4) / 100;
+    var invert  = document.getElementById('f-invert-order').checked;
+    var angBase = (mode === 'combined') ? (window._combinedAngle || 90) : (_angles[mode] || 0);
+    var rBase   = size * 0.42 * spacing; if (rBase > size * 0.49) rBase = size * 0.49;
+    var rMin    = size * rinner * zoom, rMax = rBase * zoom;
+    function _expRadius(m) {
+      var t = invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
+      return rMin + (rMax - rMin) * t;
+    }
+    var outerR   = _expRadius(modN);
+    var lsize    = Math.max(7, size * 0.013);
+    var labelPad = lsize * 0.8 + Math.max(3, size * 0.007) + 4;
+    var cx = size/2, cy = size/2;
+
+    var fracs = buildFractions(modN);
+    var outerPts = [];
+    if (mode === 'coprime')    fracs.cop.forEach(function(p){ if(p.m===modN) outerPts.push({r:p.r,m:p.m,gcd1:true}); });
+    else if (mode === 'noncoprime') fracs.ncp.forEach(function(p){ if(p.m===modN) outerPts.push({r:p.r,m:p.m,gcd1:false}); });
+    else {
+      fracs.cop.forEach(function(p){ if(p.m===modN) outerPts.push({r:p.r,m:p.m,gcd1:true}); });
+      fracs.ncp.forEach(function(p){ if(p.m===modN) outerPts.push({r:p.r,m:p.m,gcd1:false}); });
+    }
+
+    var col1 = document.getElementById('f-col1').value;
+    var col2 = document.getElementById('f-col2').value;
+
+    ctx.save();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    outerPts.forEach(function(p) {
+      var ringOff = (typeof ringOffset === 'function') ? ringOffset(p.m, modN) : 0;
+      var a  = dir * 2 * Math.PI * p.r / (p.m || 1) + angBase * Math.PI / 180 + ringOff * Math.PI / 180;
+      var lx = cx + (outerR + labelPad) * Math.sin(a);
+      var ly = cy - (outerR + labelPad) * Math.cos(a);
+
+      var _og = window._overlayGap, _op = window._overlayPairs || [], _oc = window._overlayColor || '#4a90d9';
+      var inOverlay = _og !== null && _og !== undefined && _op.some(function(pair){ return pair.r1===p.r || pair.r2===p.r; });
+      ctx.globalAlpha = inOverlay ? 1.0 : 0.7;
+      ctx.fillStyle   = inOverlay ? _oc : (p.gcd1 ? col1 : col2);
+      ctx.font        = (inOverlay ? 'bold ' : '') + lsize + 'px Cinzel, serif';
+      ctx.fillText(p.r + '/' + p.m, lx, ly);
+    });
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
     return c;
   }
 
@@ -13910,6 +14028,10 @@
   var _overlayPairs  = [];     // [{r1,r2,m,p}] pairs to draw
   var _overlayColor  = '#4a90d9';
   var MAX_DISPLAY    = 200;    // max chord lines for performance
+  // Expose to window so script 3 (makeFareyCanvas export) can read overlay state
+  Object.defineProperty(window, '_overlayGap',   { get: function(){ return _overlayGap; } });
+  Object.defineProperty(window, '_overlayColor', { get: function(){ return _overlayColor; } });
+  Object.defineProperty(window, '_overlayPairs', { get: function(){ return _overlayPairs; } });
 
   // Gap → colour palette matching decomposition charts
   var GAP_COLORS = {
@@ -14018,7 +14140,16 @@
       + '<strong style="color:#4ecdc4;">' + inRange.toLocaleString() + '</strong> primes ≤ mod ' + modN
       + ' (' + pct + '%)'
       + ' &nbsp;·&nbsp; '
-      + '<strong style="color:#e879f9;">' + shownPairs + '</strong> residue pairs shown on canvas';
+      + '<strong style="color:#e879f9;">' + shownPairs + '</strong> residue pairs shown on canvas'
+      + (function(){
+          if(window.analysisResults && window.analysisResults.percentageContributions &&
+             window.analysisResults.percentageContributions[gap] !== undefined){
+            var _p = window.analysisResults.percentageContributions[gap];
+            var _g = window.analysisResults.gapProducts[gap];
+            return ' &nbsp;·&nbsp; P₂ = <strong style="color:#a8e6cf;">' + (_g?_g.product.toFixed(5):'?') + '</strong>'
+                 + ' &nbsp;(<strong style="color:#ffd700;">' + _p.toFixed(2) + '%</strong> of log ζ(2))';
+          } return '';
+        })();
 
     bar.style.display = 'block';
   }
@@ -14056,8 +14187,8 @@
   }
 
   // ── Core overlay drawing ──────────────────────────────────────────────────
-  function drawGapOverlay() {
-    var c = document.getElementById('fc-combined');
+  function drawGapOverlay(overrideCanvas) {
+    var c = overrideCanvas || document.getElementById('fc-combined');
     if (!c) return;
     var ctx = c.getContext('2d');
     var W = c.width, H = c.height, cx = W / 2, cy = H / 2;
@@ -14152,11 +14283,20 @@
     ctx.fillStyle = _overlayColor;
     ctx.textAlign = 'center';
     var label = {1:'Gap 1',2:'Twin Primes (gap 2)',4:'Cousin Primes (gap 4)',6:'Sexy Primes (gap 6)'}[_overlayGap] || 'Gap '+_overlayGap+' pairs';
-    ctx.fillText(label + ' · ' + pairs.length + ' pairs · mod ' + modN, cx, H - 10);
+    var zetaLabel = '';
+    if (window.analysisResults && window.analysisResults.percentageContributions &&
+        window.analysisResults.percentageContributions[_overlayGap] !== undefined) {
+      var _gpct = window.analysisResults.percentageContributions[_overlayGap];
+      var _gprod = window.analysisResults.gapProducts[_overlayGap];
+      zetaLabel = '  ·  P₂ = ' + (_gprod ? _gprod.product.toFixed(5) : '?') + '  (' + _gpct.toFixed(2) + '% of log ζ(2))';
+    }
+    ctx.fillText(label + ' · ' + pairs.length + ' pairs · mod ' + modN + zetaLabel, cx, H - 10);
 
     ctx.globalAlpha = 1;
     ctx.restore();
   }
+
+  window.drawGapOverlay = drawGapOverlay;
 
 })();
 </script>
