@@ -2974,28 +2974,32 @@
         <!-- ══ RIEMANN ZEROS ANALYSIS ══ -->
         <div class="chart-wrapper" id="riemannZerosSection" style="border:2px solid #a855f7;">
             <div class="chart-title" style="color:#a855f7;">Riemann Zero Heights t&#8319; on the Critical Axis · Farey Angular DFT</div>
-            <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:20px;">
-                <strong>What this shows:</strong> The GCD=1 points in the Farey circle are pinned to 90°/270° by the mod 4 coprimality structure — this is Re(s) = ½, the critical line. The first 100 known non-trivial zero heights
-                <em>t</em>&#8319; = 14.134, 21.022, 25.010, 30.424 … of ζ(s) are placed as radial tick marks along that axis,
-                at depth proportional to <em>t</em>&#8319; / <em>t</em>₃₀.
+            <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:12px;">
+                <strong>What this shows:</strong> The GCD=1 Farey points at mod N are plotted on concentric rings. Their distribution pins to 90°/270° by the mod 4 coprimality constraint — this is the geometric image of Re(s) = ½, the critical line. The known non-trivial zero heights t&#8319; of ζ(s) are placed as radial tick marks along that axis, scaled so that t&#8319; = modN falls at the outer ring — meaning at a given mod the zeros that fit within the circle are exactly those whose imaginary part is ≤ modN.
                 <br><br>
-                The lower panel computes the <strong>angular DFT</strong> of the GCD=1 point distribution at the current mod N.
-                By the Franel–Landau theorem, RH is equivalent to the Farey discrepancy being O(N<sup>½+ε</sup>).
-                The imaginary parts <em>t</em>&#8319; encode the <em>oscillation frequencies</em> of that discrepancy —
-                gold dashed lines show where spectrum peaks are predicted to appear.
-                As mod N increases, observed peaks sharpen toward those positions.
+                The lower panel shows the <strong>Farey discrepancy</strong> D<sub>N</sub> — the maximum deviation of the Farey sequence F<sub>N</sub> from uniform distribution — plotted against the Riemann Hypothesis bound O(N<sup>−½</sup> log N) (Franel–Landau 1924). Under RH the discrepancy must stay below this envelope. The zero heights t&#8319; are marked on the x-axis; the first zero γ₁ ≈ 14.13 sets the scale at which oscillations first appear in the discrepancy.
                 <br><br>
-                <strong>Controls:</strong> Use the <em>ζ Riemann t</em> button in the GCD visualiser above to toggle the overlay
-                on the Farey circle. The spectrum below updates automatically when mod N changes.
+                <strong>Controls:</strong> Mod N governs both which Farey points appear and how many zeros fall within the circle. The zeros slider requests up to that many zeros but the display auto-caps to however many fit without overlap. The <em>ζ Riemann t</em> button in the Farey visualiser above overlays the same zeros on the interactive canvas.
+            </div>
+            <!-- Interpretation / notes area -->
+            <div style="margin-bottom:18px;">
+                <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-bottom:6px;">Your Interpretation &amp; Notes</div>
+                <textarea id="rz-notes" placeholder="Describe what you observe — e.g. how zeros cluster near specific rings, whether the discrepancy stays below the RH envelope at this mod N, patterns in the critical-axis tick spacing…" style="width:100%;box-sizing:border-box;min-height:90px;resize:vertical;background:var(--parchment-deep);color:var(--ink);border:1px solid rgba(168,85,247,0.35);border-radius:4px;padding:10px 12px;font-family:Georgia,serif;font-size:0.82rem;line-height:1.55;outline:none;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"></textarea>
             </div>
 
-            <!-- Zero overlay canvas (mirrors the combined Farey canvas at larger size) -->
+            <!-- Zero overlay canvas -->
             <div style="position:relative;text-align:center;margin-bottom:24px;">
                 <canvas id="rz-circle-canvas" width="700" height="700" style="display:inline-block;background:var(--canvas-bg);border:1px solid var(--border);border-radius:50%;cursor:pointer;" title="Click to rotate 90°"></canvas>
-                <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-top:8px;">
+                <!-- Inspect tooltip -->
+                <div id="rz-tooltip" style="display:none;position:absolute;background:rgba(14,11,5,0.97);border:1px solid rgba(168,85,247,0.55);border-radius:5px;padding:10px 13px;font-family:'Cinzel',serif;font-size:0.62rem;color:#e8d9b0;pointer-events:none;z-index:100;min-width:170px;line-height:1.7;"></div>
+                <div id="rz-canvas-label" style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-top:8px;">
                     GCD=1 Farey points (mod N) · Purple = critical axis Re(s)=½ · Pink = zero heights t&#8319;
-                    &nbsp;·&nbsp; <span style="color:#888;">Click to rotate</span>
+                    &nbsp;·&nbsp; <span style="color:#888;">Click to rotate · or use Inspect</span>
                 </div>
+            </div>
+            <!-- Inspect button row -->
+            <div style="text-align:center;margin-bottom:12px;">
+                <button id="rz-inspect-btn" onclick="rzToggleInspect()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#9679; Inspect Points</button>
             </div>
 
             <!-- DFT spectrum canvas -->
@@ -3021,7 +3025,7 @@
                     <input type="checkbox" id="rz-show-axis" checked onchange="rzDraw()" style="accent-color:#a855f7;"> Axis line
                 </label>
                 <label style="color:var(--gold);">
-                    <input type="checkbox" id="rz-show-dft" checked onchange="rzDraw()" style="accent-color:#a855f7;"> DFT spectrum
+                    <input type="checkbox" id="rz-show-dft" checked onchange="rzDraw()" style="accent-color:#a855f7;"> Discrepancy
                 </label>
                 <button onclick="rzDraw()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#8635; Redraw</button>
             </div>
@@ -13718,10 +13722,12 @@
     var showAxis = document.getElementById('rz-show-axis').checked;
 
     ctx.clearRect(0, 0, W, H);
-    ctx.clearRect(0, 0, W, H);
+    _rzZeroCache = [];  // reset for each draw
+
+    // Start rotated 90° clockwise so critical axis is horizontal (left–right)
+    var angOff = (rzAngle + 90) * Math.PI / 180;
 
     var rMax = W * 0.44, rMin = W * 0.015;
-    var angOff = rzAngle * Math.PI / 180;
 
     function radius(m) {
       return rMin + (rMax - rMin) * (m - 1) / Math.max(modN - 1, 1);
@@ -13732,8 +13738,9 @@
       return { x: cx + rad * Math.sin(a), y: cy - rad * Math.cos(a) };
     }
 
-    // Faint rings
     ctx.save();
+
+    // Faint rings
     for (var m = 1; m <= modN; m++) {
       ctx.beginPath(); ctx.arc(cx, cy, radius(m), 0, 2 * Math.PI);
       ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#2a1a4a' : '#d0c8e8';
@@ -13743,211 +13750,318 @@
     }
     ctx.globalAlpha = 1;
 
-    // GCD=1 points
+    // GCD=1 points — cache for inspect hit-test
+    _rzPtCache = [];
     var pts = buildCoprime(modN);
     pts.forEach(function(p) {
       var xy = ptXY(p.r, p.m);
+      _rzPtCache.push({ x: xy.x, y: xy.y, r: p.r, m: p.m, gcd1: true });
       ctx.beginPath(); ctx.arc(xy.x, xy.y, Math.max(0.8, W * 0.003 * (1 - 0.4 * p.m / modN)), 0, 2 * Math.PI);
       ctx.fillStyle = '#4a90d9'; ctx.globalAlpha = 0.7; ctx.fill();
     });
     ctx.globalAlpha = 1;
 
-    // Critical axis line (90°/270°)
+    // Critical axis line — now horizontal (0°/180°) after the +90° offset
     if (showAxis) {
-      var a90 = Math.PI / 2 + angOff, a270 = 3 * Math.PI / 2 + angOff;
-      var x1 = cx + rMax * Math.sin(a90),  y1 = cy - rMax * Math.cos(a90);
-      var x2 = cx + rMax * Math.sin(a270), y2 = cy - rMax * Math.cos(a270);
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      var a0  = angOff,            a180 = Math.PI + angOff;
+      var ax1 = cx + rMax * Math.sin(a0),   ay1 = cy - rMax * Math.cos(a0);
+      var ax2 = cx + rMax * Math.sin(a180), ay2 = cy - rMax * Math.cos(a180);
+      ctx.beginPath(); ctx.moveTo(ax1, ay1); ctx.lineTo(ax2, ay2);
       ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 1.2;
       ctx.globalAlpha = 0.45; ctx.setLineDash([5, 5]); ctx.stroke();
       ctx.setLineDash([]); ctx.globalAlpha = 1;
-      // axis label
-      ctx.font = Math.max(10, W * 0.018) + 'px Cinzel, serif';
+      ctx.font = Math.max(9, W * 0.015) + 'px Cinzel, serif';
       ctx.fillStyle = '#a855f7'; ctx.globalAlpha = 0.55;
-      ctx.textAlign = 'center';
-      ctx.fillText('Re(s) = ½', cx, cy - rMax * 0.88);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Re(s) = ½', cx + rMax * 0.72 * Math.sin(a0), cy - rMax * 0.72 * Math.cos(a0) - 11);
       ctx.globalAlpha = 1;
     }
 
-    // Riemann zero tick marks on the vertical axis
-    var tMax = RZ_ZEROS[RZ_ZEROS.length - 1];
-    var nShow = Math.min(nZeros, RZ_ZEROS.length);
-    for (var i = 0; i < nShow; i++) {
+    // ── Riemann zeros: radial by tₙ / modN, auto-capped to fit ───────────────
+    // Scale: tₙ = modN lands exactly at outer ring rMax.
+    // Auto-cap: compute minimum pixel gap between consecutive zeros and skip
+    // any zeros that would be closer than MIN_PX to the previous one.
+    var MIN_PX = showLbl ? Math.max(10, W * 0.022) : Math.max(4, W * 0.009);
+    var nRequest = Math.min(nZeros, RZ_ZEROS.length);
+    // Collect zeros that fit within rMax (tₙ ≤ modN) and that don't overlap
+    var shownZeros = [];
+    var prevR = -Infinity;
+    for (var i = 0; i < nRequest; i++) {
       var t = RZ_ZEROS[i];
-      var frac = t / tMax;
-      var r = rMin + (rMax - rMin) * frac;
-      // Both poles: 90° (a/m=1/4) and 270° (a/m=3/4)
-      [1, 3].forEach(function(num) {
-        var a = num * Math.PI / 2 + angOff;
-        var x = cx + r * Math.sin(a);
-        var y = cy - r * Math.cos(a);
-        // tick across axis
-        var tk = Math.max(4, W * 0.012);
+      var r = rMin + (rMax - rMin) * (t / modN);
+      if (r > rMax) break;                    // beyond outer ring — stop
+      if (r - prevR < MIN_PX) continue;       // too close to previous — skip
+      shownZeros.push({ t: t, r: r, idx: i });
+      prevR = r;
+    }
+
+    // Draw ticks + labels on critical axis (0° side = right, and 180° = left)
+    shownZeros.forEach(function(z, si) {
+      [0, 1].forEach(function(pole) {  // 0 = right side (0°), 1 = left side (180°)
+        var a = pole * Math.PI + angOff;
+        var x = cx + z.r * Math.sin(a);
+        var y = cy - z.r * Math.cos(a);
+        // perpendicular tick
+        var tk = Math.max(3, W * 0.009);
+        var perp = a + Math.PI / 2;
         ctx.beginPath();
-        ctx.moveTo(x - tk * Math.cos(a), y - tk * Math.sin(a));
-        ctx.lineTo(x + tk * Math.cos(a), y + tk * Math.sin(a));
-        ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.9; ctx.stroke();
-        // dot
-        ctx.beginPath(); ctx.arc(x, y, Math.max(2, W * 0.004), 0, 2 * Math.PI);
+        ctx.moveTo(x - tk * Math.sin(perp), y + tk * Math.cos(perp));
+        ctx.lineTo(x + tk * Math.sin(perp), y - tk * Math.cos(perp));
+        ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 1.4; ctx.globalAlpha = 0.88; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, Math.max(1.8, W * 0.003), 0, 2 * Math.PI);
         ctx.fillStyle = '#e879f9'; ctx.globalAlpha = 1; ctx.fill();
       });
-      // label on 90° side only
-      if (showLbl && i < 12) {
-        var a = Math.PI / 2 + angOff;
-        var x = cx + r * Math.sin(a);
-        var y = cy - r * Math.cos(a);
-        ctx.font = Math.max(8, W * 0.016) + 'px monospace';
-        ctx.fillStyle = '#ffd700'; ctx.globalAlpha = 0.8;
+
+      // Labels on right side (pole 0) only
+      if (showLbl) {
+        var a = angOff;  // 0° direction
+        var x = cx + z.r * Math.sin(a);
+        var y = cy - z.r * Math.cos(a);
+        var lsize = Math.max(7, W * 0.013);
+        ctx.font = lsize + 'px monospace';
+        ctx.fillStyle = '#ffd700'; ctx.globalAlpha = 0.85;
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-        ctx.fillText('γ' + (i + 1) + '=' + t.toFixed(2), x + W * 0.016, y);
+        ctx.fillText('γ' + (z.idx + 1) + '=' + z.t.toFixed(2), x + W * 0.014, y - lsize * 0.6);
       }
-    }
+      // Cache zero tick positions (use right-side pole, a=angOff)
+      var zx = cx + z.r * Math.sin(angOff);
+      var zy = cy - z.r * Math.cos(angOff);
+      _rzZeroCache.push({ x: zx, y: zy, t: z.t, idx: z.idx, r_px: z.r });
+    });
     ctx.globalAlpha = 1;
 
-    // Outer ring label
+    // Scale legend: outer ring = modN
     ctx.font = Math.max(9, W * 0.014) + 'px Cinzel, serif';
-    ctx.fillStyle = canvasText(); ctx.globalAlpha = 0.6; ctx.textAlign = 'center';
-    ctx.fillText('mod 1…' + modN, cx, H - 8);
+    ctx.fillStyle = canvasText(); ctx.globalAlpha = 0.55; ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('mod 1…' + modN + '  ·  zeros shown: ' + shownZeros.length + '  ·  outer ring = t = ' + modN, cx, H - 8);
     ctx.globalAlpha = 1;
     ctx.restore();
   }
 
   // ── DFT spectrum canvas ────────────────────────────────────────────────────
+  // ── Farey discrepancy vs RH bound ────────────────────────────────────────
   function rzDrawSpectrum() {
     var c = document.getElementById('rz-spectrum-canvas');
     if (!c) return;
     var ctx = c.getContext('2d');
     var W = c.width, H = c.height;
     ctx.clearRect(0, 0, W, H);
-    ctx.clearRect(0, 0, W, H);
 
-    var modN = parseInt(document.getElementById('rz-mod').value) || 49;
-    var pts = buildCoprime(modN);
-    if (pts.length < 4) return;
+    var modNMax = parseInt(document.getElementById('rz-mod').value) || 49;
+    var nZeros  = Math.min(parseInt(document.getElementById('rz-nzeros').value) || 20, RZ_ZEROS.length);
+    var isDark  = document.body.classList.contains('dark-mode');
 
-    var N = 512;
-    var bins = new Float64Array(N);
-    pts.forEach(function(p) {
-      var angle = (p.r / p.m) % 1;
-      bins[Math.floor(angle * N) % N] += 1;
-    });
-
-    var maxFreq = 80;
-    var mag = new Float64Array(maxFreq);
-    for (var k = 1; k <= maxFreq; k++) {
-      var re = 0, im = 0;
-      for (var n = 0; n < N; n++) {
-        var theta = 2 * Math.PI * k * n / N;
-        re += bins[n] * Math.cos(theta);
-        im -= bins[n] * Math.sin(theta);
+    // Compute Farey discrepancy D_N for N = 2..modNMax
+    // D_N = max_x |#{r/m in F_N : r/m <= x} / |F_N| - x|
+    // Approximated by sampling x at each Farey fraction and checking gap uniformity.
+    // Classical result: D_N <= 3/(N+2) (trivial) and under RH: O(N^{-1/2} log N / (2pi))
+    var Nvals = [], discVals = [], rhBound = [], trivBound = [];
+    var step = Math.max(1, Math.floor(modNMax / 120));  // ~120 data points max
+    for (var N = 2; N <= modNMax; N += step) {
+      // Build sorted Farey fractions for F_N (just r/m values as floats)
+      var fracs = [];
+      for (var m = 1; m <= N; m++) {
+        for (var r = 0; r <= m; r++) {
+          var g = (r === 0) ? m : gcd(r, m);
+          if (g === 1) fracs.push(r / m);
+        }
       }
-      mag[k - 1] = Math.sqrt(re * re + im * im);
+      fracs.sort(function(a,b){ return a-b; });
+      var fn = fracs.length;
+      // Discrepancy: max |rank/|F_N| - value|
+      var D = 0;
+      for (var j = 0; j < fn; j++) {
+        var dev = Math.abs((j + 1) / fn - fracs[j]);
+        if (dev > D) D = dev;
+      }
+      var logN = Math.log(N);
+      Nvals.push(N);
+      discVals.push(D);
+      rhBound.push(logN / (2 * Math.PI * Math.sqrt(N)));   // RH: O(log N / (2π√N))
+      trivBound.push(3 / (N + 2));                          // trivial: 3/(N+2)
     }
-    var maxMag = 0;
-    for (var k = 0; k < maxFreq; k++) if (mag[k] > maxMag) maxMag = mag[k];
 
-    var padL = 52, padR = 24, padT = 28, padB = 36;
+    var padL = 58, padR = 24, padT = 30, padB = 44;
     var plotW = W - padL - padR, plotH = H - padT - padB;
-    var barW = plotW / maxFreq;
 
-    // grid
-    ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#1a0828' : '#e0d8f0'; ctx.lineWidth = 0.5;
+    // y-range: max of all values
+    var allVals = discVals.concat(rhBound).concat(trivBound);
+    var yMax = 0; allVals.forEach(function(v){ if(v>yMax) yMax=v; });
+    yMax *= 1.12;
+
+    function xPx(N)  { return padL + (N - 2) / Math.max(modNMax - 2, 1) * plotW; }
+    function yPx(v)  { return padT + plotH * (1 - v / yMax); }
+
+    // Grid
+    ctx.strokeStyle = isDark ? '#1a0828' : '#e8e0f0'; ctx.lineWidth = 0.5;
     for (var g = 0; g <= 4; g++) {
-      var gy = padT + plotH * (1 - g / 4);
+      var gy = padT + plotH * g / 4;
       ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(padL + plotW, gy); ctx.stroke();
+      var gv = yMax * (1 - g / 4);
+      ctx.fillStyle = isDark ? '#6a5080' : '#554070'; ctx.font = '9px monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(gv.toFixed(4), padL - 4, gy);
     }
 
-    // axes
-    ctx.strokeStyle = document.body.classList.contains('dark-mode') ? '#4a2a6a' : '#b090d0'; ctx.lineWidth = 1;
+    // Axes
+    ctx.strokeStyle = isDark ? '#4a2a6a' : '#b090d0'; ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH);
     ctx.moveTo(padL, padT + plotH); ctx.lineTo(padL + plotW, padT + plotH);
     ctx.stroke();
 
-    // bars
-    for (var k = 0; k < maxFreq; k++) {
-      var bh = (mag[k] / maxMag) * plotH;
-      var bx = padL + k * barW;
-      var by = padT + plotH - bh;
-      var intensity = mag[k] / maxMag;
-      ctx.fillStyle = 'rgba(' + Math.round(80 + 168 * intensity) + ',' + Math.round(10 * intensity) + ',' + Math.round(100 + 155 * intensity) + ',0.9)';
-      ctx.fillRect(bx, by, Math.max(1, barW - 0.8), bh);
-    }
+    // Trivial bound (grey dashed)
+    ctx.strokeStyle = isDark ? '#4a4060' : '#aaa0c0'; ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    Nvals.forEach(function(N, i){
+      var px = xPx(N), py = yPx(trivBound[i]);
+      i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    });
+    ctx.stroke(); ctx.setLineDash([]);
 
-    // Predicted zero peaks (Franel–Landau: freq ≈ t_n / (2π))
-    var nShow = Math.min(parseInt(document.getElementById('rz-nzeros').value) || 20, RZ_ZEROS.length);
-    var peakInfo = [];
-    RZ_ZEROS.slice(0, nShow).forEach(function(t, i) {
-      var freq = t / (2 * Math.PI); // predicted DFT frequency
-      var xPos = padL + (freq / maxFreq) * plotW;
-      if (xPos < padL || xPos > padL + plotW) return;
-      ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.55; ctx.setLineDash([3, 4]);
-      ctx.beginPath(); ctx.moveTo(xPos, padT); ctx.lineTo(xPos, padT + plotH); ctx.stroke();
+    // RH envelope (gold)
+    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 3]);
+    ctx.beginPath();
+    Nvals.forEach(function(N, i){
+      var px = xPx(N), py = yPx(rhBound[i]);
+      i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // Actual discrepancy (purple filled area)
+    ctx.beginPath();
+    Nvals.forEach(function(N, i){
+      var px = xPx(N), py = yPx(discVals[i]);
+      i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    });
+    ctx.lineTo(xPx(Nvals[Nvals.length-1]), padT+plotH);
+    ctx.lineTo(xPx(Nvals[0]), padT+plotH);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(168,85,247,0.18)'; ctx.fill();
+
+    ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    Nvals.forEach(function(N, i){
+      var px = xPx(N), py = yPx(discVals[i]);
+      i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    });
+    ctx.stroke();
+
+    // Riemann zero markers on x-axis: mark N = floor(tₙ) where tₙ ≤ modNMax
+    var shownPeaks = [];
+    for (var zi = 0; zi < nZeros; zi++) {
+      var t = RZ_ZEROS[zi];
+      if (t > modNMax) break;
+      var px = xPx(t);
+      ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 1; ctx.globalAlpha = 0.6;
+      ctx.setLineDash([2,4]);
+      ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT+plotH); ctx.stroke();
       ctx.setLineDash([]); ctx.globalAlpha = 1;
-      if (i < 10) {
-        ctx.font = '9px monospace'; ctx.fillStyle = '#ffd700';
-        ctx.globalAlpha = 0.75; ctx.textAlign = 'center';
-        ctx.fillText('γ' + (i + 1), xPos, padT + 10);
-        ctx.globalAlpha = 1;
+      // tick on axis
+      ctx.beginPath(); ctx.moveTo(px, padT+plotH); ctx.lineTo(px, padT+plotH+5);
+      ctx.strokeStyle='#e879f9'; ctx.lineWidth=1.2; ctx.stroke();
+      if (zi < 15) {
+        ctx.font='8px monospace'; ctx.fillStyle='#e879f9'; ctx.globalAlpha=0.8;
+        ctx.textAlign='center'; ctx.textBaseline='top';
+        ctx.fillText('γ'+(zi+1), px, padT+plotH+7);
+        ctx.globalAlpha=1;
       }
-      peakInfo.push({ n: i + 1, t: t, freq: freq.toFixed(3) });
-    });
-
-    // axis labels
-    ctx.fillStyle = '#9a8060'; ctx.font = '10px Cinzel, serif';
-    ctx.textAlign = 'center'; ctx.globalAlpha = 0.8;
-    ctx.fillText('DFT frequency k  (predicted peaks at tₙ / 2π ≈ ' + (RZ_ZEROS[0] / (2 * Math.PI)).toFixed(2) + ', ' + (RZ_ZEROS[1] / (2 * Math.PI)).toFixed(2) + ', …)', padL + plotW / 2, H - 8);
-    ctx.textAlign = 'right';
-    ctx.fillText('|A_k|', padL - 4, padT + 8);
-    ctx.globalAlpha = 1;
-
-    // Frequency axis tick labels
-    ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#6a5080' : '#443060'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
-    for (var k = 10; k <= maxFreq; k += 10) {
-      var tx = padL + (k - 1) * barW + barW / 2;
-      ctx.fillText(k, tx, padT + plotH + 14);
+      shownPeaks.push({ n: zi+1, t: t });
     }
 
-    return peakInfo;
-  }
-
-  // ── Zeros table ────────────────────────────────────────────────────────────
-  function rzBuildTable() {
-    var tbody = document.getElementById('rz-zeros-table');
-    if (!tbody) return;
-    var tMax = RZ_ZEROS[RZ_ZEROS.length - 1];
-    var html = '<tr style="background:rgba(168,85,247,0.12);">'
-      + '<th style="padding:6px 10px;text-align:left;color:#a855f7;font-family:Cinzel,serif;font-size:0.65rem;letter-spacing:0.08em;">n</th>'
-      + '<th style="padding:6px 10px;color:#a855f7;font-family:Cinzel,serif;font-size:0.65rem;letter-spacing:0.08em;">tₙ (imaginary part)</th>'
-      + '<th style="padding:6px 10px;color:#a855f7;font-family:Cinzel,serif;font-size:0.65rem;letter-spacing:0.08em;">tₙ / t₃₀ (radial depth)</th>'
-      + '<th style="padding:6px 10px;color:#a855f7;font-family:Cinzel,serif;font-size:0.65rem;letter-spacing:0.08em;">tₙ / 2π (DFT freq.)</th>'
-      + '<th style="padding:6px 10px;color:#a855f7;font-family:Cinzel,serif;font-size:0.65rem;letter-spacing:0.08em;">Δt (spacing)</th>'
-      + '</tr>';
-    RZ_ZEROS.forEach(function(t, i) {
-      var prev = i > 0 ? RZ_ZEROS[i - 1] : null;
-      var delta = prev !== null ? (t - prev).toFixed(4) : '—';
-      var rowBg = i % 2 === 0 ? '' : 'background:rgba(168,85,247,0.04)';
-      html += '<tr style="border-bottom:1px solid #1a0828;' + rowBg + '">'
-        + '<td style="padding:5px 10px;color:#ffd700;font-weight:700;font-family:monospace;">' + (i + 1) + '</td>'
-        + '<td style="padding:5px 10px;color:#e879f9;font-family:monospace;">' + t.toFixed(6) + '</td>'
-        + '<td style="padding:5px 10px;color:#4ecdc4;font-family:monospace;">' + (t / tMax).toFixed(6) + '</td>'
-        + '<td style="padding:5px 10px;color:#22c55e;font-family:monospace;">' + (t / (2 * Math.PI)).toFixed(4) + '</td>'
-        + '<td style="padding:5px 10px;color:#888;font-family:monospace;">' + delta + '</td>'
-        + '</tr>';
+    // Legend
+    ctx.font = '10px Cinzel, serif'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    var ly = padT + 14;
+    [['— D_N (Farey discrepancy)','#a855f7'],
+     ['-- log N / (2π√N)  RH bound','#ffd700'],
+     ['-- 3/(N+2)  trivial bound', isDark?'#4a4060':'#aaa0c0'],
+     ['γₙ = Riemann zero heights','#e879f9']].forEach(function(row){
+      ctx.fillStyle=row[1]; ctx.globalAlpha=0.85; ctx.fillText(row[0], padL+8, ly); ly+=14;
     });
-    tbody.innerHTML = html;
-  }
+    ctx.globalAlpha=1;
 
+    // Axis labels
+    ctx.fillStyle='#9a8060'; ctx.font='10px Cinzel,serif'; ctx.textAlign='center'; ctx.globalAlpha=0.8;
+    ctx.textBaseline='alphabetic';
+    ctx.fillText('mod N  (Farey sequence F_N)', padL+plotW/2, H-6);
+    ctx.save(); ctx.translate(12, padT+plotH/2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign='center'; ctx.fillText('D_N', 0, 0); ctx.restore();
+    ctx.globalAlpha=1;
+
+    return shownPeaks;
+  }
   // ── DFT legend ─────────────────────────────────────────────────────────────
   function rzUpdateLegend(peakInfo) {
     var el = document.getElementById('rz-dft-legend');
     if (!el || !peakInfo) return;
-    var parts = peakInfo.slice(0, 10).map(function(p) {
-      return 'γ' + p.n + '=' + p.t.toFixed(3) + ' → k≈' + p.freq;
+    var modN = parseInt(document.getElementById('rz-mod').value) || 49;
+    var inRange = peakInfo.filter(function(p){ return p.t <= modN; });
+    if (inRange.length === 0) {
+      el.innerHTML = '<span style="color:#888;">No zero heights ≤ mod N = ' + modN + '.  Increase mod N to see zeros on the discrepancy axis.</span>';
+      return;
+    }
+    var parts = inRange.map(function(p) {
+      return '<span style="color:#e879f9;">γ' + p.n + '</span> = ' + p.t.toFixed(3);
     });
-    el.innerHTML = '<strong style="color:#ffd700;">Predicted DFT peaks</strong> (tₙ/2π):<br>' + parts.join(' &nbsp;·· ');
+    el.innerHTML = '<strong style="color:#ffd700;">Riemann zeros within mod N=' + modN + '</strong>:<br>' + parts.join(' &nbsp;·&nbsp; ')
+      + '<br><span style="color:#9a8060;font-size:0.85em;">These are the imaginary parts of the non-trivial zeros of ζ(s) that fall within the current Farey circle. '
+      + 'Under RH the discrepancy D_N stays below the gold envelope at each N.</span>';
   }
+
+  // ── Zero heights table ────────────────────────────────────────────────────
+  function rzBuildTable() {
+    var tbody = document.querySelector('#rz-zeros-table');
+    if (!tbody) return;
+    var modN   = parseInt(document.getElementById('rz-mod').value) || 49;
+    var nZeros = Math.min(parseInt(document.getElementById('rz-nzeros').value) || 20, RZ_ZEROS.length);
+    var html = '<thead><tr>'
+      + '<th style="text-align:right;">n</th>'
+      + '<th style="text-align:right;">t&#8319;</th>'
+      + '<th style="text-align:right;">t&#8319; / modN</th>'
+      + '<th style="text-align:right;">&Delta;t</th>'
+      + '<th style="text-align:center;">In circle?</th>'
+      + '</tr></thead><tbody>';
+    for (var i = 0; i < nZeros; i++) {
+      var t = RZ_ZEROS[i];
+      var delta = i > 0 ? (t - RZ_ZEROS[i-1]).toFixed(4) : '—';
+      var frac  = (t / modN).toFixed(4);
+      var inCircle = t <= modN;
+      html += '<tr>'
+        + '<td style="text-align:right;color:#9a8060;">' + (i+1) + '</td>'
+        + '<td style="text-align:right;color:#e879f9;">' + t.toFixed(6) + '</td>'
+        + '<td style="text-align:right;color:#ffd700;">' + frac + '</td>'
+        + '<td style="text-align:right;color:#4ecdc4;">' + delta + '</td>'
+        + '<td style="text-align:center;">' + (inCircle ? '<span style="color:#a8e6cf;">&#10003;</span>' : '<span style="color:#888;">—</span>') + '</td>'
+        + '</tr>';
+    }
+    html += '</tbody>';
+    tbody.innerHTML = html;
+  }
+
+  // ── Inspect state & hit-cache ─────────────────────────────────────────────
+  var _rzInspect   = false;
+  var _rzPtCache   = [];   // [{x,y,r,m,gcd1}]  — Farey points
+  var _rzZeroCache = [];   // [{x,y,t,idx,r_px}] — zero tick positions
+
+  window.rzToggleInspect = function() {
+    _rzInspect = !_rzInspect;
+    var btn = document.getElementById('rz-inspect-btn');
+    var c   = document.getElementById('rz-circle-canvas');
+    var lbl = document.getElementById('rz-canvas-label');
+    if (_rzInspect) {
+      if (btn) { btn.style.background = '#a855f7'; btn.style.color = 'var(--parchment)'; }
+      if (c)   c.style.cursor = 'crosshair';
+      if (lbl) lbl.innerHTML = 'Inspect mode · click a Farey point or zero tick &nbsp;·&nbsp; <span style="color:#ffd700;">click again to exit</span>';
+    } else {
+      if (btn) { btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#a855f7'; }
+      if (c)   c.style.cursor = 'pointer';
+      if (lbl) lbl.innerHTML = 'GCD=1 Farey points (mod N) · Purple = critical axis Re(s)=½ · Pink = zero heights t&#8319; &nbsp;·&nbsp; <span style="color:#888;">Click to rotate · or use Inspect</span>';
+      var tt = document.getElementById('rz-tooltip'); if (tt) tt.style.display = 'none';
+    }
+  };
 
   // ── Master draw ────────────────────────────────────────────────────────────
   window.rzDraw = function() {
@@ -14006,7 +14120,96 @@
   // ── Click to rotate circle ──────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     var circ = document.getElementById('rz-circle-canvas');
-    if (circ) circ.addEventListener('click', function() { rzAngle = (rzAngle + 90) % 360; rzDraw(); });
+    if (circ) circ.addEventListener('click', function(e) {
+      if (!_rzInspect) {
+        // rotate mode
+        rzAngle = (rzAngle + 90) % 360; rzDraw(); return;
+      }
+      // ── Inspect: find nearest cached item ──────────────────────────────────
+      var rect  = circ.getBoundingClientRect();
+      var scale = circ.width / circ.offsetWidth;
+      var mx = (e.clientX - rect.left) * scale;
+      var my = (e.clientY - rect.top)  * scale;
+
+      var bestDist = Infinity, bestPt = null, bestType = '';
+
+      // Check Farey points
+      _rzPtCache.forEach(function(p) {
+        var d = Math.sqrt((p.x-mx)*(p.x-mx)+(p.y-my)*(p.y-my));
+        if (d < bestDist) { bestDist = d; bestPt = p; bestType = 'farey'; }
+      });
+      // Check zero ticks (larger hit radius)
+      _rzZeroCache.forEach(function(z) {
+        var d = Math.sqrt((z.x-mx)*(z.x-mx)+(z.y-my)*(z.y-my));
+        if (d < bestDist - 2) { bestDist = d; bestPt = z; bestType = 'zero'; }
+      });
+
+      var HIT_R = circ.width * 0.025;
+      if (bestDist > HIT_R || !bestPt) return;
+
+      // Build tooltip content
+      var tt = document.getElementById('rz-tooltip');
+      if (!tt) return;
+      var modN = parseInt(document.getElementById('rz-mod').value) || 49;
+      var html = '';
+
+      if (bestType === 'farey') {
+        var p = bestPt;
+        var g = gcd(p.r, p.m);
+        var phi = (function(n){ var r=n,m=n; for(var pp=2;pp*pp<=m;pp++){if(m%pp===0){r-=r/pp;while(m%pp===0)m/=pp;}}if(m>1)r-=r/m;return Math.round(r); })(p.m);
+        var ang = (rzAngle+90)*Math.PI/180;
+        var a   = 2*Math.PI*p.r/(p.m||1) + ang;
+        var deg = ((a*180/Math.PI)%360+360)%360;
+        var col = p.gcd1 ? '#4a90d9' : '#c94040';
+        html = '<div style="color:'+col+';font-weight:bold;margin-bottom:5px;font-size:0.72rem;">'+p.r+'/'+p.m+'</div>'
+          +'<div>r = <span style="color:'+col+'">'+p.r+'</span></div>'
+          +'<div>m = <span style="color:'+col+'">'+p.m+'</span></div>'
+          +'<div>gcd = <span style="color:'+col+'">'+g+'</span></div>'
+          +'<div style="border-top:1px solid rgba(168,85,247,0.2);margin:5px 0;"></div>'
+          +'<div>angle = '+deg.toFixed(2)+'°</div>'
+          +'<div>decimal = '+(p.r/p.m).toFixed(6)+'</div>'
+          +'<div style="color:#9a8060;">φ('+p.m+') = '+phi+'</div>'
+          +'<div style="color:#9a8060;">ring '+p.m+' of '+modN+'</div>';
+      } else {
+        var z = bestPt;
+        var rFrac = (z.t / modN).toFixed(4);
+        var delta = z.idx > 0 ? (z.t - RZ_ZEROS[z.idx-1]).toFixed(4) : '—';
+        var nextT = z.idx+1 < RZ_ZEROS.length ? (RZ_ZEROS[z.idx+1]-z.t).toFixed(4) : '—';
+        // nearest Farey fraction to t/modN on outer ring
+        var target = z.t / modN;
+        var nearestFarey = { r: 0, m: 1, dist: 1 };
+        _rzPtCache.forEach(function(fp){
+          if(fp.m !== modN) return;
+          var fv = fp.r/fp.m;
+          // angular position of this Farey point on outer ring
+          var a0 = (rzAngle+90)*Math.PI/180;
+          var fa = (2*Math.PI*fp.r/fp.m + a0)*180/Math.PI;
+          var za = (0 + a0)*180/Math.PI; // zero is at angOff=0 direction
+          var df = Math.abs(fp.r/fp.m - target); if(df>0.5)df=1-df;
+          if(df < nearestFarey.dist){ nearestFarey={r:fp.r,m:fp.m,dist:df}; }
+        });
+        html = '<div style="color:#e879f9;font-weight:bold;margin-bottom:5px;font-size:0.72rem;">γ'+(z.idx+1)+'</div>'
+          +'<div>t = <span style="color:#e879f9;">'+z.t.toFixed(6)+'</span></div>'
+          +'<div>t/modN = <span style="color:#ffd700;">'+rFrac+'</span></div>'
+          +'<div style="border-top:1px solid rgba(168,85,247,0.2);margin:5px 0;"></div>'
+          +'<div>Δt prev = '+delta+'</div>'
+          +'<div>Δt next = '+nextT+'</div>'
+          +'<div style="color:#9a8060;">nearest outer: '+nearestFarey.r+'/'+nearestFarey.m+'</div>'
+          +'<div style="color:#9a8060;">t/(2π) = '+(z.t/(2*Math.PI)).toFixed(4)+'</div>';
+      }
+
+      tt.innerHTML = html;
+      // Position tooltip near click, keep in canvas bounds
+      var cOffW = circ.offsetWidth, cOffH = circ.offsetHeight;
+      var px = (mx / scale), py = (my / scale);
+      var tw = 190, th = 175;
+      var left = px + 14, top = py - th/2;
+      if (left + tw > cOffW)  left = px - tw - 14;
+      if (top < 0)            top = 4;
+      if (top + th > cOffH)   top = cOffH - th - 4;
+      tt.style.left = left+'px'; tt.style.top = top+'px';
+      tt.style.display = 'block';
+    });
     rzDraw();
   });
 
