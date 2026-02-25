@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gap-Class Decomposition of ζ(2) = π²/6 | Mathematical Research Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Inter:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --parchment:      #f5edd6;
@@ -185,6 +185,61 @@
             background: #050402 !important;
             border-color: var(--panel-border) !important;
         }
+
+        /* ═══ FONT THEMES ═══ */
+        /* Default: Cinzel (current — mathematical/epigraphic) */
+        body.font-inter {
+            font-family: 'Inter', 'Helvetica Neue', sans-serif !important;
+        }
+        body.font-inter .chart-title, body.font-inter h1, body.font-inter h2,
+        body.font-inter h3, body.font-inter h4, body.font-inter label,
+        body.font-inter button, body.font-inter .btn,
+        body.font-inter [style*="Cinzel"] {
+            font-family: 'Inter', sans-serif !important;
+            letter-spacing: 0.01em !important;
+            text-transform: none !important;
+        }
+        body.font-sourceserif {
+            font-family: 'Source Serif 4', Georgia, serif !important;
+        }
+        body.font-sourceserif .chart-title, body.font-sourceserif h1, body.font-sourceserif h2,
+        body.font-sourceserif h3, body.font-sourceserif h4, body.font-sourceserif label,
+        body.font-sourceserif button, body.font-sourceserif .btn,
+        body.font-sourceserif [style*="Cinzel"] {
+            font-family: 'Source Serif 4', Georgia, serif !important;
+            letter-spacing: 0.02em !important;
+            text-transform: none !important;
+        }
+        body.font-mono {
+            font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+        }
+        body.font-mono .chart-title, body.font-mono h1, body.font-mono h2,
+        body.font-mono h3, body.font-mono h4, body.font-mono label,
+        body.font-mono button, body.font-mono .btn,
+        body.font-mono [style*="Cinzel"] {
+            font-family: 'JetBrains Mono', monospace !important;
+            letter-spacing: 0.02em !important;
+            text-transform: none !important;
+        }
+        /* Font toggle button */
+        #font-toggle {
+            position: fixed;
+            top: 18px;
+            right: 110px;
+            z-index: 9999;
+            background: var(--ink);
+            color: var(--parchment);
+            border: 1px solid var(--border);
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            padding: 6px 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s, color 0.3s;
+        }
+        #font-toggle:hover { background: var(--gold); color: var(--parchment); }
+        body.dark-mode #font-toggle { background: #1e1810; color: var(--gold-light); border-color: var(--gold); }
 
         /* ═══ DARK MODE TOGGLE ═══ */
         #dark-mode-toggle {
@@ -1549,7 +1604,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
     <header class="header">
         <h1>Gap-Class Decomposition of ζ(2) = π²/6</h1>
         <div class="subtitle">A Partition of the Euler Product by Prime Gap Class: Numerical Evidence and Open Questions</div>
@@ -1568,7 +1623,8 @@
         </div>
     </header>
     
-    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw(); if(typeof renderAllCharts==='function' && window.analysisResults) renderAllCharts(); if(typeof m_drawGraph==='function') m_drawGraph();">☾ Dark</button>
+    <button id="font-toggle" onclick="cycleFontTheme()" title="Switch font">Aa Cinzel</button>
+    <button id="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode'); this.textContent = document.body.classList.contains('dark-mode') ? '☾ Dark' : '☀ Light'; if(typeof fareyRedraw==='function') fareyRedraw(); if(typeof rzDraw==='function' && window._rzVisible) rzDraw(); if(typeof renderAllCharts==='function' && window.analysisResults) renderAllCharts(); if(typeof m_drawGraph==='function') m_drawGraph();">☀ Light</button>
 
     <div class="introduction">
         <div class="intro-section">
@@ -1584,15 +1640,6 @@
 
               <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px 24px;align-items:start;">
-
-                  <!-- Mod N -->
-                  <div>
-                    <div style="margin-bottom:5px;color:var(--gold);">MOD N (max denominator)</div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <input id="f-mod" type="range" min="2" max="200" value="49" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
-                      <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:54px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(200,v);fareyRedraw()">
-                    </div>
-                  </div>
 
                   <!-- Label mode -->
                   <div>
@@ -1742,15 +1789,40 @@
                     </div>
                   </div>
                   <div>
-                    <div style="margin-bottom:5px;color:var(--gold);">SAME-MOD CONNECTIONS</div>
+                    <div style="margin-bottom:5px;color:var(--gold);">RING POLYGON</div>
                     <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
                       <input id="f-samemod" type="checkbox" onchange="fareyRedraw()" style="accent-color:var(--gold);">
-                      <span>Connect r → r+1 (same m)</span>
+                      <span>Draw polygon connecting residues around each ring</span>
                     </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:4px;">
+                    <div style="margin-top:6px;color:var(--gold);font-size:0.58rem;letter-spacing:0.06em;">POINTS TO CONNECT</div>
+                    <select id="f-samemod-filter" onchange="fareyRedraw()" style="margin-top:3px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
+                      <option value="gcd1">gcd=1 only  (mod 4 → square, mod 8 → square…)</option>
+                      <option value="all">All points  (mod 4 → square, mod 8 → octagon…)</option>
+                      <option value="gcd2">gcd&gt;1 only</option>
+                    </select>
+                    <div style="margin-top:8px;color:var(--gold);font-size:0.58rem;letter-spacing:0.06em;">WHICH RINGS</div>
+                    <select id="f-samemod-rings" onchange="fareyRedraw()" style="margin-top:3px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
+                      <option value="outer">Outer ring only (mod N)</option>
+                      <option value="all">All rings</option>
+                      <option value="outer5">Outer 5 rings</option>
+                    </select>
+                    <label style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:8px;">
                       <input id="f-crossmod" type="checkbox" checked onchange="fareyRedraw()" style="accent-color:var(--gold);">
-                      <span>Connect r → same r in m+1 (exact match only)</span>
+                      <span style="color:var(--gold);font-size:0.58rem;letter-spacing:0.06em;">CROSS-MOD CONNECTIONS (r → same r, ring m→m+1)</span>
                     </label>
+                  </div>
+
+                  <!-- Gap quick-select -->
+                  <div>
+                    <div style="margin-bottom:5px;color:var(--gold);">SHOW GAP OVERLAY</div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                      <input id="f-gap-input" type="text" placeholder="e.g. 2 or 2,4,6" value=""
+                        style="flex:1;min-width:80px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;"
+                        onkeydown="if(event.key==='Enter')fareyGapInputApply()">
+                      <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
+                      <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
+                    </div>
+                    <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;margin-top:3px;min-height:14px;"></div>
                   </div>
 
                   <!-- Same-mod color -->
@@ -1781,7 +1853,9 @@
                 </div>
               </div>
 
-              <!-- The two canvases side by side (split mode) -->
+              <!-- ══ CANVAS AREA ══ -->
+
+              <!-- Split view (two small canvases) -->
               <div id="farey-split-view" style="display:flex;justify-content:center;gap:32px;align-items:flex-start;flex-wrap:wrap;">
                 <div style="text-align:center;">
                   <canvas id="fc-coprime" width="260" height="260" style="cursor:pointer;display:block;" onclick="fareyRotate('coprime')" title="Click to rotate 90°"></canvas>
@@ -1793,55 +1867,127 @@
                 </div>
               </div>
 
-
-              <!-- Single combined/flip canvas (shown when panel open) -->
+              <!-- Combined view -->
               <div id="farey-combined-view" style="display:none;text-align:center;">
                 <div style="position:relative;display:inline-block;">
                   <canvas id="fc-combined" width="800" height="800" style="cursor:crosshair;display:block;" title="Click a point to inspect it"></canvas>
-                  <!-- Point tooltip -->
                   <div id="farey-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #c49b38;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
                 </div>
-                <div style="margin-top:10px;display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap;">
+
+                <!-- Canvas mode buttons -->
+                <div style="margin-top:10px;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap;">
                   <button onclick="fareyCombinedMode('both')"       id="fcm-both"       style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--gold);color:var(--parchment);cursor:pointer;">Combined</button>
                   <button onclick="fareyCombinedMode('coprime')"    id="fcm-coprime"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #4a90d9;background:var(--parchment-dark);color:#4a90d9;cursor:pointer;">gcd=1</button>
                   <button onclick="fareyCombinedMode('noncoprime')" id="fcm-noncoprime" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">gcd&gt;1</button>
-                  <span style="color:var(--border);padding:0 2px;">|</span>
-                  <button id="fcm-ar-out"   onclick="fareyToggleAutoRotate('out')" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Rotate outer→inner">&#8635; Out→In</button><button id="fcm-autorotate" onclick="fareyToggleAutoRotate()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Rotate</button><button id="fcm-ar-in"    onclick="fareyToggleAutoRotate('in')"  style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Rotate inner→outer">&#8634; In→Out</button><button onclick="fareyRotateReset()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;" title="Reset rotation to 90°">&#11119; Reset</button>
-                  <button id="fcm-inspect"    onclick="fareyToggleInspect()"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect Points</button>
-                  <button id="fcm-chain-clear" onclick="fareyClearChain()" style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
-                  <span style="color:var(--border);padding:0 2px;">|</span>
-                  <button id="fcm-zeros" onclick="fareyToggleZeros()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
-                  <a href="#riemannZerosSection" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;" title="Jump to full Riemann Zero Analysis section">&#8595; Full Analysis</a>
+                  <span style="color:var(--border);">|</span>
+                  <button id="fcm-ar-out"    onclick="fareyToggleAutoRotate('out')" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8635; Out→In</button>
+                  <button id="fcm-autorotate" onclick="fareyToggleAutoRotate()"     style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Rotate</button>
+                  <button id="fcm-ar-in"     onclick="fareyToggleAutoRotate('in')"  style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8634; In→Out</button>
+                  <button onclick="fareyRotateReset()"                              style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#11119; Reset</button>
+                  <button id="fcm-inspect"   onclick="fareyToggleInspect()"         style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect</button>
+                  <button id="fcm-chain-clear" onclick="fareyClearChain()"          style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
+                  <span style="color:var(--border);">|</span>
+                  <button id="fcm-zeros"     onclick="fareyToggleZeros()"           style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
+                  <a href="#riemannZerosSection"                                    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;">&#8595; Zeros</a>
                 </div>
-                <div id="fc-combined-label" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-top:6px;">Combined · click canvas to rotate 90°</div>
-              <!-- Gap overlay opacity slider -->
-              <div id="farey-gap-overlay-controls" style="display:none;margin-top:6px;align-items:center;gap:8px;font-family:'Cinzel',serif;font-size:0.58rem;color:#4a90d9;">
-                <span>OVERLAY OPACITY</span>
-                <input id="f-overlay-alpha" type="range" min="10" max="100" value="80" style="flex:1;accent-color:#4a90d9;" oninput="document.getElementById('f-overlay-alpha-val').textContent=this.value+'%';if(window._overlayGap!==null&&window._overlayGap!==undefined){fareyRedraw();}">
-                <span id="f-overlay-alpha-val" style="min-width:32px;text-align:right;">80%</span>
-              </div>
-              <!-- Gap overlay stats bar -->
-              <div id="farey-gap-overlay-bar" style="display:none;margin-top:10px;padding:10px 16px;background:rgba(10,30,60,0.85);border:1px solid #4a90d9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.07em;color:#e8d9b0;text-align:center;">
-                <span id="farey-gap-overlay-info"></span>
-                &nbsp;&nbsp;
-                <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#10005; Clear</button>
-              </div>
 
-              <!-- Multi-point chain measurement panel -->
-              <div id="farey-chain-panel" style="display:none;margin-top:10px;padding:12px 16px;background:var(--parchment-dark);border:1px solid #e879f9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.06em;color:var(--ink);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                  <span id="farey-chain-title" style="color:#e879f9;font-weight:bold;letter-spacing:0.12em;font-size:0.65rem;"></span>
-                  <button onclick="fareyChainCopy()" style="font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #e879f9;background:transparent;color:#e879f9;cursor:pointer;">&#x2398; Copy CSV</button>
+                <!-- Canvas sub-label -->
+                <div id="fc-combined-label" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-top:5px;">Combined · click canvas to rotate 90°</div>
+
+                <!-- Gap animation bar (shown when gap active) -->
+                <div id="farey-gap-overlay-controls" style="display:none;margin-top:6px;align-items:center;gap:8px;font-family:'Cinzel',serif;font-size:0.58rem;color:#4a90d9;flex-wrap:wrap;justify-content:center;">
+                  <span>OPACITY</span>
+                  <input id="f-overlay-alpha" type="range" min="10" max="100" value="80" style="width:70px;accent-color:#4a90d9;" oninput="document.getElementById('f-overlay-alpha-val').textContent=this.value+'%';if(window._overlayGap!==null&&window._overlayGap!==undefined){fareyRedraw();}">
+                  <span id="f-overlay-alpha-val" style="min-width:28px;">80%</span>
+                  <span style="color:var(--border);">|</span>
+                  <button id="fcm-gap-play" onclick="fareyGapAnimToggle()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:3px 12px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#9654; Play</button>
+                  <span style="color:#9a8060;">SPEED</span>
+                  <input id="f-anim-speed" type="range" min="1" max="10" value="5" style="width:60px;accent-color:#e879f9;">
+                  <label style="color:#9a8060;cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="f-anim-loop" checked style="accent-color:#e879f9;"> Loop</label>
                 </div>
-                <div id="farey-chain-info" style="line-height:1.9;"></div>
+
+                <!-- Gap stats bar -->
+                <div id="farey-gap-overlay-bar" style="display:none;margin-top:8px;padding:8px 16px;background:rgba(10,30,60,0.85);border:1px solid #4a90d9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:#e8d9b0;text-align:center;">
+                  <span id="farey-gap-overlay-info"></span>
+                  &nbsp;
+                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.56rem;text-transform:uppercase;padding:2px 8px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#10005; Clear</button>
+                </div>
+
+                <!-- Chain panel -->
+                <div id="farey-chain-panel" style="display:none;margin-top:8px;padding:12px 16px;background:var(--parchment-dark);border:1px solid #e879f9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:var(--ink);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span id="farey-chain-title" style="color:#e879f9;font-weight:bold;font-size:0.65rem;"></span>
+                    <button onclick="fareyChainCopy()" style="font-family:'Cinzel',serif;font-size:0.55rem;text-transform:uppercase;padding:3px 10px;border:1px solid #e879f9;background:transparent;color:#e879f9;cursor:pointer;">&#x2398; Copy CSV</button>
+                  </div>
+                  <div id="farey-chain-info" style="line-height:1.9;"></div>
+                </div>
+
+                <!-- Export row -->
+                <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+                  <button onclick="fareyComposite()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#8615; Export Composite PNG</button>
+                  <button onclick="fareyTriangleExport()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#9651; Export Triangle PNG</button>
+                  <button onclick="fareyExportDOM()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;border:1px solid #3b82f6;padding:5px 14px;cursor:pointer;">&#9633; Export DOM PNG</button>
+                  <button onclick="fareyExportCSV()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:1px solid #22c55e;padding:5px 14px;cursor:pointer;">&#8681; Export CSV</button>
+                </div>
               </div>
 
+              <!-- ══ MOD N + PARAMETERS (always visible below canvas) ══ -->
+              <div style="margin-top:14px;padding:12px 16px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
+                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">MOD N</span>
+                  <input id="f-mod" type="range" min="2" max="2000" value="49" style="width:200px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
+                  <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:58px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(2000,v);fareyRedraw()">
+                  <span style="color:var(--border);">|</span>
+                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">GAP OVERLAY</span>
+                  <input id="f-gap-input" type="text" placeholder="e.g. 2 or 2,4,6" style="width:120px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
+                  <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
+                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
+                  <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;min-width:10px;"></div>
+                </div>
               </div>
 
-              <!-- Composite export -->
-              <div style="text-align:center;margin-top:14px;">
-                <button onclick="fareyComposite()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:6px 18px;cursor:pointer;">&#8615; Export Composite PNG</button>
-                <button onclick="fareyTriangleExport()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:6px 18px;cursor:pointer;margin-left:8px;">&#9651; Export Triangle PNG</button>
+              <!-- ══ STATS / DESCRIPTION DROPDOWN ══ -->
+              <div id="farey-stats-section" style="margin-top:10px;">
+
+                <!-- Farey Stats dropdown -->
+                <div style="background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;margin-bottom:6px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;cursor:pointer;" onclick="var b=this.nextElementSibling;var a=this.querySelector('.farey-arrow');b.style.display=b.style.display==='none'?'block':'none';a.textContent=b.style.display==='none'?'▶':'▼';">
+                    <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);">&#9632; Farey Structure Statistics</span>
+                    <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▶</span>
+                  </div>
+                  <div style="display:none;padding:12px 16px;">
+                    <div id="farey-live-stats" style="font-family:'Cinzel',serif;font-size:0.62rem;line-height:2;color:var(--ink-mid);"></div>
+                  </div>
+                </div>
+
+                <!-- Gap Overlay Data dropdown -->
+                <div id="farey-gap-stats-panel" style="display:none;background:var(--parchment-dark);border:1px solid rgba(74,144,217,0.4);border-radius:4px;margin-bottom:6px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;cursor:pointer;" onclick="var b=this.nextElementSibling;var a=this.querySelector('.farey-arrow');b.style.display=b.style.display==='none'?'block':'none';a.textContent=b.style.display==='none'?'▶':'▼';">
+                    <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#4a90d9;">&#9632; Gap Overlay Data</span>
+                    <span class="farey-arrow" style="color:#4a90d9;font-size:0.7rem;">▶</span>
+                  </div>
+                  <div style="display:none;padding:12px 16px;">
+                    <div id="farey-gap-stats-content" style="font-family:'Cinzel',serif;font-size:0.62rem;line-height:2;color:var(--ink-mid);"></div>
+                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                      <button onclick="fareyGapStatsExportCSV()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:4px 12px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#8681; CSV</button>
+                      <button onclick="fareyGapStatsExportDOM()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:4px 12px;background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;border:1px solid #3b82f6;cursor:pointer;">&#9633; PNG</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Description dropdown -->
+                <div style="background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;margin-bottom:6px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;cursor:pointer;" onclick="var b=this.nextElementSibling;var a=this.querySelector('.farey-arrow');b.style.display=b.style.display==='none'?'block':'none';a.textContent=b.style.display==='none'?'▶':'▼';">
+                    <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);">&#9632; What This Shows</span>
+                    <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▶</span>
+                  </div>
+                  <div style="display:none;padding:12px 16px;font-family:Georgia,serif;font-size:0.8rem;color:var(--ink-mid);line-height:1.7;">
+                    <p>Each point r/m (0 ≤ r ≤ m, 1 ≤ m ≤ mod N) is plotted at angle 2πr/m on ring m. Points with gcd(r,m)=1 (blue) are the Farey fractions — their distribution is uniform on the critical line Re(s)=½ in the sense of Franel-Landau. Points with gcd(r,m)&gt;1 (red) reveal the multiplicative structure.</p>
+                    <p>The <strong>cross-mod connections</strong> trace how each residue r threads through rings 1→modN — these are the channels along which prime gap residues cluster. The <strong>ring polygon</strong> connects consecutive residues around a single ring: at mod 4 (gcd=1) you get a square; at mod 8 an octagon (all) or square (gcd=1 only).</p>
+                    <p>The <strong>gap overlay</strong> highlights the residue pairs (p mod N, (p+g) mod N) for primes in gap class g — the chords connecting r₁ to r₂ on the outer ring, with the inward spiral showing the full cross-mod path.</p>
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -2973,59 +3119,58 @@
 
         <!-- ══ RIEMANN ZEROS ANALYSIS ══ -->
         <div class="chart-wrapper" id="riemannZerosSection" style="border:2px solid #a855f7;">
-            <div class="chart-title" style="color:#a855f7;">Riemann Zero Heights t&#8319; on the Critical Axis · Farey Angular DFT</div>
-            <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:12px;">
-                <strong>What this shows:</strong> The GCD=1 Farey points at mod N are plotted on concentric rings. Their distribution pins to 90°/270° by the mod 4 coprimality constraint — this is the geometric image of Re(s) = ½, the critical line. The known non-trivial zero heights t&#8319; of ζ(s) are placed as radial tick marks along that axis, scaled so that t&#8319; = modN falls at the outer ring — meaning at a given mod the zeros that fit within the circle are exactly those whose imaginary part is ≤ modN.
-                <br><br>
-                The lower panel shows the <strong>Farey discrepancy</strong> D<sub>N</sub> — the maximum deviation of the Farey sequence F<sub>N</sub> from uniform distribution — plotted against the Riemann Hypothesis bound O(N<sup>−½</sup> log N) (Franel–Landau 1924). Under RH the discrepancy must stay below this envelope. The zero heights t&#8319; are marked on the x-axis; the first zero γ₁ ≈ 14.13 sets the scale at which oscillations first appear in the discrepancy.
-                <br><br>
-                <strong>Controls:</strong> Mod N governs both which Farey points appear and how many zeros fall within the circle. The zeros slider requests up to that many zeros but the display auto-caps to however many fit without overlap. The <em>ζ Riemann t</em> button in the Farey visualiser above overlays the same zeros on the interactive canvas.
-            </div>
-            <!-- Interpretation / notes area -->
-            <div style="margin-bottom:18px;">
-                <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-bottom:6px;">Your Interpretation &amp; Notes</div>
-                <textarea id="rz-notes" placeholder="Describe what you observe — e.g. how zeros cluster near specific rings, whether the discrepancy stays below the RH envelope at this mod N, patterns in the critical-axis tick spacing…" style="width:100%;box-sizing:border-box;min-height:90px;resize:vertical;background:var(--parchment-deep);color:var(--ink);border:1px solid rgba(168,85,247,0.35);border-radius:4px;padding:10px 12px;font-family:Georgia,serif;font-size:0.82rem;line-height:1.55;outline:none;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"></textarea>
+            <div class="chart-title" style="color:#a855f7;">Riemann Zeros &amp; Farey Structure</div>
+            <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:14px 16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:16px;">
+                Each non-trivial zero ρ = ½ + it&#8319; of ζ(s) contributes a rotating phase <strong>e<sup>it&#8319; log N</sup></strong> to the Farey discrepancy sum. Use the <strong style="color:#a855f7;">ζ Riemann t</strong> button in the Farey visualiser above to see these phases plotted on the outer ring — as mod N changes the dots rotate, and when they align the discrepancy spikes (Franel–Landau 1924). The two panels below show the frequency structure and the RH bound directly.
             </div>
 
-            <!-- Zero overlay canvas -->
-            <div style="position:relative;text-align:center;margin-bottom:24px;">
-                <canvas id="rz-circle-canvas" width="700" height="700" style="display:inline-block;background:var(--canvas-bg);border:1px solid var(--border);border-radius:50%;cursor:pointer;" title="Click to rotate 90°"></canvas>
-                <!-- Inspect tooltip -->
-                <div id="rz-tooltip" style="display:none;position:absolute;background:rgba(14,11,5,0.97);border:1px solid rgba(168,85,247,0.55);border-radius:5px;padding:10px 13px;font-family:'Cinzel',serif;font-size:0.62rem;color:#e8d9b0;pointer-events:none;z-index:100;min-width:170px;line-height:1.7;"></div>
-                <div id="rz-canvas-label" style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-top:8px;">
-                    GCD=1 Farey points (mod N) · Purple = critical axis Re(s)=½ · Pink = zero heights t&#8319;
-                    &nbsp;·&nbsp; <span style="color:#888;">Click to rotate · or use Inspect</span>
-                </div>
-            </div>
-            <!-- Inspect button row -->
-            <div style="text-align:center;margin-bottom:12px;">
-                <button id="rz-inspect-btn" onclick="rzToggleInspect()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#9679; Inspect Points</button>
+            <!-- Panel A: DFT bar chart -->
+            <div id="rz-dft-wrap" style="margin-bottom:6px;">
+              <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.09em;text-transform:uppercase;color:#a855f7;margin-bottom:5px;padding:0 2px;">
+                &#9656; Farey Angular DFT Spectrum
+              </div>
+              <div style="font-family:Georgia,serif;font-size:0.78rem;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;padding:7px 12px;background:rgba(168,85,247,0.04);border-left:3px solid rgba(168,85,247,0.35);border-radius:0 4px 4px 0;">
+                Fourier spectrum of the GCD=1 angular distribution at mod N. Gold lines mark predicted peaks at k&nbsp;≈&nbsp;t&#8319;/2π from each Riemann zero — peaks sharpen toward those positions as N grows. <span style="color:#9a8060;">Hover bars to read magnitude.</span>
+              </div>
+              <div style="position:relative;">
+                <canvas id="rz-dft-canvas" width="1200" height="260" style="display:block;width:100%;background:var(--canvas-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;cursor:crosshair;"></canvas>
+                <div id="rz-dft-tooltip" style="display:none;position:absolute;background:rgba(14,11,5,0.96);border:1px solid rgba(168,85,247,0.5);border-radius:4px;padding:8px 11px;font-family:'Cinzel',serif;font-size:0.6rem;color:#e8d9b0;pointer-events:none;z-index:50;white-space:nowrap;"></div>
+              </div>
             </div>
 
-            <!-- DFT spectrum canvas -->
-            <canvas id="rz-spectrum-canvas" width="1200" height="260" style="display:block;width:100%;background:var(--canvas-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:12px;"></canvas>
+            <!-- Panel B: Farey discrepancy vs RH bound -->
+            <div id="rz-disc-wrap" style="margin-bottom:12px;">
+              <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.09em;text-transform:uppercase;color:#ffd700;margin-bottom:5px;padding:0 2px;">
+                &#9656; Farey Discrepancy vs Riemann Hypothesis Bound
+              </div>
+              <div style="font-family:Georgia,serif;font-size:0.78rem;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;padding:7px 12px;background:rgba(255,215,0,0.04);border-left:3px solid rgba(255,215,0,0.35);border-radius:0 4px 4px 0;">
+                Purple = actual Farey discrepancy D<sub>N</sub>. Gold dashed = RH bound log&nbsp;N/(2π√N). <strong style="color:#ffd700;">RH ↔ purple stays below gold.</strong> Pink lines mark zero heights t&#8319; on the N-axis. <span style="color:#9a8060;">Hover to read values.</span>
+              </div>
+              <div style="position:relative;">
+                <canvas id="rz-spectrum-canvas" width="1200" height="260" style="display:block;width:100%;background:var(--canvas-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;cursor:crosshair;"></canvas>
+                <div id="rz-disc-tooltip" style="display:none;position:absolute;background:rgba(14,11,5,0.96);border:1px solid rgba(255,215,0,0.5);border-radius:4px;padding:8px 11px;font-family:'Cinzel',serif;font-size:0.6rem;color:#e8d9b0;pointer-events:none;z-index:50;white-space:nowrap;"></div>
+              </div>
+            </div>
 
             <!-- Controls row -->
             <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;margin-bottom:16px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.07em;">
                 <label style="color:var(--gold);">MOD N
-                    <input id="rz-mod" type="number" min="2" max="9999" value="49"
+                    <input id="rz-mod" type="number" min="2" max="9999" value="49" step="1"
                         style="width:60px;margin-left:8px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;"
-                        oninput="rzDraw()">
+                        oninput="this.value=Math.max(2,Math.min(9999,Math.floor(+this.value||2)));rzDraw()">
                 </label>
-                <label style="color:var(--gold);">ZEROS SHOWN
+                <label style="color:var(--gold);">ZEROS
                     <input id="rz-nzeros" type="range" min="5" max="100" value="20"
-                        style="width:90px;margin-left:8px;vertical-align:middle;accent-color:#a855f7;"
+                        style="width:80px;margin-left:8px;vertical-align:middle;accent-color:#a855f7;"
                         oninput="document.getElementById('rz-nzeros-val').textContent=this.value;rzDraw()">
                     <span id="rz-nzeros-val" style="color:#a855f7;min-width:20px;display:inline-block;">20</span>
                 </label>
+
                 <label style="color:var(--gold);">
-                    <input type="checkbox" id="rz-show-labels" checked onchange="rzDraw()" style="accent-color:#a855f7;"> Labels
+                    <input type="checkbox" id="rz-show-dft" checked onchange="rzDraw()" style="accent-color:#a855f7;"> DFT Spectrum
                 </label>
                 <label style="color:var(--gold);">
-                    <input type="checkbox" id="rz-show-axis" checked onchange="rzDraw()" style="accent-color:#a855f7;"> Axis line
-                </label>
-                <label style="color:var(--gold);">
-                    <input type="checkbox" id="rz-show-dft" checked onchange="rzDraw()" style="accent-color:#a855f7;"> Discrepancy
+                    <input type="checkbox" id="rz-show-disc" checked onchange="rzDraw()" style="accent-color:#ffd700;"> Discrepancy
                 </label>
                 <button onclick="rzDraw()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#8635; Redraw</button>
             </div>
@@ -3040,7 +3185,8 @@
                 </div>
                 <div id="rz-dft-legend" style="font-family:monospace;font-size:0.65rem;color:#a855f7;margin-top:10px;line-height:1.8;padding:10px 14px;background:rgba(168,85,247,0.05);border-left:3px solid #a855f7;border-radius:0 4px 4px 0;"></div>
                 <div class="export-row">
-                    <button class="export-btn png" onclick="rzExportPNG()" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);border-color:#a855f7;">Export PNG</button>
+                    <button class="export-btn png" onclick="rzExportPNG()" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);border-color:#a855f7;">Export Canvas PNG</button>
+                    <button class="export-btn png" onclick="rzExportDOM()" style="background:linear-gradient(135deg,#3b82f6,#1e40af);border-color:#3b82f6;">Export DOM PNG</button>
                     <button class="export-btn csv" onclick="rzExportCSV()">Export CSV</button>
                 </div>
             </div>
@@ -3383,10 +3529,7 @@
                         </p>
                         <h4 style="color: var(--gold); margin: 0 0 10px 0; font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase;">Mathematical Tools Suite</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <a href="https://wessengetachew.github.io/Quant" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
-                                <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Gap-Class Decomposition</span>
-                                wessengetachew.github.io/Quant
-                            </a>
+
                             <a href="https://wessengetachew.github.io/G/" target="_blank" style="color: var(--teal-ink); text-decoration: none; background: rgba(78,205,196,0.06); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(78,205,196,0.2); font-size: 0.85rem; display: block;">
                                 <span style="color: var(--gold); font-size: 0.7rem; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.06em;">Interactive Tool</span>
                                 wessengetachew.github.io/G
@@ -3456,7 +3599,6 @@
                             [4] A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scand. Actuarial J. 1 (1995), 12–28.<br>
                             [5] A. E. Ingham, <em>The Distribution of Prime Numbers</em>, Cambridge Tracts in Mathematics, Cambridge University Press (1932).<br>
                             [6] W. Getachew, <em>Gap-Class Decomposition of ζ(2) = π²/6</em>, 2025–2026.
-                            &nbsp;<a href="https://wessengetachew.github.io/Quant" target="_blank" style="color: var(--teal-ink); text-decoration: none;">wessengetachew.github.io/Quant</a>
                         </div>
                         <h4 style="color:var(--ink-light); margin: 18px 0 10px 0; font-size: 1.0rem;">Software &amp; Technology</h4>
                         <div style="color:var(--ink-light); font-size: 0.85rem; line-height: 2.0; font-family: serif;">
@@ -11874,7 +12016,36 @@
       rzMod.value = topMod.value;
       if (window._rzVisible && typeof rzDraw === 'function') rzDraw();
     }
+    // Update live stats panel
+    fareyUpdateLiveStats();
   };
+
+  // ── Live stats updater ───────────────────────────────────────────────────
+  function fareyUpdateLiveStats() {
+    var el = document.getElementById('farey-live-stats');
+    if (!el) return;
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var fracs = buildFractions(modN);
+    var cop = fracs.cop.length, ncp = fracs.ncp.length, total = cop + ncp;
+    var ratio = total > 0 ? (cop / total) : 0;
+    // ζ(2) = π²/6, expected GCD=1 ratio = 6/π²
+    var zetaRatio = 6 / (Math.PI * Math.PI);
+    var diff = Math.abs(ratio - zetaRatio);
+    var diffPct = (diff / zetaRatio * 100).toFixed(3);
+    // Euler phi sum = Σφ(m) for m=1..N ≈ 3N²/π²
+    var phiSum = fracs.cop.filter(function(p){ return p.m >= 1; }).length;
+    el.innerHTML =
+      '<span style="color:var(--gold);">Mod N</span>: <strong>' + modN + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:var(--gold);">Total points</span>: <strong>' + total.toLocaleString() + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:#4a90d9;">gcd=1 (coprime)</span>: <strong>' + cop.toLocaleString() + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:#c94040;">gcd&gt;1</span>: <strong>' + ncp.toLocaleString() + '</strong>'
+      + '<br>'
+      + '<span style="color:var(--gold);">Ratio cop/total</span>: <strong>' + ratio.toFixed(6) + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:var(--gold);">6/π² (1/ζ(2))</span>: <strong>' + zetaRatio.toFixed(6) + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:' + (diff < 0.005 ? '#a8e6cf' : '#ffd700') + ';">Δ = ' + diffPct + '%</span>'
+      + '<br>'
+      + '<span style="color:#9a8060;font-size:0.58rem;">As mod N → ∞, cop/total → 6/π² ≈ ' + zetaRatio.toFixed(8) + ' (the density of square-free integers)</span>';
+  }
 
   window.fareyResize = function(){
     var sz = parseInt(document.getElementById('f-size-num').value)||260;
@@ -11893,7 +12064,11 @@
       for(var r=0;r<=m;r++){
         var g=gcd(r,m);
         if(r===0||r===m){
-          if(m===1) cop.push({r:r,m:m});
+          // 0/1 and 1/1 are the canonical endpoints (coprime by convention)
+          if(m===1){ cop.push({r:r,m:m}); }
+          // 0/m and m/m for m>1 are gcd=m (non-coprime) — include in ncp
+          // so "all points" polygon gets the full 0..m vertex set
+          else { ncp.push({r:r,m:m}); }
         } else if(g===1){
           cop.push({r:r,m:m});
         } else {
@@ -12012,42 +12187,41 @@
       ctx.globalAlpha=1;
     }
 
-    // ── same-mod connections: polygon connecting all points on each ring ──
+    // ── ring polygon ───────────────────────────────────────────────────────
     if(showSameMod){
-      var byM={};
-      pts.forEach(function(p){ if(!byM[p.m]) byM[p.m]=[]; byM[p.m].push(p); });
-      var mList=Object.keys(byM).map(Number).sort(function(a,b){return a-b;});
-
-      mList.forEach(function(m,mi){
-        // sort points by angle (r/m) so they connect in order around the ring
-        var ring=byM[m].slice().sort(function(a,b){return a.r/a.m - b.r/b.m;});
+      var polyFilter = (document.getElementById('f-samemod-filter')||{value:'gcd1'}).value;
+      var polyRings  = (document.getElementById('f-samemod-rings')||{value:'outer'}).value;
+      function gcdLoc(a,b){while(b){var t=b;b=a%b;a=t;}return a;}
+      var allF = buildFractions(modN);
+      var srcPts2;
+      if      (polyFilter==='gcd1') srcPts2 = allF.cop;
+      else if (polyFilter==='gcd2') srcPts2 = allF.ncp;
+      else                          srcPts2 = allF.cop.concat(allF.ncp);
+      var byM2={};
+      srcPts2.forEach(function(p){ if(!byM2[p.m]) byM2[p.m]=[]; byM2[p.m].push(p); });
+      var mList2=Object.keys(byM2).map(Number).sort(function(a,b){return a-b;});
+      var ringsToDraw2;
+      if      (polyRings==='outer')  ringsToDraw2=[modN];
+      else if (polyRings==='outer5') ringsToDraw2=mList2.slice(-5);
+      else                           ringsToDraw2=mList2;
+      ringsToDraw2.forEach(function(m){
+        var ring=(byM2[m]||[]).slice().sort(function(a,b){return a.r/a.m-b.r/b.m;});
         if(ring.length<2) return;
-
+        var mi=mList2.indexOf(m);
         var lc;
         if(sameModColMode==='permod'){
-          var h=Math.round(360*mi/Math.max(mList.length-1,1));
+          var h=Math.round(360*mi/Math.max(mList2.length-1,1));
           lc='hsl('+h+',72%,58%)';
         } else if(sameModColMode==='gradient'){
           var t=(m-1)/(modN-1||1);
-          var ri=Math.round(42+(180-42)*t), gi=Math.round(90+(60-90)*t), bi=Math.round(180+(20-180)*t);
-          lc='rgb('+ri+','+gi+','+bi+')';
-        } else {
-          lc=sameModFixedCol;
-        }
-
-        ctx.strokeStyle=lc;
-        ctx.lineWidth=sameModThick;
-        ctx.globalAlpha=0.18+0.50*(m/modN);
+          lc='rgb('+Math.round(42+(180-42)*t)+','+Math.round(90+(60-90)*t)+','+Math.round(180+(20-180)*t)+')';
+        } else { lc=sameModFixedCol; }
+        ctx.strokeStyle=lc; ctx.lineWidth=sameModThick;
+        ctx.globalAlpha=0.25+0.75*(m/modN);
         ctx.beginPath();
-        var first=ptXY(ring[0].r,ring[0].m);
-        ctx.moveTo(first.x,first.y);
-        for(var i=1;i<ring.length;i++){
-          var pp=ptXY(ring[i].r,ring[i].m);
-          ctx.lineTo(pp.x,pp.y);
-        }
-        // close the polygon back to first point
-        ctx.lineTo(first.x,first.y);
-        ctx.stroke();
+        var f2=ptXY(ring[0].r,ring[0].m); ctx.moveTo(f2.x,f2.y);
+        for(var i=1;i<ring.length;i++){ var pp2=ptXY(ring[i].r,ring[i].m); ctx.lineTo(pp2.x,pp2.y); }
+        ctx.lineTo(f2.x,f2.y); ctx.stroke();
       });
       ctx.globalAlpha=1;
     }
@@ -12215,6 +12389,69 @@
   };
 
   // ── Mertens PNG export ────────────────────────────────────────────────────
+  // ── Farey DOM export ──────────────────────────────────────────────────────
+  window.fareyExportDOM = function() {
+    var root = document.getElementById('farey-root');
+    if (!root) { alert('Farey section not found.'); return; }
+    if (typeof html2canvas === 'undefined') { alert('html2canvas not loaded.'); return; }
+    html2canvas(root, { backgroundColor: '#0a0a0f', scale: 2, useCORS: true }).then(function(canvas) {
+      var a = document.createElement('a');
+      a.download = 'farey_mod' + (document.getElementById('f-mod-num').value||'?') + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  };
+
+  // ── Farey CSV export ──────────────────────────────────────────────────────
+  window.fareyExportCSV = function() {
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var fracs = buildFractions(modN);
+    var rows = ['r,m,gcd,fraction,angle_deg,type'];
+    function gcdLocal(a,b){while(b){var t=b;b=a%b;a=t;}return a;}
+    fracs.cop.concat(fracs.ncp).sort(function(a,b){return a.m-b.m||a.r-b.r;}).forEach(function(p){
+      var g = gcdLocal(p.r, p.m);
+      rows.push([p.r, p.m, g, (p.r/p.m).toFixed(8), (360*p.r/p.m).toFixed(4), g===1?'coprime':'noncoprime'].join(','));
+    });
+    var blob = new Blob([rows.join('\n')], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.download = 'farey_mod' + modN + '.csv';
+    a.href = URL.createObjectURL(blob);
+    a.click();
+  };
+
+  // ── Gap stats CSV export ───────────────────────────────────────────────────
+  window.fareyGapStatsExportCSV = function() {
+    var el = document.getElementById('farey-gap-stats-content');
+    if (!el || !window._overlayGap) { alert('No gap data active.'); return; }
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var pairs = window._overlayPairs || [];
+    var rows = ['prime,r1,r2,gap,modN'];
+    pairs.forEach(function(p){ rows.push([p.p, p.r1, p.r2, p.gap||window._overlayGap, modN].join(',')); });
+    var blob = new Blob([rows.join('\n')], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.download = 'farey_gap' + window._overlayGap + '_mod' + modN + '.csv';
+    a.href = URL.createObjectURL(blob);
+    a.click();
+  };
+
+  // ── Gap stats DOM PNG export ───────────────────────────────────────────────
+  window.fareyGapStatsExportDOM = function() {
+    var panel = document.getElementById('farey-gap-stats-panel');
+    if (!panel || !window._overlayGap) { alert('No gap data active.'); return; }
+    // Temporarily show the body if hidden
+    var body = document.getElementById('farey-gap-stats-body') || panel.querySelector('div:nth-child(2)');
+    var wasHidden = body && body.style.display === 'none';
+    if (wasHidden && body) body.style.display = 'block';
+    if (typeof html2canvas === 'undefined') { alert('html2canvas not loaded.'); return; }
+    html2canvas(panel, { backgroundColor: '#0a0a0f', scale: 2 }).then(function(canvas) {
+      if (wasHidden && body) body.style.display = 'none';
+      var a = document.createElement('a');
+      a.download = 'farey_gap_data_mod' + (document.getElementById('f-mod-num').value||'?') + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  };
+
   window.mertensExportPNG = function(){
     var src = document.getElementById('m_graphCanvas');
     if(!src){ alert('Mertens chart not rendered yet.'); return; }
@@ -12808,7 +13045,8 @@
     var lcolors= {both:'var(--gold)', coprime:'#4a90d9', noncoprime:'#c94040'};
     var lbl = document.getElementById('fc-combined-label');
     lbl.textContent = labels[mode]; lbl.style.color = lcolors[mode];
-    drawCombined();
+    // Use fareyRedraw so gap overlay hook fires after canvas switch
+    if (typeof window.fareyRedraw === 'function') { window.fareyRedraw(); } else { drawCombined(); }
   };
 
   window.fareyCombinedClick = function(){
@@ -12917,25 +13155,43 @@
         ctx.globalAlpha=1;
       }
 
-      // same-mod polygon
+      // ring polygon
       if(showSameMod){
-        var byM={};
-        pts.forEach(function(p){ if(!byM[p.m]) byM[p.m]=[]; byM[p.m].push(p); });
-        var mList=Object.keys(byM).map(Number).sort(function(a,b){return a-b;});
-        mList.forEach(function(m,mi){
-          var ring=byM[m].slice().sort(function(a,b){return a.r/a.m-b.r/b.m;});
-          if(ring.length<2) return;
-          var lc;
-          if(sameModColMode==='permod'){ var h=Math.round(360*mi/Math.max(mList.length-1,1)); lc='hsl('+h+',72%,58%)'; }
-          else if(sameModColMode==='gradient'){ var t=(m-1)/(modN-1||1); lc='rgb('+Math.round(42+(180-42)*t)+','+Math.round(90+(60-90)*t)+','+Math.round(180+(20-180)*t)+')'; }
-          else { lc=sameModFixedCol; }
-          ctx.strokeStyle=lc; ctx.lineWidth=sameModThick; ctx.globalAlpha=0.18+0.50*(m/modN);
-          ctx.beginPath();
-          var f=ptXY(ring[0].r,ring[0].m); ctx.moveTo(f.x,f.y);
-          for(var i=1;i<ring.length;i++){ var pp=ptXY(ring[i].r,ring[i].m); ctx.lineTo(pp.x,pp.y); }
-          ctx.lineTo(f.x,f.y); ctx.stroke();
-        });
-        ctx.globalAlpha=1;
+      var polyFilter = (document.getElementById('f-samemod-filter')||{value:'gcd1'}).value;
+      var polyRings  = (document.getElementById('f-samemod-rings')||{value:'outer'}).value;
+      function gcdLoc(a,b){while(b){var t=b;b=a%b;a=t;}return a;}
+      var allF = buildFractions(modN);
+      var srcPts2;
+      if      (polyFilter==='gcd1') srcPts2 = allF.cop;
+      else if (polyFilter==='gcd2') srcPts2 = allF.ncp;
+      else                          srcPts2 = allF.cop.concat(allF.ncp);
+      var byM2={};
+      srcPts2.forEach(function(p){ if(!byM2[p.m]) byM2[p.m]=[]; byM2[p.m].push(p); });
+      var mList2=Object.keys(byM2).map(Number).sort(function(a,b){return a-b;});
+      var ringsToDraw2;
+      if      (polyRings==='outer')  ringsToDraw2=[modN];
+      else if (polyRings==='outer5') ringsToDraw2=mList2.slice(-5);
+      else                           ringsToDraw2=mList2;
+      ringsToDraw2.forEach(function(m){
+        var ring=(byM2[m]||[]).slice().sort(function(a,b){return a.r/a.m-b.r/b.m;});
+        if(ring.length<2) return;
+        var mi=mList2.indexOf(m);
+        var lc;
+        if(sameModColMode==='permod'){
+          var h=Math.round(360*mi/Math.max(mList2.length-1,1));
+          lc='hsl('+h+',72%,58%)';
+        } else if(sameModColMode==='gradient'){
+          var t=(m-1)/(modN-1||1);
+          lc='rgb('+Math.round(42+(180-42)*t)+','+Math.round(90+(60-90)*t)+','+Math.round(180+(20-180)*t)+')';
+        } else { lc=sameModFixedCol; }
+        ctx.strokeStyle=lc; ctx.lineWidth=sameModThick;
+        ctx.globalAlpha=0.25+0.75*(m/modN);
+        ctx.beginPath();
+        var f2=ptXY(ring[0].r,ring[0].m); ctx.moveTo(f2.x,f2.y);
+        for(var i=1;i<ring.length;i++){ var pp2=ptXY(ring[i].r,ring[i].m); ctx.lineTo(pp2.x,pp2.y); }
+        ctx.lineTo(f2.x,f2.y); ctx.stroke();
+      });
+      ctx.globalAlpha=1;
       }
 
       // cross-mod
@@ -13010,7 +13266,12 @@
   }
 
 
-  // ── Riemann zeros overlay ─────────────────────────────────────────────────
+  // ── Riemann zeros overlay — Franel-Landau phase method ───────────────────
+  // Each zero tₙ maps to angle φₙ = tₙ · log(N) on the outer ring (mod 2π).
+  // This is the phase from the explicit formula: ψ(N) = N − Σ N^ρ/ρ − …
+  // where each ρ = ½+itₙ contributes N^ρ = N^½ · e^{itₙ log N}.
+  // As mod N changes, the phases rotate — constructive interference creates
+  // discrepancy spikes at the scales predicted by Franel-Landau.
   var _showZeros = false;
   var RIEMANN_ZEROS = [
     14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
@@ -13031,78 +13292,91 @@
     fareyRedraw();
   };
 
-  // Draw zero tick-marks on the vertical axis of the combined canvas
   function overlayRiemannZeros(ctx, W, H, rMin, rMax) {
     var cx = W/2, cy = H/2;
-    var tMax = RIEMANN_ZEROS[RIEMANN_ZEROS.length - 1];
-    var dir = parseFloat(document.getElementById('f-dir').value) || 1;
-    var ang = (_combinedAngle || 0) * Math.PI / 180;
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var dir  = parseFloat(document.getElementById('f-dir').value) || 1;
+    var angOff = (_combinedAngle || 0) * Math.PI / 180;
+    var logN = Math.log(Math.max(modN, 2));
 
     ctx.save();
-    RIEMANN_ZEROS.forEach(function(t, i) {
-      var frac = t / tMax;
-      var r = rMin + (rMax - rMin) * frac;
 
-      // 90° axis: fraction = 1/4 → angle = 2π·(1/4)·dir + ang = π/2·dir + ang
-      // 270° axis: fraction = 3/4 → angle = 2π·(3/4)·dir + ang = 3π/2·dir + ang
-      [1, 3].forEach(function(num) {
-        var a = dir * 2 * Math.PI * num / 4 + ang;
-        var x = cx + r * Math.sin(a);
-        var y = cy - r * Math.cos(a);
+    // ── Phase points on outer ring ────────────────────────────────────────
+    // φₙ = tₙ · log(N)  (mod 2π) — place on outer ring radius rMax
+    // Weight by amplitude: N^½ / |ρ| = N^½ / √(¼+tₙ²) — larger tₙ = fainter
+    var nShow = Math.min(RIEMANN_ZEROS.length, 30);
+    RIEMANN_ZEROS.slice(0, nShow).forEach(function(t, i) {
+      var phase = (t * logN) % (2 * Math.PI);
+      var a = dir * phase + angOff;
+      var amplitude = Math.sqrt(modN) / Math.sqrt(0.25 + t * t);
+      var alpha = Math.min(0.95, 0.3 + amplitude * 0.8);
 
-        // tick mark — small cross
-        var tickLen = Math.max(3, W * 0.012);
-        var cos_a = Math.cos(a), sin_a = Math.sin(a);
-        // radial tick
-        ctx.beginPath();
-        ctx.moveTo(x - tickLen * sin_a, y + tickLen * cos_a);
-        ctx.lineTo(x + tickLen * sin_a, y - tickLen * cos_a);
-        ctx.strokeStyle = '#e879f9';
-        ctx.lineWidth = 1.2;
-        ctx.globalAlpha = 0.85;
-        ctx.stroke();
+      // Point on outer ring
+      var x = cx + rMax * Math.sin(a);
+      var y = cy - rMax * Math.cos(a);
 
-        // dot at zero position
-        ctx.beginPath();
-        ctx.arc(x, y, Math.max(1.5, W * 0.004), 0, 2 * Math.PI);
-        ctx.fillStyle = '#e879f9';
-        ctx.globalAlpha = 0.9;
-        ctx.fill();
+      var dotR = Math.max(2.5, W * 0.007 * (1 - i / nShow * 0.5));
+      ctx.beginPath();
+      ctx.arc(x, y, dotR, 0, 2 * Math.PI);
+      ctx.fillStyle = '#e879f9';
+      ctx.globalAlpha = alpha;
+      ctx.fill();
 
-        // label first 10
-        if (i < 10 && num === 1) {
-          ctx.font = Math.max(8, W * 0.018) + 'px Cinzel, serif';
-          ctx.fillStyle = '#e879f9';
-          ctx.globalAlpha = 0.75;
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('γ' + (i+1) + '=' + t.toFixed(1), x + tickLen * 2, y);
-        }
-      });
+      // Spoke from centre — shows which ring the phase lands on
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = '#e879f9';
+      ctx.lineWidth = 0.6;
+      ctx.globalAlpha = alpha * 0.25;
+      ctx.stroke();
+
+      // Label first 12
+      if (i < 12) {
+        var lsize = Math.max(7, W * 0.014);
+        ctx.font = lsize + 'px Cinzel, serif';
+        ctx.fillStyle = '#ffd700';
+        ctx.globalAlpha = Math.min(0.9, alpha);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        var lx = cx + (rMax + lsize * 1.4) * Math.sin(a);
+        var ly = cy - (rMax + lsize * 1.4) * Math.cos(a);
+        ctx.fillText('γ' + (i+1), lx, ly);
+      }
     });
+
     ctx.globalAlpha = 1;
 
-    // Draw the critical axis line (vertical diameter)
-    var a90 = dir * Math.PI / 2 + ang;
-    var a270 = dir * 3 * Math.PI / 2 + ang;
-    var x1 = cx + rMax * Math.sin(a90),  y1 = cy - rMax * Math.cos(a90);
-    var x2 = cx + rMax * Math.sin(a270), y2 = cy - rMax * Math.cos(a270);
-    ctx.beginPath();
-    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
-    ctx.strokeStyle = '#a855f7';
-    ctx.lineWidth = 0.8;
-    ctx.globalAlpha = 0.35;
-    ctx.setLineDash([4, 4]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.globalAlpha = 1;
+    // ── Resultant vector (sum of unit phases) — shows net discrepancy direction
+    var sumX = 0, sumY = 0;
+    RIEMANN_ZEROS.slice(0, nShow).forEach(function(t) {
+      var phase = (t * logN) % (2 * Math.PI);
+      var a = dir * phase + angOff;
+      var amp = 1 / Math.sqrt(0.25 + t * t);
+      sumX += amp * Math.sin(a);
+      sumY += -amp * Math.cos(a);
+    });
+    var sumLen = Math.sqrt(sumX*sumX + sumY*sumY);
+    if (sumLen > 0.01) {
+      var scale = rMax * 0.6 * Math.min(1, sumLen * 3);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + sumX/sumLen * scale, cy + sumY/sumLen * scale);
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.7;
+      ctx.stroke();
+    }
 
-    // Label the axis
-    ctx.font = Math.max(8, W * 0.016) + 'px Cinzel, serif';
+    // ── Legend ────────────────────────────────────────────────────────────
+    ctx.font = Math.max(8, W * 0.014) + 'px Cinzel, serif';
     ctx.fillStyle = '#a855f7';
-    ctx.globalAlpha = 0.6;
+    ctx.globalAlpha = 0.7;
     ctx.textAlign = 'center';
-    ctx.fillText('Re(s)=½ critical line', cx, cy - rMax * 0.92);
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Riemann zero phases  φₙ = tₙ · log(' + modN + ')  mod 2π', cx, H - 24);
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText('Gold arrow = resultant phase vector (proxy for discrepancy)', cx, H - 10);
     ctx.globalAlpha = 1;
     ctx.restore();
   }
@@ -13841,6 +14115,110 @@
 
   // ── DFT spectrum canvas ────────────────────────────────────────────────────
   // ── Farey discrepancy vs RH bound ────────────────────────────────────────
+  // ── DFT bar chart (original) ──────────────────────────────────────────────
+  var _rzDFTHitData = [];   // [{xPx, k, mag, normMag}] for hover inspect
+  var _rzDFTZeroHits = [];  // [{xPx, n, t, freq}] zero line positions
+
+  function rzDrawDFT() {
+    var c = document.getElementById('rz-dft-canvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+    ctx.clearRect(0, 0, W, H);
+    var isDark = document.body.classList.contains('dark-mode');
+
+    var modN = parseInt(document.getElementById('rz-mod').value) || 49;
+    var pts = buildCoprime(modN);
+    if (pts.length < 4) return;
+
+    var N = 512;
+    var bins = new Float64Array(N);
+    pts.forEach(function(p) {
+      var angle = (p.r / p.m) % 1;
+      bins[Math.floor(angle * N) % N] += 1;
+    });
+
+    var maxFreq = 80;
+    var mag = new Float64Array(maxFreq);
+    for (var k = 1; k <= maxFreq; k++) {
+      var re = 0, im = 0;
+      for (var n = 0; n < N; n++) {
+        var theta = 2 * Math.PI * k * n / N;
+        re += bins[n] * Math.cos(theta);
+        im -= bins[n] * Math.sin(theta);
+      }
+      mag[k - 1] = Math.sqrt(re * re + im * im);
+    }
+    var maxMag = 0;
+    for (var k = 0; k < maxFreq; k++) if (mag[k] > maxMag) maxMag = mag[k];
+
+    var padL = 52, padR = 24, padT = 28, padB = 36;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var barW = plotW / maxFreq;
+
+    // grid
+    ctx.strokeStyle = isDark ? '#1a0828' : '#e0d8f0'; ctx.lineWidth = 0.5;
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH * (1 - g / 4);
+      ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(padL + plotW, gy); ctx.stroke();
+      ctx.fillStyle = isDark ? '#6a5080' : '#554070'; ctx.font = '9px monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      var gv = maxMag * g / 4;
+      ctx.fillText(gv.toFixed(0), padL - 4, padT + plotH * (1 - g/4));
+    }
+
+    // axes
+    ctx.strokeStyle = isDark ? '#4a2a6a' : '#b090d0'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH);
+    ctx.moveTo(padL, padT + plotH); ctx.lineTo(padL + plotW, padT + plotH);
+    ctx.stroke();
+
+    // bars — store hit data
+    _rzDFTHitData = [];
+    for (var k = 0; k < maxFreq; k++) {
+      var bh = (mag[k] / maxMag) * plotH;
+      var bx = padL + k * barW;
+      var by = padT + plotH - bh;
+      var intensity = mag[k] / maxMag;
+      ctx.fillStyle = 'rgba(' + Math.round(80 + 168*intensity) + ',' + Math.round(10*intensity) + ',' + Math.round(100 + 155*intensity) + ',0.9)';
+      ctx.fillRect(bx, by, Math.max(1, barW - 0.8), bh);
+      _rzDFTHitData.push({ xPx: bx + barW/2, k: k+1, mag: mag[k], normMag: intensity });
+    }
+
+    // Zero prediction lines
+    var nShow = Math.min(parseInt(document.getElementById('rz-nzeros').value) || 20, RZ_ZEROS.length);
+    _rzDFTZeroHits = [];
+    RZ_ZEROS.slice(0, nShow).forEach(function(t, i) {
+      var freq = t / (2 * Math.PI);
+      var xPos = padL + (freq / maxFreq) * plotW;
+      if (xPos < padL || xPos > padL + plotW) return;
+      ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.55; ctx.setLineDash([3, 4]);
+      ctx.beginPath(); ctx.moveTo(xPos, padT); ctx.lineTo(xPos, padT + plotH); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      ctx.font = '9px monospace'; ctx.fillStyle = '#ffd700';
+      ctx.globalAlpha = 0.75; ctx.textAlign = 'center';
+      ctx.fillText('γ' + (i+1), xPos, padT + 10);
+      ctx.globalAlpha = 1;
+      _rzDFTZeroHits.push({ xPx: xPos, n: i+1, t: t, freq: freq });
+    });
+
+    // x-axis labels
+    ctx.fillStyle = isDark ? '#6a5080' : '#443060'; ctx.font = '9px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var k = 10; k <= maxFreq; k += 10) {
+      var tx = padL + (k - 1) * barW + barW/2;
+      ctx.fillText(k, tx, padT + plotH + 4);
+    }
+    ctx.fillStyle = '#9a8060'; ctx.font = '10px Cinzel,serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('DFT frequency k  (γ lines at k = tₙ/2π)', padL + plotW/2, H - 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('|A_k|', padL - 4, padT + 8);
+  }
+
+  // ── Farey discrepancy vs RH bound ─────────────────────────────────────────
+  var _rzDiscHitData = []; // [{xPx, N, D, rhB, trivB}]
+
   function rzDrawSpectrum() {
     var c = document.getElementById('rz-spectrum-canvas');
     if (!c) return;
@@ -13857,6 +14235,7 @@
     // Approximated by sampling x at each Farey fraction and checking gap uniformity.
     // Classical result: D_N <= 3/(N+2) (trivial) and under RH: O(N^{-1/2} log N / (2pi))
     var Nvals = [], discVals = [], rhBound = [], trivBound = [];
+    _rzDiscHitData = [];
     var step = Math.max(1, Math.floor(modNMax / 120));  // ~120 data points max
     for (var N = 2; N <= modNMax; N += step) {
       // Build sorted Farey fractions for F_N (just r/m values as floats)
@@ -13876,10 +14255,13 @@
         if (dev > D) D = dev;
       }
       var logN = Math.log(N);
+      var _rh  = logN / (2 * Math.PI * Math.sqrt(N));
+      var _triv = 3 / (N + 2);
       Nvals.push(N);
       discVals.push(D);
-      rhBound.push(logN / (2 * Math.PI * Math.sqrt(N)));   // RH: O(log N / (2π√N))
-      trivBound.push(3 / (N + 2));                          // trivial: 3/(N+2)
+      rhBound.push(_rh);
+      trivBound.push(_triv);
+      _rzDiscHitData.push({ N: N, D: D, rhB: _rh, trivB: _triv });
     }
 
     var padL = 58, padR = 24, padT = 30, padB = 44;
@@ -13892,6 +14274,8 @@
 
     function xPx(N)  { return padL + (N - 2) / Math.max(modNMax - 2, 1) * plotW; }
     function yPx(v)  { return padT + plotH * (1 - v / yMax); }
+    // Store xPx into hit data
+    _rzDiscHitData.forEach(function(d){ d.xPx = xPx(d.N); });
 
     // Grid
     ctx.strokeStyle = isDark ? '#1a0828' : '#e8e0f0'; ctx.lineWidth = 0.5;
@@ -14020,7 +14404,7 @@
     var html = '<thead><tr>'
       + '<th style="text-align:right;">n</th>'
       + '<th style="text-align:right;">t&#8319;</th>'
-      + '<th style="text-align:right;">t&#8319; / modN</th>'
+      + '<th style="text-align:right;">t&#8319; / N &nbsp;<span style="color:#9a8060;font-weight:normal;">(radial depth)</span></th>'
       + '<th style="text-align:right;">&Delta;t</th>'
       + '<th style="text-align:center;">In circle?</th>'
       + '</tr></thead><tbody>';
@@ -14065,11 +14449,16 @@
 
   // ── Master draw ────────────────────────────────────────────────────────────
   window.rzDraw = function() {
-    rzDrawCircle();
-    var showDFT = document.getElementById('rz-show-dft').checked;
-    var sc = document.getElementById('rz-spectrum-canvas');
-    if (sc) sc.style.display = showDFT ? 'block' : 'none';
-    if (showDFT) {
+    var showDFT  = document.getElementById('rz-show-dft').checked;
+    var showDisc = (document.getElementById('rz-show-disc')||{checked:true}).checked;
+
+    var dftWrap  = document.getElementById('rz-dft-wrap');
+    var discWrap = document.getElementById('rz-disc-wrap');
+    if (dftWrap)  dftWrap.style.display  = showDFT  ? 'block' : 'none';
+    if (discWrap) discWrap.style.display = showDisc ? 'block' : 'none';
+
+    if (showDFT)  rzDrawDFT();
+    if (showDisc) {
       var peakInfo = rzDrawSpectrum();
       rzUpdateLegend(peakInfo);
     }
@@ -14101,6 +14490,24 @@
     a.href = off.toDataURL('image/png'); a.click();
   };
 
+  window.rzExportDOM = function() {
+    var section = document.getElementById('riemannZerosSection');
+    if (!section) return;
+    if (typeof html2canvas !== 'function') { alert('html2canvas not available'); return; }
+    var modN = parseInt(document.getElementById('rz-mod').value) || 49;
+    html2canvas(section, {
+      scale: 2,
+      backgroundColor: document.body.classList.contains('dark-mode') ? '#06040e' : '#f5f0e8',
+      useCORS: true,
+      logging: false
+    }).then(function(canvas) {
+      var a = document.createElement('a');
+      a.download = 'riemann_zeros_dom_mod' + modN + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  };
+
   window.rzExportCSV = function() {
     var modN = parseInt(document.getElementById('rz-mod').value) || 49;
     var tMax = RZ_ZEROS[RZ_ZEROS.length - 1];
@@ -14118,6 +14525,87 @@
   };
 
   // ── Click to rotate circle ──────────────────────────────────────────────────
+  // ── Hover inspect: DFT bar chart ──────────────────────────────────────────
+  function rzAttachDFTHover() {
+    var c = document.getElementById('rz-dft-canvas');
+    var tt = document.getElementById('rz-dft-tooltip');
+    if (!c || !tt) return;
+    c.addEventListener('mousemove', function(e) {
+      var rect = c.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (c.width / c.offsetWidth);
+      // find nearest bar
+      var best = null, bestD = Infinity;
+      _rzDFTHitData.forEach(function(b) {
+        var d = Math.abs(b.xPx - mx);
+        if (d < bestD) { bestD = d; best = b; }
+      });
+      // also check zero lines
+      var bestZ = null, bestZD = Infinity;
+      _rzDFTZeroHits.forEach(function(z) {
+        var d = Math.abs(z.xPx - mx);
+        if (d < bestZD) { bestZD = d; bestZ = z; }
+      });
+      var barW = c.width / 80;
+      if (bestD < barW && best) {
+        var html = '<span style="color:#a855f7;">k = ' + best.k + '</span>'
+          + '  |A<sub>' + best.k + '</sub>| = <span style="color:#e879f9;">' + best.mag.toFixed(1) + '</span>'
+          + '  (' + (best.normMag * 100).toFixed(1) + '% of max)';
+        if (bestZ && bestZD < barW * 3) {
+          html += '<br><span style="color:#ffd700;">Near γ' + bestZ.n + ' = ' + bestZ.t.toFixed(3) + '  (k≈' + bestZ.freq.toFixed(2) + ')</span>';
+        }
+        tt.innerHTML = html;
+        tt.style.left = (e.clientX - c.getBoundingClientRect().left + 12) + 'px';
+        tt.style.top  = (e.clientY - c.getBoundingClientRect().top  - 18) + 'px';
+        tt.style.display = 'block';
+      } else if (bestZD < barW * 2 && bestZ) {
+        tt.innerHTML = '<span style="color:#ffd700;">γ' + bestZ.n + ' = t = ' + bestZ.t.toFixed(4) + '</span>'
+          + '<br>Predicted DFT peak at k ≈ ' + bestZ.freq.toFixed(3);
+        tt.style.left = (e.clientX - c.getBoundingClientRect().left + 12) + 'px';
+        tt.style.top  = (e.clientY - c.getBoundingClientRect().top  - 18) + 'px';
+        tt.style.display = 'block';
+      } else {
+        tt.style.display = 'none';
+      }
+    });
+    c.addEventListener('mouseleave', function() { if(tt) tt.style.display='none'; });
+  }
+
+  // ── Hover inspect: Discrepancy panel ──────────────────────────────────────
+  function rzAttachDiscHover() {
+    var c = document.getElementById('rz-spectrum-canvas');
+    var tt = document.getElementById('rz-disc-tooltip');
+    if (!c || !tt) return;
+    c.addEventListener('mousemove', function(e) {
+      var rect = c.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (c.width / c.offsetWidth);
+      if (!_rzDiscHitData.length) { tt.style.display='none'; return; }
+      var best = null, bestD = Infinity;
+      _rzDiscHitData.forEach(function(d) {
+        var dd = Math.abs(d.xPx - mx);
+        if (dd < bestD) { bestD = dd; best = d; }
+      });
+      var modNMax = parseInt(document.getElementById('rz-mod').value) || 49;
+      var step = c.width / Math.max(modNMax, 1) * 1.2;
+      if (best && bestD < Math.max(step, 8)) {
+        var underRH = best.D <= best.rhB;
+        html = 'N = <span style="color:#a855f7;">' + best.N + '</span>'
+          + '  D<sub>N</sub> = <span style="color:#a855f7;">' + best.D.toFixed(5) + '</span>'
+          + '<br>RH bound = <span style="color:#ffd700;">' + best.rhB.toFixed(5) + '</span>'
+          + '  trivial = <span style="color:#888;">' + best.trivB.toFixed(5) + '</span>'
+          + '<br>' + (underRH
+            ? '<span style="color:#a8e6cf;">✓ D_N ≤ RH bound</span>'
+            : '<span style="color:#ff6b6b;">✗ D_N > RH bound</span>');
+        tt.innerHTML = html;
+        tt.style.left = (e.clientX - rect.left + 12) + 'px';
+        tt.style.top  = (e.clientY - rect.top  - 18) + 'px';
+        tt.style.display = 'block';
+      } else {
+        tt.style.display = 'none';
+      }
+    });
+    c.addEventListener('mouseleave', function() { if(tt) tt.style.display='none'; });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     var circ = document.getElementById('rz-circle-canvas');
     if (circ) circ.addEventListener('click', function(e) {
@@ -14211,6 +14699,8 @@
       tt.style.display = 'block';
     });
     rzDraw();
+    rzAttachDFTHover();
+    rzAttachDiscHover();
   });
 
 })();
@@ -14230,6 +14720,7 @@
   var _overlayGap    = null;   // currently overlaid gap number
   var _overlayPairs  = [];     // [{r1,r2,m,p}] pairs to draw
   var _overlayColor  = '#4a90d9';
+  var _overlayGaps   = [];     // full gap list for multi-gap input
   var MAX_DISPLAY    = 200;    // max chord lines for performance
   // Expose to window so script 3 (makeFareyCanvas export) can read overlay state
   Object.defineProperty(window, '_overlayGap',   { get: function(){ return _overlayGap; } });
@@ -14259,6 +14750,7 @@
     }
 
     _overlayGap   = gap;
+    _overlayGaps  = [gap];
     _overlayColor = GAP_COLORS[gap] || '#4a90d9';
 
     var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
@@ -14313,9 +14805,80 @@
   };
 
   // ── Clear overlay ─────────────────────────────────────────────────────────
+  // ── Gap input quick-apply ────────────────────────────────────────────────
+  window.fareyGapInputApply = function() {
+    var el     = document.getElementById('f-gap-input');
+    var status = document.getElementById('f-gap-input-status');
+    if (!el) return;
+    var raw = el.value.trim();
+    if (!raw) { window.fareyGapOverlayClear(); return; }
+    if (!window.analysisResults) {
+      if (status) status.textContent = 'Run analysis first.';
+      return;
+    }
+    var gaps = raw.split(/[,\s]+/).map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n) && n > 0; });
+    if (!gaps.length) {
+      if (status) status.textContent = 'Enter gap e.g. 2 or 2,4,6';
+      return;
+    }
+    // Single gap — delegate directly to the working handler
+    if (gaps.length === 1) {
+      window.fareyShowGapOverlay(gaps[0]);
+      if (status) status.textContent = '';
+      return;
+    }
+    // Multi-gap — merge pairs from all gaps using same logic as fareyShowGapOverlay
+    function gcdL(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+    var modN   = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var allPairs = [];
+    var missing  = [];
+    var found    = [];
+    gaps.forEach(function(gap) {
+      var gd = window.analysisResults.gapProducts && window.analysisResults.gapProducts[gap];
+      if (!gd || !gd.primes || !gd.primes.length) { missing.push(gap); return; }
+      found.push(gap);
+      var inRange = 0;
+      gd.primes.forEach(function(p) {
+        if (p > modN) return;
+        inRange++;
+        var r1 = ((p % modN) + modN) % modN;
+        var r2 = (((p + gap) % modN) + modN) % modN;
+        if (r1 === 0 || r2 === 0) return;
+        if (gcdL(r1, modN) !== 1 || gcdL(r2, modN) !== 1) return;
+        allPairs.push({ r1: r1, r2: r2, m: modN, p: p, gap: gap });
+      });
+    });
+    if (!found.length) {
+      if (status) status.textContent = 'Not found: ' + missing.join(', ');
+      return;
+    }
+    _overlayGap   = gaps[0];
+    _overlayGaps  = gaps;
+    _overlayColor = GAP_COLORS[gaps[0]] || '#4a90d9';
+    _overlayPairs = allPairs;
+    // Switch to combined view
+    var combV = document.getElementById('farey-combined-view');
+    var splitV = document.getElementById('farey-split-view');
+    if (combV)  combV.style.display  = 'block';
+    if (splitV) splitV.style.display = 'none';
+    var labelSel = document.getElementById('f-label');
+    if (labelSel) labelSel.value = 'r';
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+    var root = document.getElementById('farey-root');
+    if (root) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var gapData = (window.analysisResults.gapProducts && window.analysisResults.gapProducts[gaps[0]]) || { count: 0 };
+    updateOverlayBar(gaps[0], gapData, modN, allPairs.length, allPairs.length);
+    if (status) {
+      status.textContent = missing.length
+        ? 'Gaps ' + found.join(',') + ' · missing: ' + missing.join(',')
+        : 'Gaps ' + gaps.join(', ') + ' · ' + allPairs.length + ' pairs';
+    }
+  };
+
   window.fareyGapOverlayClear = function () {
     _overlayGap   = null;
     _overlayPairs = [];
+    _overlayGaps  = [];
     var bar = document.getElementById('farey-gap-overlay-bar');
     if (bar) bar.style.display = 'none';
     var ctrl = document.getElementById('farey-gap-overlay-controls');
@@ -14355,6 +14918,33 @@
         })();
 
     bar.style.display = 'block';
+
+    // ── Populate stats dropdown ──────────────────────────────────────────
+    var statsPanel = document.getElementById('farey-gap-stats-panel');
+    var statsContent = document.getElementById('farey-gap-stats-content');
+    if (statsPanel && statsContent) {
+      statsPanel.style.display = 'block';
+      var lines = [];
+      lines.push('<span style="color:#4a90d9;">Gap</span>: <strong>' + gapName + '</strong> &nbsp;·&nbsp; <span style="color:#4a90d9;">Mod N</span>: <strong>' + modN + '</strong>');
+      lines.push('<span style="color:#4a90d9;">Primes in analysis</span>: <strong style="color:#ffd700;">' + total.toLocaleString() + '</strong>');
+      lines.push('<span style="color:#4a90d9;">Primes ≤ mod N</span>: <strong style="color:#4ecdc4;">' + inRange.toLocaleString() + '</strong> (' + pct + '%)');
+      lines.push('<span style="color:#4a90d9;">Residue pairs on canvas</span>: <strong style="color:#e879f9;">' + shownPairs + '</strong>');
+      if (window.analysisResults && window.analysisResults.percentageContributions &&
+          window.analysisResults.percentageContributions[gap] !== undefined) {
+        var _p  = window.analysisResults.percentageContributions[gap];
+        var _g  = window.analysisResults.gapProducts[gap];
+        if (_g) {
+          lines.push('<span style="color:#4a90d9;">Euler product P₂</span>: <strong style="color:#a8e6cf;">' + _g.product.toFixed(8) + '</strong>');
+          lines.push('<span style="color:#4a90d9;">log P₂ / log ζ(2)</span>: <strong style="color:#ffd700;">' + _p.toFixed(4) + '%</strong>');
+          if (_g.count) lines.push('<span style="color:#4a90d9;">Prime pairs counted</span>: <strong>' + _g.count.toLocaleString() + '</strong>');
+        }
+      }
+      // List residue pairs
+      var pairList = _overlayPairs.slice(0, 30).map(function(p){ return p.r1 + '→' + p.r2; }).join(', ');
+      if (_overlayPairs.length > 30) pairList += ' … (+' + (_overlayPairs.length - 30) + ' more)';
+      lines.push('<span style="color:#4a90d9;">Residue pairs (p mod N → (p+gap) mod N)</span>:<br><span style="color:#9a8060;font-size:0.58rem;line-height:1.6;">' + pairList + '</span>');
+      statsContent.innerHTML = lines.join('<br>');
+    }
   }
 
   // ── Hook into drawCombined via postDraw ───────────────────────────────────
@@ -14480,29 +15070,285 @@
       }
     });
 
-    // Legend at bottom of canvas
-    ctx.globalAlpha = 0.85;
-    ctx.font = Math.max(9, W * 0.014) + 'px Cinzel, serif';
+    // ── Rich legend panel at bottom of canvas ───────────────────────────────
+    ctx.save();
+    var lsize  = Math.max(9, W * 0.013);
+    var lpad   = W * 0.03;
+    var lboxH  = lsize * 3.8;
+    var ly0    = H - lboxH - 6;
+
+    // Semi-transparent background
+    ctx.fillStyle = 'rgba(6,4,14,0.82)';
+    ctx.strokeStyle = _overlayColor;
+    ctx.lineWidth = 0.8;
+    ctx.globalAlpha = 0.92;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(lpad, ly0, W - lpad*2, lboxH, 4) : ctx.rect(lpad, ly0, W - lpad*2, lboxH);
+    ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    ctx.font = 'bold ' + lsize + 'px Cinzel, serif';
     ctx.fillStyle = _overlayColor;
-    ctx.textAlign = 'center';
-    var label = {1:'Gap 1',2:'Twin Primes (gap 2)',4:'Cousin Primes (gap 4)',6:'Sexy Primes (gap 6)'}[_overlayGap] || 'Gap '+_overlayGap+' pairs';
-    var zetaLabel = '';
-    if (window.analysisResults && window.analysisResults.percentageContributions &&
-        window.analysisResults.percentageContributions[_overlayGap] !== undefined) {
-      var _gpct = window.analysisResults.percentageContributions[_overlayGap];
-      var _gprod = window.analysisResults.gapProducts[_overlayGap];
-      zetaLabel = '  ·  P₂ = ' + (_gprod ? _gprod.product.toFixed(5) : '?') + '  (' + _gpct.toFixed(2) + '% of log ζ(2))';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    // Line 1: gap name + count + mod
+    var gapNames = {1:'Gap 1',2:'Twin Primes',4:'Cousin Primes',6:'Sexy Primes'};
+    var displayGaps = _overlayGaps && _overlayGaps.length > 1
+      ? 'Gaps ' + _overlayGaps.join(', ')
+      : (gapNames[_overlayGap] || 'Gap ' + _overlayGap);
+    var line1 = displayGaps + '  ·  ' + pairs.length + ' pairs  ·  mod ' + modN;
+    ctx.fillText(line1, lpad + 8, ly0 + 5);
+
+    // Line 2: zeta contributions per gap
+    ctx.font = lsize + 'px Cinzel, serif';
+    ctx.fillStyle = '#e8d9b0';
+    var line2 = '';
+    var gapsToShow = (_overlayGaps && _overlayGaps.length) ? _overlayGaps : [_overlayGap];
+    if (window.analysisResults && window.analysisResults.percentageContributions) {
+      var parts = [];
+      gapsToShow.forEach(function(g) {
+        var pct  = window.analysisResults.percentageContributions[g];
+        var prod = window.analysisResults.gapProducts && window.analysisResults.gapProducts[g];
+        if (pct !== undefined && prod) {
+          parts.push('P₂(' + g + ')=' + prod.product.toFixed(4) + ' (' + pct.toFixed(2) + '%)');
+        }
+      });
+      line2 = parts.join('  ·  ');
     }
-    ctx.fillText(label + ' · ' + pairs.length + ' pairs · mod ' + modN + zetaLabel, cx, H - 10);
+    if (line2) ctx.fillText(line2, lpad + 8, ly0 + 5 + lsize * 1.5);
+
+    // Line 3: residue pairs shown
+    ctx.fillStyle = '#9a8060';
+    ctx.font = (lsize * 0.88) + 'px Cinzel, serif';
+    var r1set = {}, r2set = {};
+    pairs.forEach(function(p){ r1set[p.r1]=true; r2set[p.r2]=true; });
+    var uniqueR = Object.keys(Object.assign({},r1set,r2set)).sort(function(a,b){return a-b;}).slice(0,16).join(', ');
+    ctx.fillText('Residues: ' + uniqueR + (Object.keys(Object.assign({},r1set,r2set)).length > 16 ? ' …' : ''), lpad + 8, ly0 + 5 + lsize * 2.9);
 
     ctx.globalAlpha = 1;
     ctx.restore();
   }
+
+  // ── Gap spiral animation ──────────────────────────────────────────────────
+  // Particles travel each highlighted residue channel from ring 1 → modN,
+  // then the gap chord flashes. Drawn on top of the static overlay each frame.
+
+  var _animRAF    = null;   // requestAnimationFrame handle
+  var _animPhase  = 0;      // 0=rising 1=chord-flash 2=fade
+  var _animT      = 0;      // normalised 0→1 progress within phase
+  var _animActive = false;
+
+  // Build a flat array of path points for a residue r: [{x,y}] ring 1..modN
+  function buildSpiral(r, modN, cx, cy, rMin, rMax, dir, angOff, invert) {
+    var pts = [];
+    for (var m = 1; m <= modN; m++) {
+      var t   = invert ? (modN - m) / (modN - 1 || 1) : (m - 1) / (modN - 1 || 1);
+      var rad = rMin + (rMax - rMin) * t;
+      var ringOff = (typeof window.ringOffset === 'function') ? window.ringOffset(m, modN) * Math.PI / 180 : 0;
+      var a   = dir * 2 * Math.PI * r / (m || 1) + angOff + ringOff;
+      pts.push({ x: cx + rad * Math.sin(a), y: cy - rad * Math.cos(a), m: m });
+    }
+    return pts;
+  }
+
+  // Interpolate position along a spiral given progress 0→1
+  function spiralPos(pts, prog) {
+    var idx = prog * (pts.length - 1);
+    var lo  = Math.floor(idx), hi = Math.min(lo + 1, pts.length - 1);
+    var f   = idx - lo;
+    return {
+      x: pts[lo].x + (pts[hi].x - pts[lo].x) * f,
+      y: pts[lo].y + (pts[hi].y - pts[lo].y) * f
+    };
+  }
+
+  function fareyGapAnimFrame() {
+    if (!_animActive) return;
+
+    var c = document.getElementById('fc-combined');
+    if (!c) { _animActive = false; return; }
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height, cx = W/2, cy = H/2;
+
+    var modN    = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var dir     = parseFloat(document.getElementById('f-dir').value) || 1;
+    var angOff  = (window._combinedAngle || 90) * Math.PI / 180;
+    var spacing = (parseInt(document.getElementById('f-spacing').value) || 100) / 100;
+    var zoom    = (parseInt(document.getElementById('f-zoom').value) || 100) / 100;
+    var rinner  = (parseInt(document.getElementById('f-rinner').value) || 4) / 100;
+    var invert  = document.getElementById('f-invert-order').checked;
+    var rBase   = W * 0.42 * spacing; if (rBase > W * 0.49) rBase = W * 0.49;
+    var rMin    = W * rinner * zoom, rMax = rBase * zoom;
+
+    var speed   = parseInt(document.getElementById('f-anim-speed').value) || 5;
+    var dt      = speed * 0.004;  // progress increment per frame
+    var loop    = document.getElementById('f-anim-loop').checked;
+    var color   = _overlayColor || '#e879f9';
+
+    // Collect unique residues
+    var pairs = _overlayPairs.slice(0, MAX_DISPLAY);
+    var highlightR = {};
+    pairs.forEach(function(p){ highlightR[p.r1] = true; highlightR[p.r2] = true; });
+    var rKeys = Object.keys(highlightR).map(Number);
+
+    // Redraw base (static overlay) each frame
+    window.fareyRedraw();
+
+    // Phase 0: particles rise from ring 1 to ring modN
+    if (_animPhase === 0) {
+      _animT += dt;
+      var prog = Math.min(_animT, 1);
+
+      rKeys.forEach(function(r) {
+        var pts = buildSpiral(r, modN, cx, cy, rMin, rMax, dir, angOff, invert);
+        var stopIdx = Math.floor(prog * (pts.length - 1));
+
+        // Trail: draw fading line of last ~15% of path
+        var trailLen = Math.max(2, Math.floor(pts.length * 0.15));
+        var trailStart = Math.max(0, stopIdx - trailLen);
+        ctx.save();
+        for (var i = trailStart; i < stopIdx; i++) {
+          var tf = (i - trailStart) / trailLen;
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[i+1].x, pts[i+1].y);
+          ctx.strokeStyle = color;
+          ctx.lineWidth   = Math.max(1.5, W * 0.004) * (0.3 + 0.7 * tf);
+          ctx.globalAlpha = 0.4 + 0.6 * tf;
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Bright glowing head particle
+        var head = spiralPos(pts, prog);
+        var dotR = Math.max(3, W * 0.009);
+        // outer glow
+        var grad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, dotR * 3);
+        grad.addColorStop(0, color);
+        grad.addColorStop(0.4, color.replace(')', ',0.6)').replace('rgb','rgba').replace('#','rgba(').replace(/rgba\(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2}),/, function(_,r,g,b){ return 'rgba('+parseInt(r,16)+','+parseInt(g,16)+','+parseInt(b,16)+','; }) || color);
+        grad.addColorStop(1,   'rgba(0,0,0,0)');
+        ctx.save();
+        ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.arc(head.x, head.y, dotR * 3, 0, 2 * Math.PI);
+        ctx.fillStyle = grad; ctx.fill();
+        // core dot
+        ctx.globalAlpha = 1;
+        ctx.beginPath(); ctx.arc(head.x, head.y, dotR, 0, 2 * Math.PI);
+        ctx.fillStyle = '#fff'; ctx.fill();
+        ctx.restore();
+      });
+
+      if (_animT >= 1) { _animPhase = 1; _animT = 0; }
+
+    // Phase 1: chord flash
+    } else if (_animPhase === 1) {
+      _animT += dt * 1.5;
+      var flashProg = Math.min(_animT, 1);
+
+      pairs.forEach(function(pair) {
+        var t1 = invert ? (modN - modN) / (modN - 1 || 1) : 1;
+        var rad = rMin + (rMax - rMin) * t1;
+        var rO1 = (typeof window.ringOffset === 'function') ? window.ringOffset(modN, modN) * Math.PI / 180 : 0;
+        var a1  = dir * 2 * Math.PI * pair.r1 / modN + angOff + rO1;
+        var a2  = dir * 2 * Math.PI * pair.r2 / modN + angOff + rO1;
+        var x1  = cx + rad * Math.sin(a1), y1 = cy - rad * Math.cos(a1);
+        var x2  = cx + rad * Math.sin(a2), y2 = cy - rad * Math.cos(a2);
+        // Interpolate chord end point for draw-on effect
+        var ex  = x1 + (x2 - x1) * flashProg;
+        var ey  = y1 + (y2 - y1) * flashProg;
+        ctx.save();
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(ex, ey);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth   = Math.max(2, W * 0.005);
+        ctx.globalAlpha = 0.95;
+        ctx.shadowColor = color; ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      if (_animT >= 1) {
+        _animPhase = 2; _animT = 0;
+      }
+
+    // Phase 2: brief pause then loop/stop
+    } else if (_animPhase === 2) {
+      _animT += dt * 0.5;
+      if (_animT >= 1) {
+        if (loop) {
+          _animPhase = 0; _animT = 0;
+        } else {
+          _animActive = false;
+          var btn = document.getElementById('fcm-gap-play');
+          if (btn) { btn.textContent = '▶ Play'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#e879f9'; }
+          return;
+        }
+      }
+    }
+
+    _animRAF = requestAnimationFrame(fareyGapAnimFrame);
+  }
+
+  window.fareyGapAnimToggle = function() {
+    if (!_overlayGap || !_overlayPairs.length) {
+      alert('Select a gap overlay first (use the gap input or click a gap in the analysis).');
+      return;
+    }
+    var btn = document.getElementById('fcm-gap-play');
+    if (_animActive) {
+      // Stop
+      _animActive = false;
+      if (_animRAF) { cancelAnimationFrame(_animRAF); _animRAF = null; }
+      if (btn) { btn.textContent = '▶ Play'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#e879f9'; }
+      // Restore static overlay
+      window.fareyRedraw();
+    } else {
+      // Start
+      _animActive = true;
+      _animPhase  = 0;
+      _animT      = 0;
+      if (btn) { btn.textContent = '⏸ Pause'; btn.style.background = '#e879f9'; btn.style.color = '#fff'; }
+      fareyGapAnimFrame();
+    }
+  };
+
+  // Stop animation when overlay is cleared
+  var _origClear = window.fareyGapOverlayClear;
+  window.fareyGapOverlayClear = function() {
+    if (_animActive) {
+      _animActive = false;
+      if (_animRAF) { cancelAnimationFrame(_animRAF); _animRAF = null; }
+      var btn = document.getElementById('fcm-gap-play');
+      if (btn) { btn.textContent = '▶ Play'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#e879f9'; }
+    }
+    if (_origClear) _origClear();
+  };
 
   window.drawGapOverlay = drawGapOverlay;
 
 })();
 </script>
 
+<script>
+(function(){
+  var FONTS = [
+    { cls: '',              label: 'Aa Cinzel'  },
+    { cls: 'font-inter',   label: 'Aa Inter'   },
+    { cls: 'font-sourceserif', label: 'Aa Serif' },
+    { cls: 'font-mono',    label: 'Aa Mono'    }
+  ];
+  var _fontIdx = 0;
+  window.cycleFontTheme = function(){
+    var body = document.body;
+    var btn  = document.getElementById('font-toggle');
+    // Remove current font class
+    FONTS.forEach(function(f){ if(f.cls) body.classList.remove(f.cls); });
+    _fontIdx = (_fontIdx + 1) % FONTS.length;
+    var next = FONTS[_fontIdx];
+    if(next.cls) body.classList.add(next.cls);
+    if(btn) btn.textContent = next.label;
+  };
+})();
+</script>
 </body>
 </html>
