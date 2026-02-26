@@ -1633,6 +1633,25 @@
             <!-- ══ FAREY INTERACTIVE DIAGRAMS ══ -->
             <div id="farey-root" style="margin:24px auto 0;max-width:900px;">
 
+              <!-- ══ MOD N + PARAMETERS (always visible below canvas) ══ -->
+              <div id="farey-highmod-notice" style="display:none;margin-bottom:6px;padding:5px 10px;background:#2a1a00;border:1px solid #8a6020;border-radius:3px;font-family:'Cinzel',serif;font-size:0.58rem;color:#d4a020;text-align:center;letter-spacing:0.06em;">
+                MOD &gt; 49 — Points only mode · Chords, spokes &amp; connections auto-disabled for performance
+              </div>
+              <div style="margin-top:14px;padding:12px 16px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
+                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">MOD N</span>
+                  <input id="f-mod" type="range" min="2" max="2000" value="49" style="width:200px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
+                  <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:58px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(2000,v);fareyRedraw()">
+                  <span style="color:var(--border);">|</span>
+                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">GAP OVERLAY</span>
+                  <input id="f-gap-input" type="text" placeholder="e.g. 2 or 2,4,6" style="width:120px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
+                  <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
+                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
+                  <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;min-width:10px;"></div>
+                </div>
+              </div>
+
+
               <!-- Advanced dropdown -->
               <div style="text-align:right;margin-bottom:8px;">
                 <button onclick="toggleFareyPanel()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--parchment-dark);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#9660; Advanced</button>
@@ -1644,7 +1663,7 @@
                   <!-- Label mode -->
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">LABEL MODE</div>
-                    <select id="f-label" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
+                    <select id="f-label" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;margin-bottom:6px;">
                       <option value="none">None</option>
                       <option value="fraction">r/m</option>
                       <option value="r">r only</option>
@@ -1652,6 +1671,11 @@
                       <option value="angle">Angle (deg)</option>
                       <option value="radian">Radian (×π)</option>
                       <option value="decimal">Decimal</option>
+                    </select>
+                    <div style="margin-bottom:5px;color:#9a8060;font-size:0.58rem;">LABEL SCOPE</div>
+                    <select id="f-label-scope" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
+                      <option value="all">All rings</option>
+                      <option value="outer">Outer ring only</option>
                     </select>
                   </div>
 
@@ -1673,16 +1697,31 @@
                     </div>
                   </div>
 
-                  <!-- Point color: gcd=1 -->
-                  <div>
-                    <div style="margin-bottom:5px;color:var(--gold);">COLOR gcd=1</div>
-                    <input id="f-col1" type="color" value="#4a90d9" oninput="fareyRedraw()" style="width:100%;height:28px;border:1px solid var(--border);cursor:pointer;background:none;">
-                  </div>
-
-                  <!-- Point color: gcd>1 -->
-                  <div>
-                    <div style="margin-bottom:5px;color:var(--gold);">COLOR gcd&gt;1</div>
-                    <input id="f-col2" type="color" value="#c94040" oninput="fareyRedraw()" style="width:100%;height:28px;border:1px solid var(--border);cursor:pointer;background:none;">
+                  <!-- Point coloring mode -->
+                  <div style="grid-column: span 2;">
+                    <div style="margin-bottom:5px;color:var(--gold);">POINT COLOR MODE</div>
+                    <select id="f-pt-colmode" onchange="fareyPtColModeChange()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;margin-bottom:8px;">
+                      <option value="solid">Solid (gcd=1 / gcd&gt;1 colors)</option>
+                      <option value="rainbow-angle">Rainbow by Angular Position</option>
+                      <option value="rainbow-residue">By Residue Value</option>
+                      <option value="rainbow-ring">By Ring (Modulus)</option>
+                      <option value="prime-composite">Prime vs Composite (r)</option>
+                      <option value="per-modulus">Unique Color per Modulus</option>
+                      <option value="per-residue">Unique Color per Residue Value</option>
+                      <option value="math-progression">Mathematical Progression</option>
+                      <option value="spectral">Spectral Distribution</option>
+                    </select>
+                    <!-- Custom solid colors (shown only in solid mode) -->
+                    <div id="f-solid-colors" style="display:flex;gap:10px;align-items:center;">
+                      <div style="flex:1;">
+                        <div style="margin-bottom:4px;color:#9a8060;font-size:0.58rem;">gcd=1</div>
+                        <input id="f-col1" type="color" value="#4a90d9" oninput="fareyRedraw()" style="width:100%;height:26px;border:1px solid var(--border);cursor:pointer;background:none;">
+                      </div>
+                      <div style="flex:1;">
+                        <div style="margin-bottom:4px;color:#9a8060;font-size:0.58rem;">gcd&gt;1</div>
+                        <input id="f-col2" type="color" value="#c94040" oninput="fareyRedraw()" style="width:100%;height:26px;border:1px solid var(--border);cursor:pointer;background:none;">
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Canvas size -->
@@ -1699,18 +1738,18 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">RING SPACING</div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                      <input id="f-spacing" type="range" min="10" max="200" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-spacing-val').textContent=this.value+'%';fareyRedraw()">
-                      <span id="f-spacing-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
+                      <input id="f-spacing" type="range" min="10" max="200" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-spacing-num').value=this.value;document.getElementById('f-spacing-val').textContent=this.value+'%';fareyRedraw()">
+                      <input id="f-spacing-num" type="number" min="10" max="200" value="100" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(200,Math.max(10,parseInt(this.value)||10));document.getElementById('f-spacing').value=v;document.getElementById('f-spacing-val').textContent=v+'%';fareyRedraw()"><span id="f-spacing-val" style="display:none;">100%</span>
                     </div>
                     <div style="margin-top:6px;color:#9a8060;font-size:0.58rem;">INNER RADIUS</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
-                      <input id="f-rinner" type="range" min="0" max="50" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-rinner-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
-                      <span id="f-rinner-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">0.04</span>
+                      <input id="f-rinner" type="range" min="0" max="50" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-rinner-num').value=(this.value/100).toFixed(2);document.getElementById('f-rinner-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
+                      <input id="f-rinner-num" type="number" min="0" max="0.5" step="0.01" value="0.04" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(0.5,Math.max(0,parseFloat(this.value)||0));document.getElementById('f-rinner').value=Math.round(v*100);document.getElementById('f-rinner-val').textContent=v.toFixed(2);fareyRedraw()"><span id="f-rinner-val" style="display:none;">0.04</span>
                     </div>
                     <div style="margin-top:6px;color:#9a8060;font-size:0.58rem;">ZOOM</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
-                      <input id="f-zoom" type="range" min="50" max="500" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-zoom-val').textContent=this.value+'%';fareyRedraw()">
-                      <span id="f-zoom-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
+                      <input id="f-zoom" type="range" min="50" max="500" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-zoom-num').value=this.value;document.getElementById('f-zoom-val').textContent=this.value+'%';fareyRedraw()">
+                      <input id="f-zoom-num" type="number" min="50" max="500" value="100" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(500,Math.max(50,parseInt(this.value)||50));document.getElementById('f-zoom').value=v;document.getElementById('f-zoom-val').textContent=v+'%';fareyRedraw()"><span id="f-zoom-val" style="display:none;">100%</span>
                     </div>
                     <div style="margin-top:8px;">
                       <label style="cursor:pointer;display:flex;align-items:center;gap:8px;">
@@ -1718,15 +1757,37 @@
                         <span style="color:#9a8060;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;">Invert Ring Order (outer→inner)</span>
                       </label>
                     </div>
-                    <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">BRIGHTNESS</div>
-                    <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
-                      <input id="f-bright" type="range" min="0" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-bright-val').textContent='+'+this.value+'%';fareyRedraw()">
-                      <span id="f-bright-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">+0%</span>
+                    <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">IMAGE ADJUSTMENTS</div>
+                    <div style="margin-top:4px;">
+                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">BRIGHT</span>
+                        <input id="f-bright" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-bright-num').value=this.value;document.getElementById('f-bright-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
+                        <input id="f-bright-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-bright').value=v;document.getElementById('f-bright-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-bright-val" style="display:none;">0%</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">CONTR</span>
+                        <input id="f-contrast" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-contrast-num').value=this.value;document.getElementById('f-contrast-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
+                        <input id="f-contrast-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-contrast').value=v;document.getElementById('f-contrast-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-contrast-val" style="display:none;">0%</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">SAT</span>
+                        <input id="f-saturation" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-sat-num').value=this.value;document.getElementById('f-sat-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
+                        <input id="f-sat-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-saturation').value=v;document.getElementById('f-sat-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-sat-val" style="display:none;">0%</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">HUE</span>
+                        <input id="f-huerot" type="range" min="-180" max="180" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-hue-num').value=this.value;document.getElementById('f-hue-val').textContent=this.value+'°';applyFareyFilter()">
+                        <input id="f-hue-num" type="number" min="-180" max="180" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(180,Math.max(-180,parseInt(this.value)||0));document.getElementById('f-huerot').value=v;document.getElementById('f-hue-val').textContent=v+'°';applyFareyFilter()"><span id="f-hue-val" style="display:none;">0°</span>
+                      </div>
+                      <div style="text-align:right;margin-top:4px;">
+                        <button onclick="resetFareyFilter()" style="font-size:0.55rem;padding:2px 8px;background:var(--parchment-dark);color:var(--ink-mid);border:1px solid var(--border);cursor:pointer;font-family:'Cinzel',serif;">↺ Reset</button>
+                      </div>
                     </div>
                     <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">POINT SIZE</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
-                      <input id="f-ptsize" type="range" min="10" max="400" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-ptsize-val').textContent=this.value+'%';fareyRedraw()">
-                      <span id="f-ptsize-val" style="color:var(--ink);min-width:36px;text-align:right;font-size:0.6rem;">100%</span>
+                      <input id="f-ptsize" type="range" min="5" max="400" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-ptsize-num').value=this.value;document.getElementById('f-ptsize-val').textContent=this.value+'%';fareyRedraw()">
+                      <input id="f-ptsize-num" type="number" min="5" max="400" value="100" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(400,Math.max(5,parseInt(this.value)||5));document.getElementById('f-ptsize').value=v;document.getElementById('f-ptsize-val').textContent=v+'%';fareyRedraw()"><span id="f-ptsize-val" style="display:none;">100%</span>
+                    </div>
                     </div>
                   </div>
 
@@ -1854,7 +1915,7 @@
               </div>
 
               <!-- ══ CANVAS AREA ══ -->
-
+              <div id="farey-canvas-wrap">
               <!-- Split view (two small canvases) -->
               <div id="farey-split-view" style="display:flex;justify-content:center;gap:32px;align-items:flex-start;flex-wrap:wrap;">
                 <div style="text-align:center;">
@@ -1899,11 +1960,10 @@
                   <span>OPACITY</span>
                   <input id="f-overlay-alpha" type="range" min="10" max="100" value="80" style="width:70px;accent-color:#4a90d9;" oninput="document.getElementById('f-overlay-alpha-val').textContent=this.value+'%';if(window._overlayGap!==null&&window._overlayGap!==undefined){fareyRedraw();}">
                   <span id="f-overlay-alpha-val" style="min-width:28px;">80%</span>
-                  <span style="color:var(--border);">|</span>
-                  <button id="fcm-gap-play" onclick="fareyGapAnimToggle()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:3px 12px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#9654; Play</button>
-                  <span style="color:#9a8060;">SPEED</span>
-                  <input id="f-anim-speed" type="range" min="1" max="10" value="5" style="width:60px;accent-color:#e879f9;">
-                  <label style="color:#9a8060;cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="f-anim-loop" checked style="accent-color:#e879f9;"> Loop</label>
+                  <!-- Hidden inputs kept for animation code compatibility -->
+                  <input id="f-anim-speed" type="hidden" value="5">
+                  <input id="f-anim-loop" type="hidden" value="1">
+                  <input id="fcm-gap-play" type="hidden" value="">
                 </div>
 
                 <!-- Gap stats bar -->
@@ -1931,21 +1991,7 @@
                 </div>
               </div>
 
-              <!-- ══ MOD N + PARAMETERS (always visible below canvas) ══ -->
-              <div style="margin-top:14px;padding:12px 16px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
-                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">MOD N</span>
-                  <input id="f-mod" type="range" min="2" max="2000" value="49" style="width:200px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
-                  <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:58px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(2000,v);fareyRedraw()">
-                  <span style="color:var(--border);">|</span>
-                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">GAP OVERLAY</span>
-                  <input id="f-gap-input" type="text" placeholder="e.g. 2 or 2,4,6" style="width:120px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
-                  <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
-                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
-                  <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;min-width:10px;"></div>
-                </div>
-              </div>
-
+              </div><!-- /farey-canvas-wrap -->
               <!-- ══ STATS / DESCRIPTION DROPDOWN ══ -->
               <div id="farey-stats-section" style="margin-top:10px;">
 
@@ -3121,7 +3167,35 @@
         <div class="chart-wrapper" id="riemannZerosSection" style="border:2px solid #a855f7;">
             <div class="chart-title" style="color:#a855f7;">Riemann Zeros &amp; Farey Structure</div>
             <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:14px 16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:16px;">
-                Each non-trivial zero ρ = ½ + it&#8319; of ζ(s) contributes a rotating phase <strong>e<sup>it&#8319; log N</sup></strong> to the Farey discrepancy sum. Use the <strong style="color:#a855f7;">ζ Riemann t</strong> button in the Farey visualiser above to see these phases plotted on the outer ring — as mod N changes the dots rotate, and when they align the discrepancy spikes (Franel–Landau 1924). The two panels below show the frequency structure and the RH bound directly.
+                Each non-trivial zero ρ = ½ + it&#8319; of ζ(s) contributes a rotating phase <strong>e<sup>it&#8319; log N</sup></strong> to the Farey discrepancy sum. Pink ticks on the critical axis show zero heights t&#8319; scaled so t&#8319; = modN lands on the outer ring. The Farey GCD=1 points (blue) reveal how the angular distribution shifts as mod N grows.
+            </div>
+
+            <!-- ── Circle canvas (Farey-style) ── -->
+            <div style="display:flex;justify-content:center;margin-bottom:16px;">
+              <div style="position:relative;display:inline-block;">
+                <canvas id="rz-circle-canvas" width="600" height="600" style="display:block;background:var(--canvas-bg);border:1px solid rgba(168,85,247,0.4);border-radius:4px;cursor:pointer;" title="Click to rotate 90°"></canvas>
+                <div id="rz-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #a855f7;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
+              </div>
+            </div>
+            <!-- Canvas label + controls -->
+            <div id="rz-canvas-label" style="text-align:center;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;margin-bottom:8px;">
+              GCD=1 Farey points (mod N) · Purple = critical axis Re(s)=½ · Pink = zero heights t&#8319; &nbsp;·&nbsp; <span style="color:#888;">Click to rotate · or use Inspect</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.07em;">
+              <label style="color:var(--gold);">MOD N
+                <input id="rz-mod" type="number" min="2" max="9999" value="49" step="1"
+                  style="width:60px;margin-left:8px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;"
+                  oninput="this.value=Math.max(2,Math.min(9999,Math.floor(+this.value||2)));rzDraw();rzDrawCircle();">
+              </label>
+              <label style="color:var(--gold);">ZEROS
+                <input id="rz-nzeros" type="range" min="5" max="100" value="20"
+                  style="width:80px;margin-left:8px;vertical-align:middle;accent-color:#a855f7;"
+                  oninput="document.getElementById('rz-nzeros-val').textContent=this.value;rzDraw();rzDrawCircle();">
+                <span id="rz-nzeros-val" style="color:#a855f7;min-width:20px;display:inline-block;">20</span>
+              </label>
+              <label style="color:var(--gold);"><input type="checkbox" id="rz-show-labels" checked onchange="rzDrawCircle()" style="accent-color:#a855f7;"> Labels</label>
+              <label style="color:var(--gold);"><input type="checkbox" id="rz-show-axis" checked onchange="rzDrawCircle()" style="accent-color:#a855f7;"> Axis</label>
+              <button id="rz-inspect-btn" onclick="rzToggleInspect()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#9679; Inspect</button>
             </div>
 
             <!-- Panel A: DFT bar chart -->
@@ -3152,20 +3226,8 @@
               </div>
             </div>
 
-            <!-- Controls row -->
+            <!-- Panel toggles row -->
             <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;margin-bottom:16px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.07em;">
-                <label style="color:var(--gold);">MOD N
-                    <input id="rz-mod" type="number" min="2" max="9999" value="49" step="1"
-                        style="width:60px;margin-left:8px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;"
-                        oninput="this.value=Math.max(2,Math.min(9999,Math.floor(+this.value||2)));rzDraw()">
-                </label>
-                <label style="color:var(--gold);">ZEROS
-                    <input id="rz-nzeros" type="range" min="5" max="100" value="20"
-                        style="width:80px;margin-left:8px;vertical-align:middle;accent-color:#a855f7;"
-                        oninput="document.getElementById('rz-nzeros-val').textContent=this.value;rzDraw()">
-                    <span id="rz-nzeros-val" style="color:#a855f7;min-width:20px;display:inline-block;">20</span>
-                </label>
-
                 <label style="color:var(--gold);">
                     <input type="checkbox" id="rz-show-dft" checked onchange="rzDraw()" style="accent-color:#a855f7;"> DFT Spectrum
                 </label>
@@ -12004,6 +12066,10 @@
 
   window.fareyRedraw = function(){
     clearAncestorCache();
+    // High-mod notice: auto-disable decorations above mod 49
+    var _modNow = parseInt(document.getElementById('f-mod-num').value)||49;
+    var notice = document.getElementById('farey-highmod-notice');
+    if(notice) notice.style.display = _modNow > 49 ? 'block' : 'none';
     if(document.getElementById('farey-combined-view').style.display!=='none'){
       syncCombinedSize(); drawCombined();
     } else {
@@ -12094,16 +12160,16 @@
     var lsize = parseInt(document.getElementById('f-lsize').value)||7;
     var col1  = document.getElementById('f-col1').value;
     var col2  = document.getElementById('f-col2').value;
-    var showChords  = document.getElementById('f-chords').checked;
-    var showSpokes  = document.getElementById('f-spokes').checked;
-    var showSameMod = document.getElementById('f-samemod').checked;
-    var showCrossMod= document.getElementById('f-crossmod').checked;
+    var _highMod = modN > 49;
+    var showChords  = _highMod ? false : document.getElementById('f-chords').checked;
+    var showSpokes  = _highMod ? false : document.getElementById('f-spokes').checked;
+    var showSameMod = _highMod ? false : document.getElementById('f-samemod').checked;
+    var showCrossMod= _highMod ? false : document.getElementById('f-crossmod').checked;
     var sameModColMode = document.getElementById('f-samemod-colmode').value;
     var sameModFixedCol= document.getElementById('f-samemod-col').value;
     var sameModThick= parseInt(document.getElementById('f-samemod-thick').value)/10;
     var crossModThick= parseInt(document.getElementById('f-crossmod-thick').value)/10;
-    var _bright = getBrightness();
-    var color = brightenColor(which==='coprime'?col1:col2, _bright);
+    var color = which==='coprime'?col1:col2;
 
     var fracs = buildFractions(modN);
     var pts = which==='coprime'?fracs.cop:fracs.ncp;
@@ -12211,7 +12277,7 @@
         var lc;
         if(sameModColMode==='permod'){
           var h=Math.round(360*mi/Math.max(mList2.length-1,1));
-          lc='hsl('+h+',72%,58%)';
+          lc='hsl('+h+',65%,55%)';
         } else if(sameModColMode==='gradient'){
           var t=(m-1)/(modN-1||1);
           lc='rgb('+Math.round(42+(180-42)*t)+','+Math.round(90+(60-90)*t)+','+Math.round(180+(20-180)*t)+')';
@@ -12270,32 +12336,36 @@
     }
 
     // dots and labels
+    var _labelScope = document.getElementById('f-label-scope') ? document.getElementById('f-label-scope').value : 'all';
     pts.forEach(function(p){
       var xy=ptXY(p.r,p.m);
       var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
-      var dotR=Math.max(0.3, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400) * _ptScale);
+      var dotR=Math.max(0.2, (1-p.m/modN*0.2) * Math.max(0.2, 1.4 - modN/30) * (W/400) * _ptScale);
       ctx.globalAlpha=1;
+
+      var dotColor = getPointColor(p, which, modN, color);
 
       // label text
       var lbl='';
-      if(labelMode==='fraction') lbl=p.r+'/'+p.m;
-      else if(labelMode==='r')   lbl=''+p.r;
-      else if(labelMode==='m')   lbl='m='+p.m;
-      else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
-      else if(labelMode==='radian') lbl=(2*p.r/p.m).toFixed(2)+'π';
-      else if(labelMode==='decimal') lbl=(p.r/p.m).toFixed(2);
+      var showLabel = labelMode!=='none' && (_labelScope==='all' || p.m===modN);
+      if(showLabel){
+        if(labelMode==='fraction') lbl=p.r+'/'+p.m;
+        else if(labelMode==='r')   lbl=''+p.r;
+        else if(labelMode==='m')   lbl='m='+p.m;
+        else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
+        else if(labelMode==='radian') lbl=(2*p.r/p.m).toFixed(2)+'π';
+        else if(labelMode==='decimal') lbl=(p.r/p.m).toFixed(2);
+      }
 
       if(labelMode==='none'||labelStyle==='dot+label'){
-        // draw dot
         ctx.beginPath(); ctx.arc(xy.x,xy.y,dotR,0,2*Math.PI);
-        ctx.fillStyle=color; ctx.fill();
+        ctx.fillStyle=dotColor; ctx.fill();
       }
-      if(labelMode!=='none' && lbl){
+      if(showLabel && lbl){
         ctx.font = lsize+'px Cinzel, serif';
-        ctx.fillStyle = color;
+        ctx.fillStyle = dotColor;
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.globalAlpha=1;
-        var offset = labelStyle==='label-only'?0:dotR+2;
         ctx.fillText(lbl, xy.x, xy.y - (labelStyle==='label-only'?0:dotR+lsize*0.6));
       }
     });
@@ -12348,7 +12418,7 @@
     return '#'+((1<<24)+(rr<<16)+(gg<<8)+bb).toString(16).slice(1);
   }
 
-  function getBrightness(){ return parseInt(document.getElementById('f-bright').value)||0; }
+  function getBrightness(){ return 0; } // brightness now handled by CSS filter (applyFareyFilter)
 
   // ── Per-ring cumulative rotation ─────────────────────────────────────────
   var _ringOffsets   = {};
@@ -12360,6 +12430,7 @@
     var rdir = parseFloat(document.getElementById('f-ringdir').value)||1;
     return rdir*(m-1)*(a/b)*360 + (_ringOffsets[m]||0);
   }
+  window.ringOffset = ringOffset;  // expose for gap overlay + animation
 
   window.fareyToggleRingAnim = function(){
     var btn = document.getElementById('f-ringanim-btn');
@@ -13179,7 +13250,7 @@
         var lc;
         if(sameModColMode==='permod'){
           var h=Math.round(360*mi/Math.max(mList2.length-1,1));
-          lc='hsl('+h+',72%,58%)';
+          lc='hsl('+h+',65%,55%)';
         } else if(sameModColMode==='gradient'){
           var t=(m-1)/(modN-1||1);
           lc='rgb('+Math.round(42+(180-42)*t)+','+Math.round(90+(60-90)*t)+','+Math.round(180+(20-180)*t)+')';
@@ -13217,34 +13288,40 @@
       }
 
       // dots / labels
+      var _labelScope = document.getElementById('f-label-scope') ? document.getElementById('f-label-scope').value : 'all';
+      var _which = s.color === col1 ? 'coprime' : 'noncoprime';
       pts.forEach(function(p){
         var xy=ptXY(p.r,p.m);
         var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
-        var dotR=Math.max(0.3, (1.0*(1-p.m/modN*0.3)) * Math.max(0.4, 2.2 - modN/18) * (W/400) * _ptScale);
+        var dotR=Math.max(0.2, (1-p.m/modN*0.2) * Math.max(0.2, 1.4 - modN/30) * (W/400) * _ptScale);
         var isActive = _activeTooltipPt && _activeTooltipPt.r===p.r && _activeTooltipPt.m===p.m;
 
         // cache for hit testing
         _lastCombinedPts.push({px:xy.x, py:xy.y, r:p.r, m:p.m, gcd1: gcd(p.r,p.m)===1});
 
         ctx.globalAlpha=1;
+        var dotColor = isActive ? '#f0d060' : getPointColor(p, _which, modN, color);
+
+        var showLabel = labelMode!=='none' && (_labelScope==='all' || p.m===modN);
         var lbl='';
-        if(labelMode==='fraction') lbl=p.r+'/'+p.m;
-        else if(labelMode==='r')   lbl=''+p.r;
-        else if(labelMode==='m')   lbl='m='+p.m;
-        else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
-        else if(labelMode==='radian') lbl=(2*p.r/p.m).toFixed(2)+'π';
-        else if(labelMode==='decimal') lbl=(p.r/p.m).toFixed(2);
+        if(showLabel){
+          if(labelMode==='fraction') lbl=p.r+'/'+p.m;
+          else if(labelMode==='r')   lbl=''+p.r;
+          else if(labelMode==='m')   lbl='m='+p.m;
+          else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
+          else if(labelMode==='radian') lbl=(2*p.r/p.m).toFixed(2)+'π';
+          else if(labelMode==='decimal') lbl=(p.r/p.m).toFixed(2);
+        }
         if(labelMode==='none'||labelStyle==='dot+label'){
           ctx.beginPath(); ctx.arc(xy.x,xy.y, isActive ? dotR*2.5 : dotR, 0, 2*Math.PI);
-          ctx.fillStyle= isActive ? '#f0d060' : color; ctx.fill();
+          ctx.fillStyle= dotColor; ctx.fill();
           if(isActive){
-            // ring around active point
             ctx.beginPath(); ctx.arc(xy.x,xy.y,dotR*4,0,2*Math.PI);
             ctx.strokeStyle='rgba(240,208,96,0.5)'; ctx.lineWidth=1; ctx.stroke();
           }
         }
-        if(labelMode!=='none'&&lbl){
-          ctx.font=lsize+'px Cinzel,serif'; ctx.fillStyle= isActive ? '#f0d060' : color;
+        if(showLabel&&lbl){
+          ctx.font=lsize+'px Cinzel,serif'; ctx.fillStyle= isActive ? '#f0d060' : dotColor;
           ctx.textAlign='center'; ctx.textBaseline='middle';
           ctx.globalAlpha=1;
           ctx.fillText(lbl,xy.x,xy.y-(labelStyle==='label-only'?0:dotR+lsize*0.6));
@@ -13446,7 +13523,16 @@
       ctx.globalAlpha = inOverlay ? 1.0 : 0.7;
       ctx.fillStyle   = inOverlay ? _oc : (p.gcd1 ? col1 : col2);
       ctx.font        = (inOverlay ? 'bold ' : '') + lsize + 'px Cinzel, serif';
-      ctx.fillText(p.r + '/' + p.m, lx, ly);
+      var labelMode = document.getElementById('f-label') ? document.getElementById('f-label').value : 'r';
+      if(labelMode === 'none') return; // no label when label mode is off
+      var lbl;
+      if     (labelMode==='fraction') lbl = p.r+'/'+p.m;
+      else if(labelMode==='m')        lbl = 'm='+p.m;
+      else if(labelMode==='angle')    lbl = Math.round(360*p.r/p.m)+'°';
+      else if(labelMode==='radian')   lbl = (2*p.r/p.m).toFixed(2)+'π';
+      else if(labelMode==='decimal')  lbl = (p.r/p.m).toFixed(2);
+      else                            lbl = ''+p.r; // default: 'r'
+      ctx.fillText(lbl, lx, ly);
     });
 
     ctx.globalAlpha = 1;
@@ -13875,18 +13961,118 @@
     return '#'+((1<<24)+(rr<<16)+(gg<<8)+bb).toString(16).slice(1);
   }
 
-  function getBrightness(){ return parseInt(document.getElementById('f-bright').value)||0; }
+  function getBrightness(){ return 0; } // brightness now handled by CSS filter (applyFareyFilter)
 
-  // ── Per-ring cumulative rotation ─────────────────────────────────────────
-  var _ringOffsets   = {};
-  var _ringAnimTimer = null;
+  // ── Point color mode helper ───────────────────────────────────────────────
+  window.fareyPtColModeChange = function() {
+    var mode = document.getElementById('f-pt-colmode').value;
+    var solidDiv = document.getElementById('f-solid-colors');
+    if(solidDiv) solidDiv.style.display = mode === 'solid' ? 'flex' : 'none';
+    fareyRedraw();
+  };
 
-  function ringOffset(m, modN){
-    var a    = parseFloat(document.getElementById('f-ringstep-a').value)||0;
-    var b    = parseFloat(document.getElementById('f-ringstep-b').value)||2;
-    var rdir = parseFloat(document.getElementById('f-ringdir').value)||1;
-    return rdir*(m-1)*(a/b)*360 + (_ringOffsets[m]||0);
+  // Returns fill color for a single point given its properties
+  // p: {r, m}  which: 'coprime'|'noncoprime'  modN: int  fallback: css color string
+  function getPointColor(p, which, modN, fallback) {
+    var mode = document.getElementById('f-pt-colmode') ? document.getElementById('f-pt-colmode').value : 'solid';
+    switch(mode) {
+      case 'solid':
+        return fallback;
+
+      case 'rainbow-angle': {
+        // Hue = angular position 0-360 (r/m * 360)
+        var h = (p.r / (p.m || 1)) * 360;
+        return 'hsl(' + Math.round(h) + ',80%,55%)';
+      }
+
+      case 'rainbow-residue': {
+        // Hue = r value mapped 0..modN → 0..360
+        var h = Math.round(360 * p.r / (modN || 1));
+        return 'hsl(' + h + ',75%,55%)';
+      }
+
+      case 'rainbow-ring': {
+        // Hue = ring (modulus) m, 0..modN → 0..300 (skip pure red repeat)
+        var h = Math.round(300 * (p.m - 1) / (modN - 1 || 1));
+        return 'hsl(' + h + ',70%,55%)';
+      }
+
+      case 'prime-composite': {
+        // Is r prime? Use a small primality check
+        var r = p.r;
+        if(r < 2) return '#888888';
+        var isPrime = true;
+        for(var d = 2; d * d <= r; d++) { if(r % d === 0) { isPrime = false; break; } }
+        return isPrime ? '#40c88a' : '#e87040';  // teal=prime, orange=composite
+      }
+
+      case 'per-modulus': {
+        // Unique hue per ring m
+        var h = Math.round(360 * ((p.m * 137) % modN) / (modN || 1)); // golden-angle spread
+        return 'hsl(' + h + ',68%,55%)';
+      }
+
+      case 'per-residue': {
+        // Unique hue per residue r (golden angle spread for visual separation)
+        var maxR = modN;
+        var h = Math.round((p.r * 137.508) % 360);
+        return 'hsl(' + h + ',70%,55%)';
+      }
+
+      case 'math-progression': {
+        // Lightness varies by depth m/modN: deeper = brighter
+        var t = (p.m - 1) / (modN - 1 || 1);
+        var baseHue = which === 'coprime' ? 200 : 10;
+        var l = Math.round(35 + 45 * t);
+        return 'hsl(' + baseHue + ',72%,' + l + '%)';
+      }
+
+      case 'spectral': {
+        // Full visible spectrum mapped to angular position (like wavelength)
+        var h = Math.round(270 - (p.r / (p.m || 1)) * 270); // violet→red
+        return 'hsl(' + h + ',85%,55%)';
+      }
+
+      default:
+        return fallback;
+    }
   }
+
+
+  // ── Image adjustment filter (brightness, contrast, saturation, hue) ───────
+  function applyFareyFilter(){
+    var bright  = parseInt(document.getElementById('f-bright').value)||0;
+    var contrast= parseInt(document.getElementById('f-contrast').value)||0;
+    var sat     = parseInt(document.getElementById('f-saturation').value)||0;
+    var hue     = parseInt(document.getElementById('f-huerot').value)||0;
+
+    var bv = 1 + bright/100;
+    var cv = 1 + contrast/100;
+    var sv = Math.max(0, 1 + sat/100);
+    var hv = hue;
+
+    var filterStr = 'brightness('+bv.toFixed(2)+') contrast('+cv.toFixed(2)+') saturate('+sv.toFixed(2)+') hue-rotate('+hv+'deg)';
+
+    // Apply to the persistent wrapper div — survives canvas redraws
+    var wrap = document.getElementById('farey-canvas-wrap');
+    if(wrap) wrap.style.filter = filterStr;
+  }
+
+  function resetFareyFilter(){
+    ['f-bright','f-contrast','f-saturation','f-huerot'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){ el.value=0; }
+    });
+    document.getElementById('f-bright-val').textContent='0%';
+    document.getElementById('f-contrast-val').textContent='0%';
+    document.getElementById('f-sat-val').textContent='0%';
+    document.getElementById('f-hue-val').textContent='0°';
+    applyFareyFilter();
+  }
+
+
+  // ── Ring spin animation ────────────────────────────────────────────────────
+  // Uses _ringOffsets declared above (shared with auto-rotate)
 
   window.fareyToggleRingAnim = function(){
     var btn = document.getElementById('f-ringanim-btn');
@@ -14457,6 +14643,7 @@
     if (dftWrap)  dftWrap.style.display  = showDFT  ? 'block' : 'none';
     if (discWrap) discWrap.style.display = showDisc ? 'block' : 'none';
 
+    rzDrawCircle();
     if (showDFT)  rzDrawDFT();
     if (showDisc) {
       var peakInfo = rzDrawSpectrum();
@@ -15070,12 +15257,12 @@
       }
     });
 
-    // ── Rich legend panel at bottom of canvas ───────────────────────────────
+    // ── Rich legend panel at TOP-CENTER of canvas ───────────────────────────
     ctx.save();
     var lsize  = Math.max(9, W * 0.013);
     var lpad   = W * 0.03;
     var lboxH  = lsize * 3.8;
-    var ly0    = H - lboxH - 6;
+    var ly0    = 6;  // top instead of bottom
 
     // Semi-transparent background
     ctx.fillStyle = 'rgba(6,4,14,0.82)';
@@ -15134,32 +15321,40 @@
   // Particles travel each highlighted residue channel from ring 1 → modN,
   // then the gap chord flashes. Drawn on top of the static overlay each frame.
 
-  var _animRAF    = null;   // requestAnimationFrame handle
-  var _animPhase  = 0;      // 0=rising 1=chord-flash 2=fade
-  var _animT      = 0;      // normalised 0→1 progress within phase
-  var _animActive = false;
+  // ── Gap spiral animation ─────────────────────────────────────────────────
+  // Each residue in the gap travels from ring modN down to ring 1 following
+  // its spiral path r/1, r/2, … r/modN. The animation shows this inward
+  // journey ring by ring, with a glowing head + label popup at the current ring.
+  // When a pair (r1, r2) reaches ring 1/2, the gap chord is drawn.
 
-  // Build a flat array of path points for a residue r: [{x,y}] ring 1..modN
+  var _animRAF    = null;
+  var _animActive = false;
+  var _animT      = 0;    // 0..1  overall progress (0=outer ring, 1=inner)
+  var _animPhase  = 0;    // 0=spiral-inward  1=chord-flash  2=pause
+
+  // Build path for residue r: points from ring modN down to ring 1 (or innermost)
+  // Returns [{x,y,m}] ordered outer→inner
   function buildSpiral(r, modN, cx, cy, rMin, rMax, dir, angOff, invert) {
     var pts = [];
-    for (var m = 1; m <= modN; m++) {
+    for (var m = modN; m >= 1; m--) {
       var t   = invert ? (modN - m) / (modN - 1 || 1) : (m - 1) / (modN - 1 || 1);
       var rad = rMin + (rMax - rMin) * t;
       var ringOff = (typeof window.ringOffset === 'function') ? window.ringOffset(m, modN) * Math.PI / 180 : 0;
       var a   = dir * 2 * Math.PI * r / (m || 1) + angOff + ringOff;
-      pts.push({ x: cx + rad * Math.sin(a), y: cy - rad * Math.cos(a), m: m });
+      pts.push({ x: cx + rad * Math.sin(a), y: cy - rad * Math.cos(a), m: m, r: r });
     }
     return pts;
   }
 
-  // Interpolate position along a spiral given progress 0→1
   function spiralPos(pts, prog) {
     var idx = prog * (pts.length - 1);
     var lo  = Math.floor(idx), hi = Math.min(lo + 1, pts.length - 1);
     var f   = idx - lo;
     return {
       x: pts[lo].x + (pts[hi].x - pts[lo].x) * f,
-      y: pts[lo].y + (pts[hi].y - pts[lo].y) * f
+      y: pts[lo].y + (pts[hi].y - pts[lo].y) * f,
+      m: Math.round(pts[lo].m + (pts[hi].m - pts[lo].m) * f),
+      r: pts[lo].r
     };
   }
 
@@ -15182,98 +15377,143 @@
     var rMin    = W * rinner * zoom, rMax = rBase * zoom;
 
     var speed   = parseInt(document.getElementById('f-anim-speed').value) || 5;
-    var dt      = speed * 0.004;  // progress increment per frame
+    var dt      = speed * 0.003;
     var loop    = document.getElementById('f-anim-loop').checked;
     var color   = _overlayColor || '#e879f9';
 
-    // Collect unique residues
     var pairs = _overlayPairs.slice(0, MAX_DISPLAY);
     var highlightR = {};
     pairs.forEach(function(p){ highlightR[p.r1] = true; highlightR[p.r2] = true; });
     var rKeys = Object.keys(highlightR).map(Number);
 
-    // Redraw base (static overlay) each frame
+    // Redraw static base
     window.fareyRedraw();
 
-    // Phase 0: particles rise from ring 1 to ring modN
     if (_animPhase === 0) {
+      // ── Spiral inward: ring modN → ring 1 ──────────────────────────────────
       _animT += dt;
       var prog = Math.min(_animT, 1);
 
       rKeys.forEach(function(r) {
         var pts = buildSpiral(r, modN, cx, cy, rMin, rMax, dir, angOff, invert);
-        var stopIdx = Math.floor(prog * (pts.length - 1));
 
-        // Trail: draw fading line of last ~15% of path
-        var trailLen = Math.max(2, Math.floor(pts.length * 0.15));
+        // Draw trail — last 20% of traversed path
+        var stopIdx = Math.floor(prog * (pts.length - 1));
+        var trailLen = Math.max(2, Math.floor(pts.length * 0.20));
         var trailStart = Math.max(0, stopIdx - trailLen);
+
         ctx.save();
-        for (var i = trailStart; i < stopIdx; i++) {
+        for (var i = trailStart; i < stopIdx && i < pts.length - 1; i++) {
           var tf = (i - trailStart) / trailLen;
           ctx.beginPath();
           ctx.moveTo(pts[i].x, pts[i].y);
           ctx.lineTo(pts[i+1].x, pts[i+1].y);
           ctx.strokeStyle = color;
-          ctx.lineWidth   = Math.max(1.5, W * 0.004) * (0.3 + 0.7 * tf);
-          ctx.globalAlpha = 0.4 + 0.6 * tf;
+          ctx.lineWidth   = Math.max(1.5, W * 0.004) * (0.2 + 0.8 * tf);
+          ctx.globalAlpha = 0.3 + 0.7 * tf;
           ctx.stroke();
         }
         ctx.restore();
 
-        // Bright glowing head particle
+        // Glowing head
         var head = spiralPos(pts, prog);
-        var dotR = Math.max(3, W * 0.009);
-        // outer glow
+        var dotR = Math.max(4, W * 0.010);
+
+        // Outer glow
+        var grad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, dotR * 3.5);
+        grad.addColorStop(0, color);
+        grad.addColorStop(0.5, color + '88');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.beginPath(); ctx.arc(head.x, head.y, dotR * 3.5, 0, 2 * Math.PI);
+        ctx.fillStyle = grad; ctx.fill();
+
+        // Core white dot
+        ctx.globalAlpha = 1;
+        ctx.beginPath(); ctx.arc(head.x, head.y, dotR, 0, 2 * Math.PI);
+        ctx.fillStyle = '#fff'; ctx.fill();
+        ctx.restore();
+
+        // ── Popup label at head: shows r/currentRing ─────────────────────────
+        var curM = head.m;
+        var lsize = Math.max(10, W * 0.015);
+        var label = r + '/' + curM;
+        var lw = ctx.measureText(label).width + 12;
+        var lh = lsize + 8;
+        // Position: offset from head, keep inside canvas
+        var lx = head.x + dotR * 2 + 4;
+        var ly = head.y - lh / 2;
+        if (lx + lw > W - 4) lx = head.x - lw - dotR * 2 - 4;
+        if (ly < 4) ly = 4;
+        if (ly + lh > H - 4) ly = H - lh - 4;
+
+        ctx.save();
+        ctx.globalAlpha = 0.92;
+        ctx.fillStyle = 'rgba(6,4,14,0.88)';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        if (ctx.roundRect) ctx.roundRect(lx, ly, lw, lh, 3);
+        else ctx.rect(lx, ly, lw, lh);
+        ctx.fill(); ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = color;
+        ctx.font = 'bold ' + lsize + 'px Cinzel, serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, lx + 6, ly + lh / 2);
+        ctx.restore();
+      });
+
+      if (_animT >= 1) { _animPhase = 1; _animT = 0; }
+
+    } else if (_animPhase === 1) {
+      // ── Chord flash: draw gap chord on inner rings ─────────────────────────
+      _animT += dt * 1.5;
+      var flashProg = Math.min(_animT, 1);
+
+      // Show all spirals at final (inner) position
+      rKeys.forEach(function(r) {
+        var pts = buildSpiral(r, modN, cx, cy, rMin, rMax, dir, angOff, invert);
+        var head = pts[pts.length - 1]; // innermost point
+        var dotR = Math.max(4, W * 0.010);
+
         var grad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, dotR * 3);
         grad.addColorStop(0, color);
-        grad.addColorStop(0.4, color.replace(')', ',0.6)').replace('rgb','rgba').replace('#','rgba(').replace(/rgba\(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2}),/, function(_,r,g,b){ return 'rgba('+parseInt(r,16)+','+parseInt(g,16)+','+parseInt(b,16)+','; }) || color);
-        grad.addColorStop(1,   'rgba(0,0,0,0)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.save();
-        ctx.globalAlpha = 0.9;
+        ctx.globalAlpha = 0.85;
         ctx.beginPath(); ctx.arc(head.x, head.y, dotR * 3, 0, 2 * Math.PI);
         ctx.fillStyle = grad; ctx.fill();
-        // core dot
         ctx.globalAlpha = 1;
         ctx.beginPath(); ctx.arc(head.x, head.y, dotR, 0, 2 * Math.PI);
         ctx.fillStyle = '#fff'; ctx.fill();
         ctx.restore();
       });
 
-      if (_animT >= 1) { _animPhase = 1; _animT = 0; }
-
-    // Phase 1: chord flash
-    } else if (_animPhase === 1) {
-      _animT += dt * 1.5;
-      var flashProg = Math.min(_animT, 1);
-
+      // Flash the gap chord
       pairs.forEach(function(pair) {
-        var t1 = invert ? (modN - modN) / (modN - 1 || 1) : 1;
-        var rad = rMin + (rMax - rMin) * t1;
-        var rO1 = (typeof window.ringOffset === 'function') ? window.ringOffset(modN, modN) * Math.PI / 180 : 0;
-        var a1  = dir * 2 * Math.PI * pair.r1 / modN + angOff + rO1;
-        var a2  = dir * 2 * Math.PI * pair.r2 / modN + angOff + rO1;
-        var x1  = cx + rad * Math.sin(a1), y1 = cy - rad * Math.cos(a1);
-        var x2  = cx + rad * Math.sin(a2), y2 = cy - rad * Math.cos(a2);
-        // Interpolate chord end point for draw-on effect
-        var ex  = x1 + (x2 - x1) * flashProg;
-        var ey  = y1 + (y2 - y1) * flashProg;
+        var pts1 = buildSpiral(pair.r1, modN, cx, cy, rMin, rMax, dir, angOff, invert);
+        var pts2 = buildSpiral(pair.r2, modN, cx, cy, rMin, rMax, dir, angOff, invert);
+        var p1 = pts1[pts1.length - 1];
+        var p2 = pts2[pts2.length - 1];
+        var ex = p1.x + (p2.x - p1.x) * flashProg;
+        var ey = p1.y + (p2.y - p1.y) * flashProg;
         ctx.save();
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(ex, ey);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(ex, ey);
         ctx.strokeStyle = '#fff';
         ctx.lineWidth   = Math.max(2, W * 0.005);
         ctx.globalAlpha = 0.95;
-        ctx.shadowColor = color; ctx.shadowBlur = 12;
+        ctx.shadowColor = color; ctx.shadowBlur = 14;
         ctx.stroke();
         ctx.restore();
       });
 
-      if (_animT >= 1) {
-        _animPhase = 2; _animT = 0;
-      }
+      if (_animT >= 1) { _animPhase = 2; _animT = 0; }
 
-    // Phase 2: brief pause then loop/stop
     } else if (_animPhase === 2) {
-      _animT += dt * 0.5;
+      // ── Brief pause ───────────────────────────────────────────────────────
+      _animT += dt * 0.4;
       if (_animT >= 1) {
         if (loop) {
           _animPhase = 0; _animT = 0;
@@ -15296,14 +15536,11 @@
     }
     var btn = document.getElementById('fcm-gap-play');
     if (_animActive) {
-      // Stop
       _animActive = false;
       if (_animRAF) { cancelAnimationFrame(_animRAF); _animRAF = null; }
       if (btn) { btn.textContent = '▶ Play'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#e879f9'; }
-      // Restore static overlay
       window.fareyRedraw();
     } else {
-      // Start
       _animActive = true;
       _animPhase  = 0;
       _animT      = 0;
@@ -15350,5 +15587,6 @@
   };
 })();
 </script>
+
 </body>
 </html>
