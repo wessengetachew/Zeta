@@ -1602,6 +1602,47 @@
             .charts-container { padding: 0 8px 16px 8px; }
             .modal-content { width: 98%; padding: 12px; }
         }
+
+        /* ── Desktop: Farey controls left / canvas right ──────────────── */
+        @media (min-width: 900px) {
+          #farey-cols {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0 20px;
+            align-items: start;
+          }
+          #farey-left-col {
+            grid-column: 1;
+            grid-row: 1;
+            position: sticky;
+            top: 12px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+          }
+          #farey-canvas-col {
+            grid-column: 2;
+            grid-row: 1;
+          }
+          /* Advanced panel open: full width, canvas col hidden */
+          #farey-root.advanced-open #farey-cols {
+            grid-template-columns: 1fr;
+          }
+          #farey-root.advanced-open #farey-left-col {
+            position: static;
+            max-height: none;
+          }
+          #farey-root.advanced-open #farey-canvas-col {
+            display: none;
+          }
+        }
+        @media (max-width: 899px) {
+          #farey-cols { display: block; }
+          #farey-left-col, #farey-canvas-col { display: block; width: 100%; }
+        }
+
+
     </style>
 </head>
 <body class="dark-mode">
@@ -1631,33 +1672,114 @@
 
             <!-- 2πr/m Farey diagram -->
             <!-- ══ FAREY INTERACTIVE DIAGRAMS ══ -->
-            <div id="farey-root" style="margin:24px auto 0;max-width:900px;">
-
-              <!-- ══ MOD N + PARAMETERS (always visible below canvas) ══ -->
-              <div id="farey-highmod-notice" style="display:none;margin-bottom:6px;padding:5px 10px;background:#2a1a00;border:1px solid #8a6020;border-radius:3px;font-family:'Cinzel',serif;font-size:0.58rem;color:#d4a020;text-align:center;letter-spacing:0.06em;">
-                MOD &gt; 49 — Points only mode · Chords, spokes &amp; connections auto-disabled for performance
+            <div id="farey-root" style="margin:24px auto 0;">
+              <!-- ══ SINGLE CONTROL ROW — full width above grid ══ -->
+              <input id="farey-live-stats" type="hidden">
+              <input id="f-mod-start" type="hidden" value="1">
+              <div style="padding:6px 10px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                <input id="f-mod-start-num" type="number" min="1" max="9999" value="1" title="Start ring" style="width:38px;background:var(--parchment-deep);color:#9a8060;border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:right;" oninput="var v=Math.max(1,parseInt(this.value)||1);document.getElementById('f-mod-start').value=v;fareyRedraw()">
+                <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:#9a8060;">:</span>
+                <span style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold);">MOD N</span>
+                <input id="f-mod" type="range" min="2" max="210" value="49" style="flex:1;min-width:60px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
+                <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(210,v);fareyRedraw()">
+                <span style="color:var(--border);margin:0 1px;">|</span>
+                <span style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold);">GAP</span>
+                <input id="f-gap-input" type="text" placeholder="2,4,6…" style="width:72px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
+                <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:2px 6px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
+                <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:2px 6px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
+                <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;min-width:0;"></div>
+                <button onclick="toggleFareyPanel()" style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--parchment-dark);color:var(--gold);border:1px solid var(--border);padding:3px 8px;cursor:pointer;">&#9660; Advanced</button>
               </div>
-              <div style="margin-top:14px;padding:12px 16px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
-                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">MOD N</span>
-                  <input id="f-mod" type="range" min="2" max="2000" value="49" style="width:200px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
-                  <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:58px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(2000,v);fareyRedraw()">
+
+<div id="farey-cols" style="display:contents;">
+<div id="farey-left-col" style="min-width:0;">
+
+              <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
+              <!-- ══ CANVAS (top of advanced panel) ══ -->
+              <div id="farey-canvas-wrap">
+              <!-- Combined view -->
+              <div id="farey-combined-view" style="display:none;text-align:center;">
+                <div style="position:relative;display:inline-block;">
+                  <canvas id="fc-combined" width="800" height="800" style="cursor:crosshair;display:block;" title="Click a point to inspect it"></canvas>
+                  <div id="farey-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #c49b38;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
+                </div>
+
+                <!-- Canvas mode buttons -->
+                <div style="margin-top:8px;display:flex;justify-content:center;gap:6px;align-items:center;flex-wrap:wrap;">
+                  <button onclick="fareyCombinedMode('both')"       id="fcm-both"       style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--gold);color:var(--parchment);cursor:pointer;">Combined</button>
+                  <button onclick="fareyCombinedMode('coprime')"    id="fcm-coprime"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #4a90d9;background:var(--parchment-dark);color:#4a90d9;cursor:pointer;">gcd=1</button>
+                  <button onclick="fareyCombinedMode('noncoprime')" id="fcm-noncoprime" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">gcd&gt;1</button>
                   <span style="color:var(--border);">|</span>
-                  <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--gold);">GAP OVERLAY</span>
-                  <input id="f-gap-input" type="text" placeholder="e.g. 2 or 2,4,6" style="width:120px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
-                  <button onclick="fareyGapInputApply()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">Show</button>
-                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.58rem;text-transform:uppercase;padding:3px 10px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">Clear</button>
-                  <div id="f-gap-input-status" style="font-family:'Cinzel',serif;font-size:0.55rem;color:#9a8060;min-width:10px;"></div>
+                  <button id="fcm-ar-out"    onclick="fareyToggleAutoRotate('out')" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8635; Out→In</button>
+                  <button id="fcm-autorotate" onclick="fareyToggleAutoRotate()"     style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Rotate</button>
+                  <button id="fcm-ar-in"     onclick="fareyToggleAutoRotate('in')"  style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8634; In→Out</button>
+                  <button onclick="fareyRotateReset()"                              style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#11119; Reset</button>
+                  <button id="fcm-inspect"   onclick="fareyToggleInspect()"         style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect</button>
+                  <button id="fcm-chain-clear" onclick="fareyClearChain()"          style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
+                  <span style="color:var(--border);">|</span>
+                  <button id="fcm-zeros"     onclick="fareyToggleZeros()"           style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
+                  <a href="#riemannZerosSection"                                    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;">&#8595; Zeros</a>
+                </div>
+
+                <!-- Canvas sub-label -->
+                <div id="fc-combined-label" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-top:5px;">Combined · click canvas to rotate 90°</div>
+
+                <!-- Gap animation bar (shown when gap active) -->
+                <div id="farey-gap-overlay-controls" style="display:none;margin-top:6px;align-items:center;gap:10px;font-family:'Cinzel',serif;font-size:0.58rem;color:#4a90d9;flex-wrap:wrap;justify-content:center;">
+                  <span style="color:#9a8060;">OPACITY</span>
+                  <input id="f-overlay-alpha" type="range" min="10" max="100" value="80" style="width:60px;accent-color:#4a90d9;" oninput="document.getElementById('f-overlay-alpha-val').textContent=this.value+'%';if(window._overlayGap!==null&&window._overlayGap!==undefined){fareyRedraw();}">
+                  <span id="f-overlay-alpha-val" style="min-width:24px;color:#4a90d9;">80%</span>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:#e879f9;" title="Stop each path when r mod m = m−1 (just before crossing the 0-axis / reduced residue boundary)">
+                    <input type="checkbox" id="f-path-stop-boundary" onchange="if(window._overlayGap!==null)fareyRedraw();" style="accent-color:#e879f9;">
+                    <span>Stop at m−1</span>
+                  </label>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:#ffd700;" title="Show per-residue path table below canvas">
+                    <input type="checkbox" id="f-show-r-table" checked onchange="fareyUpdateRTable();" style="accent-color:#ffd700;">
+                    <span>r-path table</span>
+                  </label>
+                  <!-- Hidden inputs kept for animation code compatibility -->
+                  <input id="f-anim-speed" type="hidden" value="5">
+                  <input id="f-anim-loop" type="hidden" value="1">
+                  <input id="fcm-gap-play" type="hidden" value="">
+                </div>
+                <!-- Per-r path table (shown when gap active and table enabled) -->
+                <div id="farey-r-table-wrap" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(6,4,14,0.9);border:1px solid rgba(74,144,217,0.4);border-radius:4px;font-family:'Cinzel',serif;font-size:0.6rem;color:#e8d9b0;max-height:320px;overflow-y:auto;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid rgba(74,144,217,0.2);padding-bottom:6px;">
+                    <span style="color:#4a90d9;letter-spacing:0.1em;text-transform:uppercase;">Residue Path Details</span>
+                    <span style="color:#9a8060;font-size:0.55rem;">r → (r mod m)/m for m = N down to 1</span>
+                  </div>
+                  <div id="farey-r-table-body"></div>
+                </div>
+
+                <!-- Gap stats bar -->
+                <div id="farey-gap-overlay-bar" style="display:none;margin-top:8px;padding:8px 16px;background:rgba(10,30,60,0.85);border:1px solid #4a90d9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:#e8d9b0;text-align:center;">
+                  <span id="farey-gap-overlay-info"></span>
+                  &nbsp;
+                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.56rem;text-transform:uppercase;padding:2px 8px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#10005; Clear</button>
+                </div>
+
+                <!-- Chain panel -->
+                <div id="farey-chain-panel" style="display:none;margin-top:8px;padding:12px 16px;background:var(--parchment-dark);border:1px solid #e879f9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:var(--ink);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span id="farey-chain-title" style="color:#e879f9;font-weight:bold;font-size:0.65rem;"></span>
+                    <button onclick="fareyChainCopy()" style="font-family:'Cinzel',serif;font-size:0.55rem;text-transform:uppercase;padding:3px 10px;border:1px solid #e879f9;background:transparent;color:#e879f9;cursor:pointer;">&#x2398; Copy CSV</button>
+                  </div>
+                  <div id="farey-chain-info" style="line-height:1.9;"></div>
+                </div>
+
+                <!-- Export row -->
+                <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+                  <button onclick="fareyComposite()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#8615; Export Composite PNG</button>
+                  <button onclick="fareyTriangleExport()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#9651; Export Triangle PNG</button>
+                  <button onclick="fareyExportDOM()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;border:1px solid #3b82f6;padding:5px 14px;cursor:pointer;">&#9633; Export DOM PNG</button>
+                  <button onclick="fareyExportCSV()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:1px solid #22c55e;padding:5px 14px;cursor:pointer;">&#8681; Export CSV</button>
                 </div>
               </div>
 
-
-              <!-- Advanced dropdown -->
-              <div style="text-align:right;margin-bottom:8px;">
-                <button onclick="toggleFareyPanel()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--parchment-dark);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#9660; Advanced</button>
-              </div>
-
-              <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
+              </div><!-- /farey-canvas-wrap-inner -->
+              <div style="margin-top:14px;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px 24px;align-items:start;">
 
                   <!-- Label mode -->
@@ -1728,8 +1850,8 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">DIAGRAM SIZE</div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                      <input id="f-size" type="range" min="160" max="2000" value="260" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-size-num').value=this.value;fareyResize()">
-                      <input id="f-size-num" type="number" min="160" max="2000" value="260" style="width:54px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(2000,Math.max(160,parseInt(this.value)||260));document.getElementById('f-size').value=v;fareyResize()">
+                      <input id="f-size" type="range" min="160" max="2000" value="400" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-size-num').value=this.value;fareyResize()">
+                      <input id="f-size-num" type="number" min="160" max="2000" value="400" style="width:54px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.62rem;text-align:right;" oninput="var v=Math.min(2000,Math.max(160,parseInt(this.value)||260));document.getElementById('f-size').value=v;fareyResize()">
                       <span style="color:var(--ink-light);font-size:0.58rem;">px</span>
                     </div>
                   </div>
@@ -1757,32 +1879,6 @@
                         <span style="color:#9a8060;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;">Invert Ring Order (outer→inner)</span>
                       </label>
                     </div>
-                    <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">IMAGE ADJUSTMENTS</div>
-                    <div style="margin-top:4px;">
-                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
-                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">BRIGHT</span>
-                        <input id="f-bright" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-bright-num').value=this.value;document.getElementById('f-bright-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
-                        <input id="f-bright-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-bright').value=v;document.getElementById('f-bright-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-bright-val" style="display:none;">0%</span>
-                      </div>
-                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
-                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">CONTR</span>
-                        <input id="f-contrast" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-contrast-num').value=this.value;document.getElementById('f-contrast-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
-                        <input id="f-contrast-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-contrast').value=v;document.getElementById('f-contrast-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-contrast-val" style="display:none;">0%</span>
-                      </div>
-                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
-                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">SAT</span>
-                        <input id="f-saturation" type="range" min="-100" max="100" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-sat-num').value=this.value;document.getElementById('f-sat-val').textContent=(this.value>0?'+':'')+this.value+'%';applyFareyFilter()">
-                        <input id="f-sat-num" type="number" min="-100" max="100" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(100,Math.max(-100,parseInt(this.value)||0));document.getElementById('f-saturation').value=v;document.getElementById('f-sat-val').textContent=(v>0?'+':'')+v+'%';applyFareyFilter()"><span id="f-sat-val" style="display:none;">0%</span>
-                      </div>
-                      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
-                        <span style="color:#9a8060;font-size:0.55rem;min-width:28px;">HUE</span>
-                        <input id="f-huerot" type="range" min="-180" max="180" value="0" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-hue-num').value=this.value;document.getElementById('f-hue-val').textContent=this.value+'°';applyFareyFilter()">
-                        <input id="f-hue-num" type="number" min="-180" max="180" value="0" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(180,Math.max(-180,parseInt(this.value)||0));document.getElementById('f-huerot').value=v;document.getElementById('f-hue-val').textContent=v+'°';applyFareyFilter()"><span id="f-hue-val" style="display:none;">0°</span>
-                      </div>
-                      <div style="text-align:right;margin-top:4px;">
-                        <button onclick="resetFareyFilter()" style="font-size:0.55rem;padding:2px 8px;background:var(--parchment-dark);color:var(--ink-mid);border:1px solid var(--border);cursor:pointer;font-family:'Cinzel',serif;">↺ Reset</button>
-                      </div>
-                    </div>
                     <div style="margin-top:8px;color:#9a8060;font-size:0.58rem;">POINT SIZE</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
                       <input id="f-ptsize" type="range" min="5" max="400" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-ptsize-num').value=this.value;document.getElementById('f-ptsize-val').textContent=this.value+'%';fareyRedraw()">
@@ -1791,14 +1887,19 @@
                     </div>
                   </div>
 
-                  <!-- Show chords -->
+                  <!-- Show chords + involution thickness -->
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">SHOW CHORDS</div>
                     <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
                       <input id="f-chords" type="checkbox" checked onchange="fareyRedraw()" style="accent-color:var(--gold);">
                       <span>Involution chords</span>
                     </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:4px;">
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+                      <span style="color:#9a8060;font-size:0.58rem;white-space:nowrap;">THICKNESS</span>
+                      <input id="f-chord-thick" type="range" min="1" max="40" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-chord-thick-num').value=(this.value/10).toFixed(1);fareyRedraw()">
+                      <input id="f-chord-thick-num" type="number" min="0.1" max="4" step="0.1" value="0.4" style="width:38px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(4,Math.max(0.1,parseFloat(this.value)||0.1));document.getElementById('f-chord-thick').value=Math.round(v*10);fareyRedraw()">
+                    </div>
+                    <label style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;">
                       <input id="f-spokes" type="checkbox" checked onchange="fareyRedraw()" style="accent-color:var(--gold);">
                       <span>Radial spokes</span>
                     </label>
@@ -1852,19 +1953,19 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">RING POLYGON</div>
                     <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
-                      <input id="f-samemod" type="checkbox" onchange="fareyRedraw()" style="accent-color:var(--gold);">
+                      <input id="f-samemod" type="checkbox" checked onchange="fareyRedraw()" style="accent-color:var(--gold);">
                       <span>Draw polygon connecting residues around each ring</span>
                     </label>
                     <div style="margin-top:6px;color:var(--gold);font-size:0.58rem;letter-spacing:0.06em;">POINTS TO CONNECT</div>
                     <select id="f-samemod-filter" onchange="fareyRedraw()" style="margin-top:3px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
-                      <option value="gcd1">gcd=1 only  (mod 4 → square, mod 8 → square…)</option>
-                      <option value="all">All points  (mod 4 → square, mod 8 → octagon…)</option>
+                      <option value="gcd1">gcd=1 only  (mod 4 → single diameter line, mod 8 → square…)</option>
+                      <option value="all" selected>All points  (mod 4 → square, mod 8 → octagon…)</option>
                       <option value="gcd2">gcd&gt;1 only</option>
                     </select>
                     <div style="margin-top:8px;color:var(--gold);font-size:0.58rem;letter-spacing:0.06em;">WHICH RINGS</div>
                     <select id="f-samemod-rings" onchange="fareyRedraw()" style="margin-top:3px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
                       <option value="outer">Outer ring only (mod N)</option>
-                      <option value="all">All rings</option>
+                      <option value="all" selected>All rings</option>
                       <option value="outer5">Outer 5 rings</option>
                     </select>
                     <label style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:8px;">
@@ -1901,8 +2002,8 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">SAME-MOD THICKNESS</div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                      <input id="f-samemod-thick" type="range" min="1" max="30" value="4" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-samemod-thick-val').textContent=(this.value/10).toFixed(1);fareyRedraw()">
-                      <span id="f-samemod-thick-val" style="color:var(--ink);min-width:28px;text-align:right;">0.4</span>
+                      <input id="f-samemod-thick" type="range" min="0" max="300" value="75" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-samemod-thick-val').textContent=(this.value/100).toFixed(2);fareyRedraw()">
+                      <span id="f-samemod-thick-val" style="color:var(--ink);min-width:28px;text-align:right;">0.75</span>
                     </div>
                     <div style="margin-top:8px;color:var(--gold);">CROSS-MOD THICKNESS</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
@@ -1912,86 +2013,26 @@
                   </div>
 
                 </div>
-              </div>
+              </div><!-- /controls grid -->
+              </div><!-- /controls margin -->
+              </div><!-- /farey-panel -->
 
-              <!-- ══ CANVAS AREA ══ -->
-              <div id="farey-canvas-wrap">
+</div><!-- /farey-left-col -->
+<div id="farey-canvas-col" style="min-width:0;">
+              <div style="padding:16px;background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;margin-bottom:8px;">
               <!-- Split view (two small canvases) -->
-              <div id="farey-split-view" style="display:flex;justify-content:center;gap:32px;align-items:flex-start;flex-wrap:wrap;">
-                <div style="text-align:center;">
-                  <canvas id="fc-coprime" width="260" height="260" style="cursor:pointer;display:block;" onclick="fareyRotate('coprime')" title="Click to rotate 90°"></canvas>
+              <div id="farey-split-view" style="display:flex;justify-content:center;gap:16px;align-items:flex-start;">
+                <div style="text-align:center;flex:1;min-width:0;">
+                  <canvas id="fc-coprime" width="400" height="400" style="cursor:pointer;display:block;width:100%;max-width:400px;height:auto;aspect-ratio:1;" onclick="fareyRotate('coprime')" title="Click to rotate 90°"></canvas>
                   <div id="fc-label1" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#4a90d9;margin-top:6px;">gcd(r, m) = 1</div>
                 </div>
-                <div style="text-align:center;">
-                  <canvas id="fc-noncoprime" width="260" height="260" style="cursor:pointer;display:block;" onclick="fareyRotate('noncoprime')" title="Click to rotate 90°"></canvas>
+                <div style="text-align:center;flex:1;min-width:0;">
+                  <canvas id="fc-noncoprime" width="400" height="400" style="cursor:pointer;display:block;width:100%;max-width:400px;height:auto;aspect-ratio:1;" onclick="fareyRotate('noncoprime')" title="Click to rotate 90°"></canvas>
                   <div id="fc-label2" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#c94040;margin-top:6px;">gcd(r, m) &gt; 1</div>
                 </div>
               </div>
+              </div><!-- /canvas border wrapper -->
 
-              <!-- Combined view -->
-              <div id="farey-combined-view" style="display:none;text-align:center;">
-                <div style="position:relative;display:inline-block;">
-                  <canvas id="fc-combined" width="800" height="800" style="cursor:crosshair;display:block;" title="Click a point to inspect it"></canvas>
-                  <div id="farey-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #c49b38;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
-                </div>
-
-                <!-- Canvas mode buttons -->
-                <div style="margin-top:10px;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap;">
-                  <button onclick="fareyCombinedMode('both')"       id="fcm-both"       style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--border);background:var(--gold);color:var(--parchment);cursor:pointer;">Combined</button>
-                  <button onclick="fareyCombinedMode('coprime')"    id="fcm-coprime"    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #4a90d9;background:var(--parchment-dark);color:#4a90d9;cursor:pointer;">gcd=1</button>
-                  <button onclick="fareyCombinedMode('noncoprime')" id="fcm-noncoprime" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border:1px solid #c94040;background:var(--parchment-dark);color:#c94040;cursor:pointer;">gcd&gt;1</button>
-                  <span style="color:var(--border);">|</span>
-                  <button id="fcm-ar-out"    onclick="fareyToggleAutoRotate('out')" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8635; Out→In</button>
-                  <button id="fcm-autorotate" onclick="fareyToggleAutoRotate()"     style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9654; Rotate</button>
-                  <button id="fcm-ar-in"     onclick="fareyToggleAutoRotate('in')"  style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#8634; In→Out</button>
-                  <button onclick="fareyRotateReset()"                              style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#11119; Reset</button>
-                  <button id="fcm-inspect"   onclick="fareyToggleInspect()"         style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--ink-mid);cursor:pointer;">&#9679; Inspect</button>
-                  <button id="fcm-chain-clear" onclick="fareyClearChain()"          style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#10005; Clear Chain</button>
-                  <span style="color:var(--border);">|</span>
-                  <button id="fcm-zeros"     onclick="fareyToggleZeros()"           style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
-                  <a href="#riemannZerosSection"                                    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;">&#8595; Zeros</a>
-                </div>
-
-                <!-- Canvas sub-label -->
-                <div id="fc-combined-label" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-top:5px;">Combined · click canvas to rotate 90°</div>
-
-                <!-- Gap animation bar (shown when gap active) -->
-                <div id="farey-gap-overlay-controls" style="display:none;margin-top:6px;align-items:center;gap:8px;font-family:'Cinzel',serif;font-size:0.58rem;color:#4a90d9;flex-wrap:wrap;justify-content:center;">
-                  <span>OPACITY</span>
-                  <input id="f-overlay-alpha" type="range" min="10" max="100" value="80" style="width:70px;accent-color:#4a90d9;" oninput="document.getElementById('f-overlay-alpha-val').textContent=this.value+'%';if(window._overlayGap!==null&&window._overlayGap!==undefined){fareyRedraw();}">
-                  <span id="f-overlay-alpha-val" style="min-width:28px;">80%</span>
-                  <!-- Hidden inputs kept for animation code compatibility -->
-                  <input id="f-anim-speed" type="hidden" value="5">
-                  <input id="f-anim-loop" type="hidden" value="1">
-                  <input id="fcm-gap-play" type="hidden" value="">
-                </div>
-
-                <!-- Gap stats bar -->
-                <div id="farey-gap-overlay-bar" style="display:none;margin-top:8px;padding:8px 16px;background:rgba(10,30,60,0.85);border:1px solid #4a90d9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:#e8d9b0;text-align:center;">
-                  <span id="farey-gap-overlay-info"></span>
-                  &nbsp;
-                  <button onclick="fareyGapOverlayClear()" style="font-family:'Cinzel',serif;font-size:0.56rem;text-transform:uppercase;padding:2px 8px;border:1px solid #4a90d9;background:transparent;color:#4a90d9;cursor:pointer;">&#10005; Clear</button>
-                </div>
-
-                <!-- Chain panel -->
-                <div id="farey-chain-panel" style="display:none;margin-top:8px;padding:12px 16px;background:var(--parchment-dark);border:1px solid #e879f9;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;color:var(--ink);">
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                    <span id="farey-chain-title" style="color:#e879f9;font-weight:bold;font-size:0.65rem;"></span>
-                    <button onclick="fareyChainCopy()" style="font-family:'Cinzel',serif;font-size:0.55rem;text-transform:uppercase;padding:3px 10px;border:1px solid #e879f9;background:transparent;color:#e879f9;cursor:pointer;">&#x2398; Copy CSV</button>
-                  </div>
-                  <div id="farey-chain-info" style="line-height:1.9;"></div>
-                </div>
-
-                <!-- Export row -->
-                <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-                  <button onclick="fareyComposite()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#8615; Export Composite PNG</button>
-                  <button onclick="fareyTriangleExport()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--gold);border:1px solid var(--border);padding:5px 14px;cursor:pointer;">&#9651; Export Triangle PNG</button>
-                  <button onclick="fareyExportDOM()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#3b82f6,#1e40af);color:#fff;border:1px solid #3b82f6;padding:5px 14px;cursor:pointer;">&#9633; Export DOM PNG</button>
-                  <button onclick="fareyExportCSV()"      style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:1px solid #22c55e;padding:5px 14px;cursor:pointer;">&#8681; Export CSV</button>
-                </div>
-              </div>
-
-              </div><!-- /farey-canvas-wrap -->
               <!-- ══ STATS / DESCRIPTION DROPDOWN ══ -->
               <div id="farey-stats-section" style="margin-top:10px;">
 
@@ -2002,7 +2043,7 @@
                     <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▶</span>
                   </div>
                   <div style="display:none;padding:12px 16px;">
-                    <div id="farey-live-stats" style="font-family:'Cinzel',serif;font-size:0.62rem;line-height:2;color:var(--ink-mid);"></div>
+                    <div id="farey-live-stats-detail" style="font-family:'Cinzel',serif;font-size:0.62rem;line-height:2;color:var(--ink-mid);"></div>
                   </div>
                 </div>
 
@@ -2029,7 +2070,7 @@
                   </div>
                   <div style="display:none;padding:12px 16px;font-family:Georgia,serif;font-size:0.8rem;color:var(--ink-mid);line-height:1.7;">
                     <p>Each point r/m (0 ≤ r ≤ m, 1 ≤ m ≤ mod N) is plotted at angle 2πr/m on ring m. Points with gcd(r,m)=1 (blue) are the Farey fractions — their distribution is uniform on the critical line Re(s)=½ in the sense of Franel-Landau. Points with gcd(r,m)&gt;1 (red) reveal the multiplicative structure.</p>
-                    <p>The <strong>cross-mod connections</strong> trace how each residue r threads through rings 1→modN — these are the channels along which prime gap residues cluster. The <strong>ring polygon</strong> connects consecutive residues around a single ring: at mod 4 (gcd=1) you get a square; at mod 8 an octagon (all) or square (gcd=1 only).</p>
+                    <p>The <strong>cross-mod connections</strong> trace how each residue r threads through rings 1→modN — these are the channels along which prime gap residues cluster. The <strong>ring polygon</strong> connects residues around a single ring: at mod 4 with <em>all points</em> you get a square (0, 1, 2, 3); with <em>gcd=1 only</em> at mod 4 just r=1 and r=3 remain, giving a single diameter line from 90° to 270°. At mod 8 with all points you get an octagon; with gcd=1 only (r=1,3,5,7) a square.</p>
                     <p>The <strong>gap overlay</strong> highlights the residue pairs (p mod N, (p+g) mod N) for primes in gap class g — the chords connecting r₁ to r₂ on the outer ring, with the inward spiral showing the full cross-mod path.</p>
                   </div>
                 </div>
@@ -2037,6 +2078,8 @@
               </div>
 
             </div>
+</div><!-- /farey-canvas-col -->
+</div><!-- /farey-cols -->
             <!-- ══ END FAREY ══ -->
             </div>            </div>
         </div><!-- end intro-section -->
@@ -2072,7 +2115,6 @@
                 <li><strong>Gap 6 (Sexy Primes):</strong> {23, 31, 47, 53, 61, 73, 83, 89, 113, …}</li>
                 <li><strong>Larger even gaps:</strong> g = 8, 10, 12, … all contribute progressively smaller P<sub>g</sub></li>
             </ul>
-
             <h3>Key Questions This Tool Investigates</h3>
 
             <ol>
@@ -3251,6 +3293,10 @@
                     <button class="export-btn png" onclick="rzExportDOM()" style="background:linear-gradient(135deg,#3b82f6,#1e40af);border-color:#3b82f6;">Export DOM PNG</button>
                     <button class="export-btn csv" onclick="rzExportCSV()">Export CSV</button>
                 </div>
+            </div>
+            <!-- Back to top link -->
+            <div style="text-align:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(168,85,247,0.2);">
+              <a href="#farey-root" style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#a855f7;text-decoration:none;padding:6px 18px;border:1px solid rgba(168,85,247,0.5);border-radius:3px;transition:background 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.12)'" onmouseout="this.style.background='transparent'">&#8593; Back to Farey Canvas</a>
             </div>
         </div>
         <!-- ══ END RIEMANN ZEROS ══ -->
@@ -12068,8 +12114,7 @@
     clearAncestorCache();
     // High-mod notice: auto-disable decorations above mod 49
     var _modNow = parseInt(document.getElementById('f-mod-num').value)||49;
-    var notice = document.getElementById('farey-highmod-notice');
-    if(notice) notice.style.display = _modNow > 49 ? 'block' : 'none';
+    // highmod notice removed — stats bar is always visible above slider
     if(document.getElementById('farey-combined-view').style.display!=='none'){
       syncCombinedSize(); drawCombined();
     } else {
@@ -12088,52 +12133,80 @@
 
   // ── Live stats updater ───────────────────────────────────────────────────
   function fareyUpdateLiveStats() {
-    var el = document.getElementById('farey-live-stats');
-    if (!el) return;
+    var el  = document.getElementById('farey-live-stats');      // bar above slider
+    var el2 = document.getElementById('farey-live-stats-detail'); // dropdown panel
+    if (!el && !el2) return;
     var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
     var fracs = buildFractions(modN);
     var cop = fracs.cop.length, ncp = fracs.ncp.length, total = cop + ncp;
     var ratio = total > 0 ? (cop / total) : 0;
-    // ζ(2) = π²/6, expected GCD=1 ratio = 6/π²
+
+    // 1/ζ(2) = 6/π² — asymptotic density of gcd=1 pairs
     var zetaRatio = 6 / (Math.PI * Math.PI);
     var diff = Math.abs(ratio - zetaRatio);
     var diffPct = (diff / zetaRatio * 100).toFixed(3);
-    // Euler phi sum = Σφ(m) for m=1..N ≈ 3N²/π²
-    var phiSum = fracs.cop.filter(function(p){ return p.m >= 1; }).length;
-    el.innerHTML =
-      '<span style="color:var(--gold);">Mod N</span>: <strong>' + modN + '</strong>'
-      + ' &nbsp;·&nbsp; <span style="color:var(--gold);">Total points</span>: <strong>' + total.toLocaleString() + '</strong>'
-      + ' &nbsp;·&nbsp; <span style="color:#4a90d9;">gcd=1 (coprime)</span>: <strong>' + cop.toLocaleString() + '</strong>'
-      + ' &nbsp;·&nbsp; <span style="color:#c94040;">gcd&gt;1</span>: <strong>' + ncp.toLocaleString() + '</strong>'
+
+    // Euler totient sum: Σ_{m=1}^{N} φ(m) = cop count (excluding 0/m and m/m endpoints)
+    // cop includes 0/1 and 1/1 (2 canonical endpoints), true φ sum = cop - 2
+    var phiSum = cop - 2;
+
+    // Involution count: r/m ↔ (m-r)/m, pairs where gcd(r,m)=1 and r ≠ m/2
+    var invCount = 0;
+    var invDone = {};
+    fracs.cop.forEach(function(p){
+      if(p.m === 1) return;
+      var rr = p.m - p.r;
+      var key = Math.min(p.r, rr) + '/' + p.m;
+      if(!invDone[key] && rr !== p.r && rr >= 0){
+        invDone[key] = true; invCount++;
+      }
+    });
+
+    // Expected φ(N) for outer ring only
+    function eulerPhi(n){ var r=n; for(var p=2;p*p<=n;p++){if(n%p===0){r-=r/p;while(n%p===0)n/=p;}} if(n>1)r-=r/n; return Math.round(r); }
+    var phiN = eulerPhi(modN);
+
+    var html =
+      '<span style="color:var(--gold);">N = ' + modN + '</span>'
+      + ' &nbsp;·&nbsp; <span style="color:#4a90d9;">gcd=1: <strong>' + cop.toLocaleString() + '</strong></span>'
+      + ' &nbsp;·&nbsp; <span style="color:#c94040;">gcd&gt;1: <strong>' + ncp.toLocaleString() + '</strong></span>'
+      + ' &nbsp;·&nbsp; Total: <strong>' + total.toLocaleString() + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:var(--gold);">Σφ(m) = <strong>' + phiSum.toLocaleString() + '</strong></span>'
+      + ' &nbsp;·&nbsp; <span style="color:#e8a840;">φ(N) = <strong>' + phiN + '</strong></span>'
+      + ' &nbsp;·&nbsp; <span style="color:#a8e6cf;">Involutions: <strong>' + invCount.toLocaleString() + '</strong></span>'
       + '<br>'
-      + '<span style="color:var(--gold);">Ratio cop/total</span>: <strong>' + ratio.toFixed(6) + '</strong>'
-      + ' &nbsp;·&nbsp; <span style="color:var(--gold);">6/π² (1/ζ(2))</span>: <strong>' + zetaRatio.toFixed(6) + '</strong>'
-      + ' &nbsp;·&nbsp; <span style="color:' + (diff < 0.005 ? '#a8e6cf' : '#ffd700') + ';">Δ = ' + diffPct + '%</span>'
-      + '<br>'
-      + '<span style="color:#9a8060;font-size:0.58rem;">As mod N → ∞, cop/total → 6/π² ≈ ' + zetaRatio.toFixed(8) + ' (the density of square-free integers)</span>';
+      + '<span style="color:var(--gold);">cop/total = <strong>' + ratio.toFixed(6) + '</strong></span>'
+      + ' &nbsp;·&nbsp; 6/π² = <strong>' + zetaRatio.toFixed(6) + '</strong>'
+      + ' &nbsp;·&nbsp; <span style="color:' + (diff < 0.005 ? '#a8e6cf' : '#ffd700') + ';">Δ = ' + diffPct + '% of 6/π²</span>'
+      + ' &nbsp;·&nbsp; <span style="color:#9a8060;font-size:0.58rem;">cop/total → 6/π² as N→∞ (Franel-Landau)</span>';
+
+    if(el)  el.innerHTML  = html;
+    if(el2) el2.innerHTML = html;
   }
 
   window.fareyResize = function(){
-    var sz = parseInt(document.getElementById('f-size-num').value)||260;
+    var sz = parseInt(document.getElementById('f-size-num').value)||400;
     ['coprime','noncoprime','combined'].forEach(function(w){
       var c=document.getElementById('fc-'+w);
       if(!c) return;
       c.width=sz; c.height=sz;
-      c.style.width=sz+'px'; c.style.height=sz+'px';
+      // combined uses fixed px; split canvases use CSS width:100% for responsive layout
+      if(w==='combined'){ c.style.width=sz+'px'; c.style.height=sz+'px'; }
     });
     fareyRedraw();
   };
 
   function buildFractions(modN){
+    var startMod = Math.max(1, Math.min(
+      parseInt((document.getElementById('f-mod-start')||{value:'1'}).value)||1,
+      modN
+    ));
     var cop=[], ncp=[];
-    for(var m=1;m<=modN;m++){
+    for(var m=startMod;m<=modN;m++){
       for(var r=0;r<=m;r++){
         var g=gcd(r,m);
         if(r===0||r===m){
-          // 0/1 and 1/1 are the canonical endpoints (coprime by convention)
           if(m===1){ cop.push({r:r,m:m}); }
-          // 0/m and m/m for m>1 are gcd=m (non-coprime) — include in ncp
-          // so "all points" polygon gets the full 0..m vertex set
           else { ncp.push({r:r,m:m}); }
         } else if(g===1){
           cop.push({r:r,m:m});
@@ -12160,14 +12233,14 @@
     var lsize = parseInt(document.getElementById('f-lsize').value)||7;
     var col1  = document.getElementById('f-col1').value;
     var col2  = document.getElementById('f-col2').value;
-    var _highMod = modN > 49;
-    var showChords  = _highMod ? false : document.getElementById('f-chords').checked;
-    var showSpokes  = _highMod ? false : document.getElementById('f-spokes').checked;
-    var showSameMod = _highMod ? false : document.getElementById('f-samemod').checked;
-    var showCrossMod= _highMod ? false : document.getElementById('f-crossmod').checked;
+    var _highMod = modN > 49;  // kept for reference only
+    var showChords  = document.getElementById('f-chords').checked;
+    var showSpokes  = document.getElementById('f-spokes').checked;
+    var showSameMod = document.getElementById('f-samemod').checked;
+    var showCrossMod= document.getElementById('f-crossmod').checked;
     var sameModColMode = document.getElementById('f-samemod-colmode').value;
     var sameModFixedCol= document.getElementById('f-samemod-col').value;
-    var sameModThick= parseInt(document.getElementById('f-samemod-thick').value)/10;
+    var sameModThick= parseInt(document.getElementById('f-samemod-thick').value)/100;
     var crossModThick= parseInt(document.getElementById('f-crossmod-thick').value)/10;
     var color = which==='coprime'?col1:col2;
 
@@ -12216,6 +12289,9 @@
     pts.forEach(function(p){ ptMap[p.r+'/'+p.m]=p; });
 
     // chords (involution: r/m <-> (m-r)/m)
+    // Thickness: slider value, auto-reduced as N grows
+    var _chordBaseThick = parseFloat((document.getElementById('f-chord-thick-num')||{value:'0.4'}).value)||0.4;
+    var _chordThick = _chordBaseThick * Math.max(0.05, 1 - (modN - 2) / 400);
     if(showChords){
       var done={};
       pts.forEach(function(p){
@@ -12226,7 +12302,7 @@
           var p1=ptXY(p.r,p.m), p2=ptXY(pr,p.m);
           ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
           ctx.strokeStyle=color;
-          ctx.lineWidth=0.4;
+          ctx.lineWidth=_chordThick;
           ctx.globalAlpha=0.04+0.14*p.m/modN;
           ctx.stroke();
         }
@@ -12340,7 +12416,7 @@
     pts.forEach(function(p){
       var xy=ptXY(p.r,p.m);
       var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
-      var dotR=Math.max(0.2, (1-p.m/modN*0.2) * Math.max(0.2, 1.4 - modN/30) * (W/400) * _ptScale);
+      var dotR=Math.max(0.5, (1-p.m/modN*0.1) * (W/400) * _ptScale);
       ctx.globalAlpha=1;
 
       var dotColor = getPointColor(p, which, modN, color);
@@ -12418,7 +12494,6 @@
     return '#'+((1<<24)+(rr<<16)+(gg<<8)+bb).toString(16).slice(1);
   }
 
-  function getBrightness(){ return 0; } // brightness now handled by CSS filter (applyFareyFilter)
 
   // ── Per-ring cumulative rotation ─────────────────────────────────────────
   var _ringOffsets   = {};
@@ -12557,8 +12632,12 @@
 
   window.toggleFareyPanel = function(){
     var p=document.getElementById('farey-panel');
+    var root=document.getElementById('farey-root');
     var open = p.style.display==='none';
     p.style.display = open ? 'block' : 'none';
+    // toggle full-width class on root
+    if(root){ root.classList.toggle('advanced-open', open); }
+    // canvas is now inside the panel; split-view hidden, combined shown when open
     document.getElementById('farey-split-view').style.display    = open ? 'none'  : 'flex';
     document.getElementById('farey-combined-view').style.display = open ? 'block' : 'none';
     if(open){
@@ -13146,7 +13225,7 @@
     var showCrossMod = document.getElementById('f-crossmod').checked;
     var sameModColMode  = document.getElementById('f-samemod-colmode').value;
     var sameModFixedCol = document.getElementById('f-samemod-col').value;
-    var sameModThick    = parseInt(document.getElementById('f-samemod-thick').value)/10;
+    var sameModThick    = parseInt(document.getElementById('f-samemod-thick').value)/100;
     var crossModThick   = parseInt(document.getElementById('f-crossmod-thick').value)/10;
     var dir  = parseFloat(document.getElementById('f-dir').value)||1;
 
@@ -13190,11 +13269,13 @@
     ctx.globalAlpha=1;
 
     sets.forEach(function(s){
-      var pts=s.pts, color=brightenColor(s.color, getBrightness());
+      var pts=s.pts, color=brightenColor(s.color, 0);
       var ptMap={};
       pts.forEach(function(p){ ptMap[p.r+'/'+p.m]=p; });
 
       // chords
+      var _chordBaseThick = parseFloat((document.getElementById('f-chord-thick-num')||{value:'0.4'}).value)||0.4;
+      var _chordThick = _chordBaseThick * Math.max(0.05, 1 - (modN - 2) / 400);
       if(showChords){
         var done={};
         pts.forEach(function(p){
@@ -13204,7 +13285,7 @@
             done[k1]=done[k2]=1;
             var p1=ptXY(p.r,p.m),p2=ptXY(pr,p.m);
             ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
-            ctx.strokeStyle=color; ctx.lineWidth=0.4;
+            ctx.strokeStyle=color; ctx.lineWidth=_chordThick;
             ctx.globalAlpha=0.04+0.14*p.m/modN; ctx.stroke();
           }
         });
@@ -13293,7 +13374,7 @@
       pts.forEach(function(p){
         var xy=ptXY(p.r,p.m);
         var _ptScale=(parseInt(document.getElementById('f-ptsize')&&document.getElementById('f-ptsize').value)||100)/100;
-        var dotR=Math.max(0.2, (1-p.m/modN*0.2) * Math.max(0.2, 1.4 - modN/30) * (W/400) * _ptScale);
+        var dotR=Math.max(0.5, (1-p.m/modN*0.1) * (W/400) * _ptScale);
         var isActive = _activeTooltipPt && _activeTooltipPt.r===p.r && _activeTooltipPt.m===p.m;
 
         // cache for hit testing
@@ -13961,7 +14042,6 @@
     return '#'+((1<<24)+(rr<<16)+(gg<<8)+bb).toString(16).slice(1);
   }
 
-  function getBrightness(){ return 0; } // brightness now handled by CSS filter (applyFareyFilter)
 
   // ── Point color mode helper ───────────────────────────────────────────────
   window.fareyPtColModeChange = function() {
@@ -14040,35 +14120,7 @@
 
 
   // ── Image adjustment filter (brightness, contrast, saturation, hue) ───────
-  function applyFareyFilter(){
-    var bright  = parseInt(document.getElementById('f-bright').value)||0;
-    var contrast= parseInt(document.getElementById('f-contrast').value)||0;
-    var sat     = parseInt(document.getElementById('f-saturation').value)||0;
-    var hue     = parseInt(document.getElementById('f-huerot').value)||0;
 
-    var bv = 1 + bright/100;
-    var cv = 1 + contrast/100;
-    var sv = Math.max(0, 1 + sat/100);
-    var hv = hue;
-
-    var filterStr = 'brightness('+bv.toFixed(2)+') contrast('+cv.toFixed(2)+') saturate('+sv.toFixed(2)+') hue-rotate('+hv+'deg)';
-
-    // Apply to the persistent wrapper div — survives canvas redraws
-    var wrap = document.getElementById('farey-canvas-wrap');
-    if(wrap) wrap.style.filter = filterStr;
-  }
-
-  function resetFareyFilter(){
-    ['f-bright','f-contrast','f-saturation','f-huerot'].forEach(function(id){
-      var el = document.getElementById(id);
-      if(el){ el.value=0; }
-    });
-    document.getElementById('f-bright-val').textContent='0%';
-    document.getElementById('f-contrast-val').textContent='0%';
-    document.getElementById('f-sat-val').textContent='0%';
-    document.getElementById('f-hue-val').textContent='0°';
-    applyFareyFilter();
-  }
 
 
   // ── Ring spin animation ────────────────────────────────────────────────────
@@ -14925,14 +14977,20 @@
   // ── Public entry point ───────────────────────────────────────────────────
   window.fareyShowGapOverlay = function (gap) {
     gap = parseInt(gap);
+    if (!_isValidPrimeGap(gap)) {
+      alert('Gap ' + gap + ' is not a valid prime gap. Gaps must be 1 (for prime 2) or even.');
+      return;
+    }
+    // If no analysis results, fall back to built-in sieve
     if (!window.analysisResults) {
-      alert('Run analysis first to load prime gap data.');
+      _fareyApplyGapFromSieve(gap);
       return;
     }
 
     var gapData = window.analysisResults.gapProducts && window.analysisResults.gapProducts[gap];
     if (!gapData || !gapData.primes || !gapData.primes.length) {
-      alert('No primes found for gap ' + gap + ' in the current analysis.');
+      // analysis loaded but gap not found — try sieve fallback
+      _fareyApplyGapFromSieve(gap);
       return;
     }
 
@@ -14947,14 +15005,20 @@
     function gcdLocal(a, b) { while (b) { var t = b; b = a % b; a = t; } return a; }
 
     _overlayPairs = [];
-    var inRange = 0;
+    var inRange = gapData.primes.length;
+    // All primes contribute: r₁ = p mod N, r₂ = (p+gap) mod N
+    // Skip pairs where either residue is 0 (≡ 0 mod N means p is a multiple of N)
+    // or where gcd(rᵢ, N) > 1 (non-coprime residues not in the Farey sequence)
+    var pairsSeen = {};
     gapData.primes.forEach(function (p) {
-      if (p > modN) return; // only primes ≤ modN fit on the outer ring
-      inRange++;
       var r1 = ((p % modN) + modN) % modN;
       var r2 = (((p + gap) % modN) + modN) % modN;
       if (r1 === 0 || r2 === 0) return;
       if (gcdLocal(r1, modN) !== 1 || gcdLocal(r2, modN) !== 1) return;
+      // De-duplicate: same (r1,r2) pair from different primes — keep first
+      var key = r1 + ',' + r2;
+      if (pairsSeen[key]) return;
+      pairsSeen[key] = p;
       _overlayPairs.push({ r1: r1, r2: r2, m: modN, p: p });
     });
 
@@ -14993,24 +15057,70 @@
 
   // ── Clear overlay ─────────────────────────────────────────────────────────
   // ── Gap input quick-apply ────────────────────────────────────────────────
+  // ── Small built-in prime sieve for gap overlay when analysis not loaded ──
+  function _builtinPairsForGap(gap, modN, limit) {
+    limit = limit || 10000;
+    // Sieve of Eratosthenes up to limit+gap
+    var top = limit + gap;
+    var sieve = new Uint8Array(top + 1);
+    sieve[0] = sieve[1] = 1;
+    for (var i = 2; i * i <= top; i++) {
+      if (!sieve[i]) for (var j = i*i; j <= top; j += i) sieve[j] = 1;
+    }
+    function gcdL(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+    var pairs = [], seen = {};
+    for (var p = 2; p <= limit; p++) {
+      if (sieve[p]) continue;           // p not prime
+      if (sieve[p + gap]) continue;     // p+gap not prime — not a valid prime gap pair
+      // Verify gap is exact: no prime between p and p+gap
+      var exactGap = true;
+      for (var q = p+1; q < p+gap; q++) { if (!sieve[q]) { exactGap = false; break; } }
+      if (!exactGap) continue;
+      var r1 = ((p % modN) + modN) % modN;
+      var r2 = (((p + gap) % modN) + modN) % modN;
+      if (r1 === 0 || r2 === 0) continue;
+      if (gcdL(r1, modN) !== 1 || gcdL(r2, modN) !== 1) continue;
+      var key = r1 + ',' + r2;
+      if (seen[key]) continue;
+      seen[key] = true;
+      pairs.push({ r1: r1, r2: r2, m: modN, p: p, gap: gap });
+    }
+    return pairs;
+  }
+
+  // Validate that a gap is a realized prime gap (must be 1 or even; odd>1 impossible)
+  function _isValidPrimeGap(gap) {
+    if (gap === 1) return true;   // gap(2)=1
+    if (gap <= 0) return false;
+    if (gap % 2 !== 0) return false;  // all gaps between odd primes are even
+    return true;
+  }
+
   window.fareyGapInputApply = function() {
     var el     = document.getElementById('f-gap-input');
     var status = document.getElementById('f-gap-input-status');
     if (!el) return;
     var raw = el.value.trim();
     if (!raw) { window.fareyGapOverlayClear(); return; }
-    if (!window.analysisResults) {
-      if (status) status.textContent = 'Run analysis first.';
-      return;
-    }
     var gaps = raw.split(/[,\s]+/).map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n) && n > 0; });
     if (!gaps.length) {
       if (status) status.textContent = 'Enter gap e.g. 2 or 2,4,6';
       return;
     }
-    // Single gap — delegate directly to the working handler
+    // Validate: reject impossible prime gaps
+    var invalid = gaps.filter(function(g){ return !_isValidPrimeGap(g); });
+    if (invalid.length) {
+      if (status) status.textContent = 'Invalid gap(s): ' + invalid.join(',') + ' — gaps must be 1 or even';
+      return;
+    }
+    // Single gap — delegate to working handler (uses analysisResults if available)
     if (gaps.length === 1) {
-      window.fareyShowGapOverlay(gaps[0]);
+      if (window.analysisResults) {
+        window.fareyShowGapOverlay(gaps[0]);
+      } else {
+        // Fallback: build pairs from built-in sieve
+        _fareyApplyGapFromSieve(gaps[0]);
+      }
       if (status) status.textContent = '';
       return;
     }
@@ -15021,22 +15131,31 @@
     var missing  = [];
     var found    = [];
     gaps.forEach(function(gap) {
-      var gd = window.analysisResults.gapProducts && window.analysisResults.gapProducts[gap];
-      if (!gd || !gd.primes || !gd.primes.length) { missing.push(gap); return; }
-      found.push(gap);
-      var inRange = 0;
-      gd.primes.forEach(function(p) {
-        if (p > modN) return;
-        inRange++;
-        var r1 = ((p % modN) + modN) % modN;
-        var r2 = (((p + gap) % modN) + modN) % modN;
-        if (r1 === 0 || r2 === 0) return;
-        if (gcdL(r1, modN) !== 1 || gcdL(r2, modN) !== 1) return;
-        allPairs.push({ r1: r1, r2: r2, m: modN, p: p, gap: gap });
-      });
+      if (window.analysisResults) {
+        var gd = window.analysisResults.gapProducts && window.analysisResults.gapProducts[gap];
+        if (!gd || !gd.primes || !gd.primes.length) { missing.push(gap); return; }
+        found.push(gap);
+        var seenThisGap = {};
+        gd.primes.forEach(function(p) {
+          var r1 = ((p % modN) + modN) % modN;
+          var r2 = (((p + gap) % modN) + modN) % modN;
+          if (r1 === 0 || r2 === 0) return;
+          if (gcdL(r1, modN) !== 1 || gcdL(r2, modN) !== 1) return;
+          var key = r1 + ',' + r2;
+          if (seenThisGap[key]) return;
+          seenThisGap[key] = p;
+          allPairs.push({ r1: r1, r2: r2, m: modN, p: p, gap: gap });
+        });
+      } else {
+        // Fallback: built-in sieve
+        var built = _builtinPairsForGap(gap, modN, 10000);
+        if (!built.length) { missing.push(gap); return; }
+        found.push(gap);
+        built.forEach(function(pair){ allPairs.push(pair); });
+      }
     });
     if (!found.length) {
-      if (status) status.textContent = 'Not found: ' + missing.join(', ');
+      if (status) status.textContent = 'No primes found for gap(s): ' + missing.join(', ');
       return;
     }
     _overlayGap   = gaps[0];
@@ -15062,6 +15181,123 @@
     }
   };
 
+  // ── Per-r path table ─────────────────────────────────────────────────────
+  window.fareyUpdateRTable = function() {
+    var wrap = document.getElementById('farey-r-table-wrap');
+    var body = document.getElementById('farey-r-table-body');
+    var show = document.getElementById('f-show-r-table');
+    if (!wrap || !body) return;
+    if (!show || !show.checked || !_overlayPairs.length) {
+      wrap.style.display = 'none'; return;
+    }
+    wrap.style.display = 'block';
+
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var stopEl = document.getElementById('f-path-stop-boundary');
+    var stopAtBoundary = stopEl && stopEl.checked;
+
+    function gcdFn(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+
+    // Collect unique r values in encounter order
+    var rList = [], rSeen = {};
+    _overlayPairs.forEach(function(pair){
+      if(!rSeen[pair.r1]){ rSeen[pair.r1]=true; rList.push(pair.r1); }
+      if(!rSeen[pair.r2]){ rSeen[pair.r2]=true; rList.push(pair.r2); }
+    });
+
+    // Build per-r colour map matching the canvas (golden-angle)
+    var inspectActive = window._inspectMode;
+    var GAP_COLOR = _overlayColor || '#4a90d9';
+    function rCol(idx){ 
+      if(!inspectActive) return GAP_COLOR;
+      var h = Math.round((idx * 137.508) % 360);
+      return 'hsl(' + h + ',82%,58%)';
+    }
+
+    // Build pair lookup: which primes use this r as r1 or r2
+    var r1Pairs = {}, r2Pairs = {};
+    _overlayPairs.forEach(function(pair){
+      if(!r1Pairs[pair.r1]) r1Pairs[pair.r1] = [];
+      r1Pairs[pair.r1].push(pair);
+      if(!r2Pairs[pair.r2]) r2Pairs[pair.r2] = [];
+      r2Pairs[pair.r2].push(pair);
+    });
+
+    var html = '';
+    rList.forEach(function(r, idx){
+      var col = rCol(idx);
+
+      // Build the path sequence: (r mod m)/m for m = modN down to 1
+      // Only show key transitions: where r mod m changes
+      var pathSegs = [];
+      var stopM = null;
+      for(var m = modN; m >= 1; m--){
+        var rem = ((r % m) + m) % m;
+        if(stopAtBoundary && rem === m - 1 && m < modN){ stopM = m + 1; break; }
+        // Show position on ring m
+        var g = gcdFn(rem, m);
+        var isCoprime = (g === 1 || rem === 0);
+        pathSegs.push({ m: m, rem: rem, coprime: isCoprime });
+      }
+
+      // Find pairs involving this r
+      var asPrime  = (r1Pairs[r] || []).map(function(p){ return p.p; }).slice(0,6).join(', ');
+      var asResult = (r2Pairs[r] || []).map(function(p){ return p.p; }).slice(0,6).join(', ');
+      var primeStr = '';
+      if(asPrime)  primeStr += '<span style="color:#9a8060;">p≡r: </span><span style="color:#ffd700;">' + asPrime + (r1Pairs[r].length>6?'…':'') + '</span>';
+      if(asResult) primeStr += (asPrime?' &nbsp; ':'') + '<span style="color:#9a8060;">p+g≡r: </span><span style="color:#e879f9;">' + asResult + (r2Pairs[r].length>6?'…':'') + '</span>';
+
+      // Show first 12 rings of path then ellipsis
+      var pathHtml = '';
+      var shown = pathSegs.slice(0, 12);
+      shown.forEach(function(seg, si){
+        var bullet = seg.coprime 
+          ? '<span style="color:#4ecdc4;">&#9679;</span>'
+          : '<span style="color:#c94040;">&#9675;</span>';
+        pathHtml += bullet + ' <span style="color:#9a8060;">m=' + seg.m + '</span>: <strong>' + seg.rem + '/' + seg.m + '</strong>';
+        if(si < shown.length-1) pathHtml += ' → ';
+      });
+      if(pathSegs.length > 12) pathHtml += ' <span style="color:#9a8060;">… (m=' + pathSegs[pathSegs.length-1].m + ' =' + pathSegs[pathSegs.length-1].rem + '/' + pathSegs[pathSegs.length-1].m + ')</span>';
+      if(stopM !== null) pathHtml += ' <span style="color:#e879f9;">⊣ m=' + stopM + ' (boundary)</span>';
+
+      html += '<div style="margin-bottom:10px;padding:8px 10px;border-left:3px solid ' + col + ';background:rgba(255,255,255,0.03);border-radius:0 4px 4px 0;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">';
+      html += '<strong style="color:' + col + ';font-size:0.68rem;">r = ' + r + '</strong>';
+      html += '<span style="font-size:0.55rem;color:#9a8060;">gcd(r,N)=' + gcdFn(r,modN) + ' &nbsp; r/N=' + (r/modN).toFixed(4) + ' &nbsp; angle=' + (360*r/modN).toFixed(1) + '°</span>';
+      html += '</div>';
+      if(primeStr) html += '<div style="margin-bottom:3px;font-size:0.58rem;">' + primeStr + '</div>';
+      html += '<div style="font-size:0.57rem;line-height:1.9;word-break:break-all;">' + pathHtml + '</div>';
+      html += '</div>';
+    });
+
+    body.innerHTML = html || '<span style="color:#9a8060;">No residues to display.</span>';
+  };
+
+  // ── Sieve-based single gap overlay (no analysisResults needed) ─────────
+  function _fareyApplyGapFromSieve(gap) {
+    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var pairs = _builtinPairsForGap(gap, modN, 10000);
+    var status = document.getElementById('f-gap-input-status');
+    if (!pairs.length) {
+      if (status) status.textContent = 'No prime pairs found for gap ' + gap + ' (sieve to 10000)';
+      return;
+    }
+    _overlayGap   = gap;
+    _overlayGaps  = [gap];
+    _overlayColor = GAP_COLORS[gap] || '#4a90d9';
+    _overlayPairs = pairs;
+    var combV = document.getElementById('farey-combined-view');
+    var splitV = document.getElementById('farey-split-view');
+    if (combV)  combV.style.display  = 'block';
+    if (splitV) splitV.style.display = 'none';
+    var labelSel = document.getElementById('f-label');
+    if (labelSel) labelSel.value = 'r';
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+    var root = document.getElementById('farey-root');
+    if (root) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (status) status.textContent = 'Gap ' + gap + ' · ' + pairs.length + ' residue pairs (sieve to 10k)';
+  }
+
   window.fareyGapOverlayClear = function () {
     _overlayGap   = null;
     _overlayPairs = [];
@@ -15070,6 +15306,8 @@
     if (bar) bar.style.display = 'none';
     var ctrl = document.getElementById('farey-gap-overlay-controls');
     if (ctrl) ctrl.style.display = 'none';
+    var rWrap = document.getElementById('farey-r-table-wrap');
+    if (rWrap) rWrap.style.display = 'none';
     if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
   };
 
@@ -15088,12 +15326,9 @@
     info.innerHTML =
       '<strong style="color:' + _overlayColor + ';">' + gapName + '</strong>'
       + ' &nbsp;·&nbsp; '
-      + '<strong style="color:#ffd700;">' + total.toLocaleString() + '</strong> primes in analysis range'
+      + '<strong style="color:#ffd700;">' + total.toLocaleString() + '</strong> primes in analysis'
       + ' &nbsp;·&nbsp; '
-      + '<strong style="color:#4ecdc4;">' + inRange.toLocaleString() + '</strong> primes ≤ mod ' + modN
-      + ' (' + pct + '%)'
-      + ' &nbsp;·&nbsp; '
-      + '<strong style="color:#e879f9;">' + shownPairs + '</strong> residue pairs shown on canvas'
+      + '<strong style="color:#e879f9;">' + shownPairs + '</strong> unique (r₁,r₂) residue pairs on canvas'
       + (function(){
           if(window.analysisResults && window.analysisResults.percentageContributions &&
              window.analysisResults.percentageContributions[gap] !== undefined){
@@ -15106,6 +15341,9 @@
 
     bar.style.display = 'block';
 
+    // Update per-r table
+    if (typeof window.fareyUpdateRTable === 'function') window.fareyUpdateRTable();
+
     // ── Populate stats dropdown ──────────────────────────────────────────
     var statsPanel = document.getElementById('farey-gap-stats-panel');
     var statsContent = document.getElementById('farey-gap-stats-content');
@@ -15114,7 +15352,7 @@
       var lines = [];
       lines.push('<span style="color:#4a90d9;">Gap</span>: <strong>' + gapName + '</strong> &nbsp;·&nbsp; <span style="color:#4a90d9;">Mod N</span>: <strong>' + modN + '</strong>');
       lines.push('<span style="color:#4a90d9;">Primes in analysis</span>: <strong style="color:#ffd700;">' + total.toLocaleString() + '</strong>');
-      lines.push('<span style="color:#4a90d9;">Primes ≤ mod N</span>: <strong style="color:#4ecdc4;">' + inRange.toLocaleString() + '</strong> (' + pct + '%)');
+      lines.push('<span style="color:#4a90d9;">Primes in analysis</span>: <strong style="color:#4ecdc4;">' + inRange.toLocaleString() + '</strong> · <strong style="color:#e879f9;">' + shownPairs + '</strong> unique (r₁,r₂) pairs on canvas');
       lines.push('<span style="color:#4a90d9;">Residue pairs on canvas</span>: <strong style="color:#e879f9;">' + shownPairs + '</strong>');
       if (window.analysisResults && window.analysisResults.percentageContributions &&
           window.analysisResults.percentageContributions[gap] !== undefined) {
@@ -15157,6 +15395,8 @@
       // After the main draw, overlay gap chords if active
       if (_overlayGap !== null && _overlayPairs.length > 0) {
         drawGapOverlay();
+        // Refresh r-table on every redraw (catches mod-N changes, stop-toggle etc.)
+        if (typeof window.fareyUpdateRTable === 'function') window.fareyUpdateRTable();
       }
       // After gap overlay, draw chain overlay
       if (window._chain && window._chain.length > 0) {
@@ -15207,42 +15447,87 @@
     ctx.save();
 
     // ── Highlighted inward cross-mod paths for each gap pair ─────────────
-    // Collect unique residues from all pairs
-    var highlightR = {};
-    pairs.forEach(function(pair){ highlightR[pair.r1] = true; highlightR[pair.r2] = true; });
+    // Collect unique residues from all pairs, in encounter order
+    var highlightRList = [];
+    var highlightRSeen = {};
+    pairs.forEach(function(pair){
+      if(!highlightRSeen[pair.r1]){ highlightRSeen[pair.r1]=true; highlightRList.push(pair.r1); }
+      if(!highlightRSeen[pair.r2]){ highlightRSeen[pair.r2]=true; highlightRList.push(pair.r2); }
+    });
 
-    // Draw a glowing cross-mod line for each highlighted r, from modN down to ring 1
-    Object.keys(highlightR).forEach(function(rKey){
-      var r = parseInt(rKey);
-      for(var mk = 1; mk < modN; mk++){
+    // When inspect mode is active, give each r its own hue (golden-angle spread)
+    // Otherwise all use _overlayColor
+    var inspectActive = window._inspectMode;
+    var R_PALETTE = [];
+    if(inspectActive){
+      highlightRList.forEach(function(_, idx){
+        var h = Math.round((idx * 137.508) % 360);
+        R_PALETTE.push('hsl(' + h + ',82%,58%)');
+      });
+    }
+    function rColor(rVal){ 
+      if(!inspectActive) return _overlayColor;
+      var idx = highlightRList.indexOf(rVal);
+      return idx >= 0 ? R_PALETTE[idx] : _overlayColor;
+    }
+
+    // Path-stop option: stop when r mod m = m-1
+    // This is the point just before r's path crosses the 0/1-axis
+    // (the reduced residue channel from (0,1) to (0,N) at angle 0).
+    // Classically: on ring m, the position just before the boundary is r≡m-1 (mod m),
+    // i.e. gcd(m-1,m)=1 always, so it's always a coprime Farey point.
+    var stopAtBoundary = document.getElementById('f-path-stop-boundary') &&
+                         document.getElementById('f-path-stop-boundary').checked;
+
+    // Draw a glowing cross-mod line for each highlighted r, from outer ring inward
+    highlightRList.forEach(function(r){
+      var col = rColor(r);
+      // Draw from ring modN down to ring 1 (or until stop condition)
+      for(var mk = modN - 1; mk >= 1; mk--){
+        // Check stop condition: stop when (r mod mk) = mk-1
+        // i.e. r ≡ -1 (mod mk), the point immediately before the 0-axis crossing
+        if(stopAtBoundary && (((r % mk) + mk) % mk) === mk - 1) break;
         var xyA = ptXY(r, mk);
         var xyB = ptXY(r, mk + 1);
-        var t   = mk / modN; // 0=inner, 1=outer
+        var t   = mk / modN; // brightness: outer rings brighter
         ctx.beginPath();
         ctx.moveTo(xyA.x, xyA.y);
         ctx.lineTo(xyB.x, xyB.y);
-        ctx.strokeStyle = _overlayColor;
+        ctx.strokeStyle = col;
         ctx.lineWidth   = Math.max(0.8, W * 0.003 * t);
         ctx.globalAlpha = (0.25 + 0.55 * t) * overlayAlpha;
         ctx.stroke();
       }
-      // Bright dot at the outermost ring (where the gap point lives)
+      // Bright dot at the outermost ring
       var xyOuter = ptXY(r, modN);
       ctx.beginPath();
       ctx.arc(xyOuter.x, xyOuter.y, Math.max(3, W * 0.007), 0, 2 * Math.PI);
-      ctx.fillStyle   = _overlayColor;
+      ctx.fillStyle   = col;
       ctx.globalAlpha = 0.95;
       ctx.fill();
+      // Label the r value next to outer dot when inspect active
+      if(inspectActive){
+        ctx.font = 'bold ' + Math.max(8, W * 0.014) + 'px Cinzel, serif';
+        ctx.fillStyle = col;
+        ctx.globalAlpha = 0.9;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('r=' + r, xyOuter.x, xyOuter.y - Math.max(3, W * 0.009));
+      }
     });
 
     // ── Chord between r1 and r2 at outer ring (the gap) ──────────────────
     pairs.forEach(function (pair, i) {
       var xy1 = ptXY(pair.r1, pair.m);
       var xy2 = ptXY(pair.r2, pair.m);
+      // In inspect mode use a blend of both r colors for the chord
+      var chordCol = inspectActive
+        ? (function(){ var c1=rColor(pair.r1), c2=rColor(pair.r2); return c1; })()
+        : _overlayColor;
       ctx.beginPath();
       ctx.moveTo(xy1.x, xy1.y);
       ctx.lineTo(xy2.x, xy2.y);
-      ctx.strokeStyle = _overlayColor;
+      ctx.strokeStyle = chordCol;
       ctx.lineWidth   = Math.max(1, W * 0.002);
       ctx.globalAlpha = (0.55 + 0.3 * (i / Math.max(n - 1, 1))) * overlayAlpha;
       ctx.stroke();
@@ -15250,7 +15535,7 @@
       // Label prime value near r1 for first 20
       if (i < 20) {
         ctx.font = Math.max(8, W * 0.016) + 'px Cinzel, serif';
-        ctx.fillStyle   = _overlayColor;
+        ctx.fillStyle   = chordCol;
         ctx.globalAlpha = 0.8;
         ctx.textAlign   = 'center';
         ctx.fillText(pair.p, xy1.x, xy1.y - W * 0.014);
