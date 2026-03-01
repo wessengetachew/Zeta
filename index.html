@@ -1801,6 +1801,7 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">LABEL MODE</div>
                     <select id="f-label" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;margin-bottom:6px;">
+                      <option value="gcd" selected>GCD</option>
                       <option value="none">None</option>
                       <option value="fraction">r/m</option>
                       <option value="r">r only</option>
@@ -12479,7 +12480,8 @@
       var lbl='';
       var showLabel = labelMode!=='none' && (_labelScope==='all' || p.m===modN);
       if(showLabel){
-        if(labelMode==='fraction') lbl=p.r+'/'+p.m;
+        if(labelMode==='gcd')     { var _g=gcd(p.r,p.m); lbl=_g===1?'1':''+_g; }
+        else if(labelMode==='fraction') lbl=p.r+'/'+p.m;
         else if(labelMode==='r')   lbl=''+p.r;
         else if(labelMode==='m')   lbl='m='+p.m;
         else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
@@ -13466,7 +13468,8 @@
         var showLabel = labelMode!=='none' && (_labelScope==='all' || p.m===modN);
         var lbl='';
         if(showLabel){
-          if(labelMode==='fraction') lbl=p.r+'/'+p.m;
+          if(labelMode==='gcd')     { var _g=gcd(p.r,p.m); lbl=_g===1?'1':''+_g; }
+          else if(labelMode==='fraction') lbl=p.r+'/'+p.m;
           else if(labelMode==='r')   lbl=''+p.r;
           else if(labelMode==='m')   lbl='m='+p.m;
           else if(labelMode==='angle') lbl=Math.round(360*p.r/p.m)+'°';
@@ -15663,14 +15666,7 @@
       ctx.globalAlpha = (0.55 + 0.3 * (i / Math.max(n - 1, 1))) * overlayAlpha;
       ctx.stroke();
 
-      // Label prime value near r1 for first 20
-      if (i < 20) {
-        ctx.font = Math.max(8, W * 0.016) + 'px Cinzel, serif';
-        ctx.fillStyle   = chordCol;
-        ctx.globalAlpha = 0.8;
-        ctx.textAlign   = 'center';
-        ctx.fillText(pair.p, xy1.x, xy1.y - W * 0.014);
-      }
+
     });
 
     // ── Rich legend panel at TOP-CENTER of canvas ───────────────────────────
