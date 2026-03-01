@@ -1883,6 +1883,16 @@
                   <!-- Ring spacing -->
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">RING SPACING</div>
+                    <div style="margin-bottom:6px;">
+                      <div style="color:#9a8060;font-size:0.58rem;margin-bottom:3px;">RING SCALE</div>
+                      <select id="f-ring-scale" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.6rem;width:100%;">
+                        <option value="linear" selected>Linear (even spacing)</option>
+                        <option value="log">Logarithmic (inner rings spread)</option>
+                        <option value="natural">Natural (radius ∝ m)</option>
+                        <option value="sqrt">Square root (√m)</option>
+                        <option value="quadratic">Quadratic (m²)</option>
+                      </select>
+                    </div>
                     <div style="display:flex;align-items:center;gap:8px;">
                       <input id="f-spacing" type="range" min="10" max="200" value="100" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-spacing-num').value=this.value;document.getElementById('f-spacing-val').textContent=this.value+'%';fareyRedraw()">
                       <input id="f-spacing-num" type="number" min="10" max="200" value="100" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:1px 3px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:center;" oninput="var v=Math.min(200,Math.max(10,parseInt(this.value)||10));document.getElementById('f-spacing').value=v;document.getElementById('f-spacing-val').textContent=v+'%';fareyRedraw()"><span id="f-spacing-val" style="display:none;">100%</span>
@@ -12294,8 +12304,15 @@
     var ang = _angles[which]||0;
 
     function radius(m){
-      var t = _invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
-      return rMin+(rMax-rMin)*t;
+      var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
+      var _m = _invert ? (modN - m + 1) : m;
+      var t;
+      if (_rscale === 'log')       t = Math.log(Math.max(_m,1)) / Math.log(Math.max(modN,2));
+      else if (_rscale === 'natural') t = _m / modN;
+      else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
+      else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
+      return rMin + (rMax - rMin) * t;
     }
     function ptXY(r,m){
       var dir = parseFloat(document.getElementById('f-dir').value)||1;
@@ -12663,6 +12680,7 @@
   var _inspectMode = false;
   var _activeTooltipPt = null;
   var _lastCombinedPts = [];
+  var _lastCombinedPtsSeen = {};
   var _combinedMode = 'both';
   var _combinedAngle = 90;
   Object.defineProperty(window, '_combinedAngle', { get: function(){ return _combinedAngle; }, set: function(v){ _combinedAngle=v; } });
@@ -13032,8 +13050,15 @@
     var rMin = W*rinner*zoom, rMax = rBase*zoom;
 
     function radius(m){
-      var t = invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
-      return rMin + (rMax-rMin)*t;
+      var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
+      var _m = invert ? (modN - m + 1) : m;
+      var t;
+      if (_rscale === 'log')       t = Math.log(Math.max(_m,1)) / Math.log(Math.max(modN,2));
+      else if (_rscale === 'natural') t = _m / modN;
+      else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
+      else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
+      return rMin + (rMax - rMin) * t;
     }
     function ptXYlocal(r, m){
       var ringOff = (typeof ringOffset==='function') ? ringOffset(m, modN) : 0;
@@ -13255,7 +13280,7 @@
     var ctx = c.getContext('2d');
     var W=c.width, H=c.height;
     ctx.clearRect(0,0,W,H);
-    _lastCombinedPts = []; // reset point cache
+    _lastCombinedPts = []; _lastCombinedPtsSeen = {}; // reset point cache
 
     var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
     var col1  = document.getElementById('f-col1').value;
@@ -13284,8 +13309,15 @@
     var ang = _combinedAngle;
 
     function radius(m){
-      var t = _invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
-      return rMin+(rMax-rMin)*t;
+      var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
+      var _m = _invert ? (modN - m + 1) : m;
+      var t;
+      if (_rscale === 'log')       t = Math.log(Math.max(_m,1)) / Math.log(Math.max(modN,2));
+      else if (_rscale === 'natural') t = _m / modN;
+      else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
+      else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
+      return rMin + (rMax - rMin) * t;
     }
     function ptXY(r,m){
       var base = dir*2*Math.PI*r/(m||1);
@@ -13421,8 +13453,12 @@
         var dotR=Math.max(0.5, (1-p.m/modN*0.1) * (W/400) * _ptScale);
         var isActive = _activeTooltipPt && _activeTooltipPt.r===p.r && _activeTooltipPt.m===p.m;
 
-        // cache for hit testing
-        _lastCombinedPts.push({px:xy.x, py:xy.y, r:p.r, m:p.m, gcd1: gcd(p.r,p.m)===1});
+        // cache for hit testing (deduplicate — same r/m can appear in both sets)
+        var _ptKey = p.r+'/'+p.m;
+        if (!_lastCombinedPtsSeen[_ptKey]) {
+          _lastCombinedPtsSeen[_ptKey] = true;
+          _lastCombinedPts.push({px:xy.x, py:xy.y, r:p.r, m:p.m, gcd1: gcd(p.r,p.m)===1});
+        }
 
         ctx.globalAlpha=1;
         var dotColor = isActive ? '#f0d060' : getPointColor(p, _which, modN, color);
@@ -14287,7 +14323,14 @@
     var rMax = W * 0.44, rMin = W * 0.015;
 
     function radius(m) {
-      return rMin + (rMax - rMin) * (m - 1) / Math.max(modN - 1, 1);
+      var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
+      var t;
+      if (_rscale === 'log')           t = Math.log(Math.max(m,1)) / Math.log(Math.max(modN,2));
+      else if (_rscale === 'natural')  t = m / modN;
+      else if (_rscale === 'sqrt')     t = Math.sqrt(m) / Math.sqrt(modN);
+      else if (_rscale === 'quadratic') t = (m*m) / (modN*modN);
+      else                             t = (m - 1) / Math.max(modN - 1, 1);
+      return rMin + (rMax - rMin) * t;
     }
     function ptXY(r, m) {
       var a = 2 * Math.PI * r / m + angOff;
@@ -15007,6 +15050,7 @@
   var _overlayGaps   = [];     // full gap list for multi-gap input
   var MAX_DISPLAY    = 200;    // max chord lines for performance
   var _selectedR     = null;   // residue r selected from path table
+
   // Expose to window so script 3 (makeFareyCanvas export) can read overlay state
   Object.defineProperty(window, '_overlayGap',   { get: function(){ return _overlayGap; } });
   Object.defineProperty(window, '_overlayColor', { get: function(){ return _overlayColor; } });
@@ -15090,6 +15134,8 @@
       window.fareyToggleInspect();
     }
 
+    // Fade in ghost field
+    ghostFadeTo(0.18);
     // Redraw — drawCombined will call our overlay hook
     if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
 
@@ -15322,9 +15368,13 @@
     body.innerHTML = html || '<span style="color:#9a8060;">No residues to display.</span>';
   };
 
+  function ghostFadeTo(target) { /* ghost field disabled */ }
+
   // ── Select a residue r from the path table ──────────────────────────────
   window.fareySelectR = function(r) {
     _selectedR = (_selectedR === r) ? null : r;
+    // When isolating a residue, deepen ghost field slightly
+    if (_overlayGap !== null) ghostFadeTo(_selectedR !== null ? 0.09 : 0.18);
     window.fareyUpdateRTable();
     if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
   };
@@ -15348,6 +15398,7 @@
     if (splitV) splitV.style.display = 'none';
     var labelSel = document.getElementById('f-label');
     if (labelSel) labelSel.value = 'r';
+    ghostFadeTo(0.18);
     if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
     var root = document.getElementById('farey-root');
     if (root) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -15359,6 +15410,7 @@
     _overlayPairs = [];
     _overlayGaps  = [];
     _selectedR    = null;
+    ghostFadeTo(0);
     var bar = document.getElementById('farey-gap-overlay-bar');
     if (bar) bar.style.display = 'none';
     var ctrl = document.getElementById('farey-gap-overlay-controls');
@@ -15484,7 +15536,14 @@
     var rMax = rBase * zoom;
 
     function radius(m) {
-      var t = invert ? (modN - m) / (modN - 1 || 1) : (m - 1) / (modN - 1 || 1);
+      var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
+      var _m = invert ? (modN - m + 1) : m;
+      var t;
+      if (_rscale === 'log')       t = Math.log(Math.max(_m,1)) / Math.log(Math.max(modN,2));
+      else if (_rscale === 'natural') t = _m / modN;
+      else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
+      else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
       return rMin + (rMax - rMin) * t;
     }
 
@@ -15586,15 +15645,6 @@
       ctx.fillStyle   = col;
       ctx.globalAlpha = isSelected ? 1.0 : 0.95 * aScale;
       ctx.fill();
-      // Label the r value next to outer dot when inspect active
-      if(inspectActive){
-        ctx.font = 'bold ' + Math.max(8, W * 0.014) + 'px Cinzel, serif';
-        ctx.fillStyle = col;
-        ctx.globalAlpha = 0.9;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('r=' + r, xyOuter.x, xyOuter.y - Math.max(3, W * 0.009));
-      }
     });
 
     // ── Chord between r1 and r2 at outer ring (the gap) ──────────────────
@@ -15678,6 +15728,37 @@
     pairs.forEach(function(p){ r1set[p.r1]=true; r2set[p.r2]=true; });
     var uniqueR = Object.keys(Object.assign({},r1set,r2set)).sort(function(a,b){return a-b;}).slice(0,16).join(', ');
     ctx.fillText('Residues: ' + uniqueR + (Object.keys(Object.assign({},r1set,r2set)).length > 16 ? ' …' : ''), lpad + 8, ly0 + 5 + lsize * 2.9);
+
+    ctx.globalAlpha = 1;
+
+    // ── FINAL STATE GLOW — r₂ targets on outer ring ──────────────────────
+    // Count how many chords land on each r2 (transition amplitude)
+    var r2Count = {};
+    pairs.forEach(function(pair){ r2Count[pair.r2] = (r2Count[pair.r2]||0) + 1; });
+    var maxCount = Math.max.apply(null, Object.keys(r2Count).map(function(k){ return r2Count[k]; })) || 1;
+    var _hasSelection = (_selectedR !== null);
+    Object.keys(r2Count).forEach(function(rStr){
+      var r2 = parseInt(rStr);
+      var count = r2Count[r2];
+      var norm = count / maxCount;  // 0..1 amplitude
+      var xy = ptXY(r2, modN);
+      var isSelected = (r2 === _selectedR);
+      var dimmed = _hasSelection && !isSelected;
+      if (dimmed) return; // skip non-selected when selection active
+      // Radial glow — larger = more chords landing here
+      var glowR = Math.max(8, W * 0.022 * (0.4 + 0.6 * norm));
+      if (isSelected) glowR *= 1.6;
+      var grad = ctx.createRadialGradient(xy.x, xy.y, 0, xy.x, xy.y, glowR);
+      var glowCol = isSelected ? '255,215,0' : '74,144,217';
+      var glowStr = isSelected ? 0.75 : 0.35 + 0.4 * norm;
+      grad.addColorStop(0,   'rgba('+glowCol+','+glowStr+')');
+      grad.addColorStop(0.4, 'rgba('+glowCol+','+(glowStr*0.4)+')');
+      grad.addColorStop(1,   'rgba('+glowCol+',0)');
+      ctx.beginPath(); ctx.arc(xy.x, xy.y, glowR, 0, 2*Math.PI);
+      ctx.fillStyle = grad;
+      ctx.globalAlpha = overlayAlpha;
+      ctx.fill();
+    });
 
     ctx.globalAlpha = 1;
     ctx.restore();
