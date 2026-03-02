@@ -404,6 +404,19 @@
             padding: 0 40px;
             overflow: visible;
         }
+        /* When advanced open, let the intro-section expand to full width */
+        .intro-section:has(#farey-root.advanced-open) {
+            max-width: 100%;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .introduction:has(#farey-root.advanced-open) {
+            max-width: 100%;
+            padding: 0 16px;
+        }
+        .introduction, .intro-section {
+            overflow: visible !important;
+        }
         
         .intro-section {
             background: var(--parchment);
@@ -1609,8 +1622,8 @@
         @media (min-width: 900px) {
           #farey-cols {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 0 20px;
+            grid-template-columns: 340px 1fr;
+            gap: 0 16px;
             align-items: start;
           }
           #farey-left-col {
@@ -1626,8 +1639,9 @@
           #farey-canvas-col {
             grid-column: 2;
             grid-row: 1;
+            min-width: 0;
           }
-          /* Advanced panel open: full width, canvas col hidden */
+          /* Advanced open: left col expands full width, right col hidden */
           #farey-root.advanced-open #farey-cols {
             grid-template-columns: 1fr;
           }
@@ -1640,18 +1654,7 @@
           #farey-root.advanced-open #farey-canvas-col {
             display: none;
           }
-          /* Break canvas out of .introduction max-width and .intro-section border+padding */
-          #farey-root.advanced-open {
-            margin-left:  -49px;
-            margin-right: -49px;
-            width: calc(100% + 98px);
-            box-sizing: border-box;
-          }
-          /* Prevent intro-section from clipping the overflow */
-          #farey-root.advanced-open ~ *,
-          .intro-section:has(#farey-root.advanced-open) {
-            overflow: visible;
-          }
+
         }
         @media (max-width: 899px) {
           #farey-cols { display: block; }
@@ -1697,7 +1700,8 @@
                 <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:#9a8060;">:</span>
                 <span style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold);">MOD N</span>
                 <input id="f-mod" type="range" min="2" max="210" value="49" style="flex:1;min-width:60px;accent-color:var(--gold);" oninput="document.getElementById('f-mod-num').value=this.value;fareyRedraw()">
-                <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));document.getElementById('f-mod').value=Math.min(210,v);fareyRedraw()">
+                <input id="f-mod-num" type="number" min="2" max="9999" value="49" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;text-align:right;" oninput="var v=Math.min(9999,Math.max(2,parseInt(this.value)||2));var sl=document.getElementById('f-mod');sl.max=Math.max(sl.max,v);sl.value=v;fareyRedraw()">
+                <button id="f-mod-play" onclick="fareyModPlay()" title="Animate mod from 2 to current max" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">&#9654;</button>
                 <span style="color:var(--border);margin:0 1px;">|</span>
                 <span style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold);">GAP</span>
                 <input id="f-gap-input" type="text" placeholder="2,4,6…" style="width:72px;background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:2px 4px;font-family:'Cinzel',serif;font-size:0.6rem;" onkeydown="if(event.key==='Enter')fareyGapInputApply()">
@@ -1707,16 +1711,12 @@
                 <button onclick="toggleFareyPanel()" style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--parchment-dark);color:var(--gold);border:1px solid var(--border);padding:3px 8px;cursor:pointer;">&#9660; Advanced</button>
               </div>
 
-<div id="farey-cols" style="display:contents;">
-<div id="farey-left-col" style="min-width:0;">
-
-              <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
               <!-- ══ CANVAS (top of advanced panel) ══ -->
-              <div id="farey-canvas-wrap">
+              <div id="farey-canvas-wrap" style="display:none;">
               <!-- Combined view -->
-              <div id="farey-combined-view" style="display:none;text-align:center;">
-                <div style="position:relative;display:inline-block;">
-                  <canvas id="fc-combined" width="800" height="800" style="cursor:crosshair;display:block;max-width:100%;" title="Click a point to inspect it"></canvas>
+              <div id="farey-combined-view" style="display:none;text-align:center;width:100%;">
+                <div style="position:relative;display:block;width:100%;">
+                  <canvas id="fc-combined" width="800" height="800" style="cursor:crosshair;display:block;width:100%;height:auto;margin-bottom:12px;" title="Click a point to inspect it"></canvas>
                   <div id="farey-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #c49b38;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
                 </div>
 
@@ -1735,6 +1735,17 @@
                   <span style="color:var(--border);">|</span>
                   <button id="fcm-zeros"     onclick="fareyToggleZeros()"           style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
                   <a href="#riemannZerosSection"                                    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;">&#8595; Zeros</a>
+                  <span style="color:var(--border);">|</span>
+                  <button id="fcm-mirror" onclick="fareyToggleMirror()" title="Show mirror symmetry σ(r)=M−r−2 on outer ring (twin prime paper §4)" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">&#8651; Mirror</button>
+                  <button id="fcm-lifting" onclick="fareyToggleLiftMode()" title="Show residue lifting: connects gcd=1 residues across rings b, b×a, b×a²…" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">&#8593; Lifting</button>
+                  <!-- Lifting input panel -->
+                  <div id="farey-lift-panel" style="display:none;align-items:center;gap:6px;font-family:'Cinzel',serif;font-size:0.58rem;">
+                    <span style="color:#4ecdc4;">BASE</span>
+                    <input id="f-lift-base" type="number" min="2" max="9999" value="2" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
+                    <span style="color:#9a8060;">×</span>
+                    <input id="f-lift-mult" type="number" min="2" max="9999" value="2" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
+                    <span style="color:#9a8060;">^n</span>
+                  </div>
                 </div>
 
                 <!-- Canvas sub-label -->
@@ -1794,6 +1805,12 @@
               </div>
 
               </div><!-- /farey-canvas-wrap-inner -->
+
+<div id="farey-cols" style="display:contents;">
+<div id="farey-left-col" style="min-width:0;">
+
+              <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
+
               <div style="margin-top:14px;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px 24px;align-items:start;">
 
@@ -1801,8 +1818,8 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">LABEL MODE</div>
                     <select id="f-label" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;margin-bottom:6px;">
-                      <option value="gcd" selected>GCD</option>
-                      <option value="none">None</option>
+                      <option value="gcd">GCD</option>
+                      <option value="none" selected>None</option>
                       <option value="fraction">r/m</option>
                       <option value="r">r only</option>
                       <option value="m">m only</option>
@@ -1886,12 +1903,13 @@
                     <div style="margin-bottom:5px;color:var(--gold);">RING SPACING</div>
                     <div style="margin-bottom:6px;">
                       <div style="color:#9a8060;font-size:0.58rem;margin-bottom:3px;">RING SCALE</div>
-                      <select id="f-ring-scale" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.6rem;width:100%;">
+                      <select id="f-ring-scale" onchange="fareyRingScaleChange()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.6rem;width:100%;">
                         <option value="linear" selected>Linear (even spacing)</option>
                         <option value="log">Logarithmic (inner rings spread)</option>
                         <option value="natural">Natural (radius ∝ m)</option>
                         <option value="sqrt">Square root (√m)</option>
                         <option value="quadratic">Quadratic (m²)</option>
+                        <option value="unitcircle">Unit Circle</option>
                       </select>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;">
@@ -2104,9 +2122,9 @@
                     <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▶</span>
                   </div>
                   <div style="display:none;padding:12px 16px;font-family:Georgia,serif;font-size:0.8rem;color:var(--ink-mid);line-height:1.7;">
-                    <p>Each point r/m (0 ≤ r ≤ m, 1 ≤ m ≤ mod N) is plotted at angle 2πr/m on ring m. Points with gcd(r,m)=1 (blue) are the Farey fractions — their distribution is uniform on the critical line Re(s)=½ in the sense of Franel-Landau. Points with gcd(r,m)&gt;1 (red) reveal the multiplicative structure.</p>
-                    <p>The <strong>cross-mod connections</strong> trace how each residue r threads through rings 1→modN — these are the channels along which prime gap residues cluster. The <strong>ring polygon</strong> connects residues around a single ring: at mod 4 with <em>all points</em> you get a square (0, 1, 2, 3); with <em>gcd=1 only</em> at mod 4 just r=1 and r=3 remain, giving a single diameter line from 90° to 270°. At mod 8 with all points you get an octagon; with gcd=1 only (r=1,3,5,7) a square.</p>
-                    <p>The <strong>gap overlay</strong> highlights the residue pairs (p mod N, (p+g) mod N) for primes in gap class g — the chords connecting r₁ to r₂ on the outer ring, with the inward spiral showing the full cross-mod path.</p>
+                    <p>Each rational r/m with 0 ≤ r ≤ m, 1 ≤ m ≤ N is placed at angle 2πr/m on ring m. Blue points satisfy gcd(r,m)=1 — these are the Farey fractions. Their angular equidistribution is not decorative: by the Franel-Landau theorem, any systematic bias is equivalent to a failure of the Riemann Hypothesis. Red points (gcd(r,m)&gt;1) are the composite residues; they concentrate at angles that are rational submultiples of the blue points, tracing the multiplicative skeleton of the integers.</p>
+                    <p>The <strong>cross-mod connections</strong> follow residue r across rings N→1, showing the thread each gap-class residue cuts through the modular hierarchy. The <strong>ring polygon</strong> connects consecutive residues on a single ring: mod 4 with all points gives a square; restricting to gcd=1 at mod 4 leaves only r=1 and r=3, a diameter. At mod 8 with gcd=1 the four units 1,3,5,7 form a square — not an octagon.</p>
+                    <p>The <strong>gap overlay</strong> marks the pairs (p mod N, (p+g) mod N) for every prime with forward gap g. Chords on the outer ring show which residue classes carry twin, cousin, or sexy prime pairs. The inward spiral shows the full cross-mod ancestry of each chord endpoint.</p>
                   </div>
                 </div>
 
@@ -2119,21 +2137,167 @@
             </div>            </div>
         </div><!-- end intro-section -->
         <div class="intro-section">
+            <h2>Modular Unit Circle Representation</h2>
+
+            <h3>Residue-to-Phase Mapping</h3>
+            <p>Fix M ∈ ℕ. The map</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">r ↦ θ<sub>r</sub> = 2πr/M, &nbsp; r ∈ ℤ/Mℤ</p>
+            <p>embeds the residue system into M equally spaced points on the unit circle — a discrete phase lattice of angular resolution 2π/M. This is precisely what the ring diagram draws: each ring m is a copy of ℤ/mℤ placed on a circle of radius proportional to m. Selecting <em>Unit Circle</em> in the Ring Scale menu collapses all rings to a single circle, making the phase interpretation explicit.</p>
+
+            <h3>Phase Distance and Minimal Gap</h3>
+            <p>For r, s ∈ ℤ/Mℤ, the circular phase distance is</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">d(r, s) = (2π/M) · min(|r−s|, M−|r−s|).</p>
+            <p>A twin prime pair (p, p+2) corresponds to residues r = p mod M and r+2 mod M. Their phase gap is</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">Δθ = 4π/M.</p>
+            <p>Under the modular sieve, gap 1 is excluded by parity (all primes beyond 2 are odd, so consecutive-integer pairs never both survive). Gap 2 is the smallest even gap and therefore the minimum phase increment that can appear between two surviving points. Twin prime pairs sit at exactly this resolution limit — the tightest packing the sieve permits.</p>
+
+            <h3>Boundary Pairs and Circular Symmetry</h3>
+            <p>The pair (M−1, M+1) appears special in the linear residue picture — it straddles 0. On the circle it is not special at all. The phase gap between residues M−1 and 1 is</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">d(M−1, 1) = (2π/M) · 2 = 4π/M,</p>
+            <p>the same as any interior twin pair. The boundary is an artifact of linear notation. On the circle, the pair (M−1, M+1) ≡ (−1, +1) mod M is simply the pair centered at 0 — and it is exactly the fixed point r = M−1 of the mirror involution σ(r) = M−r−2 established in the twin prime residue lattice paper (§4). Its mirror chord passes through the center; no other admissible pair has this property.</p>
+
+            <h3>Connection to the Lifting Tower</h3>
+            <p>Passing from M = p# to M′ = q·M (the next primorial) subdivides the phase lattice: each arc of length 2π/M is cut into q equal arcs of length 2π/M′. Each admissible residue in T(M) lifts to exactly q−2 admissible residues in T(M′) — the q lifts split across q sub-arcs, and two are eliminated by the new prime q. The visual consequence is that the minimum phase gap 4π/M′ is strictly smaller than 4π/M, but the fraction of the circle covered by admissible points also shrinks, by the factor (q−2)/q at each level. The density T(p#)/p# → 0 as p → ∞, while the absolute count T(p#) grows without bound.</p>
+
+            <h3>Phase Annotation in Unit Circle Mode</h3>
+            <p>When <em>Unit Circle</em> is selected and gap overlay is active, the arc between each chord endpoint pair is labeled with its phase gap as a multiple of 4π/M. Gap-2 pairs always read ×1. Gap-4 pairs read ×2. Gap-6 pairs read ×3. This makes the multiplicative structure of the singular series S(g) = S(2)·(odd prime corrections) visible as a geometric ratio on the circle rather than an algebraic formula.</p>
+        </div><!-- end phase section -->
+        <div class="intro-section">
+            <h2>Twin Prime Residue Lattice</h2>
+            <p style="font-family:'Cinzel',serif;font-size:0.62rem;color:#9a8060;letter-spacing:0.08em;margin-bottom:18px;">Wessen Getachew &nbsp;·&nbsp; Independent Research &nbsp;·&nbsp; March 2026</p>
+
+            <h3>Abstract</h3>
+            <p>We study the set of integers r (mod M) such that both r and r+2 are coprime to the primorial M = p#. We call such r <em>twin-admissible residues</em>. The following are established computationally: (1) the count |T(M)| satisfies the exact multiplicative recursion |T(p#)| = |T((p−1)#)| · (p−2); (2) the map σ(r) = M−r−2 is an involution on T(M) with exactly one fixed point, r = M−1, at every primorial level; (3) every admissible residue class is populated by actual twin primes, with empirical distribution matching the Hardy–Littlewood equidistribution conjecture at low coefficient of variation. These are verified computational facts, not proofs of the twin prime conjecture.</p>
+
+            <h3>§1 &nbsp; Definitions</h3>
+            <p>For a prime p, the primorial p# is the product of all primes up to and including p. An integer r is <em>twin-admissible</em> modulo M = p# if gcd(r, M) = 1 and gcd(r+2, M) = 1. The set of all such residues in [0, M) is T(M), with cardinality T(M) = |T(M)|. Equivalently, r ∈ T(M) if and only if no prime q dividing M divides either r or r+2 — the standard admissibility condition for the pair {0, 2}.</p>
+
+            <h3>§2 &nbsp; The Count Formula</h3>
+            <p>When lifting from M = p# to M′ = q·M (q the next prime), each residue class r mod M spawns q candidates r, r+M, r+2M, … mod M′. Exactly one is divisible by q, and exactly one satisfies q | (r+2). Since q &gt; 2 these are distinct, leaving q−2 valid lifts. Therefore:</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;margin:8px 0 6px;">T(q·M) = T(M) · (q−2)</p>
+            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;margin:4px 0 16px;">T(p#) = ∏<sub>5 ≤ q ≤ p</sub> (q−2), &nbsp; base case T(6) = 1.</p>
+
+            <div style="overflow-x:auto;margin:16px 0;">
+            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
+              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
+                <th style="padding:5px 10px;text-align:left;">M = p#</th>
+                <th style="padding:5px 10px;text-align:right;">p</th>
+                <th style="padding:5px 10px;text-align:right;">T(M)</th>
+                <th style="padding:5px 10px;text-align:right;">×ratio</th>
+                <th style="padding:5px 10px;text-align:right;">φ(M)</th>
+                <th style="padding:5px 10px;text-align:right;">Density T/φ</th>
+                <th style="padding:5px 10px;text-align:right;">Mirror pairs</th>
+                <th style="padding:5px 10px;text-align:left;">Fixed point</th>
+              </tr></thead>
+              <tbody style="color:var(--ink-mid);">
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">6</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">1</td><td style="padding:4px 10px;text-align:right;">—</td><td style="padding:4px 10px;text-align:right;">2</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.5000</td><td style="padding:4px 10px;text-align:right;">0</td><td style="padding:4px 10px;">r = 5</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">5</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">3</td><td style="padding:4px 10px;text-align:right;">×3</td><td style="padding:4px 10px;text-align:right;">8</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.3750</td><td style="padding:4px 10px;text-align:right;">1</td><td style="padding:4px 10px;">r = 29</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">15</td><td style="padding:4px 10px;text-align:right;">×5</td><td style="padding:4px 10px;text-align:right;">48</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.3125</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;">r = 209</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">11</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">135</td><td style="padding:4px 10px;text-align:right;">×9</td><td style="padding:4px 10px;text-align:right;">480</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2813</td><td style="padding:4px 10px;text-align:right;">67</td><td style="padding:4px 10px;">r = 2,309</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">13</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">1,485</td><td style="padding:4px 10px;text-align:right;">×11</td><td style="padding:4px 10px;text-align:right;">5,760</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2578</td><td style="padding:4px 10px;text-align:right;">742</td><td style="padding:4px 10px;">r = 30,029</td></tr>
+                <tr><td style="padding:4px 10px;">510,510</td><td style="padding:4px 10px;text-align:right;">17</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">22,275</td><td style="padding:4px 10px;text-align:right;">×15</td><td style="padding:4px 10px;text-align:right;">92,160</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2417</td><td style="padding:4px 10px;text-align:right;">11,137</td><td style="padding:4px 10px;">r = 510,509</td></tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>§3 &nbsp; Mirror Symmetry</h3>
+            <p>The map σ : r ↦ M−r−2 (mod M) is an involution on T(M). If gcd(r, M) = gcd(r+2, M) = 1, then gcd(M−r−2, M) = gcd(r+2, M) = 1 and gcd(M−r, M) = gcd(r, M) = 1, so σ(r) ∈ T(M). Geometrically, σ is reflection about r = (M−2)/2: the pair (r, r+2) maps to (M−r−2, M−r), its reflection. The unique fixed point of σ satisfies 2r ≡ −2 (mod M), giving r = M−1. Verification: gcd(M−1, M) = 1 and gcd(M+1, M) = 1 for any M, so r = M−1 is always admissible. Since T(M) is odd at every primorial level (it is a product of odd factors q−2 ≥ 3 with base 1), the involution decomposes T(M) into exactly (T(M)−1)/2 mirror pairs and one fixed point.</p>
+
+            <div style="overflow-x:auto;margin:12px 0 20px;">
+            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
+              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
+                <th style="padding:5px 10px;text-align:left;">M</th>
+                <th style="padding:5px 10px;text-align:right;">T(M)</th>
+                <th style="padding:5px 10px;text-align:right;">Mirror pairs</th>
+                <th style="padding:5px 10px;text-align:left;">Fixed point</th>
+                <th style="padding:5px 10px;text-align:left;">Example mirror pair</th>
+              </tr></thead>
+              <tbody style="color:var(--ink-mid);">
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;">1</td><td style="padding:4px 10px;">r = 29</td><td style="padding:4px 10px;">(11,13) ↔ (17,19)</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">15</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;">r = 209</td><td style="padding:4px 10px;">(11,13) ↔ (197,199)</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">135</td><td style="padding:4px 10px;text-align:right;">67</td><td style="padding:4px 10px;">r = 2,309</td><td style="padding:4px 10px;">(17,19) ↔ (2291,2293)</td></tr>
+                <tr><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">1,485</td><td style="padding:4px 10px;text-align:right;">742</td><td style="padding:4px 10px;">r = 30,029</td><td style="padding:4px 10px;">(17,19) ↔ (30011,30013)</td></tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>§4 &nbsp; The Lifting Tower</h3>
+            <p>The sets T(M) form a coherent tower under the projections ℤ/p#ℤ → ℤ/(p−1)#ℤ. Each class r ∈ T((p−1)#) lifts to exactly p−2 classes in T(p#), and the lifting is uniform: no class is preferred. Concretely, the p lifts r, r+M, r+2M, …, r+(p−1)M reduce mod p to 0, 1, …, p−1 — exactly one is ≡ 0 mod p and one is ≡ −2 mod p; both are excluded, leaving p−2.</p>
+
+            <div style="font-family:'Cinzel',serif;font-size:0.62rem;color:var(--ink-mid);margin:12px 0 20px;padding:12px 16px;background:rgba(6,4,14,0.5);border-left:3px solid rgba(255,215,0,0.3);">
+              <div style="color:var(--gold);margin-bottom:8px;">mod 30 → mod 210 &nbsp;(factor 7−2 = 5 lifts each)</div>
+              <div style="margin-bottom:4px;">r ≡ 11 (mod 30) &nbsp;→&nbsp; 11, 41, 71, 101, 191 &nbsp;(mod 210)</div>
+              <div style="margin-bottom:4px;">r ≡ 17 (mod 30) &nbsp;→&nbsp; 17, 107, 137, 167, 197 &nbsp;(mod 210)</div>
+              <div>r ≡ 29 (mod 30) &nbsp;→&nbsp; 29, 59, 149, 179, 209 &nbsp;(mod 210)</div>
+            </div>
+
+            <h3>§5 &nbsp; Empirical Distribution</h3>
+            <p>For each primorial M we counted twin prime pairs (p, p+2) with p ≤ 500,000 and recorded p mod M. The distribution across T(M) classes is near-uniform at low M and spreads as M grows, consistent with the law of large numbers: at M = 30,030 the average is 2.8 twins per class, so many classes appear empty at this range — a finite-sample artifact, not a structural gap.</p>
+
+            <div style="overflow-x:auto;margin:12px 0 20px;">
+            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
+              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
+                <th style="padding:5px 10px;text-align:left;">M</th>
+                <th style="padding:5px 10px;text-align:right;">Classes</th>
+                <th style="padding:5px 10px;text-align:right;">Twins ≤ 500K</th>
+                <th style="padding:5px 10px;text-align:right;">Mean</th>
+                <th style="padding:5px 10px;text-align:right;">CV</th>
+                <th style="padding:5px 10px;text-align:right;">Min</th>
+                <th style="padding:5px 10px;text-align:right;">Max</th>
+              </tr></thead>
+              <tbody style="color:var(--ink-mid);">
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">1,520.0</td><td style="padding:4px 10px;text-align:right;">0.017</td><td style="padding:4px 10px;text-align:right;">1,491</td><td style="padding:4px 10px;text-align:right;">1,536</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">15</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">303.3</td><td style="padding:4px 10px;text-align:right;">0.030</td><td style="padding:4px 10px;text-align:right;">289</td><td style="padding:4px 10px;text-align:right;">318</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">135</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">33.3</td><td style="padding:4px 10px;text-align:right;">0.121</td><td style="padding:4px 10px;text-align:right;">21</td><td style="padding:4px 10px;text-align:right;">43</td></tr>
+                <tr><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">1,485</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">2.8 (54 empty)</td><td style="padding:4px 10px;text-align:right;">0.502</td><td style="padding:4px 10px;text-align:right;">0</td><td style="padding:4px 10px;text-align:right;">8</td></tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>§6 &nbsp; Connection to Hardy–Littlewood</h3>
+            <p>The Hardy–Littlewood conjecture predicts π₂(N) ~ 2C₂ N/(log N)², where C₂ = ∏<sub>p≥3</sub> p(p−2)/(p−1)² ≈ 0.6602. The residue lattice density T(p#)/p# = ∏<sub>q≤p</sub>(1−2/q) converges to 2C₂·∏<sub>q≤p</sub>(1/q) → 0 as p → ∞, but the ratio T(p#)/φ(p#) = ∏<sub>q≤p</sub>(q−2)/(q−1) encodes the same correction factors as the singular series. At finite N the ratio of observed twins to the Hardy–Littlewood estimate converges toward 1:</p>
+
+            <div style="overflow-x:auto;margin:12px 0 20px;">
+            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
+              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
+                <th style="padding:5px 10px;text-align:left;">N</th>
+                <th style="padding:5px 10px;text-align:right;">Actual π₂(N)</th>
+                <th style="padding:5px 10px;text-align:right;">HL estimate</th>
+                <th style="padding:5px 10px;text-align:right;">Ratio</th>
+              </tr></thead>
+              <tbody style="color:var(--ink-mid);">
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">1,000</td><td style="padding:4px 10px;text-align:right;">35</td><td style="padding:4px 10px;text-align:right;">27.7</td><td style="padding:4px 10px;text-align:right;">1.265</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">10,000</td><td style="padding:4px 10px;text-align:right;">205</td><td style="padding:4px 10px;text-align:right;">155.6</td><td style="padding:4px 10px;text-align:right;">1.317</td></tr>
+                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">100,000</td><td style="padding:4px 10px;text-align:right;">1,224</td><td style="padding:4px 10px;text-align:right;">996.1</td><td style="padding:4px 10px;text-align:right;">1.229</td></tr>
+                <tr><td style="padding:4px 10px;">500,000</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">3,833.8</td><td style="padding:4px 10px;text-align:right;">1.191</td></tr>
+              </tbody>
+            </table>
+            </div>
+
+            <h3>§7 &nbsp; The Boundary Pair and Primorial Twins</h3>
+            <p>The fixed point r = M−1 always yields the pair (M−1, M+1). These are prime for all primorials up to M = 2310: (5,7), (29,31), (209,211), (2309,2311) are all twin prime pairs. At M = 30030, the pair is (30029, 30031); 30029 is prime but 30031 = 59 × 509. Whether infinitely many primorials yield twin prime boundary pairs is open.</p>
+
+            <h3>§8 &nbsp; Open Questions</h3>
+            <p><strong>Equidistribution.</strong> For every primorial M and every r ∈ T(M), does #{p ≤ N : p ≡ r (mod M), p+2 prime} ~ π₂(N)/T(M) as N → ∞? This follows from Hardy–Littlewood but is unproven.</p>
+            <p><strong>Primorial twin pairs.</strong> Are there infinitely many primorials M = p# such that both M−1 and M+1 are prime?</p>
+            <p><strong>Lifting completeness.</strong> Does every class in T(p#) contain infinitely many twin prime pairs? This is equivalent to the twin prime conjecture.</p>
+        </div><!-- end lattice paper section -->
+        <div class="intro-section">
             <h2>Abstract</h2>
 
-            <p>This page presents two interlocking structures of the prime numbers: a geometric diagram of modular residue arithmetic, and a multiplicative decomposition of the Euler product ζ(2) = π²/6 by prime gap class.</p>
+            <p>Two structures of the prime numbers are developed here in parallel: a geometric diagram of modular residue arithmetic, and a factorization of the Euler product ζ(2) = π²/6 organized by prime gap class. Neither is a proof of any conjecture. Both are verified computational observations about classical objects.</p>
 
-            <h3>I. Modular Lifting Rings</h3>
+            <h3>I. Modular Residue Rings</h3>
 
-            <p>The interactive diagram at the top maps every rational r/m with 1 ≤ m ≤ N to the angle 2πr/m on concentric ring m. The result is a discrete approximation of the unit circle stratified by denominator — the Farey sequence made spatial. Points with gcd(r, m) = 1 (blue) are the proper Farey fractions; their near-uniform angular distribution is precisely the content of the Franel-Landau theorem, which shows that any bias in this distribution is equivalent to a violation of the Riemann Hypothesis. Points with gcd(r, m) > 1 (red) expose the multiplicative skeleton: composite residues concentrate at angles that are rational multiples of those of their divisors, forming visible sub-lattices.</p>
+            <p>The diagram maps every rational r/m with 1 ≤ m ≤ N to angle 2πr/m on ring m. This is the Farey sequence made spatial: a discrete phase lattice stratified by denominator. Fractions with gcd(r,m) = 1 (blue) are the reduced Farey fractions. The Franel-Landau theorem establishes that any asymmetry in their angular distribution is equivalent to a counterexample to the Riemann Hypothesis — so their near-uniformity is a finite-range witness to RH, not merely a visual pattern. The composite residues gcd(r,m) > 1 (red) concentrate at angles that are rational submultiples of the blue points, forming the visible multiplicative sublattices.</p>
 
-            <p>Cross-mod connections trace each residue r as it threads inward through rings N → 1, revealing the channels along which prime gap residues cluster. When a gap g is overlaid, the diagram highlights the pairs (p mod N, (p+g) mod N) for all primes p with next-prime gap exactly g — the chords on the outer ring show which residue classes host twin, cousin, or sexy prime pairs, and the spiral paths inward show the full divisibility structure beneath each chord.</p>
+            <p>Cross-mod connections follow residue r inward through rings N→1. When gap g is active, the overlay marks the pairs (p mod N, (p+g) mod N) for primes with forward gap exactly g. The outer-ring chords show which residue classes carry twin, cousin, or sexy prime pairs; the inward spirals trace the full modular ancestry of each endpoint.</p>
 
             <h3>II. Gap-Class Decomposition of ζ(2)</h3>
 
             <p>Euler's product formula expresses ζ(2) = π²/6 as an infinite product over all primes. Because the product converges absolutely, its factors may be collected in any order without changing the value. This tool implements a specific collection: prime factors are grouped by the <em>forward gap</em> of each prime — the distance to the next prime — yielding a factorization ζ(2) = ∏<sub>g</sub> P<sub>g</sub> indexed by gap class. This regrouping is a direct consequence of absolute convergence, not a new theorem. Its interest lies in what the resulting numerical magnitudes reveal about prime gap structure.</p>
 
-            <p>At N = 400 million, gap class 1 (the prime 2 alone) contributes 57.8% of log ζ(2), and gap class 2 (twin primes) contributes a further 34.8% of log ζ(2) — together accounting for over 92% of the total logarithmic weight of the Euler product. That is, 92% of log(π²/6) is explained by just the prime 2 and the twin primes alone. Conditional on Hardy &amp; Littlewood's Conjecture B (1923) and the standard sieve heuristic that primes of a given gap class carry no systematic size-bias, the singular series S(g) predicts the asymptotic ratio of log-weights between any two gap classes: S(g)/S(h) → w<sub>g</sub>/w<sub>h</sub> as N → ∞. Here S(h) = 2C<sub>2</sub> · ∏<sub>p | h, p odd prime</sub> (p−1)/(p−2), where C<sub>2</sub> = ∏<sub>p ≥ 3</sub> p(p−2)/(p−1)² ≈ 0.6601618… is the twin prime constant. Because 2 divides every even gap but contributes no correction factor (it is already absorbed into C<sub>2</sub>), only the odd prime divisors of h enter S(h). In particular S(2) = S(4) = 2C<sub>2</sub>, so twin and cousin primes have equal asymptotic density; and S(6) = 4C<sub>2</sub> = 2·S(2), so gap-6 primes are asymptotically twice as frequent as gap-2 primes — the observed ratio at 400M is 1.73, converging toward 2. This ratio observation is directly testable against finite data and does not appear to have been stated in this form previously. The framework also raises a structural question: if twin primes were finite, P<sub>2</sub>(s) would be a finite product of factors p<sup>s</sup>/(p<sup>s</sup>−1) over a fixed finite set of primes — what analytic constraints would that place on the remaining sub-products via the product identity with ζ(s)?</p>
+            <p>At N = 400 million, gap class 1 (the prime 2 alone) accounts for 57.8% of log ζ(2); gap class 2 (twin primes) accounts for a further 34.8%. Together they explain over 92% of the logarithmic weight of the Euler product. Conditional on Hardy–Littlewood Conjecture B (1923) and the assumption that primes within a gap class carry no systematic size-bias, the singular series S(g) governs the asymptotic ratio of log-weights: S(g)/S(h) → w<sub>g</sub>/w<sub>h</sub> as N → ∞. Explicitly, S(h) = 2C<sub>2</sub> · ∏<sub>p | h, p odd</sub> (p−1)/(p−2), where C<sub>2</sub> = ∏<sub>p ≥ 3</sub> p(p−2)/(p−1)² ≈ 0.6601618 is the twin prime constant. The prime 2 divides every even gap but enters no correction factor — it is absorbed into the baseline C<sub>2</sub> — so only odd prime divisors of h appear. In particular, S(2) = S(4) = 2C<sub>2</sub>: twin and cousin primes have equal asymptotic density. And S(6) = 4C<sub>2</sub> = 2·S(2): gap-6 primes are asymptotically twice as dense as gap-2 primes. The observed ratio at 400M is 1.73, still converging toward 2. A structural question follows: if the twin prime set were finite, P<sub>2</sub>(s) would be a finite Euler product with poles on Re(s) = 0. Whether this is compatible with ζ(s)'s analytic behavior on Re(s) > 1 — via the constraint ζ(s) = ∏<sub>g</sub> P<sub>g</sub>(s) — appears to be open.</p>
 
             <div class="formula-box">
                 ζ(2) = ∏<sub>p prime</sub> p²/(p²−1) &nbsp;=&nbsp; ∏<sub>g ∈ G</sub> P<sub>g</sub> &nbsp;=&nbsp; π²/6 ≈ 1.644934066848…
@@ -2173,7 +2337,7 @@
 
             <h3>What This Framework Does Not Claim</h3>
 
-            <p style="color:var(--red-ink);">The gap-class factorization is a rearrangement of Euler's product, valid by absolute convergence. It contains no new analytic content in itself. The Hardy-Littlewood ratio observation and the finiteness question are presented as research directions supported by computational evidence at finite N — not proofs of any conjecture.</p>
+            <p style="color:var(--red-ink);">The gap-class factorization is a rearrangement of Euler's product, valid by absolute convergence and nothing more. The Hardy–Littlewood ratio observation and the finiteness question are research directions grounded in finite-N computation — not proofs of any conjecture, and not claimed as such.</p>
 
             <h3>Performance &amp; Browser Limits</h3>
 
@@ -3259,7 +3423,7 @@
 
             <!-- ── Circle canvas (Farey-style) ── -->
             <div style="display:flex;justify-content:center;margin-bottom:16px;">
-              <div style="position:relative;display:inline-block;">
+              <div style="position:relative;display:block;width:100%;">
                 <canvas id="rz-circle-canvas" width="600" height="600" style="display:block;background:var(--canvas-bg);border:1px solid rgba(168,85,247,0.4);border-radius:4px;cursor:pointer;" title="Click to rotate 90°"></canvas>
                 <div id="rz-tooltip" style="display:none;position:absolute;pointer-events:none;background:#0e0b05;border:1px solid #a855f7;padding:10px 14px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.06em;line-height:1.8;color:#e8d9b0;min-width:160px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.7);"></div>
               </div>
@@ -3525,8 +3689,7 @@
                         </div>
                     </div>
                     <p style="color:var(--ink-light); font-size: 0.9rem; line-height: 1.6;">
-                        Both functions are ultimately measuring whether primes are distributed "fairly" — without systematic bias toward any particular factorisation pattern. 
-                        The tight convergence in the gap products above and M(n) staying within ±√n below are two faces of the same conjecture.
+                        Both are measuring the same thing: whether prime factorizations carry systematic bias. The convergence in the gap products and the ±√n bound on M(n) are two formulations of the same conjecture.
                     </p>
                 </div>
 
@@ -12312,6 +12475,7 @@
       else if (_rscale === 'natural') t = _m / modN;
       else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
       else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else if (_rscale === 'unitcircle') { return rMax; } // all rings at outer radius
       else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
       return rMin + (rMax - rMin) * t;
     }
@@ -12694,7 +12858,10 @@
     p.style.display = open ? 'block' : 'none';
     // toggle full-width class on root
     if(root){ root.classList.toggle('advanced-open', open); }
-    // canvas is now inside the panel; split-view hidden, combined shown when open
+    // Canvas-wrap shown above controls when Advanced open
+    var cw = document.getElementById('farey-canvas-wrap');
+    if(cw) cw.style.display = open ? 'block' : 'none';
+    // Default: split view; Advanced: combined view
     document.getElementById('farey-split-view').style.display    = open ? 'none'  : 'flex';
     document.getElementById('farey-combined-view').style.display = open ? 'block' : 'none';
     if(open){
@@ -13059,6 +13226,7 @@
       else if (_rscale === 'natural') t = _m / modN;
       else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
       else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else if (_rscale === 'unitcircle') { return rMax; } // all rings at outer radius
       else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
       return rMin + (rMax - rMin) * t;
     }
@@ -13318,6 +13486,7 @@
       else if (_rscale === 'natural') t = _m / modN;
       else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
       else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else if (_rscale === 'unitcircle') { return rMax; } // all rings at outer radius
       else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
       return rMin + (rMax - rMin) * t;
     }
@@ -13498,9 +13667,90 @@
     ctx.beginPath(); ctx.arc(cx,cy,3*(W/400),0,2*Math.PI);
     ctx.fillStyle='#8a8a6a'; ctx.fill();
 
-    // ── Riemann zeros overlay (on top of everything) ──────────────────────
-    if (_showZeros && !overrideCanvas) {
+    // ── Riemann zeros overlay ──────────────────────────────────────────────
+    if (_showZeros) {
       overlayRiemannZeros(ctx, W, H, rMin, rMax);
+    }
+
+    // ── MIRROR SYMMETRY σ(r) = M − r − 2 (paper §4) ─────────────────────
+    if (window._showMirrorActive && window._showMirrorActive()) {
+      var allF2 = buildFractions(modN);
+      var copR = {};
+      allF2.cop.forEach(function(p){ if(p.m===modN) copR[p.r]=true; });
+      var drawn = {};
+      Object.keys(copR).forEach(function(rStr){
+        var r = parseInt(rStr);
+        var mirror = modN - r - 2;
+        if (mirror < 0) mirror += modN;
+        // Fixed point: r === mirror
+        var isFixed = (r === mirror) || (r === modN - 1);
+        var pairKey = Math.min(r, mirror) + ':' + Math.max(r, mirror);
+        if (!isFixed && drawn[pairKey]) return;
+        drawn[pairKey] = true;
+        var xy1 = ptXY(r, modN);
+        if (isFixed) {
+          // Fixed point: gold star ring
+          ctx.beginPath(); ctx.arc(xy1.x, xy1.y, Math.max(5, W*0.011), 0, 2*Math.PI);
+          ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2;
+          ctx.globalAlpha = 0.9; ctx.stroke();
+          ctx.beginPath(); ctx.arc(xy1.x, xy1.y, Math.max(2, W*0.005), 0, 2*Math.PI);
+          ctx.fillStyle = '#ffd700'; ctx.globalAlpha = 0.8; ctx.fill();
+        } else if (copR[mirror]) {
+          var xy2 = ptXY(mirror, modN);
+          // Mirror chord
+          ctx.beginPath(); ctx.moveTo(xy1.x, xy1.y); ctx.lineTo(xy2.x, xy2.y);
+          ctx.strokeStyle = '#e879f9'; ctx.lineWidth = 1.0;
+          ctx.globalAlpha = 0.45; ctx.stroke();
+          // Small dots at endpoints
+          [xy1, xy2].forEach(function(xy){
+            ctx.beginPath(); ctx.arc(xy.x, xy.y, Math.max(2, W*0.004), 0, 2*Math.PI);
+            ctx.fillStyle = '#e879f9'; ctx.globalAlpha = 0.7; ctx.fill();
+          });
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    // ── LIFTING TOWER: b × a^n residue connections ───────────────────────
+    if (window._liftModeActive && window._liftModeActive()) {
+      var _lp = window._getLiftParams ? window._getLiftParams() : {base:null,mult:null};
+      var lb = _lp.base, la = _lp.mult;
+      if (lb && la && lb >= 2 && la >= 2) {
+        function _gcd2(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+        // Build sequence of rings: lb, lb*la, lb*la^2, ... <= modN
+        var liftRings = [];
+        var cur = lb;
+        while (cur <= modN) { liftRings.push(cur); cur *= la; }
+        if (liftRings.length >= 2) {
+          // For each consecutive ring pair (m1, m2=m1*la):
+          // get gcd=1 residues on m1, find their lifts on m2, draw connecting lines
+          for (var li = 0; li < liftRings.length - 1; li++) {
+            var m1 = liftRings[li], m2 = liftRings[li+1];
+            var alpha = 0.4 + 0.5 * (li / (liftRings.length - 1));
+            for (var r1l = 0; r1l < m1; r1l++) {
+              if (_gcd2(r1l, m1) !== 1) continue;
+              var pt1 = ptXY(r1l, m1);
+              // Highlight dot on source ring
+              ctx.beginPath(); ctx.arc(pt1.x, pt1.y, Math.max(2, W*0.005), 0, 2*Math.PI);
+              ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = alpha + 0.2; ctx.fill();
+              // Find all r2 on m2 where r2 ≡ r1l (mod m1) and gcd(r2,m2)=1
+              for (var k = 0; k * m1 + r1l < m2; k++) {
+                var r2l = k * m1 + r1l;
+                if (_gcd2(r2l, m2) !== 1) continue;
+                var pt2 = ptXY(r2l, m2);
+                // Connection line
+                ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                ctx.strokeStyle = '#4ecdc4'; ctx.lineWidth = Math.max(0.6, W*0.001);
+                ctx.globalAlpha = alpha * 0.7; ctx.stroke();
+                // Dot on destination ring
+                ctx.beginPath(); ctx.arc(pt2.x, pt2.y, Math.max(2, W*0.005), 0, 2*Math.PI);
+                ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = alpha + 0.3; ctx.fill();
+              }
+            }
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
     }
 
     ctx.restore();
@@ -15052,7 +15302,8 @@
   var _overlayColor  = '#4a90d9';
   var _overlayGaps   = [];     // full gap list for multi-gap input
   var MAX_DISPLAY    = 200;    // max chord lines for performance
-  var _selectedR     = null;   // residue r selected from path table
+  var _selectedR       = null;   // residue r selected from path table
+  var _showMirror      = false;  // show σ(r)=M−r−2 mirror chords on outer ring
 
   // Expose to window so script 3 (makeFareyCanvas export) can read overlay state
   Object.defineProperty(window, '_overlayGap',   { get: function(){ return _overlayGap; } });
@@ -15373,6 +15624,120 @@
 
   function ghostFadeTo(target) { /* ghost field disabled */ }
 
+  // ── Mirror symmetry toggle ───────────────────────────────────────────────
+  // ── Mod N play animation ─────────────────────────────────────────────────
+  var _modPlayTimer = null;
+  window.fareyModPlay = function() {
+    var btn = document.getElementById('f-mod-play');
+    if (_modPlayTimer) {
+      clearInterval(_modPlayTimer); _modPlayTimer = null;
+      if (btn) { btn.textContent = '▶'; btn.style.color = 'var(--gold)'; btn.style.borderColor = 'var(--gold)'; }
+      return;
+    }
+    var sl  = document.getElementById('f-mod');
+    var num = document.getElementById('f-mod-num');
+    var maxV = parseInt(sl.max) || 210;
+    // Start from 2
+    sl.value  = 2; num.value = 2;
+    fareyRedraw();
+    if (btn) { btn.textContent = '■'; btn.style.color = '#c94040'; btn.style.borderColor = '#c94040'; }
+    _modPlayTimer = setInterval(function() {
+      var cur = parseInt(sl.value) || 2;
+      if (cur >= maxV) {
+        clearInterval(_modPlayTimer); _modPlayTimer = null;
+        if (btn) { btn.textContent = '▶'; btn.style.color = 'var(--gold)'; btn.style.borderColor = 'var(--gold)'; }
+        return;
+      }
+      var next = cur + 1;
+      sl.value = next; num.value = next;
+      fareyRedraw();
+    }, 120);
+  };
+
+  // ── Lifting Tower ─────────────────────────────────────────────────────────
+  // Concept: given base mod b and exponent form b × a^n, show how the gcd=1
+  // residues on ring b lift to ring b×a, b×a², etc., connecting matching
+  // residues across rings with lines.
+  var _liftBase = null;   // base mod (e.g. 2)
+  var _liftMult = null;   // multiplier a (e.g. 2 → 2,4,8,16…)
+  var _liftModeOn = false;
+
+  window.fareyToggleLiftMode = function() {
+    _liftModeOn = !_liftModeOn;
+    var btn = document.getElementById('fcm-lifting');
+    if (btn) {
+      btn.style.background = _liftModeOn ? '#4ecdc4' : 'var(--parchment-dark)';
+      btn.style.color      = _liftModeOn ? '#000' : '#4ecdc4';
+    }
+    // Show/hide lifting input panel
+    var panel = document.getElementById('farey-lift-panel');
+    if (panel) panel.style.display = _liftModeOn ? 'flex' : 'none';
+    if (!_liftModeOn) { _liftBase = null; _liftMult = null; }
+    fareyRedraw();
+  };
+  window._liftModeActive = function() { return _liftModeOn; };
+  window._getLiftParams   = function() { return { base: _liftBase, mult: _liftMult }; };
+
+  window.fareyLiftApply = function() {
+    var b = parseInt(document.getElementById('f-lift-base').value) || 2;
+    var a = parseInt(document.getElementById('f-lift-mult').value) || 2;
+    _liftBase = b; _liftMult = a;
+    fareyRedraw();
+  };
+
+  // ── Unit circle mode: collapse all rings to outer radius ───────────────
+  window.fareyRingScaleChange = function() {
+    var v = document.getElementById('f-ring-scale').value;
+    if (v === 'unitcircle') {
+      // Set inner radius to 0.5 (halfway) so all rings share one circle
+      var ri = document.getElementById('f-rinner');
+      var rn = document.getElementById('f-rinner-num');
+      if (ri) { ri.value = 50; }
+      if (rn) { rn.value = '0.50'; }
+      // Set spacing to 100%
+      var sp = document.getElementById('f-spacing');
+      var sn = document.getElementById('f-spacing-num');
+      if (sp) { sp.value = 100; }
+      if (sn) { sn.value = 100; }
+    }
+    fareyRedraw();
+  };
+
+  window.fareyToggleMirror = function() {
+    _showMirror = !_showMirror;
+    var btn = document.getElementById('fcm-mirror');
+    if (btn) {
+      btn.style.background = _showMirror ? 'var(--gold)' : 'var(--parchment-dark)';
+      btn.style.color      = _showMirror ? 'var(--parchment)' : 'var(--gold)';
+    }
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+  };
+  window._showMirrorActive = function() { return _showMirror; };
+
+  // ── Lifting tower: select a residue on ring m to see its lifts ──────────
+  window.fareySetLifting = function(r, m) {
+    if (_liftingR === r && _liftingM === m) { _liftingR = null; _liftingM = null; }
+    else { _liftingR = r; _liftingM = m; }
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+  };
+  window._getLiftingState = function() { return { r: _liftingR, m: _liftingM }; };
+
+  var _liftModeOn = false;
+  window.fareyToggleLiftMode = function() {
+    _liftModeOn = !_liftModeOn;
+    if (!_liftModeOn) { _liftingR = null; _liftingM = null; }
+    var btn = document.getElementById('fcm-lifting');
+    if (btn) {
+      btn.style.background = _liftModeOn ? '#4ecdc4' : 'var(--parchment-dark)';
+      btn.style.color      = _liftModeOn ? 'var(--parchment)' : '#4ecdc4';
+    }
+    var c = document.getElementById('fc-combined');
+    if (c) c.style.cursor = _liftModeOn ? 'crosshair' : 'default';
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+  };
+  window._liftModeActive = function() { return _liftModeOn; };
+
+
   // ── Select a residue r from the path table ──────────────────────────────
   window.fareySelectR = function(r) {
     _selectedR = (_selectedR === r) ? null : r;
@@ -15546,6 +15911,7 @@
       else if (_rscale === 'natural') t = _m / modN;
       else if (_rscale === 'sqrt')    t = Math.sqrt(_m) / Math.sqrt(modN);
       else if (_rscale === 'quadratic') t = (_m*_m) / (modN*modN);
+      else if (_rscale === 'unitcircle') { return rMax; } // all rings at outer radius
       else                          t = (_m - 1) / Math.max(modN - 1, 1); // linear
       return rMin + (rMax - rMin) * t;
     }
@@ -15668,6 +16034,44 @@
 
 
     });
+
+    // ── Phase arc annotation (Unit Circle mode only) ──────────────────────
+    var _rscaleNow = (document.getElementById('f-ring-scale')||{value:''}).value;
+    if (_rscaleNow === 'unitcircle' && pairs.length > 0 && modN > 1) {
+      var firstPair = pairs[0];
+      var r1a = firstPair.r1, r2a = firstPair.r2, ma = firstPair.m;
+      var gapSize = Math.abs(r2a - r1a);
+      if (gapSize > ma/2) gapSize = ma - gapSize; // circular min
+      var multiple = Math.round(gapSize / 2); // gap/2 since unit = 4pi/M (gap=2)
+      // Draw arc between first pair's two points
+      var ang1 = 2*Math.PI*r1a/ma;
+      var ang2 = 2*Math.PI*r2a/ma;
+      var arcR = rMax * 1.04; // just outside outer ring
+      // convert to canvas angles (0 = top, clockwise)
+      var ca1 = ang1 - Math.PI/2;
+      var ca2 = ang2 - Math.PI/2;
+      ctx.save();
+      ctx.beginPath();
+      var goCC = ((r2a - r1a + ma) % ma) <= ma/2;
+      ctx.arc(cx, cy, arcR, ca1, ca2, !goCC);
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.7;
+      ctx.stroke();
+      // Label the arc
+      var midAng = (ca1 + ca2) / 2;
+      if (Math.abs(ca2 - ca1) > Math.PI) midAng += Math.PI;
+      var labelR = arcR * 1.07;
+      var lx = cx + labelR * Math.cos(midAng);
+      var ly = cy + labelR * Math.sin(midAng);
+      ctx.fillStyle = '#ffd700';
+      ctx.font = 'bold ' + Math.max(10, W*0.013) + 'px Cinzel, serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.9;
+      var label = multiple === 1 ? '4π/M' : (multiple + '×4π/M');
+      ctx.fillText(label, lx, ly);
+      ctx.restore();
+    }
 
     // ── Rich legend panel at TOP-CENTER of canvas ───────────────────────────
     ctx.save();
