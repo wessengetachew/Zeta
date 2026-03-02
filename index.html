@@ -1583,7 +1583,7 @@
                 opacity: 0;
             }
         }
-        /* Hardy-Littlewood Deep Dive styles */
+        /* Gap decomposition chart styles */
         .hl-preset-btn { padding:6px 12px; background:var(--parchment-dark); border:1px solid var(--border); color:var(--ink-mid); cursor:pointer; font-family:'Cinzel',serif; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; transition:background .2s; }
         .hl-preset-btn:hover { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
         .hl-step-block { background:var(--parchment-dark); border-left:3px solid var(--gold); padding:14px 18px; margin-bottom:10px; }
@@ -1858,7 +1858,7 @@
                     <select id="f-pt-colmode" onchange="fareyPtColModeChange()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;margin-bottom:8px;">
                       <option value="solid">Solid (gcd=1 / gcd&gt;1 colors)</option>
                       <option value="rainbow-angle">Rainbow by Angular Position</option>
-                      <option value="rainbow-residue">By Residue Value</option>
+                      <option value="rainbow-residue" selected>By Residue Value</option>
                       <option value="rainbow-ring">By Ring (Modulus)</option>
                       <option value="prime-composite">Prime vs Composite (r)</option>
                       <option value="per-modulus">Unique Color per Modulus</option>
@@ -1962,8 +1962,8 @@
                   <div>
                     <div style="margin-bottom:5px;color:var(--gold);">ANGLE DIRECTION</div>
                     <select id="f-dir" onchange="fareyRedraw()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid var(--border);padding:3px 6px;font-family:'Cinzel',serif;font-size:0.62rem;width:100%;">
-                      <option value="1">+2πr/m (counter-clockwise)</option>
-                      <option value="-1" selected>−2πr/m (clockwise)</option>
+                      <option value="1" selected>+2πr/m (counter-clockwise)</option>
+                      <option value="-1">−2πr/m (clockwise)</option>
                     </select>
                   </div>
 
@@ -2137,167 +2137,21 @@
             </div>            </div>
         </div><!-- end intro-section -->
         <div class="intro-section">
-            <h2>Modular Unit Circle Representation</h2>
-
-            <h3>Residue-to-Phase Mapping</h3>
-            <p>Fix M ∈ ℕ. The map</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">r ↦ θ<sub>r</sub> = 2πr/M, &nbsp; r ∈ ℤ/Mℤ</p>
-            <p>embeds the residue system into M equally spaced points on the unit circle — a discrete phase lattice of angular resolution 2π/M. This is precisely what the ring diagram draws: each ring m is a copy of ℤ/mℤ placed on a circle of radius proportional to m. Selecting <em>Unit Circle</em> in the Ring Scale menu collapses all rings to a single circle, making the phase interpretation explicit.</p>
-
-            <h3>Phase Distance and Minimal Gap</h3>
-            <p>For r, s ∈ ℤ/Mℤ, the circular phase distance is</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">d(r, s) = (2π/M) · min(|r−s|, M−|r−s|).</p>
-            <p>A twin prime pair (p, p+2) corresponds to residues r = p mod M and r+2 mod M. Their phase gap is</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">Δθ = 4π/M.</p>
-            <p>Under the modular sieve, gap 1 is excluded by parity (all primes beyond 2 are odd, so consecutive-integer pairs never both survive). Gap 2 is the smallest even gap and therefore the minimum phase increment that can appear between two surviving points. Twin prime pairs sit at exactly this resolution limit — the tightest packing the sieve permits.</p>
-
-            <h3>Boundary Pairs and Circular Symmetry</h3>
-            <p>The pair (M−1, M+1) appears special in the linear residue picture — it straddles 0. On the circle it is not special at all. The phase gap between residues M−1 and 1 is</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;letter-spacing:0.04em;margin:8px 0 16px;">d(M−1, 1) = (2π/M) · 2 = 4π/M,</p>
-            <p>the same as any interior twin pair. The boundary is an artifact of linear notation. On the circle, the pair (M−1, M+1) ≡ (−1, +1) mod M is simply the pair centered at 0 — and it is exactly the fixed point r = M−1 of the mirror involution σ(r) = M−r−2 established in the twin prime residue lattice paper (§4). Its mirror chord passes through the center; no other admissible pair has this property.</p>
-
-            <h3>Connection to the Lifting Tower</h3>
-            <p>Passing from M = p# to M′ = q·M (the next primorial) subdivides the phase lattice: each arc of length 2π/M is cut into q equal arcs of length 2π/M′. Each admissible residue in T(M) lifts to exactly q−2 admissible residues in T(M′) — the q lifts split across q sub-arcs, and two are eliminated by the new prime q. The visual consequence is that the minimum phase gap 4π/M′ is strictly smaller than 4π/M, but the fraction of the circle covered by admissible points also shrinks, by the factor (q−2)/q at each level. The density T(p#)/p# → 0 as p → ∞, while the absolute count T(p#) grows without bound.</p>
-
-            <h3>Phase Annotation in Unit Circle Mode</h3>
-            <p>When <em>Unit Circle</em> is selected and gap overlay is active, the arc between each chord endpoint pair is labeled with its phase gap as a multiple of 4π/M. Gap-2 pairs always read ×1. Gap-4 pairs read ×2. Gap-6 pairs read ×3. This makes the multiplicative structure of the singular series S(g) = S(2)·(odd prime corrections) visible as a geometric ratio on the circle rather than an algebraic formula.</p>
-        </div><!-- end phase section -->
-        <div class="intro-section">
-            <h2>Twin Prime Residue Lattice</h2>
-            <p style="font-family:'Cinzel',serif;font-size:0.62rem;color:#9a8060;letter-spacing:0.08em;margin-bottom:18px;">Wessen Getachew &nbsp;·&nbsp; Independent Research &nbsp;·&nbsp; March 2026</p>
-
-            <h3>Abstract</h3>
-            <p>We study the set of integers r (mod M) such that both r and r+2 are coprime to the primorial M = p#. We call such r <em>twin-admissible residues</em>. The following are established computationally: (1) the count |T(M)| satisfies the exact multiplicative recursion |T(p#)| = |T((p−1)#)| · (p−2); (2) the map σ(r) = M−r−2 is an involution on T(M) with exactly one fixed point, r = M−1, at every primorial level; (3) every admissible residue class is populated by actual twin primes, with empirical distribution matching the Hardy–Littlewood equidistribution conjecture at low coefficient of variation. These are verified computational facts, not proofs of the twin prime conjecture.</p>
-
-            <h3>§1 &nbsp; Definitions</h3>
-            <p>For a prime p, the primorial p# is the product of all primes up to and including p. An integer r is <em>twin-admissible</em> modulo M = p# if gcd(r, M) = 1 and gcd(r+2, M) = 1. The set of all such residues in [0, M) is T(M), with cardinality T(M) = |T(M)|. Equivalently, r ∈ T(M) if and only if no prime q dividing M divides either r or r+2 — the standard admissibility condition for the pair {0, 2}.</p>
-
-            <h3>§2 &nbsp; The Count Formula</h3>
-            <p>When lifting from M = p# to M′ = q·M (q the next prime), each residue class r mod M spawns q candidates r, r+M, r+2M, … mod M′. Exactly one is divisible by q, and exactly one satisfies q | (r+2). Since q &gt; 2 these are distinct, leaving q−2 valid lifts. Therefore:</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;margin:8px 0 6px;">T(q·M) = T(M) · (q−2)</p>
-            <p style="font-family:'Times New Roman',serif;font-size:1.05rem;text-align:center;margin:4px 0 16px;">T(p#) = ∏<sub>5 ≤ q ≤ p</sub> (q−2), &nbsp; base case T(6) = 1.</p>
-
-            <div style="overflow-x:auto;margin:16px 0;">
-            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
-              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
-                <th style="padding:5px 10px;text-align:left;">M = p#</th>
-                <th style="padding:5px 10px;text-align:right;">p</th>
-                <th style="padding:5px 10px;text-align:right;">T(M)</th>
-                <th style="padding:5px 10px;text-align:right;">×ratio</th>
-                <th style="padding:5px 10px;text-align:right;">φ(M)</th>
-                <th style="padding:5px 10px;text-align:right;">Density T/φ</th>
-                <th style="padding:5px 10px;text-align:right;">Mirror pairs</th>
-                <th style="padding:5px 10px;text-align:left;">Fixed point</th>
-              </tr></thead>
-              <tbody style="color:var(--ink-mid);">
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">6</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">1</td><td style="padding:4px 10px;text-align:right;">—</td><td style="padding:4px 10px;text-align:right;">2</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.5000</td><td style="padding:4px 10px;text-align:right;">0</td><td style="padding:4px 10px;">r = 5</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">5</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">3</td><td style="padding:4px 10px;text-align:right;">×3</td><td style="padding:4px 10px;text-align:right;">8</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.3750</td><td style="padding:4px 10px;text-align:right;">1</td><td style="padding:4px 10px;">r = 29</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">15</td><td style="padding:4px 10px;text-align:right;">×5</td><td style="padding:4px 10px;text-align:right;">48</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.3125</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;">r = 209</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">11</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">135</td><td style="padding:4px 10px;text-align:right;">×9</td><td style="padding:4px 10px;text-align:right;">480</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2813</td><td style="padding:4px 10px;text-align:right;">67</td><td style="padding:4px 10px;">r = 2,309</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">13</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">1,485</td><td style="padding:4px 10px;text-align:right;">×11</td><td style="padding:4px 10px;text-align:right;">5,760</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2578</td><td style="padding:4px 10px;text-align:right;">742</td><td style="padding:4px 10px;">r = 30,029</td></tr>
-                <tr><td style="padding:4px 10px;">510,510</td><td style="padding:4px 10px;text-align:right;">17</td><td style="padding:4px 10px;text-align:right;color:#4ecdc4;font-weight:bold;">22,275</td><td style="padding:4px 10px;text-align:right;">×15</td><td style="padding:4px 10px;text-align:right;">92,160</td><td style="padding:4px 10px;text-align:right;color:#e879f9;">0.2417</td><td style="padding:4px 10px;text-align:right;">11,137</td><td style="padding:4px 10px;">r = 510,509</td></tr>
-              </tbody>
-            </table>
-            </div>
-
-            <h3>§3 &nbsp; Mirror Symmetry</h3>
-            <p>The map σ : r ↦ M−r−2 (mod M) is an involution on T(M). If gcd(r, M) = gcd(r+2, M) = 1, then gcd(M−r−2, M) = gcd(r+2, M) = 1 and gcd(M−r, M) = gcd(r, M) = 1, so σ(r) ∈ T(M). Geometrically, σ is reflection about r = (M−2)/2: the pair (r, r+2) maps to (M−r−2, M−r), its reflection. The unique fixed point of σ satisfies 2r ≡ −2 (mod M), giving r = M−1. Verification: gcd(M−1, M) = 1 and gcd(M+1, M) = 1 for any M, so r = M−1 is always admissible. Since T(M) is odd at every primorial level (it is a product of odd factors q−2 ≥ 3 with base 1), the involution decomposes T(M) into exactly (T(M)−1)/2 mirror pairs and one fixed point.</p>
-
-            <div style="overflow-x:auto;margin:12px 0 20px;">
-            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
-              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
-                <th style="padding:5px 10px;text-align:left;">M</th>
-                <th style="padding:5px 10px;text-align:right;">T(M)</th>
-                <th style="padding:5px 10px;text-align:right;">Mirror pairs</th>
-                <th style="padding:5px 10px;text-align:left;">Fixed point</th>
-                <th style="padding:5px 10px;text-align:left;">Example mirror pair</th>
-              </tr></thead>
-              <tbody style="color:var(--ink-mid);">
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;">1</td><td style="padding:4px 10px;">r = 29</td><td style="padding:4px 10px;">(11,13) ↔ (17,19)</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">15</td><td style="padding:4px 10px;text-align:right;">7</td><td style="padding:4px 10px;">r = 209</td><td style="padding:4px 10px;">(11,13) ↔ (197,199)</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">135</td><td style="padding:4px 10px;text-align:right;">67</td><td style="padding:4px 10px;">r = 2,309</td><td style="padding:4px 10px;">(17,19) ↔ (2291,2293)</td></tr>
-                <tr><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">1,485</td><td style="padding:4px 10px;text-align:right;">742</td><td style="padding:4px 10px;">r = 30,029</td><td style="padding:4px 10px;">(17,19) ↔ (30011,30013)</td></tr>
-              </tbody>
-            </table>
-            </div>
-
-            <h3>§4 &nbsp; The Lifting Tower</h3>
-            <p>The sets T(M) form a coherent tower under the projections ℤ/p#ℤ → ℤ/(p−1)#ℤ. Each class r ∈ T((p−1)#) lifts to exactly p−2 classes in T(p#), and the lifting is uniform: no class is preferred. Concretely, the p lifts r, r+M, r+2M, …, r+(p−1)M reduce mod p to 0, 1, …, p−1 — exactly one is ≡ 0 mod p and one is ≡ −2 mod p; both are excluded, leaving p−2.</p>
-
-            <div style="font-family:'Cinzel',serif;font-size:0.62rem;color:var(--ink-mid);margin:12px 0 20px;padding:12px 16px;background:rgba(6,4,14,0.5);border-left:3px solid rgba(255,215,0,0.3);">
-              <div style="color:var(--gold);margin-bottom:8px;">mod 30 → mod 210 &nbsp;(factor 7−2 = 5 lifts each)</div>
-              <div style="margin-bottom:4px;">r ≡ 11 (mod 30) &nbsp;→&nbsp; 11, 41, 71, 101, 191 &nbsp;(mod 210)</div>
-              <div style="margin-bottom:4px;">r ≡ 17 (mod 30) &nbsp;→&nbsp; 17, 107, 137, 167, 197 &nbsp;(mod 210)</div>
-              <div>r ≡ 29 (mod 30) &nbsp;→&nbsp; 29, 59, 149, 179, 209 &nbsp;(mod 210)</div>
-            </div>
-
-            <h3>§5 &nbsp; Empirical Distribution</h3>
-            <p>For each primorial M we counted twin prime pairs (p, p+2) with p ≤ 500,000 and recorded p mod M. The distribution across T(M) classes is near-uniform at low M and spreads as M grows, consistent with the law of large numbers: at M = 30,030 the average is 2.8 twins per class, so many classes appear empty at this range — a finite-sample artifact, not a structural gap.</p>
-
-            <div style="overflow-x:auto;margin:12px 0 20px;">
-            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
-              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
-                <th style="padding:5px 10px;text-align:left;">M</th>
-                <th style="padding:5px 10px;text-align:right;">Classes</th>
-                <th style="padding:5px 10px;text-align:right;">Twins ≤ 500K</th>
-                <th style="padding:5px 10px;text-align:right;">Mean</th>
-                <th style="padding:5px 10px;text-align:right;">CV</th>
-                <th style="padding:5px 10px;text-align:right;">Min</th>
-                <th style="padding:5px 10px;text-align:right;">Max</th>
-              </tr></thead>
-              <tbody style="color:var(--ink-mid);">
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">30</td><td style="padding:4px 10px;text-align:right;">3</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">1,520.0</td><td style="padding:4px 10px;text-align:right;">0.017</td><td style="padding:4px 10px;text-align:right;">1,491</td><td style="padding:4px 10px;text-align:right;">1,536</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">210</td><td style="padding:4px 10px;text-align:right;">15</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">303.3</td><td style="padding:4px 10px;text-align:right;">0.030</td><td style="padding:4px 10px;text-align:right;">289</td><td style="padding:4px 10px;text-align:right;">318</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">2,310</td><td style="padding:4px 10px;text-align:right;">135</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">33.3</td><td style="padding:4px 10px;text-align:right;">0.121</td><td style="padding:4px 10px;text-align:right;">21</td><td style="padding:4px 10px;text-align:right;">43</td></tr>
-                <tr><td style="padding:4px 10px;">30,030</td><td style="padding:4px 10px;text-align:right;">1,485</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">2.8 (54 empty)</td><td style="padding:4px 10px;text-align:right;">0.502</td><td style="padding:4px 10px;text-align:right;">0</td><td style="padding:4px 10px;text-align:right;">8</td></tr>
-              </tbody>
-            </table>
-            </div>
-
-            <h3>§6 &nbsp; Connection to Hardy–Littlewood</h3>
-            <p>The Hardy–Littlewood conjecture predicts π₂(N) ~ 2C₂ N/(log N)², where C₂ = ∏<sub>p≥3</sub> p(p−2)/(p−1)² ≈ 0.6602. The residue lattice density T(p#)/p# = ∏<sub>q≤p</sub>(1−2/q) converges to 2C₂·∏<sub>q≤p</sub>(1/q) → 0 as p → ∞, but the ratio T(p#)/φ(p#) = ∏<sub>q≤p</sub>(q−2)/(q−1) encodes the same correction factors as the singular series. At finite N the ratio of observed twins to the Hardy–Littlewood estimate converges toward 1:</p>
-
-            <div style="overflow-x:auto;margin:12px 0 20px;">
-            <table style="width:100%;border-collapse:collapse;font-family:'Cinzel',serif;font-size:0.62rem;">
-              <thead><tr style="color:var(--gold);border-bottom:1px solid rgba(255,215,0,0.3);">
-                <th style="padding:5px 10px;text-align:left;">N</th>
-                <th style="padding:5px 10px;text-align:right;">Actual π₂(N)</th>
-                <th style="padding:5px 10px;text-align:right;">HL estimate</th>
-                <th style="padding:5px 10px;text-align:right;">Ratio</th>
-              </tr></thead>
-              <tbody style="color:var(--ink-mid);">
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">1,000</td><td style="padding:4px 10px;text-align:right;">35</td><td style="padding:4px 10px;text-align:right;">27.7</td><td style="padding:4px 10px;text-align:right;">1.265</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);background:rgba(255,215,0,0.02);"><td style="padding:4px 10px;">10,000</td><td style="padding:4px 10px;text-align:right;">205</td><td style="padding:4px 10px;text-align:right;">155.6</td><td style="padding:4px 10px;text-align:right;">1.317</td></tr>
-                <tr style="border-bottom:1px solid rgba(255,215,0,0.08);"><td style="padding:4px 10px;">100,000</td><td style="padding:4px 10px;text-align:right;">1,224</td><td style="padding:4px 10px;text-align:right;">996.1</td><td style="padding:4px 10px;text-align:right;">1.229</td></tr>
-                <tr><td style="padding:4px 10px;">500,000</td><td style="padding:4px 10px;text-align:right;">4,565</td><td style="padding:4px 10px;text-align:right;">3,833.8</td><td style="padding:4px 10px;text-align:right;">1.191</td></tr>
-              </tbody>
-            </table>
-            </div>
-
-            <h3>§7 &nbsp; The Boundary Pair and Primorial Twins</h3>
-            <p>The fixed point r = M−1 always yields the pair (M−1, M+1). These are prime for all primorials up to M = 2310: (5,7), (29,31), (209,211), (2309,2311) are all twin prime pairs. At M = 30030, the pair is (30029, 30031); 30029 is prime but 30031 = 59 × 509. Whether infinitely many primorials yield twin prime boundary pairs is open.</p>
-
-            <h3>§8 &nbsp; Open Questions</h3>
-            <p><strong>Equidistribution.</strong> For every primorial M and every r ∈ T(M), does #{p ≤ N : p ≡ r (mod M), p+2 prime} ~ π₂(N)/T(M) as N → ∞? This follows from Hardy–Littlewood but is unproven.</p>
-            <p><strong>Primorial twin pairs.</strong> Are there infinitely many primorials M = p# such that both M−1 and M+1 are prime?</p>
-            <p><strong>Lifting completeness.</strong> Does every class in T(p#) contain infinitely many twin prime pairs? This is equivalent to the twin prime conjecture.</p>
-        </div><!-- end lattice paper section -->
-        <div class="intro-section">
             <h2>Abstract</h2>
 
-            <p>Two structures of the prime numbers are developed here in parallel: a geometric diagram of modular residue arithmetic, and a factorization of the Euler product ζ(2) = π²/6 organized by prime gap class. Neither is a proof of any conjecture. Both are verified computational observations about classical objects.</p>
+            <p>Two structures of the prime numbers are examined in parallel: a geometric diagram of modular residue arithmetic organized by the Farey sequence, and a factorization of the Euler product ζ(2) = π²/6 by prime gap class. Neither constitutes a proof of any conjecture. Both are verified computations on classical objects.</p>
 
             <h3>I. Modular Residue Rings</h3>
 
-            <p>The diagram maps every rational r/m with 1 ≤ m ≤ N to angle 2πr/m on ring m. This is the Farey sequence made spatial: a discrete phase lattice stratified by denominator. Fractions with gcd(r,m) = 1 (blue) are the reduced Farey fractions. The Franel-Landau theorem establishes that any asymmetry in their angular distribution is equivalent to a counterexample to the Riemann Hypothesis — so their near-uniformity is a finite-range witness to RH, not merely a visual pattern. The composite residues gcd(r,m) > 1 (red) concentrate at angles that are rational submultiples of the blue points, forming the visible multiplicative sublattices.</p>
+            <p>The diagram places every rational r/m with 1 ≤ m ≤ N at angle 2πr/m on ring m, making the Farey sequence geometric. Fractions with gcd(r,m) = 1 (blue) are the reduced Farey fractions. By the Franel-Landau theorem, any systematic bias in their angular distribution — measured by the discrepancy D<sub>N</sub> — implies a zero of ζ(s) off the critical line. Their observed near-uniformity at finite N is consistent with RH, not evidence for it in a formal sense. The composite residues gcd(r,m) > 1 (red) concentrate at angles that are rational multiples of 2π, tracing the multiplicative structure of the integers across rings.</p>
 
-            <p>Cross-mod connections follow residue r inward through rings N→1. When gap g is active, the overlay marks the pairs (p mod N, (p+g) mod N) for primes with forward gap exactly g. The outer-ring chords show which residue classes carry twin, cousin, or sexy prime pairs; the inward spirals trace the full modular ancestry of each endpoint.</p>
+            <p>Cross-mod connections follow each residue r through rings N→1. With gap g active, the overlay marks the pairs (p mod N, (p+g) mod N) for primes with forward gap exactly g. Outer-ring chords show which residue classes host twin, cousin, or sexy prime pairs; the inward spirals show the full divisibility structure beneath each endpoint.</p>
 
             <h3>II. Gap-Class Decomposition of ζ(2)</h3>
 
-            <p>Euler's product formula expresses ζ(2) = π²/6 as an infinite product over all primes. Because the product converges absolutely, its factors may be collected in any order without changing the value. This tool implements a specific collection: prime factors are grouped by the <em>forward gap</em> of each prime — the distance to the next prime — yielding a factorization ζ(2) = ∏<sub>g</sub> P<sub>g</sub> indexed by gap class. This regrouping is a direct consequence of absolute convergence, not a new theorem. Its interest lies in what the resulting numerical magnitudes reveal about prime gap structure.</p>
+            <p>Euler's product ζ(2) = π²/6 = ∏<sub>p</sub> p²/(p²−1) converges absolutely, so its factors may be rearranged freely. Grouping by forward gap — the distance from each prime to the next — gives ζ(2) = ∏<sub>g</sub> P<sub>g</sub>, where P<sub>g</sub> = ∏<sub>{p : gap(p)=g}</sub> p²/(p²−1). This is a reorganization of a known result, not a theorem. Its value is numerical: it makes the weight of each gap class in the Euler product directly measurable.</p>
 
-            <p>At N = 400 million, gap class 1 (the prime 2 alone) accounts for 57.8% of log ζ(2); gap class 2 (twin primes) accounts for a further 34.8%. Together they explain over 92% of the logarithmic weight of the Euler product. Conditional on Hardy–Littlewood Conjecture B (1923) and the assumption that primes within a gap class carry no systematic size-bias, the singular series S(g) governs the asymptotic ratio of log-weights: S(g)/S(h) → w<sub>g</sub>/w<sub>h</sub> as N → ∞. Explicitly, S(h) = 2C<sub>2</sub> · ∏<sub>p | h, p odd</sub> (p−1)/(p−2), where C<sub>2</sub> = ∏<sub>p ≥ 3</sub> p(p−2)/(p−1)² ≈ 0.6601618 is the twin prime constant. The prime 2 divides every even gap but enters no correction factor — it is absorbed into the baseline C<sub>2</sub> — so only odd prime divisors of h appear. In particular, S(2) = S(4) = 2C<sub>2</sub>: twin and cousin primes have equal asymptotic density. And S(6) = 4C<sub>2</sub> = 2·S(2): gap-6 primes are asymptotically twice as dense as gap-2 primes. The observed ratio at 400M is 1.73, still converging toward 2. A structural question follows: if the twin prime set were finite, P<sub>2</sub>(s) would be a finite Euler product with poles on Re(s) = 0. Whether this is compatible with ζ(s)'s analytic behavior on Re(s) > 1 — via the constraint ζ(s) = ∏<sub>g</sub> P<sub>g</sub>(s) — appears to be open.</p>
+            <p>At N = 400 million, gap class 1 (the prime 2 alone, contributing the fixed factor 4/3) accounts for 57.8% of log ζ(2). Gap class 2 (twin primes) accounts for a further 34.8%. Together they explain over 92% of the total. A structural question follows: if the twin prime set were finite, P<sub>2</sub>(s) would be a finite product of factors p<sup>s</sup>/(p<sup>s</sup>−1), holomorphic on all of ℂ and bounded away from zero for Re(s) > 0. The remaining sub-products would then have to account for the poles and zeros of ζ(s) entirely — whether this is analytically possible via the identity ζ(s) = ∏<sub>g</sub> P<sub>g</sub>(s) appears to be open.</p>
 
             <div class="formula-box">
                 ζ(2) = ∏<sub>p prime</sub> p²/(p²−1) &nbsp;=&nbsp; ∏<sub>g ∈ G</sub> P<sub>g</sub> &nbsp;=&nbsp; π²/6 ≈ 1.644934066848…
@@ -2307,45 +2161,44 @@
 
             <h3>Gap-Class Partition</h3>
 
-            <p>Define gap(p<sub>n</sub>) = p<sub>n+1</sub> − p<sub>n</sub>. By absolute convergence of the Euler product, its factors may be partitioned by gap class:</p>
+            <p>Define gap(p<sub>n</sub>) = p<sub>n+1</sub> − p<sub>n</sub>. By absolute convergence:</p>
 
             <div class="formula-box">
                 P<sub>g</sub> &nbsp;=&nbsp; ∏<sub>{p : gap(p) = g}</sub> p²/(p²−1)
             </div>
 
-            <p>Gap class g = 1 contains only the prime 2, since gap(2) = 3 − 2 = 1, contributing the fixed factor 4/3. Every other realized gap size is even, because all primes beyond 2 are odd.</p>
+            <p>Gap class g = 1 contains only the prime 2, since gap(2) = 3 − 2 = 1, giving the factor 4/3 exactly. Every other realized gap is even, since all primes beyond 2 are odd.</p>
 
             <h3>Gap Classification</h3>
 
             <ul>
-                <li><strong>Gap 1:</strong> {2} — the prime 2 alone; gap(2) = 3 − 2 = 1</li>
-                <li><strong>Gap 2 (Twin Primes):</strong> {3, 5, 11, 17, 29, 41, 59, 71, 101, 107, …} — primes p with forward gap 2</li>
+                <li><strong>Gap 1:</strong> {2} only — gap(2) = 1, factor = 4/3</li>
+                <li><strong>Gap 2 (Twin Primes):</strong> {3, 5, 11, 17, 29, 41, 59, 71, 101, 107, …}</li>
                 <li><strong>Gap 4 (Cousin Primes):</strong> {7, 13, 19, 37, 43, 67, 79, 97, 103, 109, …}</li>
                 <li><strong>Gap 6 (Sexy Primes):</strong> {23, 31, 47, 53, 61, 73, 83, 89, 113, …}</li>
-                <li><strong>Larger even gaps:</strong> g = 8, 10, 12, … all contribute progressively smaller P<sub>g</sub></li>
+                <li><strong>Larger even gaps:</strong> g = 8, 10, 12, … contribute progressively smaller P<sub>g</sub> as the relevant primes thin out</li>
             </ul>
-            <h3>Key Questions This Tool Investigates</h3>
+
+            <h3>Open Questions</h3>
 
             <ol>
-                <li><strong>Quantitative contributions:</strong> What fraction of log ζ(2) does each gap class account for? At N = 400M, gaps 1 and 2 together exceed 92%.</li>
-                <li><strong>Hardy-Littlewood log-weight ratios:</strong> Conditional on Conjecture B, S(g)/S(h) predicts the limiting ratio w<sub>g</sub>/w<sub>h</sub>. S(2) = S(4), so twins and cousins have equal asymptotic density. S(6) = 2·S(2), so gap 6 is asymptotically twice as frequent as gap 2 — the observed ratio at 400M is 1.73, converging toward 2.</li>
-                <li><strong>Closed form for P<sub>2</sub>(2):</strong> Numerically P<sub>2</sub>(2) ≈ 1.18689… No relation to π, C<sub>2</sub>, or known constants is apparent. Open question.</li>
-                <li><strong>Finiteness obstruction:</strong> A finite twin prime set would make P<sub>2</sub>(s) a finite product of factors p<sup>s</sup>/(p<sup>s</sup>−1) over a fixed finite set of primes, with poles where p<sup>s</sup> = 1, i.e. on Re(s) = 0. Compatibility with ζ(s)'s analytic structure on Re(s) > 1 then requires precise cancellation by remaining sub-products — whether this is possible is open.</li>
-                <li><strong>Generalization to ζ(s):</strong> The decomposition extends to all Re(s) > 1. As s grows, P<sub>1</sub>(s) = 2<sup>s</sup>/(2<sup>s</sup>−1) dominates increasingly; at s = 10 it accounts for ~96% of log ζ(10).</li>
-                <li><strong>Asymptotic tail:</strong> The partial product ∏<sub>g ≤ G</sub> P<sub>g</sub> converges to ζ(2) as G → ∞, but the precise rate has not been established.</li>
+                <li><strong>Quantitative weight:</strong> At N = 400M, gaps 1 and 2 together exceed 92% of log ζ(2). How does this proportion behave as N → ∞?</li>
+                <li><strong>Closed form for P<sub>2</sub>(2):</strong> The partial product over the first 400M twin primes gives P<sub>2</sub>(2) ≈ 1.18689. No relation to π, C<sub>2</sub>, or other known constants is apparent.</li>
+                <li><strong>Finiteness obstruction:</strong> As described above — whether the product identity ζ(s) = ∏<sub>g</sub> P<sub>g</sub>(s) is compatible with a finite twin prime set is open.</li>
+                <li><strong>Generalization to ζ(s):</strong> The decomposition holds for all Re(s) > 1. At s = 10, P<sub>1</sub>(s) = 2<sup>10</sup>/(2<sup>10</sup>−1) accounts for approximately 96% of log ζ(10).</li>
             </ol>
 
-            <h3>What This Framework Does Not Claim</h3>
+            <h3>What This Does Not Claim</h3>
 
-            <p style="color:var(--red-ink);">The gap-class factorization is a rearrangement of Euler's product, valid by absolute convergence and nothing more. The Hardy–Littlewood ratio observation and the finiteness question are research directions grounded in finite-N computation — not proofs of any conjecture, and not claimed as such.</p>
+            <p style="color:var(--red-ink);">The gap-class factorization is a rearrangement of Euler's product, valid by absolute convergence. It is not a new theorem and proves nothing about the distribution of primes. The finiteness question is a structural observation — open, and not a proof of the twin prime conjecture.</p>
 
             <h3>Performance &amp; Browser Limits</h3>
 
             <ul>
-                <li><strong>Sieving:</strong> Segmented sieve in 1M-number chunks — only ~50 MB during generation regardless of range</li>
-                <li><strong>Storage (the real cap):</strong> After sieving, all primes must be held in memory. At 300M that is ~16M primes ≈ 340 MB total.</li>
+                <li><strong>Sieving:</strong> Segmented sieve in 1M-number chunks — ~50 MB during generation regardless of range</li>
+                <li><strong>Storage:</strong> After sieving, all primes are held in memory. At 300M that is ~16M primes ≈ 340 MB.</li>
                 <li><strong>Safe range:</strong> Up to ~200M reliably; up to ~300M on most machines with few other tabs open</li>
-                <li><strong>Above 300M:</strong> Expect freezing or out-of-memory errors. For N = 400M and above, use the companion Python script, which processes primes incrementally at constant ~50 MB RAM.</li>
+                <li><strong>Above 300M:</strong> Expect out-of-memory errors. Use the companion Python script, which processes primes incrementally at constant ~50 MB RAM.</li>
             </ul>
         </div>
     </div>
@@ -2878,7 +2731,7 @@
         <div class="chart-wrapper" id="gapRatioWrapper">
             <div class="chart-title">Gap Ratio Analysis: Twin Prime Conjecture Evidence</div>
             <div class="chart-description">
-                Tracks Count(gap=2)/Count(gap=4) and other gap ratios. Hardy-Littlewood predicts twin primes (gap 2) and cousin primes (gap 4) have <em>identical</em> singular series constants, so their ratio should approach 1.0 as N→∞. Gap 6 (sexy primes) has a 2× larger constant due to the p=3 factor — so it is asymptotically <em>twice as frequent</em> as gap 2 or gap 4, not equal.
+                Tracks Count(gap=2)/Count(gap=4) and other gap ratios between prime gap classes.
             </div>
             <canvas id="gapRatioChart" width="3840" height="2160"></canvas>
             <div class="stats-table-wrapper">
@@ -3079,229 +2932,7 @@
             </div>
         </div>
         
-        <div class="chart-wrapper" id="hlDeepDiveWrapper" style="border: 2px solid var(--gold);">
-            <div class="chart-title" style="color: var(--gold); font-size: 1.5rem; border-bottom-color: var(--gold);">
-                Hardy-Littlewood Conjecture B: Step-by-Step Calculations for Every Gap Family
-            </div>
-            <div class="chart-description" style="border-left-color: var(--gold);">
-                Full derivation of the singular series S(h), the logarithmic integral li₂(x), and the predicted prime-pair count
-                for each gap family — with every arithmetic step shown and compared against the observed data.
-            </div>
 
-            <!-- PART 1: THE FORMULA -->
-            <div style="background:#0d0d1a;border:1px solid #a855f7;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#a855f7;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 1 — The Hardy-Littlewood Formula</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">Hardy &amp; Littlewood's Conjecture B (1923): for any even integer h ≥ 2, the count of primes p ≤ x where p+h is also prime satisfies:</p>
-                <div class="formula-box" style="font-size:1.4rem;margin:20px 0;">π<sub>h</sub>(x) &nbsp;~&nbsp; S(h) · li<sub>2</sub>(x)</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
-                    <div style="background:rgba(168,85,247,.08);border-left:3px solid #a855f7;padding:16px;border-radius:6px;">
-                        <div style="color:#a855f7;font-weight:700;margin-bottom:10px;">S(h) — The Singular Series</div>
-                        <div style="color:#e0e0e0;font-family:'EB Garamond',Georgia,serif;font-size:1.1rem;line-height:2.2;">S(h) = 2C<sub>2</sub> · ∏<sub>p | h, p odd prime</sub> (p−1)/(p−2)</div>
-                        <div style="color:#888;font-size:.85rem;margin-top:8px;">Encodes how divisibility of h by small primes opens extra residue classes, making some gaps more probable than others.</div>
-                    </div>
-                    <div style="background:rgba(78,205,196,.08);border-left:3px solid #4ecdc4;padding:16px;border-radius:6px;">
-                        <div style="color:#4ecdc4;font-weight:700;margin-bottom:10px;">li<sub>2</sub>(x) — The Logarithmic Integral</div>
-                        <div style="color:#e0e0e0;font-family:'EB Garamond',Georgia,serif;font-size:1.1rem;line-height:2.2;">li<sub>2</sub>(x) = ∫<sub>2</sub><sup>x</sup> dt / ln²(t)</div>
-                        <div style="color:#888;font-size:.85rem;margin-top:8px;">The density baseline — how many prime pairs would exist if distributed purely by logarithm. S(h) scales this per gap.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PART 2: C2 CONSTANT -->
-            <div style="background:#0d0d1a;border:1px solid #ffd700;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#ffd700;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 2 — Where Does C₂ = 0.6601618… Come From?</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">C₂ is the <strong style="color:#ffd700">twin prime constant</strong> — an infinite Euler product over all primes p ≥ 3, measuring how residue-class constraints reduce the density of twin primes relative to a random model:</p>
-                <div class="formula-box">C<sub>2</sub> = ∏<sub>p ≥ 3</sub> p(p−2) / (p−1)²</div>
-                <p style="color:#ccc;margin:0 0 16px 0;line-height:1.7;font-size:.9rem;">Each factor p(p−2)/(p−1)² &lt; 1 accounts for the fact that for a prime p, there is one forbidden residue class mod p for each element of a twin-prime pair. The infinite product converges slowly to ≈ 0.66016. Below: partial products through the first 20 primes.</p>
-                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:.83rem;min-width:600px;">
-                        <thead><tr style="background:#1a1a2a;">
-                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Prime p</th>
-                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">p(p−2)/(p−1)²</th>
-                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Factor value</th>
-                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">Running C₂ product</th>
-                            <th style="padding:8px 12px;text-align:left;color:#ffd700;border-bottom:1px solid #2a2a4a;">% of final C₂</th>
-                        </tr></thead>
-                        <tbody id="hl_c2_table_body"></tbody>
-                    </table>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;">
-                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
-                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">C₂ (full precision)</div>
-                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">0.6601618158468695…</div>
-                    </div>
-                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
-                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">2·C₂ = S(2) = S(4) = S(8)</div>
-                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">1.3203236316937390…</div>
-                    </div>
-                    <div style="background:rgba(255,215,0,.07);border:1px solid #ffd700;border-radius:6px;padding:14px;text-align:center;">
-                        <div style="color:#888;font-size:.78rem;margin-bottom:4px;">4·C₂ = S(6) = S(12) = S(18)</div>
-                        <div style="color:#ffd700;font-family:monospace;font-size:.9rem;">2.6406472633874780…</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PART 3: SINGULAR SERIES TABLE -->
-            <div style="background:#0d0d1a;border:1px solid #22c55e;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#22c55e;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 3 — Singular Series S(h) for the First 30 Even Gaps: Full Derivation</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">For each gap h, S(h) = 2C₂ · ∏<sub>(odd prime p | h)</sub> (p−1)/(p−2). The table below shows the factorisation of h, which odd primes divide it, each correction factor, and the final S(h). <strong style="color:#22c55e;">Only odd prime factors count</strong> — p=2 always divides even h but contributes no correction because 2 is already handled in the baseline C₂ Euler product.</p>
-                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px;">
-                        <thead><tr style="background:#1a1a2a;">
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Gap h</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">h = 2^a × odd</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Odd prime factors</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Correction factors (p−1)/(p−2)</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Product</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">S(h) = 2C₂ × product</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">S(h)/S(2)</th>
-                            <th style="padding:8px 10px;text-align:left;color:#22c55e;border-bottom:1px solid #2a2a4a;">Name</th>
-                        </tr></thead>
-                        <tbody id="hl_singular_table_body"></tbody>
-                    </table>
-                </div>
-                <div style="background:rgba(34,197,94,.07);border-left:4px solid #22c55e;padding:16px;border-radius:6px;margin-top:16px;">
-                    <div style="color:#22c55e;font-weight:700;margin-bottom:8px;">The key insight: why gap 6 is twice as common as gap 2</div>
-                    <div style="color:#ccc;font-size:.88rem;line-height:1.8;">
-                        Gap 2: h=2, no odd prime factors → correction product = 1 → S(2) = 2C₂ ≈ 1.3203<br>
-                        Gap 4: h=4=2², no odd prime factors → S(4) = 2C₂ <em>identical to gap 2</em><br>
-                        Gap 6: h=6=2×3, odd factor p=3 → correction = (3−1)/(3−2) = 2/1 = <strong style="color:#ffd700">2</strong> → S(6) = 2 × 2C₂ = 4C₂ ≈ 2.6406<br><br>
-                        Gap 30: h=30=2×3×5, corrections: (2/1)×(4/3) = 8/3 → S(30) = (8/3)×2C₂ = <strong style="color:#ffd700">16C₂/3 ≈ 3.5209</strong><br><br>
-                        Because 3 | 6, the pair {p, p+6} satisfies p ≡ p+6 (mod 3), so <em>neither element is forced to be divisible by 3</em>.
-                        This doubles admissible residue pairs. At 400M the observed ratio gap6/gap2 = 1.767, converging toward the theoretical limit of 2.0.
-                    </div>
-                </div>
-            </div>
-
-            <!-- PART 4: li2 EXPANSION -->
-            <div style="background:#0d0d1a;border:1px solid #4ecdc4;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#4ecdc4;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 4 — The li₂(x) Expansion: Every Correction Term Analysed</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">The integral li₂(x)=∫dt/ln²(t) has an asymptotic expansion. Each correction term below reduces prediction error. Changing x shows how the terms' magnitudes shift with the analysis range.</p>
-                <div class="formula-box" style="font-size:1.05rem;">li₂(x) = (x/ln²x) · [ 1 + 2/ln x + 6/ln²x + 24/ln³x + 120/ln⁴x + … ]&nbsp;&nbsp;&nbsp;(k-th coefficient = (k+1)!)</div>
-                <div style="background:#12121a;border-radius:8px;padding:14px;margin:16px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-                    <label style="color:#4ecdc4;font-size:.9rem;">Compute at x =</label>
-                    <input type="number" id="hl_li2_x_input" value="400000000" min="1000" max="10000000000" step="1000000"
-                           oninput="hl_updateLi2Table()"
-                           style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:180px;">
-                    <div id="hl_li2_lnx_display" style="color:#888;font-size:.82rem;"></div>
-                </div>
-                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:.82rem;min-width:750px;">
-                        <thead><tr style="background:#1a1a2a;">
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Terms used</th>
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Formula</th>
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">li₂(x) value</th>
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">2C₂·li₂ prediction</th>
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Gain from prev term</th>
-                            <th style="padding:8px 12px;text-align:left;color:#4ecdc4;border-bottom:1px solid #2a2a4a;">Error vs obs twins*</th>
-                        </tr></thead>
-                        <tbody id="hl_li2_table_body"></tbody>
-                    </table>
-                    <div style="color:#555;font-size:.75rem;margin-top:8px;">*Observed twin count auto-populated from the most recent analysis run; otherwise uses 1,507,733 (400M baseline)</div>
-                </div>
-                <div style="background:rgba(78,205,196,.07);border-left:4px solid #4ecdc4;padding:14px;border-radius:6px;margin-top:16px;">
-                    <div style="color:#4ecdc4;font-weight:700;margin-bottom:6px;">Why the corrections are large at practical ranges</div>
-                    <div style="color:#ccc;font-size:.85rem;line-height:1.7;">At x=400M, ln(x) ≈ 19.8, so the first correction 2/ln(x) ≈ 10.1% — far from negligible. The k-th term has coefficient (k+1)!, so the corrections form a divergent asymptotic series — accuracy peaks around the 4th–5th term for x in the billions, then worsens. The 4-term formula gives &lt;0.1% error at 400M.</div>
-                </div>
-            </div>
-
-            <!-- PART 5: PER-GAP FULL TABLE (live from analysis) -->
-            <div style="background:#0d0d1a;border:1px solid #f59e0b;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#f59e0b;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 5 — Full Gap-by-Gap H-L Prediction vs Observed Data</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">Every gap family in the analysis: S(h) derived step-by-step, li₂ prediction computed, compared against the observed count. The obs/pred ratio converges to 1.0 as x→∞.</p>
-                <div style="background:#12121a;border-radius:8px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-                    <div style="color:#f59e0b;font-size:.9rem;">Analysis range:</div>
-                    <div id="hl_range_display" style="color:#ffd700;font-family:monospace;font-size:.95rem;font-weight:700;">Run analysis above first</div>
-                </div>
-                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-size:.8rem;min-width:1050px;">
-                        <thead><tr style="background:#1a1a2a;">
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Gap h</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Name</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Odd prime factors of h</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">S(h)</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">S(h)/S(2)</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Predicted</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Observed</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Obs/Pred</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Error %</th>
-                            <th style="padding:8px 10px;text-align:left;color:#f59e0b;border-bottom:1px solid #2a2a4a;">Convergence</th>
-                        </tr></thead>
-                        <tbody id="hl_full_table_body">
-                            <tr><td colspan="10" style="padding:20px;text-align:center;color:#888;font-style:italic;">Run the prime analysis above to populate this table</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="export-row" style="margin-top:16px;">
-                    <button class="export-btn csv" onclick="exportHLFullTableCSV()">Export Part 5 CSV</button>
-                    <button class="export-btn png" onclick="exportHLFullTableDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Part 5 PNG</button>
-                </div>
-            </div>
-
-            <!-- PART 6: INTERACTIVE WALKTHROUGH -->
-            <div style="background:#0d0d1a;border:1px solid #e879f9;border-radius:10px;padding:28px;margin-bottom:24px;">
-                <h3 style="color:#e879f9;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 6 — Interactive: Full Arithmetic Walkthrough for Any Gap</h3>
-                <p style="color:#ccc;margin-bottom:20px;line-height:1.8;">Select any gap to see every single arithmetic step: prime factorisation of h, identifying correction primes, computing each (p−1)/(p−2) factor, building S(h), expanding li₂(x) term by term, and arriving at the final prediction.</p>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:flex-end;">
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-                        <label style="color:#e879f9;font-size:.85rem;">Gap h</label>
-                        <input type="number" id="hl_gap_input" value="6" min="2" max="500" step="2"
-                               style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:100px;">
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-                        <label style="color:#e879f9;font-size:.85rem;">At x =</label>
-                        <input type="number" id="hl_x_input" value="400000000" min="1000" max="10000000000" step="1000000"
-                               style="padding:8px 12px;background:#1a1a2a;border:1px solid #3a3a5a;border-radius:4px;color:#e0e0e0;font-size:.9rem;width:180px;">
-                    </div>
-                    <button onclick="hl_computeWalkthrough()"
-                            style="padding:10px 24px;background:linear-gradient(135deg,#e879f9,#a855f7);border:none;border-radius:6px;color:#fff;font-weight:700;cursor:pointer;font-size:.95rem;">
-                        Compute Step by Step
-                    </button>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button onclick="hl_setGap(2)"   class="hl-preset-btn">Gap 2 (twins)</button>
-                        <button onclick="hl_setGap(4)"   class="hl-preset-btn">Gap 4 (cousins)</button>
-                        <button onclick="hl_setGap(6)"   class="hl-preset-btn">Gap 6 (sexy)</button>
-                        <button onclick="hl_setGap(10)"  class="hl-preset-btn">Gap 10</button>
-                        <button onclick="hl_setGap(12)"  class="hl-preset-btn">Gap 12</button>
-                        <button onclick="hl_setGap(30)"  class="hl-preset-btn">Gap 30</button>
-                        <button onclick="hl_setGap(210)" class="hl-preset-btn">Gap 210 (2×3×5×7)</button>
-                    </div>
-                </div>
-                <div id="hl_walkthrough_output" style="background:var(--parchment-deep);border-radius:8px;padding:24px;border:1px solid var(--border);min-height:80px;">
-                    <div style="color:#666;font-style:italic;">Click "Compute Step by Step" to see the full arithmetic</div>
-                </div>
-                <div class="export-row" style="margin-top:16px;">
-                    <button class="export-btn csv" onclick="exportHLWalkthroughCSV()">Export Walkthrough CSV</button>
-                    <button class="export-btn png" onclick="exportHLWalkthroughDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Walkthrough PNG</button>
-                </div>
-            </div>
-
-            <!-- PART 7: RATIO CONVERGENCE TABLE -->
-            <div style="background:#0d0d1a;border:1px solid #64748b;border-radius:10px;padding:28px;">
-                <h3 style="color:#94a3b8;margin:0 0 20px 0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;">Part 7 — Convergence of Count Ratios to Theoretical Limits</h3>
-                <p style="color:#ccc;margin-bottom:16px;line-height:1.8;">As x→∞, Count(gap=a)/Count(gap=b) → S(a)/S(b). This table shows current ratios from the computed data vs the theoretical limits, with a convergence bar showing proximity to the asymptotic value.</p>
-                <div style="background:#12121a;border-radius:8px;padding:20px;overflow-x:auto;">
-                    <table style="width:100%;border-collapse:collapse;font-size:.83rem;min-width:750px;">
-                        <thead><tr style="background:#1a1a2a;">
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Ratio</th>
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Why this limit</th>
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Theoretical limit</th>
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Current value</th>
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">% of limit reached</th>
-                            <th style="padding:8px 12px;text-align:left;color:#94a3b8;border-bottom:1px solid #2a2a4a;">Visual</th>
-                        </tr></thead>
-                        <tbody id="hl_ratio_table_body">
-                            <tr><td colspan="6" style="padding:20px;text-align:center;color:#888;font-style:italic;">Run analysis above to populate</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="export-row" style="margin-top:16px;">
-                    <button class="export-btn csv" onclick="exportHLRatioTableCSV()">Export Ratios CSV</button>
-                    <button class="export-btn png" onclick="exportHLSectionDOM()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-color: #3b82f6;">Export Full Section PNG</button>
-                </div>
-            </div>
-        </div>
-        <!-- ── end HL deep dive section ── -->
         
 <div class="chart-wrapper" id="stepByStepWrapper">
             <div class="chart-title">Step-by-Step Gap Accumulation: ζ(2) = P<sub>0</sub> × P<sub>2</sub> × P<sub>4</sub> × ...</div>
@@ -3418,7 +3049,7 @@
         <div class="chart-wrapper" id="riemannZerosSection" style="border:2px solid #a855f7;">
             <div class="chart-title" style="color:#a855f7;">Riemann Zeros &amp; Farey Structure</div>
             <div class="chart-description" style="background:rgba(168,85,247,0.06);padding:14px 16px;border-radius:6px;border-left:4px solid #a855f7;margin-bottom:16px;">
-                Each non-trivial zero ρ = ½ + it&#8319; of ζ(s) contributes a rotating phase <strong>e<sup>it&#8319; log N</sup></strong> to the Farey discrepancy sum. Pink ticks on the critical axis show zero heights t&#8319; scaled so t&#8319; = modN lands on the outer ring. The Farey GCD=1 points (blue) reveal how the angular distribution shifts as mod N grows.
+                The non-trivial zeros ρ = ½ + it&#8319; of ζ(s) appear in the explicit formula for the prime counting function and govern oscillations in the Farey discrepancy via the Franel sum. Pink ticks mark zero heights t&#8319; on the critical axis — scaled so t&#8319; = modN falls at the outer ring, a visualization device only. GCD=1 Farey points (blue) show the angular distribution whose discrepancy the chart below measures.
             </div>
 
             <!-- ── Circle canvas (Farey-style) ── -->
@@ -3455,7 +3086,7 @@
                 &#9656; Farey Angular DFT Spectrum
               </div>
               <div style="font-family:Georgia,serif;font-size:0.78rem;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;padding:7px 12px;background:rgba(168,85,247,0.04);border-left:3px solid rgba(168,85,247,0.35);border-radius:0 4px 4px 0;">
-                Fourier spectrum of the GCD=1 angular distribution at mod N. Gold lines mark predicted peaks at k&nbsp;≈&nbsp;t&#8319;/2π from each Riemann zero — peaks sharpen toward those positions as N grows. <span style="color:#9a8060;">Hover bars to read magnitude.</span>
+                Fourier spectrum of the GCD=1 angular distribution at mod N. Gold lines mark k&nbsp;=&nbsp;t&#8319;/2π for each zero — an empirical observation that spectrum weight concentrates near these frequencies as N grows, loosely related to the explicit formula. This is not a theorem about Farey angular distributions. <span style="color:#9a8060;">Hover bars to read magnitude.</span>
               </div>
               <div style="position:relative;">
                 <canvas id="rz-dft-canvas" width="1200" height="260" style="display:block;width:100%;background:var(--canvas-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;cursor:crosshair;"></canvas>
@@ -3469,7 +3100,7 @@
                 &#9656; Farey Discrepancy vs Riemann Hypothesis Bound
               </div>
               <div style="font-family:Georgia,serif;font-size:0.78rem;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;padding:7px 12px;background:rgba(255,215,0,0.04);border-left:3px solid rgba(255,215,0,0.35);border-radius:0 4px 4px 0;">
-                Purple = actual Farey discrepancy D<sub>N</sub>. Gold dashed = RH bound log&nbsp;N/(2π√N). <strong style="color:#ffd700;">RH ↔ purple stays below gold.</strong> Pink lines mark zero heights t&#8319; on the N-axis. <span style="color:#9a8060;">Hover to read values.</span>
+                Purple = actual Farey discrepancy D<sub>N</sub> = max<sub>x</sub>|#{r/m ∈ F<sub>N</sub> : r/m ≤ x}/|F<sub>N</sub>| − x|. Gold dashed = log N/(2π√N), the leading term of the asymptotic bound that RH implies: D<sub>N</sub> = O(N<sup>−½</sup> log N). <strong style="color:#ffd700;">RH implies D<sub>N</sub> eventually lies below this envelope — violations at small N are expected and carry no implication.</strong> Pink lines mark zero heights t&#8319;. <span style="color:#9a8060;">Hover to read values.</span>
               </div>
               <div style="position:relative;">
                 <canvas id="rz-spectrum-canvas" width="1200" height="260" style="display:block;width:100%;background:var(--canvas-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;cursor:crosshair;"></canvas>
@@ -3873,12 +3504,6 @@
                             The gap-class factorization ζ(2) = ∏<sub>g</sub> P<sub>g</sub> follows directly from absolute convergence of the Euler product —
                             it is a reorganization of a known result, not a new theorem. Its value is computational and structural.
                         </p>
-                        <p style="margin: 0 0 12px 0; color: #ccc; line-height: 1.8;">
-                            Hardy-Littlewood Conjecture B (1923) predicts asymptotic counts for prime pairs with fixed gap g via the singular
-                            series S(g). The observation that S(g)/S(h) predicts the asymptotic ratio of log-weights w<sub>g</sub>/w<sub>h</sub>
-                            in this decomposition follows from Conjecture B and is directly verifiable at finite N.
-                            This consequence does not appear to have been stated explicitly in the literature.
-                        </p>
                         <p style="margin: 0; color: #ccc; line-height: 1.8;">
                             The question of whether a finite twin prime set would be analytically incompatible with ζ(s)'s structure
                             via this product identity is raised as an open structural question — not a proof of the Twin Prime Conjecture.
@@ -3890,12 +3515,10 @@
                         <h4 style="color: var(--red-ink); margin: 0 0 12px 0; font-size: 1.1rem;">What Is Established vs. What Is New Here</h4>
                         <p style="margin: 0 0 10px 0; color: #aaa; font-size: 0.9rem; line-height: 1.7;">
                             <strong style="color:var(--ink-mid);">Established (prior literature):</strong> Euler product for ζ(s) (Euler, 1737); Basel problem solution π²/6
-                            (Euler, 1734); Hardy-Littlewood Conjecture B and singular series (1923); twin prime constant C<sub>2</sub> ≈ 0.66016;
-                            Cramér's model for prime gaps (1936).
+                            (Euler, 1734); twin prime constant C<sub>2</sub> ≈ 0.66016; Cramér's model for prime gaps (1936).
                         </p>
                         <p style="margin: 0 0 10px 0; color: #aaa; font-size: 0.9rem; line-height: 1.7;">
                             <strong style="color:var(--ink-mid);">This work:</strong> The specific partition of the Euler product by forward gap class and its numerical analysis;
-                            the observation that S(g)/S(h) governs log-weight ratios conditional on Conjecture B;
                             the structural question about analytic obstructions to a finite twin prime set via the product identity;
                             computational data at N up to 300M (browser) with verified estimates to 400M.
                         </p>
@@ -3910,7 +3533,6 @@
                         <h4 style="color:var(--ink-light); margin: 0 0 14px 0; font-size: 1.1rem;">Mathematical References</h4>
                         <div style="color:var(--ink-light); font-size: 0.88rem; line-height: 2.2; font-family: serif;">
                             [1] L. Euler, <em>Variae observationes circa series infinitas</em>, Comm. Acad. Sci. Petrop. 9 (1737), 160–188.<br>
-                            [2] G. H. Hardy &amp; J. E. Littlewood, <em>Some problems of 'Partitio Numerorum' III</em>, Acta Math. 44 (1923), 1–70.<br>
                             [3] H. Cramér, <em>On the order of magnitude of the difference between consecutive prime numbers</em>, Acta Arith. 2 (1936), 23–46.<br>
                             [4] A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scand. Actuarial J. 1 (1995), 12–28.<br>
                             [5] A. E. Ingham, <em>The Distribution of Prime Numbers</em>, Cambridge Tracts in Mathematics, Cambridge University Press (1932).<br>
@@ -3922,7 +3544,6 @@
                             Chart rendering: HTML5 Canvas API.<br>
                             Farey diagram &amp; interactive visualization: original implementation, W. Getachew (2025–2026).<br>
                             Mertens function / Möbius sieve: original implementation, W. Getachew (2026).<br>
-                            Hardy-Littlewood singular series computation: original implementation, W. Getachew (2026).<br>
                             Development assistance: Claude (Anthropic), 2025–2026 — code generation, debugging, UI refinement.
                         </div>
                     </div>
@@ -12872,6 +12493,9 @@
       document.getElementById('f-size-y-num').value = 800;
       document.getElementById('f-size').value       = 800;
       document.getElementById('f-size-num').value   = 800;
+      // Set point size to 5 on Advanced open
+      document.getElementById('f-ptsize').value     = 5;
+      document.getElementById('f-ptsize-num').value = 5;
       syncCombinedSize();
       drawCombined();
     } else {
@@ -14939,7 +14563,7 @@
     ctx.font = '10px Cinzel, serif'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
     var ly = padT + 14;
     [['— D_N (Farey discrepancy)','#a855f7'],
-     ['-- log N / (2π√N)  RH bound','#ffd700'],
+     ['-- log N / (2π√N)  RH asymptotic envelope','#ffd700'],
      ['-- 3/(N+2)  trivial bound', isDark?'#4a4060':'#aaa0c0'],
      ['γₙ = Riemann zero heights','#e879f9']].forEach(function(row){
       ctx.fillStyle=row[1]; ctx.globalAlpha=0.85; ctx.fillText(row[0], padL+8, ly); ly+=14;
