@@ -3577,20 +3577,41 @@
                     <!-- References -->
                     <div style="background: var(--parchment-dark); padding: 20px; border-radius: 8px; border: 1px solid var(--panel-border);">
                         <h4 style="color:var(--ink-light); margin: 0 0 14px 0; font-size: 1.1rem;">Mathematical References</h4>
-                        <div style="color:var(--ink-light); font-size: 0.88rem; line-height: 2.2; font-family: serif;">
-                            [1] L. Euler, <em>Variae observationes circa series infinitas</em>, Comm. Acad. Sci. Petrop. 9 (1737), 160–188.<br>
-                            [3] H. Cramér, <em>On the order of magnitude of the difference between consecutive prime numbers</em>, Acta Arith. 2 (1936), 23–46.<br>
-                            [4] A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scand. Actuarial J. 1 (1995), 12–28.<br>
-                            [5] A. E. Ingham, <em>The Distribution of Prime Numbers</em>, Cambridge Tracts in Mathematics, Cambridge University Press (1932).<br>
-                            [6] W. Getachew, <em>Gap-Class Decomposition of ζ(2) = π²/6</em>, 2025–2026.
+                        <div style="color:var(--ink-light); font-size: 0.85rem; line-height: 2.3; font-family: serif;">
+
+                            <span style="color:var(--gold);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">Foundational</span><br>
+                            [1] Eratosthenes of Cyrene (~240 BC). Prime sieve — the segmented sieve used here is the classical algorithm.<br>
+                            [2] L. Euler, <em>Variae observationes circa series infinitas</em>, Comm. Acad. Sci. Petrop. 9 (1737). Euler product ζ(s) = ∏p p<sup>s</sup>/(p<sup>s</sup>−1); Basel problem ζ(2) = π²/6.<br>
+                            [3] L. Euler, <em>Theoremata arithmetica nova methodo demonstrata</em> (1763). Totient function φ(m) — counts gcd(r,m)=1 residues on each ring.<br>
+                            [4] J. Farey Sr., <em>On a curious property of vulgar fractions</em>, Phil. Mag. 47 (1816). Farey sequences F_N — the structure the circular diagram is built on. Proved by Cauchy (1816).<br>
+                            [5] A. F. Möbius, <em>Über eine besondere Art von Umkehrung der Reihen</em>, J. reine angew. Math. 9 (1832). Möbius function μ(n) — drives the Mertens section.<br>
+                            [6] B. Riemann, <em>Über die Anzahl der Primzahlen unter einer gegebenen Grösse</em>, Monatsber. Preuss. Akad. Wiss. (1859). Riemann ζ(s), non-trivial zeros, explicit formula.<br>
+
+                            <span style="color:var(--gold);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">Prime Gaps &amp; Distribution</span><br>
+                            [7] P. G. L. Dirichlet, <em>Beweis des Satzes…</em>, Abh. Preuss. Akad. Wiss. (1837). Dirichlet characters — the residue class structure underlying gap patterns mod N.<br>
+                            [8] F. Mertens, <em>Über einige asymptotische Gesetze der Zahlentheorie</em>, J. reine angew. Math. 77 (1874). Mertens function M(n) = Σμ(k).<br>
+                            [9] H. von Mangoldt, <em>Zu Riemanns Abhandlung…</em>, J. reine angew. Math. 114 (1895). Explicit formula for prime counting via zeros of ζ(s).<br>
+                            [10] G. H. Hardy &amp; J. E. Littlewood, <em>Some problems of 'Partitio Numerorum' III</em>, Acta Math. 44 (1923). Conjectures on twin prime count ~C₂·li₂(x); twin prime constant C₂ ≈ 0.66016. The gap overlay tests Conjecture B.<br>
+                            [11] J. Franel &amp; E. Landau, <em>Les suites de Farey et le problème des nombres premiers</em>, Göttinger Nachrichten (1924). Franel-Landau theorem: Farey discrepancy D_N = O(N^{−½} log N) ⟺ RH. The discrepancy chart in the Riemann section measures exactly this.<br>
+                            [12] H. Cramér, <em>On the order of magnitude of the difference between consecutive prime numbers</em>, Acta Arith. 2 (1936). Probabilistic model for prime gaps; predicts maximal gap ~ (log p)².<br>
+                            [13] A. E. Ingham, <em>The Distribution of Prime Numbers</em>, Cambridge Univ. Press (1932). Classical reference for the analytic theory underlying this work.<br>
+                            [14] A. Granville, <em>Harald Cramér and the distribution of prime numbers</em>, Scand. Actuarial J. 1 (1995). Refinement and discussion of the Cramér model.<br>
+
+                            <span style="color:var(--gold);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">Geometric Constructions</span><br>
+                            [15] L. R. Ford, <em>Fractions</em>, Amer. Math. Monthly 45 (1938). Ford circles — each Farey fraction r/m is associated with a circle of radius 1/(2m²) tangent to the real line, providing the geometric interpretation of Farey adjacency.<br>
+                            [16] P. H. Smith, <em>Transmission line calculator</em>, Electronics 12 (1939). Smith Chart — the conformal map used in the unfold/transform view to display modular structure on a bounded disk.<br>
+
+                            <span style="color:var(--gold);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">This Work</span><br>
+                            [17] W. Getachew, <em>Gap-Class Decomposition of ζ(2) = π²/6</em>, 2025–2026. Partition of the Euler product by forward prime gap class; numerical analysis of P_g contributions; structural question on analytic obstruction to finite twin prime set.
                         </div>
-                        <h4 style="color:var(--ink-light); margin: 18px 0 10px 0; font-size: 1.0rem;">Software &amp; Technology</h4>
-                        <div style="color:var(--ink-light); font-size: 0.85rem; line-height: 2.0; font-family: serif;">
-                            Segmented prime sieve implementation adapted from classical sieve of Eratosthenes; all computation in-browser (no server).<br>
-                            Chart rendering: HTML5 Canvas API.<br>
-                            Farey diagram &amp; interactive visualization: original implementation, W. Getachew (2025–2026).<br>
-                            Mertens function / Möbius sieve: original implementation, W. Getachew (2026).<br>
-                            Development assistance: Claude (Anthropic), 2025–2026 — code generation, debugging, UI refinement.
+
+                        <h4 style="color:var(--ink-light); margin: 20px 0 10px 0; font-size: 1.0rem;">Software &amp; Development</h4>
+                        <div style="color:var(--ink-light); font-size: 0.85rem; line-height: 2.1; font-family: serif;">
+                            Prime sieve: in-browser segmented Sieve of Eratosthenes (Eratosthenes, ~240 BC); all computation client-side, no server.<br>
+                            Farey circle diagram, gap overlay, cross-mod paths, lifting tower, unfold view, DFT spectrum, Farey discrepancy chart, Mertens / Möbius section, Riemann zeros section, N-animation, export pipeline: original implementation, W. Getachew (2025–2026).<br>
+                            Chart rendering and interactive canvas: HTML5 Canvas API (W3C).<br>
+                            Development assistance &amp; pair programming: Claude (Anthropic), 2025–2026 — architecture, code generation, debugging, mathematical exposition, UI design.<br>
+                            Typography: Cinzel (Natanael Gama, via Google Fonts).
                         </div>
                     </div>
 
