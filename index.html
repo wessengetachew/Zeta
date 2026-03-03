@@ -1736,6 +1736,7 @@
                   <button id="fcm-zeros"     onclick="fareyToggleZeros()"           style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);background:var(--parchment-dark);color:#a855f7;cursor:pointer;">&#950; Riemann t</button>
                   <a href="#riemannZerosSection"                                    style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #a855f7;background:var(--parchment-dark);color:#a855f7;cursor:pointer;text-decoration:none;">&#8595; Zeros</a>
                   <span style="color:var(--border);">|</span>
+                  <button id="fcm-unfold" onclick="fareyToggleUnfold()" title="Unfold left semicircle into rectangle alongside the circle" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#11835; Unfold</button>
                   <button id="fcm-mirror" onclick="fareyToggleMirror()" title="Show mirror symmetry σ(r)=M−r−2 on outer ring (twin prime paper §4)" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">&#8651; Mirror</button>
                   <button id="fcm-lifting" onclick="fareyToggleLiftMode()" title="Show residue lifting: connects gcd=1 residues across rings b, b×a, b×a²…" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">&#8593; Lifting</button>
                   <!-- Lifting input panel -->
@@ -1746,6 +1747,40 @@
                     <input id="f-lift-mult" type="number" min="2" max="9999" value="2" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
                     <span style="color:#9a8060;">^n</span>
                   </div>
+                </div>
+
+                <!-- Unfold canvas -->
+                <!-- Unfold A/B controls (shown when Unfold active) -->
+                <div id="fc-unfold-controls" style="display:none;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.07em;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.3);border-radius:4px;padding:8px 14px;margin-bottom:8px;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;">
+                  <!-- View mode -->
+                  <span style="color:#f97316;">VIEW</span>
+                  <select id="f-unfold-view" onchange="fareyDrawUnfold()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid #f97316;padding:2px 5px;font-family:'Cinzel',serif;font-size:0.58rem;">
+                    <option value="split">Circle + Rectangle</option>
+                    <option value="rect">Rectangle only</option>
+                    <option value="circle">Circle only</option>
+                  </select>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <!-- GCD filter -->
+                  <span style="color:#f97316;">SHOW</span>
+                  <select id="f-unfold-gcd" onchange="fareyDrawUnfold()" style="background:var(--parchment-deep);color:var(--ink);border:1px solid #f97316;padding:2px 5px;font-family:'Cinzel',serif;font-size:0.58rem;">
+                    <option value="both">gcd=1 &amp; gcd&gt;1</option>
+                    <option value="cop">gcd=1 only</option>
+                    <option value="ncp">gcd&gt;1 only</option>
+                  </select>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <!-- Cut ratio: A/B -->
+                  <span style="color:#f97316;">CUT</span>
+                  <input id="f-unfold-num" type="number" min="0" max="999" value="1" style="width:38px;background:var(--parchment-deep);color:var(--ink);border:1px solid #f97316;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyUnfoldUpdateCut()">
+                  <span style="color:#9a8060;">/</span>
+                  <input id="f-unfold-den" type="number" min="1" max="999" value="2" style="width:38px;background:var(--parchment-deep);color:var(--ink);border:1px solid #f97316;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyUnfoldUpdateCut()">
+                  <span id="f-unfold-deg" style="color:#9a8060;min-width:36px;">180°</span>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <!-- Animate: sweep from current canvas angle to cut ratio angle -->
+                  <button id="f-unfold-play" onclick="fareyUnfoldPlay()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#9654; Animate</button>
+                  <input id="f-unfold-speed" type="range" min="1" max="20" value="8" style="width:60px;accent-color:#f97316;" title="Speed">
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <!-- Inspect -->
+                  <button id="f-unfold-inspect" onclick="fareyUnfoldToggleInspect()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#9679; Inspect</button>
                 </div>
 
                 <!-- Canvas sub-label -->
@@ -11937,7 +11972,10 @@
     highlightNavLink();
   };
 
-  window.buildFractions = buildFractions;
+  window.buildFractions  = buildFractions;
+  window.gcd             = gcd;
+  window.getPointColor   = getPointColor;
+  window.drawCombined    = function(ov) { drawCombined(ov); };
 
   window.fareyRedraw = function(){
     clearAncestorCache();
@@ -11958,6 +11996,7 @@
     }
     // Update live stats panel
     fareyUpdateLiveStats();
+    // drawCombined already redirects to fareyDrawUnfold when _unfoldOn is set
   };
 
   // ── Live stats updater ───────────────────────────────────────────────────
@@ -12993,6 +13032,28 @@
     });
 
     c.addEventListener('click', function(e){
+      // When unfold is active, handle click in unfold space
+      if (window._unfoldOn) {
+        if (window._unfoldInspect) {
+          // Hit-test the rect pane cache
+          var rect0 = c.getBoundingClientRect();
+          var sx0 = c.width / c.offsetWidth, sy0 = c.height / c.offsetHeight;
+          var mx0 = (e.clientX - rect0.left) * sx0, my0 = (e.clientY - rect0.top) * sy0;
+          var best0 = null, bestD0 = Infinity;
+          (window._unfoldPtCache || []).forEach(function(p) {
+            var d = Math.hypot(p.rx - mx0, p.ry - my0);
+            if (d < 18 * sx0 && d < bestD0) { bestD0 = d; best0 = p; }
+          });
+          if (best0) {
+            var tt0 = document.getElementById('farey-tooltip');
+            if (tt0) tt0.style.display = 'block';  // pin tooltip on click
+          }
+        } else {
+          // Non-inspect click on unfold canvas — rotate
+          window.fareyCombinedClick && window.fareyCombinedClick();
+        }
+        return;  // never fall through to combined-canvas inspect logic
+      }
       if(_inspectMode){
         var rect  = c.getBoundingClientRect();
         var scale = c.width / c.offsetWidth;
@@ -13066,9 +13127,20 @@
     _combinedAngle = (_combinedAngle + 90) % 360;
     drawCombined();
     highlightNavLink();
+    // drawCombined already redirects when _unfoldOn
   };
 
   function drawCombined(overrideCanvas){
+    // If unfold mode is active and this is a live draw (not export), redirect
+    if (window._unfoldOn) {
+      // For export: pass a same-sized offscreen canvas to fareyDrawUnfold
+      if (overrideCanvas) {
+        window.fareyDrawUnfold && window.fareyDrawUnfold(overrideCanvas);
+      } else {
+        window.fareyDrawUnfold && window.fareyDrawUnfold();
+      }
+      return;
+    }
     var c   = overrideCanvas || document.getElementById('fc-combined');
     if(!c) return;
     var ctx = c.getContext('2d');
@@ -15309,6 +15381,333 @@
     fareyRedraw();
   };
 
+  // ── Unfold: unroll left semicircle into rectangle ──────────────────────
+  var _unfoldOn       = false;
+  var _unfoldAnimTimer= null;
+  var _unfoldCutAngle = null;    // current cut angle in degrees (null = follow _combinedAngle)
+  var _unfoldInspect  = false;
+  var _unfoldPtCache  = [];      // [{rx,ry,r,m,gcd1}] for hit-test
+
+  window.fareyToggleUnfold = function() {
+    _unfoldOn = !_unfoldOn;
+    var btn  = document.getElementById('fcm-unfold');
+    var ctrl = document.getElementById('fc-unfold-controls');
+    if (btn) { btn.style.background = _unfoldOn ? '#f97316' : 'var(--parchment-dark)'; btn.style.color = _unfoldOn ? '#000' : '#f97316'; }
+    if (ctrl) ctrl.style.display = _unfoldOn ? 'flex' : 'none';
+    if (!_unfoldOn) {
+      if (_unfoldAnimTimer) { clearInterval(_unfoldAnimTimer); _unfoldAnimTimer = null; }
+      _unfoldCutAngle = null; _unfoldInspect = false;
+      // Restore main canvas to normal combined draw
+      drawCombined && drawCombined();
+    } else {
+      fareyDrawUnfold();
+    }
+  };
+
+  window.fareyUnfoldUpdateCut = function() {
+    var num = parseFloat(document.getElementById('f-unfold-num').value) || 1;
+    var den = parseFloat(document.getElementById('f-unfold-den').value) || 2;
+    var deg = (num / den) * 360;
+    var degEl = document.getElementById('f-unfold-deg');
+    if (degEl) degEl.textContent = deg.toFixed(1) + '°';
+    fareyDrawUnfold();
+  };
+
+  window.fareyUnfoldToggleInspect = function() {
+    _unfoldInspect = !_unfoldInspect;
+    var btn = document.getElementById('f-unfold-inspect');
+    if (btn) { btn.style.background = _unfoldInspect ? '#f97316' : 'var(--parchment-dark)'; btn.style.color = _unfoldInspect ? '#000' : '#f97316'; }
+    var c = document.getElementById('fc-combined');
+    if (c) c.style.cursor = _unfoldInspect ? 'crosshair' : 'default';
+  };
+
+  // Intercept fc-combined clicks when unfold+inspect active
+  document.addEventListener('DOMContentLoaded', function() {
+    var c = document.getElementById('fc-combined');
+    if (!c) return;
+    c.addEventListener('mousemove', function(e) {
+      if (!window._unfoldOn || !window._unfoldInspect) return;
+      var rect = c.getBoundingClientRect();
+      var scaleX = c.width / c.offsetWidth, scaleY = c.height / c.offsetHeight;
+      var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
+      var best = null, bestD = Infinity;
+      _unfoldPtCache.forEach(function(p) {
+        var d = Math.hypot(p.rx - mx, p.ry - my);
+        if (d < 18 * scaleX && d < bestD) { bestD = d; best = p; }
+      });
+      var tt = document.getElementById('farey-tooltip');
+      if (best && tt) {
+        var g = window.gcd ? window.gcd(best.r, best.m) : (function(a,b){while(b){var t=b;b=a%b;a=t;}return a;})(best.r,best.m);
+        var col = best.col || (best.gcd1 ? document.getElementById('f-col1').value : document.getElementById('f-col2').value);
+        tt.innerHTML = '<div style="color:'+col+';font-weight:bold;font-size:0.72rem;margin-bottom:4px;">'+best.r+'/'+best.m+'</div>'
+          + '<div>r = '+best.r+'</div><div>m = '+best.m+'</div><div>gcd = '+g+'</div>'
+          + '<div style="border-top:1px solid rgba(196,155,56,0.2);margin:5px 0;"></div>'
+          + '<div>angle = '+(best.theta*180/Math.PI).toFixed(2)+'°</div>'
+          + '<div>Δ from cut = '+(best.dTheta*180/Math.PI).toFixed(2)+'°</div>'
+          + '<div>rect x = '+best.m+' (ring)</div>';
+        tt.style.display = 'block';
+        var canvasRect = c.getBoundingClientRect();
+        tt.style.left = Math.min(e.clientX - canvasRect.left + 14, c.offsetWidth - 180) + 'px';
+        tt.style.top  = Math.min(e.clientY - canvasRect.top  - 10, c.offsetHeight - 120) + 'px';
+      } else if (tt) {
+        tt.style.display = 'none';
+      }
+    });
+  });
+
+  window.fareyUnfoldPlay = function() {
+    var btn = document.getElementById('f-unfold-play');
+    if (_unfoldAnimTimer) {
+      clearInterval(_unfoldAnimTimer); _unfoldAnimTimer = null;
+      _unfoldCutAngle = null;
+      if (btn) { btn.innerHTML = '&#9654; Animate'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#f97316'; }
+      fareyDrawUnfold();
+      return;
+    }
+    // Start angle: current canvas angle
+    var startDeg = ((window._combinedAngle || 90) % 360 + 360) % 360;
+    // End angle: cut ratio A/B → (A/B)*360°
+    var num = parseFloat(document.getElementById('f-unfold-num').value) || 1;
+    var den = parseFloat(document.getElementById('f-unfold-den').value) || 2;
+    var endDeg = (num / den) * 360;
+    var speed = parseInt((document.getElementById('f-unfold-speed')||{value:8}).value) || 8;
+    // Shortest arc
+    var diff = ((endDeg - startDeg + 540) % 360) - 180;
+    var durationMs = Math.max(800, Math.abs(diff) * 8) / speed * 6;
+    var startTime = null;
+    if (btn) { btn.innerHTML = '&#9632; Stop'; btn.style.background = '#f97316'; btn.style.color = '#000'; }
+    _unfoldCutAngle = startDeg;
+    _unfoldAnimTimer = requestAnimationFrame(function frame(ts) {
+      if (!startTime) startTime = ts;
+      var t = Math.min((ts - startTime) / durationMs, 1);
+      var ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      _unfoldCutAngle = startDeg + diff * ease;
+      // Drive the main canvas angle too
+      window._combinedAngle = ((_unfoldCutAngle % 360) + 360) % 360;
+      drawCombined && drawCombined();
+      fareyDrawUnfold();
+      if (t < 1) {
+        _unfoldAnimTimer = requestAnimationFrame(frame);
+      } else {
+        _unfoldAnimTimer = null;
+        _unfoldCutAngle = null;
+        if (btn) { btn.innerHTML = '&#9654; Animate'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#f97316'; }
+      }
+    });
+  };
+
+  window.fareyDrawUnfold = function(overrideCanvas) {
+    // Draw onto the main fc-combined canvas (or override for export)
+    var c = overrideCanvas || document.getElementById('fc-combined');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var W = c.width, H = c.height;
+
+    var modN     = parseInt(document.getElementById('f-mod-num').value) || 49;
+    var dir      = parseFloat(document.getElementById('f-dir').value) || 1;
+    var spacing  = (parseInt(document.getElementById('f-spacing').value) || 100) / 100;
+    var zoom     = (parseInt(document.getElementById('f-zoom').value) || 100) / 100;
+    var rinner   = (parseInt(document.getElementById('f-rinner').value) || 4) / 100;
+    var invert   = document.getElementById('f-invert-order').checked;
+    var col1     = document.getElementById('f-col1').value;
+    var col2     = document.getElementById('f-col2').value;
+    var ptColMode= (document.getElementById('f-pt-colmode')||{value:'solid'}).value;
+    var ptScale  = (parseInt(document.getElementById('f-ptsize').value) || 100) / 100;
+    var viewMode = (document.getElementById('f-unfold-view')||{value:'split'}).value;
+    var gcdFilter= (document.getElementById('f-unfold-gcd')||{value:'both'}).value;
+
+    // Cut angle: from animation if running, else from A/B ratio
+    var cutDeg;
+    if (_unfoldCutAngle !== null) {
+      cutDeg = _unfoldCutAngle;
+    } else {
+      var num = parseFloat(document.getElementById('f-unfold-num').value) || 1;
+      var den = parseFloat(document.getElementById('f-unfold-den').value) || 2;
+      cutDeg = (num / den) * 360;
+      // Update display
+      var degEl = document.getElementById('f-unfold-deg');
+      if (degEl) degEl.textContent = cutDeg.toFixed(1) + '°';
+    }
+    var angBase = ((cutDeg % 360) + 360) % 360;
+    var angOff  = angBase * Math.PI / 180;
+    var cutAngle= angOff + Math.PI;  // cut is always at the 'left' of the rotated frame
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#06040e'; ctx.fillRect(0, 0, W, H);
+
+    var fracs  = buildFractions(modN);
+    var allPts;
+    if (gcdFilter === 'cop')      allPts = fracs.cop;
+    else if (gcdFilter === 'ncp') allPts = fracs.ncp;
+    else                          allPts = fracs.cop.concat(fracs.ncp);
+    var copSet = new Set(fracs.cop.map(function(p){ return p.r+','+p.m; }));
+    function isGcd1(p) { return copSet.has(p.r+','+p.m); }
+
+    // Gap overlay data (same as main canvas)
+    var _og = window._overlayGap, _op = window._overlayPairs || [], _oc = window._overlayColor || '#4a90d9';
+    var overlaySet = new Set(_op.map(function(pair){ return pair.r1+','+pair.r2; }));
+    function inOverlay(r, m) {
+      if (_og === null || _og === undefined || !_op.length) return false;
+      return _op.some(function(pair){
+        return (pair.r1 % m === r % m) || (pair.r2 % m === r % m);
+      });
+    }
+    function ptColor(r, m, gcd1) {
+      if (inOverlay(r, m)) return _oc;
+      var p = {r:r, m:m};
+      var fallback = gcd1 ? col1 : col2;
+      var which = gcd1 ? 'coprime' : 'noncoprime';
+      if (typeof window.getPointColor === 'function') return window.getPointColor(p, which, modN, fallback);
+      return fallback;
+    }
+    function ptAlpha(r, m) {
+      if (_og !== null && _og !== undefined) return inOverlay(r, m) ? 1.0 : 0.25;
+      return 1.0;
+    }
+
+    // ── Layout ──────────────────────────────────────────────────────────
+    var circPane, rectPane;
+    if (viewMode === 'split') {
+      circPane = { x:0,       w: W*0.47, cx: W*0.235 };
+      rectPane = { x: W*0.51, w: W*0.47 };
+    } else if (viewMode === 'rect') {
+      circPane = null;
+      rectPane = { x: W*0.02, w: W*0.96 };
+    } else {
+      circPane = { x:0, w: W, cx: W*0.5 };
+      rectPane = null;
+    }
+
+    var PAD = H * 0.04;
+    var rectH = H - PAD * 2, rectCy = H / 2;
+
+    // ── Circle pane ──────────────────────────────────────────────────────
+    if (circPane) {
+      var cW  = circPane.w, ccx = circPane.cx, ccy = H / 2;
+      var rBase = cW * 0.42 * spacing; if (rBase > cW*0.49) rBase = cW*0.49;
+      var rMin  = cW * rinner * zoom, rMax = rBase * zoom;
+      if (rMin >= rMax) rMin = rMax * 0.05;
+      function ringR(m) {
+        var t = invert ? (modN-m)/(modN-1||1) : (m-1)/(modN-1||1);
+        return rMin + (rMax-rMin)*t;
+      }
+      // Rings
+      for (var m = 1; m <= modN; m++) {
+        ctx.beginPath(); ctx.arc(ccx, ccy, ringR(m), 0, 2*Math.PI);
+        ctx.strokeStyle = m===modN ? 'rgba(255,215,0,0.35)' : 'rgba(255,255,255,0.06)';
+        ctx.lineWidth   = m===modN ? 0.9 : 0.3; ctx.stroke();
+      }
+      // Cut line from center to edge
+      var cx2 = ccx + rMax * Math.sin(cutAngle), cy2 = ccy - rMax * Math.cos(cutAngle);
+      ctx.beginPath(); ctx.moveTo(ccx, ccy); ctx.lineTo(cx2, cy2);
+      ctx.strokeStyle = '#f97316'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+      // Label cut angle
+      var num2 = parseFloat(document.getElementById('f-unfold-num').value)||1;
+      var den2 = parseFloat(document.getElementById('f-unfold-den').value)||2;
+      ctx.font = Math.max(8,W*0.011)+'px Cinzel,serif';
+      ctx.fillStyle = '#f97316'; ctx.globalAlpha = 0.75;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(num2+'/'+den2+' · '+cutDeg.toFixed(1)+'°', cx2 + Math.sin(cutAngle)*14, cy2 - Math.cos(cutAngle)*14);
+      ctx.globalAlpha = 1;
+      // Points
+      var ptR = Math.max(0.8, cW*0.007*ptScale);
+      allPts.forEach(function(p) {
+        var g1 = isGcd1(p);
+        var theta = dir*2*Math.PI*p.r/p.m + angOff;
+        var dT = theta - cutAngle;
+        dT = ((dT+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
+        var inSemi = Math.abs(dT) < Math.PI/2;
+        var rad = ringR(p.m);
+        var px = ccx + rad*Math.sin(theta), py = ccy - rad*Math.cos(theta);
+        ctx.beginPath(); ctx.arc(px, py, ptR, 0, 2*Math.PI);
+        ctx.fillStyle = ptColor(p.r, p.m, g1);
+        ctx.globalAlpha = inSemi ? ptAlpha(p.r, p.m) : 0.12; ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    // ── Rectangle pane ───────────────────────────────────────────────────
+    _unfoldPtCache = [];
+    if (rectPane) {
+      var rX = rectPane.x, rW = rectPane.w;
+      // Border
+      ctx.strokeStyle = 'rgba(249,115,22,0.4)'; ctx.lineWidth = 1;
+      ctx.strokeRect(rX, rectCy - rectH/2, rW, rectH);
+      // Cut line (center horizontal)
+      ctx.beginPath(); ctx.moveTo(rX, rectCy); ctx.lineTo(rX+rW, rectCy);
+      ctx.strokeStyle = '#f97316'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+      // Vertical grid (ring markers)
+      var ringStep = Math.max(1, Math.floor(modN/20));
+      for (var m = 1; m <= modN; m += ringStep) {
+        var gx2 = rX + (m-1)/Math.max(modN-1,1)*rW;
+        ctx.beginPath(); ctx.moveTo(gx2, rectCy-rectH/2); ctx.lineTo(gx2, rectCy+rectH/2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 0.4; ctx.stroke();
+        if (m === 1 || m === modN || m % Math.max(1,Math.floor(modN/5)) === 0) {
+          ctx.font = Math.max(7,W*0.009)+'px Cinzel,serif';
+          ctx.fillStyle = 'rgba(154,128,96,0.6)'; ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(m, gx2, rectCy - rectH/2 - 2);
+        }
+      }
+      // Points (ncp below gcd1 so gcd1 renders on top)
+      [false, true].forEach(function(showG1) {
+        allPts.forEach(function(p) {
+          var g1 = isGcd1(p);
+          if (g1 !== showG1) return;
+          var theta = dir*2*Math.PI*p.r/p.m + angOff;
+          var dT = theta - cutAngle;
+          dT = ((dT+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
+          if (Math.abs(dT) > Math.PI/2) return;  // not in the unfolded semicircle
+          var rx2 = rX + (p.m-1)/Math.max(modN-1,1)*rW;
+          var ry2 = rectCy - (dT/(Math.PI/2))*(rectH/2);
+          var rpt = Math.max(0.8, rW/Math.max(modN,1)*0.45*ptScale);
+          ctx.beginPath(); ctx.arc(rx2, ry2, rpt, 0, 2*Math.PI);
+          ctx.fillStyle = ptColor(p.r, p.m, g1);
+          ctx.globalAlpha = ptAlpha(p.r, p.m); ctx.fill();
+          _unfoldPtCache.push({rx:rx2, ry:ry2, r:p.r, m:p.m, gcd1:g1, theta:theta, dTheta:dT, col:ptColor(p.r,p.m,g1)});
+        });
+      });
+      ctx.globalAlpha = 1;
+      // Point labels in rect pane
+      var labelMode = (document.getElementById('f-label')||{value:'none'}).value;
+      if (labelMode !== 'none') {
+        var lsz = Math.max(6, rW / Math.max(modN,1) * 0.8);
+        ctx.font = lsz+'px Cinzel,serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        _unfoldPtCache.forEach(function(pt) {
+          var lbl = labelMode === 'r' ? pt.r
+                  : labelMode === 'm' ? pt.m
+                  : labelMode === 'r/m' ? pt.r+'/'+pt.m
+                  : labelMode === 'gcd' ? (window.gcd ? window.gcd(pt.r,pt.m) : pt.r)
+                  : '';
+          if (!lbl && lbl !== 0) return;
+          ctx.fillStyle = pt.col || '#9a8060'; ctx.globalAlpha = 0.85;
+          ctx.fillText(lbl, pt.rx, pt.ry - 1);
+        });
+        ctx.globalAlpha = 1;
+      }
+      // Axis labels
+      ctx.font = Math.max(8,W*0.011)+'px Cinzel,serif';
+      ctx.fillStyle = 'rgba(249,115,22,0.6)'; ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('+π/2 (top arc)', rX + rW/2, rectCy - rectH/2 - 2);
+      ctx.textBaseline = 'top';
+      ctx.fillText('−π/2 (bottom arc)', rX + rW/2, rectCy + rectH/2 + 2);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('ring 1', rX + 3, rectCy - rectH/2 + 10);
+      ctx.textAlign = 'right';
+      ctx.fillText('ring '+modN, rX + rW - 3, rectCy - rectH/2 + 10);
+    }
+    // Divider between panes (split mode)
+    if (viewMode === 'split') {
+      ctx.beginPath(); ctx.moveTo(W*0.49, PAD); ctx.lineTo(W*0.49, H-PAD);
+      ctx.strokeStyle = 'rgba(249,115,22,0.2)'; ctx.lineWidth = 1;
+      ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
+    }
+  };
+
   // ── Unit circle mode: collapse all rings to outer radius ───────────────
   window.fareyRingScaleChange = function() {
     var v = document.getElementById('f-ring-scale').value;
@@ -16060,3 +16459,5 @@
 
 </body>
 </html>
+
+                        
