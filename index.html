@@ -1847,7 +1847,6 @@
 <div id="farey-left-col" style="min-width:0;">
 
               <div id="farey-panel" style="display:none;background:var(--parchment-dark);border:1px solid var(--panel-border);padding:16px 20px;margin-bottom:14px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.07em;color:var(--ink-mid);">
-
               <div style="margin-top:14px;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px 24px;align-items:start;">
 
@@ -2661,7 +2660,7 @@
         <div class="chart-wrapper" id="convergenceWrapper">
             <div class="chart-title">Progressive Convergence to ζ(2) = π²/6</div>
             <div class="chart-description">
-                Shows how the cumulative product P₁ × P₂ × P₄ × ... converges to the target value π²/6 ≈ 1.6449 as additional gap families are included. Each gap family's product contributes multiplicatively toward the final value.
+                The cumulative product P_1 × P_2 × P_4 × ⋯ as gap classes are added in order of increasing gap size. Each step multiplies in all primes whose next-prime gap equals that gap value. The product must converge to π²/6 ≈ 1.64493 — this follows from absolute convergence of the Euler product, which allows arbitrary rearrangement. The chart shows the approach: gap 1 jumps immediately to 4/3 ≈ 1.333, then gap 2 (twin primes) brings it close to the target, and subsequent gaps add progressively smaller corrections. How fast it converges depends on how many primes each gap class contains.
             </div>
             <canvas id="convergenceChart" width="3840" height="2160"></canvas>
             <div class="stats-table-wrapper">
@@ -2699,7 +2698,7 @@
         <div class="chart-wrapper" id="gapContribWrapper">
             <div class="chart-title">Individual Gap Family Products P<sub>g</sub></div>
             <div class="chart-description">
-                Displays the individual contribution of each gap family. Each bar shows P_g = ∏_{p: gap(p)=g} p²/(p²-1), the product over all primes with that specific gap size. Larger values indicate gap families that contribute more to ζ(2).
+                Each bar shows P_g = ∏_{p : gap(p)=g} p²/(p²−1) — the partial Euler product over all primes whose forward gap to the next prime equals g. Because the Euler product converges absolutely, the full identity ζ(2) = π²/6 = ∏_g P_g holds exactly in the limit. P_g measures the total "weight" that gap class g contributes multiplicatively. Gap 1 gives the single factor 4/3 (from p=2 alone, since gap(2)=1). All other realized gaps are even. A taller bar means that gap family carries more of the product — equivalently, more of log ζ(2) in the additive view. Click any bar or table row for the modal breakdown.
             </div>
             <canvas id="gapContribChart" width="3840" height="2160"></canvas>
             <div class="stats-table-wrapper">
@@ -2737,7 +2736,7 @@
         <div class="chart-wrapper" id="gapDistWrapper">
             <div class="chart-title">Prime Distribution by Gap Class</div>
             <div class="chart-description">
-                Shows how many primes belong to each gap family. Twin primes (gap 2) and cousin primes (gap 4) typically have the most members, while larger gaps become progressively rarer.
+                How many primes belong to each forward-gap class up to the current prime limit. Gap 1 has exactly one prime (p=2). Gap 2 counts twin primes (p and p+2 both prime). Gap 4 counts cousin primes; gap 6 sexy primes. Beyond gap 6, counts fall off but do not obviously go to zero — the Twin Prime Conjecture asserts gap 2 never runs dry, and Polignac's conjecture (1849) asserts every even gap occurs infinitely often. Large gaps appear rarely but are guaranteed to grow: by Bertrand's postulate there is always a prime between n and 2n, bounding gap sizes; Cramér's model predicts the maximal gap near x is approximately (log x)².
             </div>
             <canvas id="gapDistChart" width="3840" height="2160"></canvas>
             <div class="stats-table-wrapper">
@@ -2770,9 +2769,9 @@
         </div>
         
         <div class="chart-wrapper" id="gapRatioWrapper">
-            <div class="chart-title">Gap Ratio Analysis: Twin Prime Conjecture Evidence</div>
+            <div class="chart-title">Gap Ratio Analysis: Hardy-Littlewood Conjecture B</div>
             <div class="chart-description">
-                Tracks Count(gap=2)/Count(gap=4) and other gap ratios between prime gap classes.
+                Tracks Count(gap=2)/Count(gap=4) and other ratios between prime gap class populations. The Hardy-Littlewood Conjecture B (1923) predicts that for any even gap g, the number of prime pairs (p, p+g) up to x is asymptotically C_g · li₂(x), where C_g is a product over primes involving (p−1)/(p−2) correction factors. The ratio Count(gap=2)/Count(gap=4) should therefore converge to C₂/C₄ = (∏_{p>2} (p−1)/(p−2)) / (∏_{p>2, p∤4} …) — a specific constant. If this ratio stabilises, it supports Conjecture B; if it drifts, it would suggest different asymptotic densities than predicted. The chart lets you test any pair of gap classes against each other.
             </div>
             <canvas id="gapRatioChart" width="3840" height="2160"></canvas>
             <div class="stats-table-wrapper">
@@ -2978,7 +2977,7 @@
 <div class="chart-wrapper" id="stepByStepWrapper">
             <div class="chart-title">Step-by-Step Gap Accumulation: ζ(2) = P<sub>0</sub> × P<sub>2</sub> × P<sub>4</sub> × ...</div>
             <div class="chart-description">
-                Shows the progressive buildup of the cumulative product as each gap family is added. This table view complements the convergence chart by providing exact numerical values at each step.
+                Exact numerical values of the cumulative product at each gap step: each row shows what the product equals after including all primes with gap ≤ g. The final row should match π²/6 to the number of decimal places the computation can resolve (limited by how many primes were sieved — larger limits give more decimal places). Comparing the Running Product column to π²/6 = 1.6449340668482… shows how many correct digits the current prime limit achieves.
             </div>
             <div class="stats-table-wrapper">
                 <div class="stats-table-header">
@@ -12533,9 +12532,7 @@
     ctx.font='10px "Cinzel",Georgia,serif'; ctx.fillStyle='#9a8060';
     var nMax=document.getElementById('m_nMax')?document.getElementById('m_nMax').value:'';
     ctx.fillText('Mertens Function M(n) = Σμ(k)  ·  n = 1…'+(nMax||'N'), W/2, PAD+src.height+FOOT/2);
-    var a=document.createElement('a');
-    a.download='mertens_'+(nMax||'N')+'.png';
-    a.href=off.toDataURL('image/png'); a.click();
+    _dl(off, 'mertens_'+(nMax||'N')+'.png');
   };
 
 
@@ -13630,8 +13627,9 @@
     }
 
     // ── Riemann zeros overlay ──────────────────────────────────────────────
-    if (_showZeros) {
-      overlayRiemannZeros(ctx, W, H, rMin, rMax);
+    // Skip when in rect-only unfold (no circle pane visible)
+    if (_showZeros && !(_unfold && _unfoldView === 'rect')) {
+      overlayRiemannZeros(ctx, W, H, rMin, rMax, cx, cy);
     }
 
     // ── MIRROR SYMMETRY σ(r) = M − r − 2 (paper §4) ─────────────────────
@@ -13771,8 +13769,9 @@
     fareyRedraw();
   };
 
-  function overlayRiemannZeros(ctx, W, H, rMin, rMax) {
-    var cx = W/2, cy = H/2;
+  function overlayRiemannZeros(ctx, W, H, rMin, rMax, cx, cy) {
+    if (cx === undefined) cx = W/2;
+    if (cy === undefined) cy = H/2;
     var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
     var dir  = parseFloat(document.getElementById('f-dir').value) || 1;
     var angOff = (_combinedAngle || 0) * Math.PI / 180;
@@ -13950,8 +13949,8 @@
     ctx.restore();
 
     // N-animation corner overlay: only when playing AND a residue is selected
-    if (_modPlayTimer && _selectedR !== null) {
-      _drawNAnimCorners(ctx, W, H, modN, _selectedR);
+    if (window._modPlayTimer && window._selectedR !== null && window._selectedR !== undefined) {
+      if (typeof _drawNAnimCorners === 'function') _drawNAnimCorners(ctx, W, H, modN, window._selectedR);
     }
 
     return c;
@@ -14003,121 +14002,47 @@
 
   // ── Composite export ───────────────────────────────────────────────────────
   // ── Export helpers ────────────────────────────────────────────────────────
-  function _exportStatus(msg, isError) {
-    var el = document.getElementById('farey-export-status');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'farey-export-status';
-      el.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;'
-        + 'background:#0e0b05;border:1px solid #c49b38;color:#e8d9b0;'
-        + 'font-family:Cinzel,serif;font-size:0.7rem;letter-spacing:0.06em;'
-        + 'padding:10px 18px;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,0.8);'
-        + 'max-width:320px;line-height:1.5;';
-      document.body.appendChild(el);
-    }
-    el.style.borderColor = isError ? '#c94040' : '#c49b38';
-    el.style.color = isError ? '#ff8080' : '#e8d9b0';
-    el.textContent = msg;
-    el.style.display = 'block';
-    if (isError || msg === '') {
-      setTimeout(function(){ el.style.display='none'; }, isError ? 4000 : 0);
-    }
-  }
-  function _exportBlob(canvas, filename, onDone) {
-    try {
-      canvas.toBlob(function(blob) {
-        if (!blob) { _exportStatus('Export failed — canvas too large or empty.', true); if(onDone) onDone(false); return; }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.download = filename; a.href = url;
-        document.body.appendChild(a); a.click();
-        setTimeout(function(){ URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
-        _exportStatus('');
-        if(onDone) onDone(true);
-      }, 'image/png');
-    } catch(e) {
-      _exportStatus('Export error: ' + e.message, true);
-      if(onDone) onDone(false);
-    }
-  }
-  function _exportWarn(px) {
-    // Returns false and shows warning if canvas is dangerously large
-    var mb = px * 4 / 1048576;
-    if (mb > 256) {
-      return !confirm('Canvas is ~' + Math.round(mb) + ' MB uncompressed. Export may be slow or fail.\nContinue?');
-    }
-    return false;
+  function _dl(canvas, filename) {
+    var a = document.createElement('a');
+    a.download = filename;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   window.fareyComposite = function(){
-    var modN     = parseInt(document.getElementById('f-mod-num').value)||49;
-    var col1     = document.getElementById('f-col1').value;
-    var col2     = document.getElementById('f-col2').value;
-    var fc = document.getElementById('fc-combined');
-    var diagSize = fc ? fc.width : 800;
-    var diagH = (window._unfoldOn && fc) ? fc.height : diagSize;
-    if (_exportWarn(diagSize * diagH)) return;
-    _exportStatus('Rendering…');
-    var pt       = _activeTooltipPt;
-
-    var PAD=16, GAP=24, FOOT=18;
+    var modN = parseInt(document.getElementById('f-mod-num').value)||49;
+    var col1 = document.getElementById('f-col1').value;
+    var col2 = document.getElementById('f-col2').value;
+    var pt   = _activeTooltipPt;
+    // Use the live canvas — it already has the current drawing at full resolution
+    var live = document.getElementById('fc-combined');
+    if (!live) return;
+    var diagSize = live.width, diagH = live.height;
+    var PAD=16, FOOT=18;
     var DETAIL_W = pt ? 220 : 0, DETAIL_PAD = pt ? 16 : 0;
-
-    // Defer rendering so the status message can paint first
-    setTimeout(function() {
-    // Render fresh canvases for export
-    var combinedOpen = document.getElementById('farey-combined-view').style.display !== 'none';
-    var src1 = combinedOpen ? makeFareyCanvas('combined', diagSize)
-                            : makeFareyCanvas('coprime',  diagSize);
-    var src2 = combinedOpen ? null : makeFareyCanvas('noncoprime', diagSize);
-
-    var W = combinedOpen
-      ? PAD + diagSize + DETAIL_PAD + DETAIL_W + PAD
-      : PAD + diagSize + GAP + diagSize + DETAIL_PAD + DETAIL_W + PAD;
+    var W = PAD + diagSize + DETAIL_PAD + DETAIL_W + PAD;
     var H = PAD + diagH + FOOT + PAD;
-
     var off = document.createElement('canvas'); off.width=W; off.height=H;
     var ctx = off.getContext('2d');
-    ctx.fillStyle=canvasBg(); ctx.fillRect(0,0,W,H);
-
-    if(combinedOpen){
-      ctx.drawImage(src1, PAD, PAD, diagSize, diagH);
-    } else {
-      ctx.drawImage(src1, PAD,               PAD, diagSize, diagSize);
-      ctx.drawImage(src2, PAD+diagSize+GAP,  PAD, diagSize, diagSize);
-    }
-
-    // mod label
+    ctx.fillStyle = window.canvasBg ? window.canvasBg() : '#0e0b05';
+    ctx.fillRect(0,0,W,H);
+    ctx.drawImage(live, PAD, PAD, diagSize, diagH);
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.font='9px "Cinzel",Georgia,serif'; ctx.fillStyle='#9a8060';
-    var labelX = combinedOpen ? PAD+diagSize/2 : PAD+diagSize+GAP/2+diagSize/2;
-    ctx.fillText('mod 1…'+modN, labelX, PAD+diagSize+FOOT/2+2);
-
-    if(pt){
-      var dx = W - PAD - DETAIL_W;
-      drawDetailPanel(ctx, pt, dx, PAD, DETAIL_W, diagSize, col1, col2, modN);
-    }
-
-    var _fname = 'farey_mod'+modN+(pt?'_r'+pt.r+'_m'+pt.m:'')+'_composite.png';
-    _exportStatus('Encoding PNG…');
-    _exportBlob(off, _fname);
-    }, 20); // end deferred render
+    ctx.fillText('mod 1…'+modN, PAD+diagSize/2, PAD+diagH+FOOT/2+2);
+    if (pt) drawDetailPanel(ctx, pt, W-PAD-DETAIL_W, PAD, DETAIL_W, diagH, col1, col2, modN);
+    _dl(off, 'farey_mod'+modN+(pt?'_r'+pt.r+'_m'+pt.m:'')+'_composite.png');
   };
 
-  // ── Unfold export ─────────────────────────────────────────────────────────
+  // ── Unfold export ──────────────────────────────────────────────────────────
   window.fareyUnfoldExport = function() {
     if (!window._unfoldOn) return;
-    var fc = document.getElementById('fc-combined');
-    if (!fc) return;
-    var W = fc.width, H = fc.height;
-    var modN = parseInt(document.getElementById('f-mod-num').value) || 49;
-    // Render at full canvas resolution
-    var off = document.createElement('canvas');
-    off.width = W; off.height = H;
-    // drawCombined with window._unfoldOn=true will draw the unfold view
-    if (window.drawCombined) window.drawCombined(off);
-    _exportStatus('Encoding PNG…');
-    _exportBlob(off, 'farey_unfold_mod' + modN + '.png');
+    var modN = parseInt(document.getElementById('f-mod-num').value)||49;
+    var live = document.getElementById('fc-combined');
+    if (!live) return;
+    _dl(live, 'farey_unfold_mod'+modN+'.png');
   };
 
   // ── Triangle export ────────────────────────────────────────────────────────
@@ -14125,18 +14050,14 @@
     var modN = parseInt(document.getElementById('f-mod-num').value)||49;
     var col1 = document.getElementById('f-col1').value;
     var col2 = document.getElementById('f-col2').value;
-    var _fc  = document.getElementById('fc-combined');
-    var S    = (_fc ? _fc.width : null) || parseInt((document.getElementById('f-size-x-num')||{value:'800'}).value) || 800;
-    if (_exportWarn(S * S * 3)) return;  // 3 canvases
-    _exportStatus('Rendering 3 canvases…');
+    var S = parseInt((document.getElementById('f-size-x-num')||{value:'800'}).value) || 800;
     var fScale = S / 800;  // font scale factor
     var pt   = _activeTooltipPt;
-    setTimeout(function() {
-    // Render all three at user size (deferred so status paints first)
+    // Render all three
     var srcCop  = makeFareyCanvas('coprime',    S);
     var srcNcp  = makeFareyCanvas('noncoprime', S);
-    _exportStatus('Rendering combined…');
-    var srcComb = makeFareyCanvas('combined',   S);
+    var _live = document.getElementById('fc-combined');
+    var srcComb = (_live && _live.width === S && _live.height === S) ? _live : makeFareyCanvas('combined', S);
 
     // ── Compute stats ─────────────────────────────────────────────────────
     var fracs    = buildFractions(modN);
@@ -14415,10 +14336,8 @@
     }
 
     var _triname='farey_mod'+modN+'_layout'+(pt?'_r'+pt.r+'m'+pt.m:'')+'.png';
-    _exportStatus('Encoding PNG…');
-    _exportBlob(off, _triname);
-    }, 20); // end deferred
-  };
+    _dl(off, _triname);
+  }
 
 
   // ── Color brightness helper (hue-preserving, no glow) ────────────────────
