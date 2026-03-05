@@ -1739,14 +1739,40 @@
                   <span style="color:var(--border);">|</span>
                   <button id="fcm-unfold" onclick="fareyToggleUnfold()" title="Unfold left semicircle into rectangle alongside the circle" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#11835; Unfold</button>
                   <button id="fcm-mirror" onclick="fareyToggleMirror()" title="Show mirror symmetry σ(r)=M−r−2 on outer ring (twin prime paper §4)" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">&#8651; Mirror</button>
+                  <button id="fcm-dipole" onclick="fareyToggleDipole()" title="Dipole field: north pole (top) and south pole (bottom) mod towers connected by field lines" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #e879f9;background:var(--parchment-dark);color:#e879f9;cursor:pointer;">&#8853;&#8854; Dipole</button>
+                  <!-- Dipole panel -->
+                  <div id="farey-dipole-panel" style="display:none;align-items:center;gap:6px;font-family:'Cinzel',serif;font-size:0.58rem;background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.3);border-radius:4px;padding:6px 10px;flex-wrap:wrap;">
+                    <span style="color:#4ecdc4;">N-POLE BASE</span>
+                    <input id="f-dipole-base" type="number" min="1" max="9999" value="30" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyRedraw()">
+                    <span style="color:#9a8060;">×2^n  n=0…</span>
+                    <input id="f-dipole-nmax" type="number" min="1" max="8" value="3" style="width:28px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyRedraw()">
+                    <span style="color:rgba(160,120,48,0.5);">|</span>
+                    <span style="color:#9a8060;">THICK</span>
+                    <input id="f-dipole-thick" type="range" min="1" max="30" value="8" style="width:55px;accent-color:#e879f9;" oninput="fareyRedraw()">
+                  </div>
                   <button id="fcm-lifting" onclick="fareyToggleLiftMode()" title="Show residue lifting: connects gcd=1 residues across rings b, b×a, b×a²…" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">&#8593; Lifting</button>
-                  <!-- Lifting input panel -->
-                  <div id="farey-lift-panel" style="display:none;align-items:center;gap:6px;font-family:'Cinzel',serif;font-size:0.58rem;">
-                    <span style="color:#4ecdc4;">BASE</span>
-                    <input id="f-lift-base" type="number" min="2" max="9999" value="2" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
-                    <span style="color:#9a8060;">×</span>
-                    <input id="f-lift-mult" type="number" min="2" max="9999" value="2" style="width:40px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
-                    <span style="color:#9a8060;">^n</span>
+                  <!-- Lifting tower panel -->
+                  <div id="farey-lift-panel" style="display:none;flex-direction:column;gap:6px;font-family:'Cinzel',serif;font-size:0.58rem;background:rgba(78,205,196,0.06);border:1px solid rgba(78,205,196,0.3);border-radius:4px;padding:8px 12px;margin-top:4px;width:100%;">
+                    <!-- Row 1: formula inputs -->
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                      <span style="color:#4ecdc4;letter-spacing:0.08em;">MOD</span>
+                      <input id="f-lift-base" type="number" min="1" max="9999" value="30" title="Base modulus m₀" style="width:44px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
+                      <span style="color:#9a8060;">×</span>
+                      <input id="f-lift-mult" type="number" min="2" max="99" value="2" title="Multiplier a (grows as m₀×aⁿ)" style="width:32px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
+                      <span style="color:#9a8060;">^n,  n=0…</span>
+                      <input id="f-lift-nmax" type="number" min="1" max="10" value="4" title="Max levels" style="width:28px;background:var(--parchment-deep);color:var(--ink);border:1px solid #4ecdc4;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyLiftApply()">
+                    </div>
+                    <!-- Row 2: quick presets -->
+                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                      <span style="color:#9a8060;align-self:center;">PRESET:</span>
+                      <button onclick="fareyLiftPreset(30,2,4)" style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 6px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">30×2ⁿ</button>
+                      <button onclick="fareyLiftPreset(2,2,6)"  style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 6px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">2×2ⁿ</button>
+                      <button onclick="fareyLiftPreset(6,2,5)"  style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 6px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">6×2ⁿ</button>
+                      <button onclick="fareyLiftPreset(30,3,3)" style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 6px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">30×3ⁿ</button>
+                      <button onclick="fareyLiftPreset(210,2,3)" style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 6px;border:1px solid #4ecdc4;background:var(--parchment-dark);color:#4ecdc4;cursor:pointer;">210×2ⁿ</button>
+                    </div>
+                    <!-- Row 3: live tower sequence display -->
+                    <div id="f-lift-sequence" style="color:#4ecdc4;font-size:0.55rem;letter-spacing:0.04em;line-height:1.8;"></div>
                   </div>
                 </div>
 
@@ -1776,12 +1802,16 @@
                   <input id="f-unfold-den" type="number" min="1" max="999" value="2" style="width:38px;background:var(--parchment-deep);color:var(--ink);border:1px solid #f97316;padding:2px 4px;font-family:'Cinzel',serif;font-size:0.58rem;text-align:center;" oninput="fareyUnfoldUpdateCut()">
                   <span id="f-unfold-deg" style="color:#9a8060;min-width:36px;">180°</span>
                   <span style="color:rgba(160,120,48,0.4);">|</span>
+                  <span style="color:#ffd700;font-size:0.52rem;">TRIG:</span>
+                  <button onclick="fareyUnfoldCutPreset(1,12)" title="30°=1/12" style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 5px;border:1px solid #ffd700;background:var(--parchment-dark);color:#ffd700;cursor:pointer;">30°</button>
+                  <button onclick="fareyUnfoldCutPreset(1,8)"  title="45°=1/8"  style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 5px;border:1px solid #ffd700;background:var(--parchment-dark);color:#ffd700;cursor:pointer;">45°</button>
+                  <button onclick="fareyUnfoldCutPreset(1,6)"  title="60°=1/6"  style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 5px;border:1px solid #ffd700;background:var(--parchment-dark);color:#ffd700;cursor:pointer;">60°</button>
+                  <button onclick="fareyUnfoldCutPreset(1,4)"  title="90°=1/4"  style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 5px;border:1px solid #ffd700;background:var(--parchment-dark);color:#ffd700;cursor:pointer;">90°</button>
+                  <button onclick="fareyUnfoldCutPreset(1,2)"  title="180°=1/2" style="font-family:'Cinzel',serif;font-size:0.52rem;padding:2px 5px;border:1px solid #ffd700;background:var(--parchment-dark);color:#ffd700;cursor:pointer;">180°</button>
+                  <span style="color:rgba(160,120,48,0.4);">|</span>
                   <!-- Animate: sweep from current canvas angle to cut ratio angle -->
                   <button id="f-unfold-play" onclick="fareyUnfoldPlay()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#9654; Animate</button>
                   <input id="f-unfold-speed" type="range" min="1" max="20" value="8" style="width:60px;accent-color:#f97316;" title="Speed">
-                  <span style="color:rgba(160,120,48,0.4);">|</span>
-                  <!-- Inspect -->
-                  <button id="f-unfold-inspect" onclick="fareyUnfoldToggleInspect()" style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border:1px solid #f97316;background:var(--parchment-dark);color:#f97316;cursor:pointer;">&#9679; Inspect</button>
                 </div>
 
                 <!-- Canvas sub-label -->
@@ -1901,6 +1931,12 @@
                       <option value="per-residue">Unique Color per Residue Value</option>
                       <option value="math-progression">Mathematical Progression</option>
                       <option value="spectral">Spectral Distribution</option>
+                      <option value="gcd-depth">GCD Depth (divisor count)</option>
+                      <option value="twin-prime">Twin Prime Highlight</option>
+                      <option value="euler-phi">φ(m) Density per Ring</option>
+                      <option value="coprime-frac">Coprime Fraction r/φ(m)</option>
+                      <option value="quadratic-residue">Quadratic Residue</option>
+                      <option value="thermal">Thermal (cool→hot by ring)</option>
                     </select>
                     <!-- Custom solid colors (shown only in solid mode) -->
                     <div id="f-solid-colors" style="display:flex;gap:10px;align-items:center;">
@@ -1919,10 +1955,13 @@
                   <div>
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
                       <span style="color:var(--gold);">CANVAS SIZE</span>
-                      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.56rem;color:var(--ink-mid);" title="Lock sliders to prevent accidental changes">
-                        <input type="checkbox" id="f-size-x-lock" style="accent-color:var(--gold);" onchange="fareyCanvasScrollLock(this.checked)" checked>
-                        <span id="f-size-lock-label" style="color:var(--gold);">LOCKED</span>
-                      </label>
+                      <div style="display:flex;gap:6px;align-items:center;">
+                        <button id="f-canvas-fluid-btn" onclick="fareyCanvasFluidToggle()" title="Toggle between fluid (fills container) and fixed (exact pixel size)" style="font-family:'Cinzel',serif;font-size:0.54rem;padding:2px 7px;border:1px solid var(--gold);background:var(--parchment-dark);color:var(--gold);cursor:pointer;letter-spacing:0.06em;">FLUID</button>
+                        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.56rem;color:var(--ink-mid);" title="Lock sliders to prevent accidental changes">
+                          <input type="checkbox" id="f-size-x-lock" style="accent-color:var(--gold);" onchange="fareyCanvasScrollLock(this.checked)" checked>
+                          <span id="f-size-lock-label" style="color:var(--gold);">LOCKED</span>
+                        </label>
+                      </div>
                     </div>
                     <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">
                       <button onclick="(function(){var v=1000;var xl=document.getElementById('f-size-x-lock');if(xl&&xl.checked)return;document.getElementById('f-size-x').value=v;document.getElementById('f-size-x-num').value=v;document.getElementById('f-size-y').value=v;document.getElementById('f-size-y-num').value=v;fareyResize();})()" style="font-family:'Cinzel',serif;font-size:0.56rem;padding:3px 8px;border:1px solid var(--border);background:var(--parchment-dark);color:var(--gold);cursor:pointer;">1K</button>
@@ -2103,6 +2142,11 @@
                       <input id="f-crossmod-thick" type="range" min="1" max="30" value="30" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('f-crossmod-thick-val').textContent=(this.value/10).toFixed(1);fareyRedraw()">
                       <span id="f-crossmod-thick-val" style="color:var(--ink);min-width:28px;text-align:right;">3.0</span>
                     </div>
+                    <div style="margin-top:8px;color:#4ecdc4;">LIFT LINE THICKNESS</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                      <input id="f-lift-thick" type="range" min="1" max="40" value="12" style="flex:1;accent-color:#4ecdc4;" oninput="document.getElementById('f-lift-thick-val').textContent=(this.value/10).toFixed(1);fareyRedraw()">
+                      <span id="f-lift-thick-val" style="color:#4ecdc4;min-width:28px;text-align:right;">1.2</span>
+                    </div>
                   </div>
 
                 </div>
@@ -2133,9 +2177,9 @@
                 <div style="background:var(--parchment-dark);border:1px solid var(--panel-border);border-radius:4px;margin-bottom:6px;">
                   <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;cursor:pointer;" onclick="var b=this.nextElementSibling;var a=this.querySelector('.farey-arrow');b.style.display=b.style.display==='none'?'block':'none';a.textContent=b.style.display==='none'?'▶':'▼';">
                     <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);">&#9632; Farey Structure Statistics</span>
-                    <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▶</span>
+                    <span class="farey-arrow" style="color:var(--gold);font-size:0.7rem;">▼</span>
                   </div>
-                  <div style="display:none;padding:12px 16px;">
+                  <div style="display:block;padding:12px 16px;">
                     <div id="farey-live-stats-detail" style="font-family:'Cinzel',serif;font-size:0.62rem;line-height:2;color:var(--ink-mid);"></div>
                   </div>
                 </div>
@@ -12571,66 +12615,81 @@
       document.getElementById('f-ptsize').value     = 5;
       document.getElementById('f-ptsize-num').value = 5;
       syncCombinedSize();
+      // Turn off involution chords + polygon when entering Advanced mode
+      var _chordsEl = document.getElementById('f-chords');
+      if (_chordsEl) _chordsEl.checked = false;
+      var _polyEl = document.getElementById('f-samemod');
+      if (_polyEl) _polyEl.checked = false;
       drawCombined();
     } else {
       // stop auto-rotate when closing
       if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; }
+      if(typeof _autoRotateTimerOut!=='undefined'&&_autoRotateTimerOut){ clearInterval(_autoRotateTimerOut); _autoRotateTimerOut=null; }
+      if(typeof _autoRotateTimerIn!=='undefined'&&_autoRotateTimerIn){ clearInterval(_autoRotateTimerIn); _autoRotateTimerIn=null; }
       _inspectMode=false;
       hideTooltip();
       fareyRedraw();
     }
   };
 
+  // Two independent ring-rotate timers so Out and In can run simultaneously
+  var _autoRotateTimerOut = null;
+  var _autoRotateTimerIn  = null;
+
   window.fareyToggleAutoRotate = function(dir){
-    // dir: 'out' = cumulative outer→inner (outer rings spin faster)
-    //      'in'  = cumulative inner→outer (inner rings spin faster)
-    //      undefined = toggle uniform canvas rotation on/off
     var btn    = document.getElementById('fcm-autorotate');
     var dirOut = document.getElementById('fcm-ar-out');
     var dirIn  = document.getElementById('fcm-ar-in');
-
-    function stopTimer(){
-      if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; }
-      if(btn)  { btn.style.background='var(--parchment-dark)';  btn.style.color='var(--ink-mid)'; }
-      if(dirOut){ dirOut.style.background='var(--parchment-dark)'; dirOut.style.color='var(--ink-mid)'; }
-      if(dirIn) { dirIn.style.background='var(--parchment-dark)';  dirIn.style.color='var(--ink-mid)'; }
-    }
 
     function redrawWithOverlay(){
       fareyRedraw();
       if(_overlayGap !== null && _overlayPairs.length > 0) drawGapOverlay();
     }
 
-    if(dir === 'out' || dir === 'in'){
-      // If already running in same direction, stop (toggle off)
-      if(_autoRotateTimer && _autoRotateDir === (dir==='out'?1:-1)){
-        stopTimer(); return;
+    if (dir === 'out') {
+      // Toggle Out→In independently
+      if (_autoRotateTimerOut) {
+        clearInterval(_autoRotateTimerOut); _autoRotateTimerOut = null;
+        if(dirOut){ dirOut.style.background='var(--parchment-dark)'; dirOut.style.color='var(--ink-mid)'; }
+      } else {
+        if(dirOut){ dirOut.style.background='var(--gold)'; dirOut.style.color='var(--parchment)'; }
+        if(_inspectMode) fareyToggleInspect();
+        _autoRotateTimerOut = setInterval(function(){
+          var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
+          var speed = parseInt(document.getElementById('f-ringspeed').value)||20;
+          for(var m=1; m<=modN; m++){
+            var t = m/modN;
+            _ringOffsets[m] = (_ringOffsets[m]||0) + speed * t * 0.04;
+          }
+          redrawWithOverlay();
+        }, 16);
       }
-      stopTimer();
-      _autoRotateDir = (dir === 'out') ? 1 : -1;
-      var activeBtn = dir==='out' ? dirOut : dirIn;
-      if(activeBtn){ activeBtn.style.background='var(--gold)'; activeBtn.style.color='var(--parchment)'; }
-
-      if(_inspectMode) fareyToggleInspect();
-      _autoRotateTimer = setInterval(function(){
-        var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
-        var speed = parseInt(document.getElementById('f-ringspeed').value)||20;
-        // cumulative per-ring: outer faster for 'out', inner faster for 'in'
-        for(var m=1; m<=modN; m++){
-          var t = _autoRotateDir===1 ? m/modN : (modN-m+1)/modN;
-          _ringOffsets[m] = (_ringOffsets[m]||0) + _autoRotateDir * speed * t * 0.04;
-        }
-        redrawWithOverlay();
-      }, 16);
       return;
     }
 
-    // Plain toggle — uniform canvas rotation
-    if(_autoRotateTimer && _autoRotateDir === 0){
-      stopTimer(); return;
+    if (dir === 'in') {
+      // Toggle In→Out independently
+      if (_autoRotateTimerIn) {
+        clearInterval(_autoRotateTimerIn); _autoRotateTimerIn = null;
+        if(dirIn){ dirIn.style.background='var(--parchment-dark)'; dirIn.style.color='var(--ink-mid)'; }
+      } else {
+        if(dirIn){ dirIn.style.background='var(--gold)'; dirIn.style.color='var(--parchment)'; }
+        if(_inspectMode) fareyToggleInspect();
+        _autoRotateTimerIn = setInterval(function(){
+          var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
+          var speed = parseInt(document.getElementById('f-ringspeed').value)||20;
+          for(var m=1; m<=modN; m++){
+            var t = (modN-m+1)/modN;
+            _ringOffsets[m] = (_ringOffsets[m]||0) - speed * t * 0.04;
+          }
+          redrawWithOverlay();
+        }, 16);
+      }
+      return;
     }
-    stopTimer();
-    _autoRotateDir = 0;
+
+    // Plain Rotate button — uniform canvas angle
+    if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; if(btn){btn.style.background='var(--parchment-dark)';btn.style.color='var(--ink-mid)';} return; }
     if(btn){ btn.style.background='var(--gold)'; btn.style.color='var(--parchment)'; }
     if(_inspectMode) fareyToggleInspect();
     _autoRotateTimer = setInterval(function(){
@@ -12641,6 +12700,8 @@
 
   window.fareyRotateReset = function(){
     if(_autoRotateTimer){ clearInterval(_autoRotateTimer); _autoRotateTimer=null; }
+    if(typeof _autoRotateTimerOut!=='undefined'&&_autoRotateTimerOut){ clearInterval(_autoRotateTimerOut); _autoRotateTimerOut=null; }
+    if(typeof _autoRotateTimerIn!=='undefined'&&_autoRotateTimerIn){ clearInterval(_autoRotateTimerIn); _autoRotateTimerIn=null; }
     var btn=document.getElementById('fcm-autorotate');
     var dirOut=document.getElementById('fcm-ar-out');
     var dirIn=document.getElementById('fcm-ar-in');
@@ -12719,6 +12780,29 @@
     var typeStr = g===1 ? 'gcd(r, m) = 1' : 'gcd(r, m) = '+g;
     var color   = g===1 ? document.getElementById('f-col1').value : document.getElementById('f-col2').value;
 
+    // Trig lookup for standard angles
+    var _TRIG_MAP = {
+      0:   {sin:'0',     cos:'1',     tan:'0'},
+      30:  {sin:'1/2',   cos:'√3/2',  tan:'1/√3'},
+      45:  {sin:'1/√2',  cos:'1/√2',  tan:'1'},
+      60:  {sin:'√3/2',  cos:'1/2',   tan:'√3'},
+      90:  {sin:'1',     cos:'0',     tan:'∞'},
+      120: {sin:'√3/2',  cos:'-1/2',  tan:'-√3'},
+      135: {sin:'1/√2',  cos:'-1/√2', tan:'-1'},
+      150: {sin:'1/2',   cos:'-√3/2', tan:'-1/√3'},
+      180: {sin:'0',     cos:'-1',    tan:'0'},
+      270: {sin:'-1',    cos:'0',     tan:'∞'},
+    };
+    var _degRound = Math.round(((deg % 360) + 360) % 360);
+    var _trig = _TRIG_MAP[_degRound] || null;
+    var _trigHTML = _trig
+      ? '<div style="border-top:1px solid rgba(78,205,196,0.3);margin:6px 0;"></div>'+
+        '<div style="color:#ffd700;font-size:0.65rem;letter-spacing:0.08em;">TRIG (' + _degRound + '°)</div>'+
+        '<div style="display:flex;gap:10px;font-size:0.63rem;">'+
+        '<span style="color:#4ecdc4;">sin&nbsp;=&nbsp;'+_trig.sin+'</span>'+
+        '<span style="color:#f97316;">cos&nbsp;=&nbsp;'+_trig.cos+'</span>'+
+        '<span style="color:#e879f9;">tan&nbsp;=&nbsp;'+_trig.tan+'</span></div>'
+      : '';
     tt.innerHTML =
       '<div style="color:'+color+';font-size:0.72rem;font-weight:bold;margin-bottom:6px;letter-spacing:0.1em;">'+frac+'</div>'+
       '<div>r &nbsp;= &nbsp;<span style="color:'+color+'">'+pt.r+'</span></div>'+
@@ -12728,6 +12812,7 @@
       '<div>angle &nbsp;= &nbsp;'+deg.toFixed(2)+'°</div>'+
       '<div>radian = '+rad.toFixed(4)+'\u03c0</div>'+
       '<div>decimal = '+(pt.r/pt.m).toFixed(6)+'</div>'+
+      _trigHTML +
       '<div style="border-top:1px solid rgba(196,155,56,0.2);margin:6px 0;"></div>'+
       '<div style="color:#9a8060;">ring m = '+pt.m+' &nbsp;\u00b7 &nbsp;\u03c6('+pt.m+') = '+phi+'</div>'+
       '<div style="color:#9a8060;">'+typeStr+'</div>';
@@ -13069,25 +13154,13 @@
     c.addEventListener('click', function(e){
       // When unfold is active, handle click in unfold space
       if (window._unfoldOn) {
-        if (window._unfoldInspect) {
-          // Hit-test the rect pane cache
-          var rect0 = c.getBoundingClientRect();
-          var sx0 = c.width / c.offsetWidth, sy0 = c.height / c.offsetHeight;
-          var mx0 = (e.clientX - rect0.left) * sx0, my0 = (e.clientY - rect0.top) * sy0;
-          var best0 = null, bestD0 = Infinity;
-          (window._unfoldPtCache || []).forEach(function(p) {
-            var d = Math.hypot(p.rx - mx0, p.ry - my0);
-            if (d < 18 * sx0 && d < bestD0) { bestD0 = d; best0 = p; }
-          });
-          if (best0) {
-            var tt0 = document.getElementById('farey-tooltip');
-            if (tt0) tt0.style.display = 'block';  // pin tooltip on click
-          }
+        if (_inspectMode) {
+          // Inspect works normally — fall through to main inspect logic below
         } else {
-          // Non-inspect click on unfold canvas — rotate
+          // Non-inspect: rotate on click (both circle and rect sides)
           window.fareyCombinedClick && window.fareyCombinedClick();
+          return;
         }
-        return;  // never fall through to combined-canvas inspect logic
       }
       if(_inspectMode){
         var rect  = c.getBoundingClientRect();
@@ -13101,6 +13174,18 @@
           if(d < hitR && d < bestD){ bestD=d; best=pt; }
         });
         if(best){
+          // If lift mode active — select as lift seed instead of chain
+          if (window._liftModeActive && window._liftModeActive()) {
+            if (window._liftSeedR === best.r && window._liftSeedM === best.m) {
+              window._liftSeedR = null; window._liftSeedM = null;  // deselect
+            } else {
+              window._liftSeedR = best.r; window._liftSeedM = best.m;
+            }
+            _activeTooltipPt = best;
+            showTooltip(best, mx, my);
+            drawCombined();
+            return;
+          }
           // Check if already in chain — if so remove it
           var existing = _chain.findIndex(function(p){ return p.r===best.r && p.m===best.m; });
           if(existing >= 0){
@@ -13112,7 +13197,6 @@
           var clearBtn = document.getElementById('fcm-chain-clear');
           clearBtn.style.display = _chain.length >= 1 ? 'inline-block' : 'none';
           updateChainPanel();
-          // Show single-point tooltip only when chain has just 1 point
           if(_chain.length === 1){
             showTooltip(best, mx, my);
           } else {
@@ -13120,7 +13204,6 @@
           }
           drawCombined();
         } else {
-          // Clicked empty space — clear chain if it has points, else do nothing
           if(_chain.length === 0){
             hideTooltip();
             drawCombined();
@@ -13133,6 +13216,21 @@
   });
 
   // ── Canvas slider scroll lock ─────────────────────────────────────────
+  window._canvasFluid = false;
+
+  window.fareyCanvasFluidToggle = function(){
+    window._canvasFluid = !window._canvasFluid;
+    var btn = document.getElementById('f-canvas-fluid-btn');
+    var c   = document.getElementById('fc-combined');
+    if (window._canvasFluid) {
+      if (btn) { btn.textContent='FIXED'; btn.style.background='var(--gold)'; btn.style.color='var(--parchment)'; }
+      if (c)   { c.style.width='100%'; c.style.height='auto'; }
+    } else {
+      if (btn) { btn.textContent='FLUID'; btn.style.background='var(--parchment-dark)'; btn.style.color='var(--gold)'; }
+      syncCombinedSize();
+    }
+  };
+
   window.fareyCanvasScrollLock = function(on) {
     var ids = ['f-size-x', 'f-size-y'];
     ids.forEach(function(id) {
@@ -13167,8 +13265,15 @@
     var sx = parseInt((document.getElementById('f-size-x-num')||{value:'800'}).value)||800;
     var sy = parseInt((document.getElementById('f-size-y-num')||{value:'800'}).value)||800;
     var c  = document.getElementById('fc-combined');
-    c.width=sx; c.height=sy;
-    c.style.width=sx+'px'; c.style.height=sy+'px';
+    if (!c) return;
+    // Only reassign buffer dimensions when they change (assignment clears the canvas)
+    if (c.width !== sx)  { c.width  = sx; }
+    if (c.height !== sy) { c.height = sy; }
+    // Set CSS display size — fixed by default, fluid if toggled
+    if (!window._canvasFluid) {
+      c.style.width  = sx + 'px';
+      c.style.height = sy + 'px';
+    }
   }
 
   window.fareyCombinedMode = function(mode){
@@ -13190,10 +13295,17 @@
   };
 
   window.fareyCombinedClick = function(){
-    _combinedAngle = (_combinedAngle + 90) % 360;
+    if (window._unfoldOn) {
+      // When unfold is active, rotate by the cut fraction angle
+      var nu = parseFloat((document.getElementById('f-unfold-num')||{value:'1'}).value)||1;
+      var de = parseFloat((document.getElementById('f-unfold-den')||{value:'2'}).value)||2;
+      var stepDeg = (nu / de) * 360;  // e.g. 1/2→180, 1/3→120, 1/4→90
+      _combinedAngle = (_combinedAngle + stepDeg) % 360;
+    } else {
+      _combinedAngle = (_combinedAngle + 90) % 360;
+    }
     drawCombined();
     highlightNavLink();
-    // drawCombined handles unfold internally
   };
 
   // ── N-animation corner overlay ────────────────────────────────────────────
@@ -13273,6 +13385,10 @@
     var ctx = c.getContext('2d');
     var W=c.width, H=c.height;
     ctx.clearRect(0,0,W,H);
+    // Fill background so unfold/animate always draws on a dark canvas
+    var _isDark = document.body.classList.contains('dark-mode');
+    ctx.fillStyle = _isDark ? '#050402' : '#0a0a10';
+    ctx.fillRect(0,0,W,H);
     _lastCombinedPts = []; _lastCombinedPtsSeen = {}; // reset point cache
 
     var modN  = parseInt(document.getElementById('f-mod-num').value)||49;
@@ -13321,17 +13437,13 @@
     var _rectX = (_unfoldView==='split') ? W*0.51 : (_unfoldView==='rect' ? W*0.02 : W);
     var _rectW = (_unfoldView==='split') ? W*0.47 : (_unfoldView==='rect' ? W*0.96 : 0);
     var _rectPAD = H*0.05, _rectH = H - _rectPAD*2, _rectCy = H/2;
-    // Override cx/cy for circle pane when split
     if (_unfoldView==='split')  { cx = _circW/2; cy = H/2; }
-    if (_unfoldView==='rect')   { cx = -9999;    cy = H/2; } // push circle offscreen
-    if (_unfoldView==='circle') { /* cx/cy stay at W/2, H/2 */ }
+    if (_unfoldView==='rect')   { cx = -9999;    cy = H/2; }
     if (_unfold) {
-      // Shrink radius limits to circle pane width
       var _cpW = (_unfoldView==='rect') ? 0 : ((_unfoldView==='split') ? _circW : W);
       rBase = _cpW*0.42*_spacing; if(rBase>_cpW*0.49) rBase=_cpW*0.49;
       rMin = _cpW*_rinner*_zoom; rMax = rBase*_zoom;
       if (rMin >= rMax) rMin = rMax * 0.05;
-      // ang stays as _combinedAngle; ptXY uses _cutRad directly
     }
     function radius(m){
       var _rscale = (document.getElementById('f-ring-scale')||{value:'linear'}).value;
@@ -13346,29 +13458,21 @@
       return rMin + (rMax - rMin) * t;
     }
     function ptXY(r,m){
-      // Global rotation (same as normal canvas)
-      var angOff = ang * Math.PI / 180;  // ang = _combinedAngle
-      var theta = dir*2*Math.PI*r/(m||1) + angOff + ringOffset(m,modN)*Math.PI/180;
+      var angOff = ang * Math.PI / 180;
+      var theta  = dir*2*Math.PI*r/(m||1) + angOff + ringOffset(m,modN)*Math.PI/180;
+      var rad = radius(m);
       if (_unfold && _unfoldView !== 'circle') {
-        // _cutRad = cut position in world coords (absolute angle on the circle)
-        // dT = how far this point is from the cut, normalised to (-π, π]
-        var dT = theta - _cutRad;
-        dT = ((dT+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
-        // Only the semicircle within ±π/2 of the cut gets unfolded
-        if (Math.abs(dT) > Math.PI/2) return null;
-        // Morph: t=0 → circle coord, t=1 → rectangle coord
         var _mt = window._unfoldMorph !== undefined ? window._unfoldMorph : 1;
-        var rad = radius(m);
-        // Circle position
         var cpx = cx + rad*Math.sin(theta);
         var cpy = cy - rad*Math.cos(theta);
-        // Rectangle position: m → x column, dT → y offset from centre
-        var rx2 = _rectX + (m-1)/Math.max(modN-1,1)*_rectW;
-        var ry2 = _rectCy - (dT/(Math.PI/2))*(_rectH/2);
-        // Lerp between circle and rect
-        return {x: cpx*(1-_mt) + rx2*_mt, y: cpy*(1-_mt) + ry2*_mt};
+        // Use full theta (includes angOff + ringOffset) so rect tracks all rotations
+        var _pureTheta = theta;
+        var th2 = ((_pureTheta%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+        var _mt_col = _invert ? (modN-m) : (m-1);
+        var rx2 = _rectX + _mt_col/Math.max(modN-1,1)*_rectW;
+        var ry2 = _rectCy - ((th2/Math.PI)-1)*(_rectH/2);
+        return {x: cpx*(1-_mt)+rx2*_mt, y: cpy*(1-_mt)+ry2*_mt};
       }
-      var rad = radius(m);
       return {x: cx+rad*Math.sin(theta), y: cy-rad*Math.cos(theta)};
     }
     // Expose the current ptXY so drawGapOverlay can use the unfold transform
@@ -13397,9 +13501,24 @@
       // Rect border
       ctx.strokeStyle='rgba(249,115,22,0.35)'; ctx.lineWidth=1;
       ctx.strokeRect(_rectX, _rectCy-_rectH/2, _rectW, _rectH);
-      // Cut center line
-      ctx.beginPath(); ctx.moveTo(_rectX,_rectCy); ctx.lineTo(_rectX+_rectW,_rectCy);
-      ctx.strokeStyle='#f97316'; ctx.lineWidth=1.2; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+      // Cut seam line — where the circle was cut open (pure cut fraction, no rotation)
+      // _cutDeg is the cut fraction angle in degrees; map to rect y
+      // Seam tracks canvas rotation so it stays aligned with the circle cut
+      var _seamAngle = (_cutDeg + _combinedAngle + 360) % 360;
+      var _cutFrac   = _seamAngle;
+      var _cutY = _rectCy - ((_cutFrac/180) - 1)*(_rectH/2);
+      ctx.beginPath(); ctx.moveTo(_rectX,_cutY); ctx.lineTo(_rectX+_rectW,_cutY);
+      ctx.strokeStyle='#f97316'; ctx.lineWidth=1.5; ctx.setLineDash([6,3]); ctx.stroke(); ctx.setLineDash([]);
+      // Seam label
+      var _fzS = Math.max(7,W*0.009); ctx.font=_fzS+'px Cinzel,serif';
+      ctx.fillStyle='#f97316'; ctx.globalAlpha=0.7;
+      ctx.textAlign='left'; ctx.textBaseline='bottom';
+      ctx.fillText('cut '+_cutFrac.toFixed(0)+'°', _rectX+3, _cutY-1);
+      ctx.globalAlpha=1;
+      // Seam wrap indicators at top/bottom edges (0°=360° same point)
+      ctx.fillStyle='rgba(249,115,22,0.4)';
+      ctx.textAlign='right'; ctx.textBaseline='top';
+      ctx.fillText('0°=360° (seam)', _rectX+_rectW-3, _rectCy-_rectH/2+2);
       // Vertical ring grid
       var _rStep=Math.max(1,Math.floor(modN/20));
       for(var _gi=1;_gi<=modN;_gi+=_rStep){
@@ -13419,10 +13538,20 @@
       ctx.fillText('m=1', _rectX+2, _rectCy-_rectH/2+10);
       ctx.textAlign='right';
       ctx.fillText('m='+modN, _rectX+_rectW-2, _rectCy-_rectH/2+10);
-      ctx.textAlign='center'; ctx.textBaseline='top';
-      ctx.fillText('+π/2', _rectX+_rectW/2, _rectCy-_rectH/2+2);
+      // y-axis: full 0→2π mapped to top→bottom
+      ctx.textAlign='right'; ctx.textBaseline='top';
+      ctx.fillStyle='rgba(249,115,22,0.6)';
+      ctx.fillText('0°', _rectX-3, _rectCy-_rectH/2);
+      ctx.textBaseline='middle';
+      ctx.fillText('180°', _rectX-3, _rectCy);
       ctx.textBaseline='bottom';
-      ctx.fillText('−π/2', _rectX+_rectW/2, _rectCy+_rectH/2-2);
+      ctx.fillText('360°', _rectX-3, _rectCy+_rectH/2);
+      // horizontal grid at 90/180/270
+      [0.25,0.5,0.75].forEach(function(f){
+        var gy = _rectCy - _rectH/2 + f*_rectH;
+        ctx.beginPath(); ctx.moveTo(_rectX,gy); ctx.lineTo(_rectX+_rectW,gy);
+        ctx.strokeStyle='rgba(249,115,22,0.12)'; ctx.lineWidth=0.6; ctx.stroke();
+      });
     }
     // ── Draw cut line on circle pane ──────────────────────────────────────
     if (_unfold && _unfoldView !== 'rect' && rMax > 0) {
@@ -13673,48 +13802,361 @@
       ctx.globalAlpha = 1;
     }
 
+    // ── DIPOLE FIELD: north/south pole mod towers with field lines ───────────
+    if (window._showDipole) {
+      function _gcdD(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+      var _dBase  = parseInt((document.getElementById('f-dipole-base')||{value:'30'}).value)||30;
+      var _dNmax  = parseInt((document.getElementById('f-dipole-nmax')||{value:'3'}).value)||3;
+      var _dThick = parseInt((document.getElementById('f-dipole-thick')||{value:'8'}).value)/10;
+
+      // Build tower rings: _dBase × 2^n
+      var _dRings = [];
+      for (var _dn=0; _dn<=_dNmax; _dn++) {
+        var _dm = _dBase * Math.pow(2, _dn);
+        if (_dm > modN) break;
+        _dRings.push(Math.round(_dm));
+      }
+
+      // North pole = 90° offset (top), south pole = 270° (bottom)
+      // A residue r/m sits at angle θ = dir*2π*r/m + combinedAngle
+      // North-pole residues: those closest to top (θ ≈ π/2 from canvas top = 0)
+      // South-pole residues: mirror σ(r,m) = m - r  (180° opposite)
+      // For each ring m in tower, gcd=1 residues in north half [315°…45°] = top quarter
+      // and their mirrors in south half. Connect with:
+      //   CHORD (straight line through interior) — the "field line" inside
+      //   ARC (quadratic bezier bulging outward) — the "field line" outside
+
+      var _angOff3 = _combinedAngle * Math.PI / 180;
+      // North pole direction (canvas): angle 0 in our coord = top of canvas
+      // θ=0 is top. North = θ near 0, South = θ near π.
+
+      // Color gradient: cyan (north) → magenta (south)
+      var _northCol = '#4ecdc4';
+      var _southCol = '#e879f9';
+
+      _dRings.forEach(function(_dm, _li) {
+        var _levelAlpha = 0.3 + 0.55 * _li / Math.max(_dRings.length-1, 1);
+        var _rad = radius(_dm);
+
+        // Draw ring highlight (dashed arc for this tower level)
+        ctx.beginPath(); ctx.arc(cx, cy, _rad, 0, 2*Math.PI);
+        ctx.strokeStyle = '#e879f9';
+        ctx.lineWidth = Math.max(0.6, _dThick * 0.4);
+        ctx.globalAlpha = _levelAlpha * 0.4;
+        ctx.setLineDash([3,5]); ctx.stroke(); ctx.setLineDash([]);
+
+        // Get all gcd=1 residues on this ring
+        var _copR = [];
+        for (var _r=1; _r<_dm; _r++) {
+          if (_gcdD(_r,_dm)===1) _copR.push(_r);
+        }
+
+        var _drawn = {};
+        _copR.forEach(function(_r) {
+          var _mirror = _dm - _r;  // σ(r) = m - r  (exact involution, no -2)
+          if (_mirror <= 0 || _mirror >= _dm) return;
+          if (_gcdD(_mirror,_dm) !== 1) return;
+          var _pairKey = Math.min(_r,_mirror)+':'+Math.max(_r,_mirror);
+          if (_drawn[_pairKey]) return;
+          _drawn[_pairKey] = true;
+          if (_r === _mirror) return;  // fixed point (only at m=2)
+
+          var _pt1 = ptXY(_r, _dm);
+          var _pt2 = ptXY(_mirror, _dm);
+          if (!_pt1 || !_pt2) return;
+
+          // Which is north (closer to top)? theta=0 is top in our coords
+          var _th1 = dir*2*Math.PI*_r/_dm + _angOff3;
+          var _th2 = dir*2*Math.PI*_mirror/_dm + _angOff3;
+          // Normalize to [0,2π)
+          _th1 = ((_th1%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+          _th2 = ((_th2%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+          // Distance from top (0): wrap around 2π
+          var _d1 = Math.min(_th1, 2*Math.PI-_th1);
+          var _d2 = Math.min(_th2, 2*Math.PI-_th2);
+          var _northPt = _d1 < _d2 ? _pt1 : _pt2;
+          var _southPt = _d1 < _d2 ? _pt2 : _pt1;
+          var _northR  = _d1 < _d2 ? _r   : _mirror;
+          var _southR  = _d1 < _d2 ? _mirror : _r;
+
+          // ── CHORD (field line inside) ─────────────────────────────────
+          ctx.beginPath();
+          ctx.moveTo(_northPt.x, _northPt.y);
+          ctx.lineTo(_southPt.x, _southPt.y);
+          // Gradient: north=cyan, south=magenta
+          try {
+            var _grad = ctx.createLinearGradient(_northPt.x,_northPt.y,_southPt.x,_southPt.y);
+            _grad.addColorStop(0, _northCol);
+            _grad.addColorStop(1, _southCol);
+            ctx.strokeStyle = _grad;
+          } catch(e) { ctx.strokeStyle = '#e879f9'; }
+          ctx.lineWidth = _dThick;
+          ctx.globalAlpha = _levelAlpha * 0.65;
+          ctx.stroke();
+
+          // North dot (cyan ⊕)
+          ctx.beginPath(); ctx.arc(_northPt.x, _northPt.y, Math.max(2.5,W*0.006), 0, 2*Math.PI);
+          ctx.fillStyle = _northCol; ctx.globalAlpha = _levelAlpha + 0.1; ctx.fill();
+
+          // South dot (magenta ⊖)
+          ctx.beginPath(); ctx.arc(_southPt.x, _southPt.y, Math.max(2.5,W*0.006), 0, 2*Math.PI);
+          ctx.fillStyle = _southCol; ctx.globalAlpha = _levelAlpha + 0.1; ctx.fill();
+
+          // ── ARC (field line outside — bezier bulging outward from center) ─
+          // Control point: push radially outward from midpoint
+          var _mx = (_northPt.x+_southPt.x)/2;
+          var _my = (_northPt.y+_southPt.y)/2;
+          // Vector from center to midpoint, scaled outward
+          var _outScale = 1.6 + 0.8*(_li/Math.max(_dRings.length-1,1));
+          var _cvx = cx + (_mx - cx) * _outScale;
+          var _cvy = cy + (_my - cy) * _outScale;
+          ctx.beginPath();
+          ctx.moveTo(_northPt.x, _northPt.y);
+          ctx.quadraticCurveTo(_cvx, _cvy, _southPt.x, _southPt.y);
+          try {
+            var _grad2 = ctx.createLinearGradient(_northPt.x,_northPt.y,_southPt.x,_southPt.y);
+            _grad2.addColorStop(0, _northCol);
+            _grad2.addColorStop(1, _southCol);
+            ctx.strokeStyle = _grad2;
+          } catch(e) { ctx.strokeStyle = '#e879f9'; }
+          ctx.lineWidth = Math.max(0.5, _dThick*0.55);
+          ctx.globalAlpha = _levelAlpha * 0.4;
+          ctx.stroke();
+        });
+      });
+
+      // ── Pole markers ─────────────────────────────────────────────────────
+      var _poleR = radius(modN) + Math.max(12, W*0.025);
+      // North pole (top)
+      var _npx = cx + _poleR * Math.sin(_angOff3);
+      var _npy = cy - _poleR * Math.cos(_angOff3);
+      ctx.beginPath(); ctx.arc(_npx, _npy, Math.max(6,W*0.014), 0, 2*Math.PI);
+      ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = 0.9; ctx.fill();
+      ctx.font = 'bold '+Math.max(9,W*0.018)+'px Cinzel,serif';
+      ctx.fillStyle = '#0a0a10'; ctx.globalAlpha = 1;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('⊕', _npx, _npy);
+      // South pole (bottom, +π)
+      var _spx = cx + _poleR * Math.sin(_angOff3 + Math.PI);
+      var _spy = cy - _poleR * Math.cos(_angOff3 + Math.PI);
+      ctx.beginPath(); ctx.arc(_spx, _spy, Math.max(6,W*0.014), 0, 2*Math.PI);
+      ctx.fillStyle = '#e879f9'; ctx.globalAlpha = 0.9; ctx.fill();
+      ctx.fillStyle = '#0a0a10'; ctx.globalAlpha = 1;
+      ctx.fillText('⊖', _spx, _spy);
+
+      ctx.globalAlpha = 1;
+    }
+
     // ── LIFTING TOWER: b × a^n residue connections ───────────────────────
     if (window._liftModeActive && window._liftModeActive()) {
-      var _lp = window._getLiftParams ? window._getLiftParams() : {base:null,mult:null};
-      var lb = _lp.base, la = _lp.mult;
-      if (lb && la && lb >= 2 && la >= 2) {
-        function _gcd2(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
-        // Build sequence of rings: lb, lb*la, lb*la^2, ... <= modN
-        var liftRings = [];
-        var cur = lb;
-        while (cur <= modN) { liftRings.push(cur); cur *= la; }
-        if (liftRings.length >= 2) {
-          // For each consecutive ring pair (m1, m2=m1*la):
-          // get gcd=1 residues on m1, find their lifts on m2, draw connecting lines
-          for (var li = 0; li < liftRings.length - 1; li++) {
-            var m1 = liftRings[li], m2 = liftRings[li+1];
-            var alpha = 0.4 + 0.5 * (li / (liftRings.length - 1));
-            for (var r1l = 0; r1l < m1; r1l++) {
-              if (_gcd2(r1l, m1) !== 1) continue;
-              var pt1 = ptXY(r1l, m1);
-              if (!pt1) continue;
-              // Highlight dot on source ring
-              ctx.beginPath(); ctx.arc(pt1.x, pt1.y, Math.max(2, W*0.005), 0, 2*Math.PI);
-              ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = alpha + 0.2; ctx.fill();
-              // Find all r2 on m2 where r2 ≡ r1l (mod m1) and gcd(r2,m2)=1
-              for (var k = 0; k * m1 + r1l < m2; k++) {
-                var r2l = k * m1 + r1l;
-                if (_gcd2(r2l, m2) !== 1) continue;
-                var pt2 = ptXY(r2l, m2);
-                if (!pt2) continue;
-                // Connection line
+      function _gcd2(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+      var _liftThick = parseInt((document.getElementById('f-lift-thick')||{value:'12'}).value) / 10;
+      var _lp = window._getLiftParams ? window._getLiftParams() : {};
+      // Build tower sequence from params
+      var liftRings = _lp.seq || null;
+      if (!liftRings && _lp.base && _lp.mult) {
+        liftRings = [];
+        var _cur = _lp.base;
+        while (_cur <= modN) { liftRings.push(_cur); _cur = Math.round(_cur * _lp.mult); }
+      }
+      // Filter to rings that fit within current modN
+      if (liftRings) liftRings = liftRings.filter(function(m){ return m <= modN; });
+
+      // ── Selected seed point (click to pick) ────────────────────────────
+      var _seedR = window._liftSeedR, _seedM = window._liftSeedM;
+      var _hasSeed = (_seedR !== null && _seedR !== undefined && _seedM !== null && _seedM !== undefined);
+
+      if (liftRings && liftRings.length >= 1) {
+        var nLevels = liftRings.length;
+
+        // Highlight tower rings with labeled border
+        liftRings.forEach(function(m, li) {
+          var rr = radius(m);
+          ctx.beginPath(); ctx.arc(cx, cy, rr, 0, 2*Math.PI);
+          ctx.strokeStyle = '#4ecdc4';
+          ctx.lineWidth = Math.max(0.8, _liftThick * 0.5);
+          ctx.globalAlpha = 0.35 + 0.15 * li / Math.max(nLevels-1,1);
+          ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+          ctx.font = Math.max(7, W*0.012) + 'px Cinzel,serif';
+          ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = 0.7;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+          ctx.fillText('mod ' + m, cx, cy - rr - 3);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      // ── Mode A: seed selected — draw from that specific r/m ──────────
+      if (_hasSeed && liftRings && liftRings.length >= 1) {
+        // Find which ring the seed is on, or use seed's own m as base
+        var seedBase = _seedM;
+        var seedIdx = liftRings.indexOf(seedBase);
+
+        // If seed ring not in tower, use nearest ring <= seedBase or just seedBase
+        if (seedIdx < 0) {
+          // build tower starting from seedBase if it divides tower pattern
+          seedIdx = 0;
+          liftRings = [seedBase];
+          var _lp2 = window._getLiftParams ? window._getLiftParams() : {};
+          var _a = _lp2.mult || 2;
+          var _cur2 = Math.round(seedBase * _a);
+          while (_cur2 <= modN) { liftRings.push(_cur2); _cur2 = Math.round(_cur2 * _a); }
+        }
+
+        // Draw YELLOW selected dot (the seed)
+        var ptSeed = ptXY(_seedR, seedBase);
+        if (ptSeed) {
+          ctx.beginPath(); ctx.arc(ptSeed.x, ptSeed.y, Math.max(4, W*0.009), 0, 2*Math.PI);
+          ctx.fillStyle = '#ffd700'; ctx.globalAlpha = 1; ctx.fill();
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = Math.max(1, _liftThick*0.4);
+          ctx.globalAlpha = 0.8; ctx.stroke();
+        }
+
+        // Walk the tower from seedIdx outward
+        for (var li = seedIdx; li < liftRings.length - 1; li++) {
+          var m1 = liftRings[li], m2 = liftRings[li+1];
+          if (m1 > modN || m2 > modN) break;
+          var ratio = Math.round(m2 / m1);
+
+          // Get all gcd=1 residues on m1 that ≡ _seedR (mod seedBase)
+          var sources = [];
+          if (li === seedIdx) {
+            sources = [_seedR];
+          } else {
+            // carry forward all survivors from previous level
+            sources = window._liftSurvivors || [];
+          }
+          var nextSurvivors = [];
+
+          sources.forEach(function(r1l) {
+            var pt1 = ptXY(r1l, m1);
+            if (!pt1) return;
+
+            // WHITE line = r→r (same residue, higher modulus) — the direct lift
+            // BLACK line = r→r+m (shifted by lower modulus — the new copy)
+            for (var k = 0; k < ratio; k++) {
+              var r2l = k * m1 + r1l;
+              if (r2l >= m2 || r2l < 0) continue;
+              var g2 = _gcd2(r2l, m2);
+              var pt2 = ptXY(r2l, m2);
+              if (!pt2) continue;
+
+              var isIdentity = (k === 0);  // r2 = r1 (same residue)
+              var isSplit    = (k > 0);    // r2 = r1 + k*m1 (new shifted copy)
+              var survives   = (g2 === 1);
+
+              if (survives) {
+                if (isIdentity) {
+                  // WHITE — direct lift r→r
+                  ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = _liftThick;
+                  ctx.globalAlpha = 0.85; ctx.stroke();
+                } else {
+                  // BLACK (dark) — shifted copy r→r+k*m
+                  ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                  ctx.strokeStyle = '#111111'; ctx.lineWidth = _liftThick;
+                  ctx.globalAlpha = 0.7; ctx.stroke();
+                  // secondary color border so visible on dark bg
+                  ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                  ctx.strokeStyle = '#4ecdc4'; ctx.lineWidth = Math.max(0.5, _liftThick*0.35);
+                  ctx.globalAlpha = 0.5; ctx.stroke();
+                }
+                // Destination dot
+                ctx.beginPath(); ctx.arc(pt2.x, pt2.y, Math.max(3, W*0.007), 0, 2*Math.PI);
+                ctx.fillStyle = isIdentity ? '#ffffff' : '#4ecdc4';
+                ctx.globalAlpha = 0.9; ctx.fill();
+                nextSurvivors.push(r2l);
+              } else {
+                // Grey dashed — killed
                 ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
-                ctx.strokeStyle = '#4ecdc4'; ctx.lineWidth = Math.max(0.6, W*0.001);
+                ctx.strokeStyle = '#666'; ctx.lineWidth = Math.max(0.4, _liftThick*0.3);
+                ctx.setLineDash([2,5]); ctx.globalAlpha = 0.2; ctx.stroke();
+                ctx.setLineDash([]);
+              }
+            }
+          });
+          window._liftSurvivors = nextSurvivors;
+        }
+        ctx.globalAlpha = 1;
+
+      } else if (liftRings && liftRings.length >= 2) {
+        // ── Mode B: no seed — show full tower for all gcd=1 on base ring ──
+        var nLevels = liftRings.length;
+        for (var li = 0; li < nLevels - 1; li++) {
+          var m1 = liftRings[li], m2 = liftRings[li+1];
+          if (m1 > modN || m2 > modN) break;
+          var ratio = Math.round(m2 / m1);
+          var alpha = 0.4 + 0.45 * (li / Math.max(nLevels-2,1));
+
+          for (var r1l = 1; r1l < m1; r1l++) {
+            if (_gcd2(r1l, m1) !== 1) continue;
+            var pt1 = ptXY(r1l, m1);
+            if (!pt1) continue;
+            ctx.beginPath(); ctx.arc(pt1.x, pt1.y, Math.max(2, W*0.005), 0, 2*Math.PI);
+            ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = alpha; ctx.fill();
+
+            for (var k = 0; k < ratio; k++) {
+              var r2l = k * m1 + r1l;
+              if (r2l >= m2) continue;
+              var g2 = _gcd2(r2l, m2);
+              var pt2 = ptXY(r2l, m2);
+              if (!pt2) continue;
+              if (g2 === 1) {
+                ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                ctx.strokeStyle = k===0 ? '#ffffff' : '#4ecdc4';
+                ctx.lineWidth = _liftThick * (k===0 ? 1 : 0.7);
                 ctx.globalAlpha = alpha * 0.7; ctx.stroke();
-                // Dot on destination ring
-                if (pt2) { ctx.beginPath(); ctx.arc(pt2.x, pt2.y, Math.max(2, W*0.005), 0, 2*Math.PI);
-                ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = alpha + 0.3; ctx.fill(); }
+                ctx.beginPath(); ctx.arc(pt2.x, pt2.y, Math.max(2, W*0.005), 0, 2*Math.PI);
+                ctx.fillStyle = k===0 ? '#ffffff' : '#4ecdc4'; ctx.globalAlpha = alpha+0.1; ctx.fill();
+              } else {
+                ctx.beginPath(); ctx.moveTo(pt1.x, pt1.y); ctx.lineTo(pt2.x, pt2.y);
+                ctx.strokeStyle='#555'; ctx.lineWidth=Math.max(0.3,_liftThick*0.25);
+                ctx.setLineDash([2,5]); ctx.globalAlpha=0.18; ctx.stroke(); ctx.setLineDash([]);
               }
             }
           }
         }
         ctx.globalAlpha = 1;
       }
+    }
+
+    // ── TRIG ANGLE MARKERS on outer ring ────────────────────────────────────
+    if (window._showTrig) {
+      var _TRIG = [
+        {deg:0,  sin:'0',     cos:'1',     tan:'0',    label:'0°'},
+        {deg:30, sin:'1/2',   cos:'√3/2',  tan:'1/√3', label:'30°'},
+        {deg:45, sin:'1/√2',  cos:'1/√2',  tan:'1',    label:'45°'},
+        {deg:60, sin:'√3/2',  cos:'1/2',   tan:'√3',   label:'60°'},
+        {deg:90, sin:'1',     cos:'0',     tan:'∞',    label:'90°'},
+      ];
+      var _angOff2 = _combinedAngle * Math.PI / 180;
+      var _outerR2 = radius(modN);
+      var _trigFS  = Math.max(8, W * 0.013);
+      _TRIG.forEach(function(t) {
+        var theta = t.deg * Math.PI / 180 + _angOff2;
+        var nx = Math.sin(theta), ny = -Math.cos(theta);
+        var tx = cx + _outerR2 * nx, ty = cy + _outerR2 * ny;
+        // Radial tick
+        var tick = Math.max(6, W * 0.015);
+        ctx.beginPath();
+        ctx.moveTo(tx - nx*tick*0.3, ty - ny*tick*0.3);
+        ctx.lineTo(tx + nx*tick, ty + ny*tick);
+        ctx.strokeStyle = '#ffd700'; ctx.lineWidth = Math.max(1.5, W*0.003);
+        ctx.globalAlpha = 0.9; ctx.stroke();
+        // Degree label
+        ctx.font = 'bold ' + _trigFS + 'px Cinzel,serif';
+        ctx.fillStyle = '#ffd700'; ctx.globalAlpha = 1;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        var lpad = tick * 2.2;
+        ctx.fillText(t.label, tx + nx*lpad, ty + ny*lpad);
+        // sin / cos / tan in compact form
+        var sp = lpad + _trigFS * 1.6;
+        ctx.font = Math.max(6, W*0.0095) + 'px Cinzel,serif';
+        ctx.fillStyle = '#4ecdc4'; ctx.globalAlpha = 0.88;
+        ctx.fillText('s=' + t.sin, tx + nx*sp, ty + ny*sp);
+        ctx.fillStyle = '#f97316'; ctx.globalAlpha = 0.88;
+        ctx.fillText('c=' + t.cos, tx + nx*(sp+_trigFS*1.5), ty + ny*(sp+_trigFS*1.5));
+      });
+      ctx.globalAlpha = 1;
     }
 
     ctx.restore();
@@ -13767,6 +14209,32 @@
       inp.value = Math.min(100, Math.max(10, Math.ceil(Math.log(modN) / (2*Math.PI) * modN * 0.15 + 10)));
     }
     fareyRedraw();
+  };
+
+  // ── Trig angle markers toggle ─────────────────────────────────────────
+  window._showTrig = false;
+  window.fareyToggleTrig = function() {
+    window._showTrig = !window._showTrig;
+    var btn = document.getElementById('fcm-trig');
+    if (btn) {
+      btn.style.background = window._showTrig ? '#ffd700' : 'var(--parchment-dark)';
+      btn.style.color      = window._showTrig ? '#000'    : '#ffd700';
+    }
+    if (typeof drawCombined === 'function') drawCombined();
+    else if (window.fareyRedraw) window.fareyRedraw();
+  };
+
+  // ── Unfold cut presets at trig angles ────────────────────────────────
+  window.fareyUnfoldCutPreset = function(num, den) {
+    var nEl = document.getElementById('f-unfold-num');
+    var dEl = document.getElementById('f-unfold-den');
+    if (nEl) nEl.value = num;
+    if (dEl) dEl.value = den;
+    var deg = (num / den) * 360;
+    var degEl = document.getElementById('f-unfold-deg');
+    if (degEl) degEl.textContent = deg.toFixed(1) + '°';
+    window._unfoldCutAngle = deg;  // degrees
+    if (window.fareyDrawUnfold) window.fareyDrawUnfold();
   };
 
   function overlayRiemannZeros(ctx, W, H, rMin, rMax, cx, cy) {
@@ -14053,11 +14521,18 @@
     var S = parseInt((document.getElementById('f-size-x-num')||{value:'800'}).value) || 800;
     var fScale = S / 800;  // font scale factor
     var pt   = _activeTooltipPt;
+    // Sync coprime/noncoprime angles to combined canvas rotation before export
+    var _savedAngles = {coprime: _angles.coprime, noncoprime: _angles.noncoprime};
+    _angles.coprime    = _combinedAngle;
+    _angles.noncoprime = _combinedAngle;
     // Render all three
     var srcCop  = makeFareyCanvas('coprime',    S);
     var srcNcp  = makeFareyCanvas('noncoprime', S);
     var _live = document.getElementById('fc-combined');
     var srcComb = (_live && _live.width === S && _live.height === S) ? _live : makeFareyCanvas('combined', S);
+    // Restore original angles
+    _angles.coprime    = _savedAngles.coprime;
+    _angles.noncoprime = _savedAngles.noncoprime;
 
     // ── Compute stats ─────────────────────────────────────────────────────
     var fracs    = buildFractions(modN);
@@ -14443,6 +14918,45 @@
         return 'hsl(' + h + ',85%,55%)';
       }
 
+      case 'gcd-depth': {
+        // Number of divisors of r — more divisors = warmer
+        var divCount = 0;
+        for (var d2=1; d2<=p.r; d2++) { if(p.r%d2===0) divCount++; }
+        var h = Math.round(240 - Math.min(divCount,12)/12*240);  // blue(few)→red(many)
+        return 'hsl('+h+',80%,55%)';
+      }
+      case 'twin-prime': {
+        function _isTwin(n){ if(n<2) return false; function _ip(x){if(x<2)return false;for(var i=2;i*i<=x;i++)if(x%i===0)return false;return true;} return _ip(n)&&(_ip(n-2)||_ip(n+2)); }
+        return _isTwin(p.r) ? '#ffd700' : (which==='coprime' ? '#2a4a6a' : '#4a1a1a');
+      }
+      case 'euler-phi': {
+        // φ(m)/m ratio — how coprime-dense is this ring
+        function _phi2(n){var r2=n,m2=n;for(var i=2;i*i<=m2;i++){if(m2%i===0){while(m2%i===0)m2=Math.floor(m2/i);r2-=Math.floor(r2/i);}}if(m2>1)r2-=Math.floor(r2/m2);return r2;}
+        var density = _phi2(p.m) / p.m;  // 0..1
+        var h = Math.round(density * 270);  // red(sparse)→violet(dense)
+        return 'hsl('+h+',75%,55%)';
+      }
+      case 'coprime-frac': {
+        // r as fraction of φ(m) — position within coprime set
+        function _phi3(n){var r3=n,m3=n;for(var i=2;i*i<=m3;i++){if(m3%i===0){while(m3%i===0)m3=Math.floor(m3/i);r3-=Math.floor(r3/i);}}if(m3>1)r3-=Math.floor(r3/m3);return r3;}
+        var frac = p.r / Math.max(_phi3(p.m),1);
+        var h = Math.round((frac % 1) * 360);
+        return 'hsl('+h+',78%,55%)';
+      }
+      case 'quadratic-residue': {
+        // Is r a quadratic residue mod m? (∃x: x²≡r mod m)
+        var isQR = false;
+        for (var xq=0; xq<p.m && !isQR; xq++) { if((xq*xq - p.r) % p.m === 0) isQR=true; }
+        return isQR ? '#4ecdc4' : '#e879f9';
+      }
+      case 'thermal': {
+        // Ring depth: cool (deep blue) → hot (bright red/white)
+        var t = (p.m - 1) / (modN - 1 || 1);
+        if (t < 0.25) return 'hsl(240,80%,'+Math.round(30+t*80)+'%)';
+        if (t < 0.5)  return 'hsl(180,80%,'+Math.round(40+t*60)+'%)';
+        if (t < 0.75) return 'hsl(60,90%,'+Math.round(45+t*40)+'%)';
+        return 'hsl(0,90%,'+Math.round(55+t*30)+'%)';
+      }
       default:
         return fallback;
     }
@@ -15655,20 +16169,90 @@
       btn.style.background = _liftModeOn ? '#4ecdc4' : 'var(--parchment-dark)';
       btn.style.color      = _liftModeOn ? '#000' : '#4ecdc4';
     }
-    // Show/hide lifting input panel
     var panel = document.getElementById('farey-lift-panel');
     if (panel) panel.style.display = _liftModeOn ? 'flex' : 'none';
-    if (!_liftModeOn) { _liftBase = null; _liftMult = null; }
+    var c = document.getElementById('fc-combined');
+    if (c) c.style.cursor = _liftModeOn ? 'crosshair' : 'default';
+    if (!_liftModeOn) { _liftBase = null; _liftMult = null; window._liftingR = null; window._liftingM = null; }
+    else {
+      // Auto-enable inspect so clicks hit-test points
+      if (!_inspectMode) {
+        _inspectMode = true;
+        var ibtn = document.getElementById('fcm-inspect');
+        if (ibtn) { ibtn.style.background='var(--gold)'; ibtn.style.color='var(--parchment)'; }
+        var fc2 = document.getElementById('fc-combined');
+        if (fc2) fc2.style.cursor='crosshair';
+        var lbl2 = document.getElementById('fc-combined-label');
+        if (lbl2) lbl2.textContent='Lifting · click any point to select lift seed';
+      }
+      fareyLiftApply(); return;
+    }
     fareyRedraw();
   };
   window._liftModeActive = function() { return _liftModeOn; };
-  window._getLiftParams   = function() { return { base: _liftBase, mult: _liftMult }; };
+  window._getLiftParams   = function() { return { base: _liftBase, mult: _liftMult, seq: window._liftTower || null }; };
+
+  function _buildLiftTower() {
+    var b    = parseInt((document.getElementById('f-lift-base')||{value:'30'}).value) || 30;
+    var a    = parseInt((document.getElementById('f-lift-mult')||{value:'2'}).value)  || 2;
+    var nmax = parseInt((document.getElementById('f-lift-nmax')||{value:'4'}).value)  || 4;
+    var modN = parseInt((document.getElementById('f-mod-num')||{value:'210'}).value)  || 210;
+    // Build sequence m₀, m₀×a, m₀×a², … capped at modN and nmax levels
+    var seq = [];
+    for (var n = 0; n <= nmax; n++) {
+      var m = b * Math.pow(a, n);
+      if (m > modN || m > 9999) break;
+      seq.push(Math.round(m));
+    }
+    return { base: b, mult: a, nmax: nmax, seq: seq };
+  }
+
+  function _updateLiftSequenceDisplay(seq) {
+    var el = document.getElementById('f-lift-sequence');
+    if (!el || !seq || seq.length === 0) return;
+    function gcd2(a,b){ while(b){var t=b;b=a%b;a=t;} return a; }
+    var parts = seq.map(function(m, i) {
+      // count gcd=1 residues for this m
+      var phi = 0;
+      for (var r = 1; r < m; r++) { if (gcd2(r, m) === 1) phi++; }
+      return '<span style="color:#e8d9b0;">n=' + i + '</span> mod <span style="color:#4ecdc4;">' + m + '</span> → φ=' + phi;
+    });
+    // Also show gcd=1 list for first two levels
+    var detail = '';
+    seq.slice(0, 3).forEach(function(m, i) {
+      var rs = [];
+      for (var r = 1; r < m; r++) { if (gcd2(r, m) === 1) rs.push(r); }
+      detail += '<div style="color:#9a8060;">mod ' + m + ': {' + rs.join(', ') + '}</div>';
+    });
+    el.innerHTML = parts.join('  <span style="color:#4ecdc4;">→</span>  ') + detail;
+  }
 
   window.fareyLiftApply = function() {
-    var b = parseInt(document.getElementById('f-lift-base').value) || 2;
-    var a = parseInt(document.getElementById('f-lift-mult').value) || 2;
-    _liftBase = b; _liftMult = a;
+    var t = _buildLiftTower();
+    _liftBase = t.base; _liftMult = t.mult;
+    window._liftTower = t.seq;  // expose for drawCombined
+    _updateLiftSequenceDisplay(t.seq);
+    // Auto-set modN to at least the largest ring in tower
+    if (t.seq.length > 0) {
+      var maxM = t.seq[t.seq.length - 1];
+      var modEl = document.getElementById('f-mod-num');
+      var slEl  = document.getElementById('f-mod');
+      if (modEl && parseInt(modEl.value) < maxM) {
+        modEl.value = maxM;
+        if (slEl) slEl.value = maxM;
+      }
+    }
     fareyRedraw();
+  };
+
+  window.fareyLiftPreset = function(base, mult, nmax) {
+    var bEl = document.getElementById('f-lift-base');
+    var mEl = document.getElementById('f-lift-mult');
+    var nEl = document.getElementById('f-lift-nmax');
+    if (bEl) bEl.value = base;
+    if (mEl) mEl.value = mult;
+    if (nEl) nEl.value = nmax;
+    window.fareyLiftApply();
   };
 
   // ── Unfold: unroll left semicircle into rectangle ──────────────────────
@@ -15695,10 +16279,15 @@
     if (ctrl) ctrl.style.display = _unfoldOn ? 'flex' : 'none';
     if (!_unfoldOn) {
       if (_unfoldAnimTimer) { cancelAnimationFrame(_unfoldAnimTimer); _unfoldAnimTimer = null; }
-      window._unfoldCutAngle = null; _unfoldInspect = false; window._unfoldInspect = false; window._unfoldMorph = 1;
+      window._unfoldCutAngle = null; _unfoldInspect = false; window._unfoldInspect = false; window._unfoldMorph = 0;
       if (window.drawCombined) window.drawCombined();
     } else {
+      window._unfoldMorph = 0;
+      var _vSel = document.getElementById('f-unfold-view');
+      if (_vSel && _vSel.value !== 'split') _vSel.value = 'split';
       fareyDrawUnfold();
+      // Auto-start animate so the unfold draws immediately on open
+      if (window.fareyUnfoldPlay) window.fareyUnfoldPlay();
     }
   };
 
@@ -15756,24 +16345,29 @@
 
   window.fareyUnfoldPlay = function() {
     var btn = document.getElementById('f-unfold-play');
+    // Stop if already running
     if (_unfoldAnimTimer) {
       cancelAnimationFrame(_unfoldAnimTimer); _unfoldAnimTimer = null;
-      window._unfoldMorph = window._unfoldMorph > 0.5 ? 1 : 0;
       if (btn) { btn.innerHTML = '&#9654; Animate'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#f97316'; }
       if (window.drawCombined) window.drawCombined();
       return;
     }
+    // Ensure unfold is on
+    if (!window._unfoldOn) return;
     var speed = parseInt((document.getElementById('f-unfold-speed')||{value:8}).value) || 8;
-    var durationMs = Math.max(400, 2400 / speed);
-    // Toggle direction: if currently rect (morph≈1) go back to circle, else go to rect
+    var durationMs = Math.max(500, 3000 / speed);
+    // Toggle: circle(0)→rect(1) or rect(1)→circle(0)
     if (window._unfoldMorph === undefined) window._unfoldMorph = 0;
     var startM = window._unfoldMorph;
-    var endM   = startM > 0.5 ? 0 : 1;
+    var endM   = (startM > 0.5) ? 0 : 1;
     var startTime = null;
     if (btn) { btn.innerHTML = '&#9632; Stop'; btn.style.background = '#f97316'; btn.style.color = '#000'; }
-    _unfoldAnimTimer = requestAnimationFrame(function frame(ts) {
+    var viewSel = document.getElementById('f-unfold-view');
+    if (viewSel && viewSel.value !== 'split') viewSel.value = 'split';
+    function frame(ts) {
       if (!startTime) startTime = ts;
       var t = Math.min((ts - startTime) / durationMs, 1);
+      // Smooth ease in-out
       var ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
       window._unfoldMorph = startM + (endM - startM) * ease;
       if (window.drawCombined) window.drawCombined();
@@ -15783,8 +16377,10 @@
         _unfoldAnimTimer = null;
         window._unfoldMorph = endM;
         if (btn) { btn.innerHTML = '&#9654; Animate'; btn.style.background = 'var(--parchment-dark)'; btn.style.color = '#f97316'; }
+        if (window.drawCombined) window.drawCombined();
       }
-    });
+    }
+    _unfoldAnimTimer = requestAnimationFrame(frame);
   };
 
   window.fareyDrawUnfold = function(overrideCanvas) {
@@ -16031,6 +16627,21 @@
   };
   window._showMirrorActive = function() { return _showMirror; };
 
+
+  // ── Dipole field toggle ────────────────────────────────────────────────
+  window._showDipole = false;
+  window.fareyToggleDipole = function() {
+    window._showDipole = !window._showDipole;
+    var btn = document.getElementById('fcm-dipole');
+    var panel = document.getElementById('farey-dipole-panel');
+    if (btn) {
+      btn.style.background = window._showDipole ? '#e879f9' : 'var(--parchment-dark)';
+      btn.style.color      = window._showDipole ? '#000'    : '#e879f9';
+    }
+    if (panel) panel.style.display = window._showDipole ? 'flex' : 'none';
+    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
+  };
+
   // ── Lifting tower: select a residue on ring m to see its lifts ──────────
   window.fareySetLifting = function(r, m) {
     if (_liftingR === r && _liftingM === m) { _liftingR = null; _liftingM = null; }
@@ -16039,20 +16650,6 @@
   };
   window._getLiftingState = function() { return { r: _liftingR, m: _liftingM }; };
 
-  var _liftModeOn = false;
-  window.fareyToggleLiftMode = function() {
-    _liftModeOn = !_liftModeOn;
-    if (!_liftModeOn) { _liftingR = null; _liftingM = null; }
-    var btn = document.getElementById('fcm-lifting');
-    if (btn) {
-      btn.style.background = _liftModeOn ? '#4ecdc4' : 'var(--parchment-dark)';
-      btn.style.color      = _liftModeOn ? 'var(--parchment)' : '#4ecdc4';
-    }
-    var c = document.getElementById('fc-combined');
-    if (c) c.style.cursor = _liftModeOn ? 'crosshair' : 'default';
-    if (typeof window.fareyRedraw === 'function') window.fareyRedraw();
-  };
-  window._liftModeActive = function() { return _liftModeOn; };
 
 
   // ── Select a residue r from the path table ──────────────────────────────
